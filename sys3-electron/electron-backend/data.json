@@ -1,29 +1,11 @@
 [
   {
-    "ColumnId": "1744372318782",
-    "Type": "checkbox",
-    "Name": "New Checkbox",
-    "Description": "Checkbox created on backend",
-    "EmojiIcon": "✅",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": true,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": true,
-      "Friday": true,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 60
-  },
-  {
     "ColumnId": "1744784619638",
     "Type": "numberbox",
     "Name": "Mon",
     "Description": "30h",
-    "EmojiIcon": "🔢",
-    "NameVisible": false,
+    "EmojiIcon": "Pizza",
+    "NameVisible": true,
     "Chosen": {
       "Monday": "0.5",
       "Tuesday": "5",
@@ -32,6 +14,96 @@
       "Friday": "3",
       "Saturday": "3",
       "Sunday": "3"
+    },
+    "cellSettings": {
+      "1744784619638": {
+        "width": 120,
+        "1744784619638": {
+          "width": 120,
+          "1744784619638": {
+            "width": 120,
+            "1744784619638": {
+              "width": 221
+            }
+          },
+          "order": 2
+        },
+        "order": 2,
+        "1744372318782": {
+          "1744784619638": {
+            "width": 120,
+            "1744784619638": {
+              "width": 120,
+              "1744784619638": {
+                "width": 221
+              }
+            },
+            "order": 2
+          },
+          "order": 7
+        }
+      },
+      "1744372318782": {
+        "1744784619638": {
+          "width": 120,
+          "1744784619638": {
+            "width": 120,
+            "1744784619638": {
+              "width": 120,
+              "1744784619638": {
+                "width": 221
+              }
+            },
+            "order": 2
+          },
+          "order": 2,
+          "1744372318782": {
+            "1744784619638": {
+              "width": 120,
+              "1744784619638": {
+                "width": 120,
+                "1744784619638": {
+                  "width": 221
+                }
+              },
+              "order": 2
+            },
+            "order": 7
+          }
+        },
+        "order": 1,
+        "1744372318782": {
+          "1744784619638": {
+            "width": 120,
+            "1744784619638": {
+              "width": 120,
+              "1744784619638": {
+                "width": 221
+              }
+            },
+            "order": 2
+          },
+          "order": 7
+        }
+      },
+      "width": 104
+    }
+  },
+  {
+    "ColumnId": "1745262091436",
+    "Type": "numberbox",
+    "Name": "WRK",
+    "Description": "Numberbox created on backend",
+    "EmojiIcon": "Flag",
+    "NameVisible": true,
+    "Chosen": {
+      "Monday": "20",
+      "Tuesday": 0,
+      "Wednesday": 0,
+      "Thursday": 0,
+      "Friday": 0,
+      "Saturday": 0,
+      "Sunday": 0
     }
   }
 ]

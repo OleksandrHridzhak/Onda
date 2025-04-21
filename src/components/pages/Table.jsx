@@ -3,9 +3,7 @@ import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff,
 import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
-import ColumnMenu from '../ColumnMenu';
 import ColumnHeader from '../ColumnHeader';
-import Sidebar from '../Sidebar';
 const { CheckboxCell, NumberCell, TagsCell, NotesCell } = Cells;
 
 const columnWidths = {
@@ -312,6 +310,7 @@ const Table = ({darkMode, setDarkMode}) => {
                     onToggleTitleVisibility={handleToggleTitleVisibility}
                     onChangeOptions={handleChangeOptions}
                     darkMode={darkMode}
+                    columnWidths={columnWidths}
                   />
                 ))}
                 <th className={`px-3 py-3 text-center ${darkMode ? 'border-gray-700' : 'border-gray-200'} border-b relative w-auto`}>

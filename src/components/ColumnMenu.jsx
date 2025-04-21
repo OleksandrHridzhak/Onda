@@ -1,10 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+    X, Plus, Trash2, Eye, EyeOff,
+    Heart, Star, Zap, Sun, Moon, 
+    Coffee, Rocket, Shield, Flag, Bell,
+    Book, Music, Pizza, Gamepad
+} from 'lucide-react';
 
 const availableIcons = [
-    '🌳', '🔢', '📝', '📆', '🏷️', '☑️', '⏰', '🎯', '🔍', '📊',
-    '💡', '🔔', '📌', '🗓️', '📍', '🎬', '📈', '👤', '👥', '🏆'
+    { component: <Heart size={20} />, name: 'Heart' },
+    { component: <Star size={20} />, name: 'Star' },
+    { component: <Zap size={20} />, name: 'Zap' },
+    { component: <Sun size={20} />, name: 'Sun' },
+    { component: <Moon size={20} />, name: 'Moon' },
+    { component: <Coffee size={20} />, name: 'Coffee' },
+    { component: <Rocket size={20} />, name: 'Rocket' },
+    { component: <Shield size={20} />, name: 'Shield' },
+    { component: <Flag size={20} />, name: 'Flag' },
+    { component: <Bell size={20} />, name: 'Bell' },
+    { component: <Book size={20} />, name: 'Book' },
+    { component: <Music size={20} />, name: 'Music' },
+    { component: <Pizza size={20} />, name: 'Pizza' },
+    { component: <Gamepad size={20} />, name: 'Gamepad' }
 ];
+
 
 const ColumnMenu = ({ column, handleDeleteColumn, onClose, onRename, onChangeIcon, onChangeDescription, onToggleTitleVisibility, onChangeOptions, darkMode }) => {
   const [name, setName] = useState(column.Name);
@@ -48,23 +66,15 @@ const ColumnMenu = ({ column, handleDeleteColumn, onClose, onRename, onChangeIco
         <div className="mb-3">
           <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Icon</label>
           <div className={`grid grid-cols-5 gap-1 p-1 border ${darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-white'} rounded-md`}>
-            {availableIcons.map((icon) => (
-              <button
-                key={icon}
-                onClick={() => setSelectedIcon(icon)}
-                className={`w-8 h-8 flex items-center justify-center text-lg rounded ${
-                  darkMode 
-                    ? selectedIcon === icon 
-                      ? 'bg-blue-600 text-white' 
-                      : 'hover:bg-gray-700 text-gray-200'
-                    : selectedIcon === icon 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'hover:bg-gray-100'
-                }`}
-              >
-                {icon}
-              </button>
-            ))}
+          {availableIcons.map((icon) => (
+    <button
+        key={icon.name}
+        onClick={() => setSelectedIcon(icon.name)}
+        className={`...`}
+    >
+        {icon.component}
+    </button>
+))}
           </div>
         </div>
         <div className="mb-3">

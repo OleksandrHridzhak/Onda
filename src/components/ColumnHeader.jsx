@@ -1,36 +1,61 @@
 import React, { useState } from "react";
-import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import ColumnMenu from './ColumnMenu';
 
-const columnWidths = {
-    days: 'w-32',
-    checkbox: 'w-12',
-    numberbox: 'w-20',
-    'multi-select': 'w-32',
-    text: 'w-64'
+import {
+  Heart, Star, Zap, Sun, Moon, 
+  Coffee, Rocket, Shield, Flag, Bell,
+  Book, Music, Pizza, Gamepad
+} from 'lucide-react';
+
+const iconComponents = {
+  Heart: <Heart size={16} />,
+  Star: <Star size={16} />,
+  Zap: <Zap size={16} />,
+  Sun: <Sun size={16} />,
+  Moon: <Moon size={16} />,
+  Coffee: <Coffee size={16} />,
+  Rocket: <Rocket size={16} />,
+  Shield: <Shield size={16} />,
+  Flag: <Flag size={16} />,
+  Bell: <Bell size={16} />,
+  Book: <Book size={16} />,
+  Music: <Music size={16} />,
+  Pizza: <Pizza size={16} />,
+  Gamepad: <Gamepad size={16} />
 };
 
-const ColumnHeader = ({ column, onRemove, onRename, onChangeIcon, onChangeDescription, onToggleTitleVisibility, onChangeOptions, darkMode }) => {
+const ColumnHeader = ({columnWidths, column, onRemove, onRename, onChangeIcon, onChangeDescription, onToggleTitleVisibility, onChangeOptions, darkMode }) => {
   const [showMenu, setShowMenu] = useState(false);
   const widthClass = columnWidths[column.Type] || '';
+
+  const getIconComponent = (iconName) => {
+    return iconComponents[iconName] || null;
+  };
+
+  // Перевіряємо, чи заголовок порожній (немає ні іконки, ні тексту)
+  const isEmptyHeader = !column.EmojiIcon && (column.NameVisible === false || !column.Name);
 
   return (
     <th className={`font-poppins px-3 py-3 text-left text-sm font-medium ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200'} border-b border-r whitespace-nowrap ${widthClass} overflow-hidden`}>
       <div
-        className="flex items-center justify-between group cursor-pointer"
+        className={`flex items-center justify-between group cursor-pointer ${column.NameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
         onClick={() => column.ColumnId !== 'days' && setShowMenu(true)}
       >
-        <div className="flex items-center" data-tooltip-id={`tooltip-${column.ColumnId}`}>
-          {column.EmojiIcon && <span className="mr-1">{column.EmojiIcon}</span>}
-          {column.NameVisible !== false && (
-            <span className={`truncate block ${darkMode ? 'text-gray-200' : 'text-gray-600'} max-w-full`}>{column.Name}</span>
+        <div className={`flex items-center ${column.NameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`} data-tooltip-id={`tooltip-${column.ColumnId}`}>
+          {column.EmojiIcon && (
+            <span className={column.NameVisible !== false ? "mr-1" : ""}>
+              {getIconComponent(column.EmojiIcon)}
+            </span>
           )}
+          {column.NameVisible !== false && column.Name && (
+            <span className={`truncate block ${darkMode ? 'text-gray-200' : 'text-gray-600'} max-w-full`}>
+              {column.Name}
+            </span>
+          )}
+          {/* Додаємо невидимий елемент для порожніх заголовків, щоб вони займали місце */}
+          {isEmptyHeader && <span className="opacity-0">∅</span>}
         </div>
-        {column.ColumnId !== 'days' && (
-          <div className="ml-2 opacity-0 group-hover:opacity-100 flex">
-            <Menu className={`w-3 h-3 ${darkMode ? 'text-gray-400' : 'text-gray-400'}`} />
-          </div>
-        )}
         {column.Description && (
           <div
             className={`absolute z-10 opacity-0 group-hover:opacity-100 ${darkMode ? 'bg-gray-800 text-gray-200 border-gray-700' : 'bg-gray-800 text-white'} text-xs rounded py-1 px-2 mb-20 min-w-48 max-w-72 whitespace-normal`}
