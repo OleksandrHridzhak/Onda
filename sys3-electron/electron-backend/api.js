@@ -15,7 +15,10 @@ const ensureDataFileExists = () => {
 // Функція для перевірки та створення файлу settings.json, якщо його немає
 const ensureSettingsFileExists = () => {
   if (!fs.existsSync(SETTINGS_FILE)) {
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify({ darkMode: false }, null, 2));
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
+      darkMode: false,
+      cellSettings: {}
+    }, null, 2));
   }
 };
 
@@ -84,7 +87,7 @@ module.exports = {
           Type: 'checkbox',
           Name: 'New Checkbox',
           Description: 'Checkbox created on backend',
-          EmojiIcon: '✅',
+          EmojiIcon: 'Star',
           NameVisible: true,
           Chosen: {
             Monday: false,
@@ -101,8 +104,8 @@ module.exports = {
           Type: 'numberbox',
           Name: 'New Numberbox',
           Description: 'Numberbox created on backend',
-          EmojiIcon: '🔢',
-          NameVisible: false,
+          EmojiIcon: 'Star',
+          NameVisible: true,
           Chosen: {
             Monday: 0,
             Tuesday: 0,
@@ -118,8 +121,8 @@ module.exports = {
           Type: 'text',
           Name: 'New Text',
           Description: 'Text created on backend',
-          EmojiIcon: '✏️',
-          NameVisible: false,
+          EmojiIcon: 'Star',
+          NameVisible: true,
           Chosen: {
             Monday: '',
             Tuesday: '',
@@ -135,7 +138,7 @@ module.exports = {
           Type: 'multi-select',
           Name: 'New Multi-Select',
           Description: 'Multi-select created on backend',
-          EmojiIcon: '📝',
+          EmojiIcon: 'Star',
           NameVisible: true,
           Options: ['Option 1', 'Option 2'],
           Chosen: {
@@ -235,6 +238,62 @@ module.exports = {
       } catch (err) {
         return { status: 'Error parsing settings', error: err.message };
       }
+    });
+    ipcMain.handle('get-cell-settings', () => {
+      ensureSettingsFileExists();
+      try {
+        const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+        return {
+          status: 'Cell settings fetched',
+          cellSettings: settings.cellSettings || {}
+        };
+      } catch (err) {
+        return { status: 'Error parsing settings', error: err.message };
+      }
+    });
+    
+    // Обробник для оновлення налаштувань клітинки
+    ipcMain.handle('update-cell-settings', async (event, cellId, newSettings) => {
+      try {
+        const settings = JSON.parse(fs.readFileSync(settingsPath));
+        
+        // Ініціалізуємо cellSettings, якщо їх немає
+        if (!settings.cellSettings) {
+          settings.cellSettings = {};
+        }
+        
+        // Запобігаємо рекурсії - створюємо плоский об'єкт
+        settings.cellSettings[cellId] = {
+          width: newSettings.width,
+          height: newSettings.height,
+          order: newSettings.order
+        };
+        
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        return { status: 'success' };
+      } catch (err) {
+        console.error('Error saving cell settings:', err);
+        return { status: 'error', message: err.message };
+      }
+    });
+    
+    // Обробник для видалення налаштувань клітинки
+    ipcMain.handle('delete-cell-settings', (event, cellId) => {
+      ensureSettingsFileExists();
+      let settings;
+      try {
+        settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      } catch (err) {
+        return { status: 'Error parsing settings', error: err.message };
+      }
+    
+      if (settings.cellSettings && settings.cellSettings[cellId]) {
+        delete settings.cellSettings[cellId];
+        fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+        return { status: 'Cell settings deleted', cellId };
+      }
+    
+      return { status: 'Cell settings not found', cellId };
     });
   },
 };

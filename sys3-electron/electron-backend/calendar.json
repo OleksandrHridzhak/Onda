@@ -1,34 +1,5 @@
 [
   {
-    "id": "1745177601854",
-    "title": "sleep",
-    "date": "Wed Apr 16 2025",
-    "startTime": "00:00",
-    "endTime": "07:00",
-    "color": "#2563eb",
-    "isRepeating": true,
-    "repeatDays": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6
-    ],
-    "repeatFrequency": "weekly"
-  },
-  {
     "id": "1745177634785",
     "title": "sleep",
     "date": "Fri Apr 18 2025",

@@ -26,4 +26,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   switchTheme: (darkMode) => ipcRenderer.invoke('switch-theme', darkMode),
   getTheme: () => ipcRenderer.invoke('get-theme'),
 
+  getCellSettings: () => ipcRenderer.invoke('get-cell-settings'),
+  updateCellSettings: (cellId, newSettings) =>
+    ipcRenderer.invoke('update-cell-settings', cellId, newSettings),
+  deleteCellSettings: (cellId) =>
+    ipcRenderer.invoke('delete-cell-settings', cellId),
+
 });
