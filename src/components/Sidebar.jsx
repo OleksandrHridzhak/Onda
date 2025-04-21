@@ -73,7 +73,7 @@ const Sidebar = ({darkMode,setDarkMode}) => {
             onClick={toggleTheme}
           >
             {darkMode ? (
-              <Moon className="w-6 h-6 text-blue-400 transition-all duration-300 transform rotate-0 hover:rotate-180" strokeWidth={1.5} />
+              <Moon className="w-6 h-6 text-blue-400 transition-all duration-300 transform rotate-0 hover:rotate-[360deg]" strokeWidth={1.5} />
             ) : (
               <Sun className="w-6 h-6 text-blue-500 transition-all duration-300 transform rotate-0 hover:rotate-180" strokeWidth={1.5} />
             )}

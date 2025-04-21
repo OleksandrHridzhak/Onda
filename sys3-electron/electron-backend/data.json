@@ -23,7 +23,7 @@
     "Name": "Mon",
     "Description": "30h",
     "EmojiIcon": "🔢",
-    "NameVisible": true,
+    "NameVisible": false,
     "Chosen": {
       "Monday": "0.5",
       "Tuesday": "5",

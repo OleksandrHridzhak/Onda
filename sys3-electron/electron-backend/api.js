@@ -3,33 +3,46 @@ const path = require('path');
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 const DATA_FILE = path.join(__dirname, 'data.json');
+const SETTINGS_FILE = path.join(__dirname, 'settings.json');
 
-// Функція для перевірки та створення файлу, якщо його немає
+// Функція для перевірки та створення файлу data.json, якщо його немає
 const ensureDataFileExists = () => {
   if (!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
   }
 };
 
+// Функція для перевірки та створення файлу settings.json, якщо його немає
+const ensureSettingsFileExists = () => {
+  if (!fs.existsSync(SETTINGS_FILE)) {
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify({ darkMode: false }, null, 2));
+  }
+};
+
 module.exports = {
-  init(ipcMain,mainWindow) {
+  init(ipcMain, mainWindow) {
+    // Обробник для отримання даних із data.json
     ipcMain.handle('get-data', () => {
-      ensureDataFileExists(); // Перевіряємо та створюємо файл
+      ensureDataFileExists();
       return JSON.parse(fs.readFileSync(DATA_FILE));
     });
+
+    // Обробник для отримання поточного часу
     ipcMain.handle('get-time', () => {
       const now = new Date();
-      return { time: now.toISOString() }; // Повертаємо час у форматі ISO
+      return { time: now.toISOString() };
     });
-    
+
+    // Обробник для збереження даних у data.json
     ipcMain.handle('save-data', (event, data) => {
-      ensureDataFileExists(); // Перевіряємо та створюємо файл
+      ensureDataFileExists();
       fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
       return { status: 'Data saved!' };
     });
 
+    // Обробник для отримання всіх даних із data.json
     ipcMain.handle('get-all-days', () => {
-      ensureDataFileExists(); // Перевіряємо та створюємо файл
+      ensureDataFileExists();
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       try {
         const data = JSON.parse(fileContent);
@@ -39,8 +52,9 @@ module.exports = {
       }
     });
 
+    // Обробник для оновлення checkbox у data.json
     ipcMain.handle('column-change', (event, updatedCheckbox) => {
-      ensureDataFileExists(); // Перевіряємо та створюємо файл
+      ensureDataFileExists();
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       let data;
       try {
@@ -62,6 +76,7 @@ module.exports = {
       return { status: 'Checkbox updated', data: updatedCheckbox };
     });
 
+    // Обробник для створення компонента у data.json
     ipcMain.handle('create-component', (event, type) => {
       const templates = {
         checkbox: {
@@ -141,7 +156,7 @@ module.exports = {
 
       const newComponent = templates[type];
 
-      ensureDataFileExists(); // Перевіряємо та створюємо файл
+      ensureDataFileExists();
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       let data;
       try {
@@ -155,8 +170,9 @@ module.exports = {
       return { status: 'Success', data: newComponent };
     });
 
+    // Обробник для видалення компонента з data.json
     ipcMain.handle('delete-component', (event, columnId) => {
-      ensureDataFileExists(); // Перевіряємо та створюємо файл
+      ensureDataFileExists();
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       let data;
       try {
@@ -175,18 +191,49 @@ module.exports = {
       fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
       return { status: 'Component deleted', columnId };
     });
+
+    // Обробник для закриття вікна
     ipcMain.handle('window-close', () => {
       app.quit();
     });
+
+    // Обробник для мінімізації вікна
     ipcMain.handle('window-minimize', () => {
       mainWindow.minimize();
     });
-  
+
+    // Обробник для максимізації/відновлення вікна
     ipcMain.handle('window-maximize', () => {
       if (mainWindow.isMaximized()) {
         mainWindow.restore();
       } else {
         mainWindow.maximize();
+      }
+    });
+
+    // Обробник для перемикання теми
+    ipcMain.handle('switch-theme', (event, darkMode) => {
+      ensureSettingsFileExists();
+      let settings;
+      try {
+        settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      } catch (err) {
+        return { status: 'Error parsing settings', error: err.message };
+      }
+
+      settings.darkMode = darkMode; // Оновлюємо значення darkMode
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+      return { status: 'Theme switched', darkMode };
+    });
+
+    // Обробник для отримання поточної теми
+    ipcMain.handle('get-theme', () => {
+      ensureSettingsFileExists();
+      try {
+        const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+        return { status: 'Theme fetched', darkMode: settings.darkMode };
+      } catch (err) {
+        return { status: 'Error parsing settings', error: err.message };
       }
     });
   },
