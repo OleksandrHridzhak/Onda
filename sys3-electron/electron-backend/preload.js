@@ -21,5 +21,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   calendarGetEvents: () => ipcRenderer.invoke('calendar-get-events'),
   calendarSaveEvent: (eventData) => ipcRenderer.invoke('calendar-save-event', eventData),
   calendarDeleteEvent: (eventId) => ipcRenderer.invoke('calendar-delete-event', eventId),
-  calendarGetTime: () => ipcRenderer.invoke('calendar-get-time')
+  calendarGetTime: () => ipcRenderer.invoke('calendar-get-time'),
+
+  switchTheme: (darkMode) => ipcRenderer.invoke('switch-theme', darkMode),
+  getTheme: () => ipcRenderer.invoke('get-theme'),
+
 });

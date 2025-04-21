@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Table from './components/pages/Table';
 import MenuWin from './components/MenuWin';
@@ -8,8 +8,8 @@ import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-d
 
 // Окремий компонент для основного вмісту
 function MainContent({ isDarkMode, setIsDarkMode }) {
-  const location = useLocation(); // Правильне місце для useLocation
-  
+  const location = useLocation();
+
   return (
     <div className={`flex-1 flex flex-col ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
@@ -23,8 +23,20 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
 }
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  
+  const [isDarkMode, setIsDarkMode] = useState();
+
+  useEffect(() => {
+    window.electronAPI.getTheme().then((res) => {
+      if (res?.darkMode !== undefined) {
+        setIsDarkMode(res.darkMode);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    window.electronAPI.switchTheme(isDarkMode);
+  }, [isDarkMode]);
+
   return (
     <Router>
       <div className={`flex flex-col h-screen ${isDarkMode ? 'dark' : ''}`}>

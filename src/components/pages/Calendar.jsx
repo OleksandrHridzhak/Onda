@@ -24,6 +24,15 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
   const slotHeight = 80;
   const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+  // Color mapping object
+  const colorMap = {
+    '#2563eb': 'Blue',
+    '#059669': 'Green',
+    '#7c3aed': 'Purple',
+    '#dc2626': 'Red',
+    '#d97706': 'Orange',
+  };
+
   // Helper functions
   function getMonday(date) {
     const d = new Date(date);
@@ -277,7 +286,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
           };
           scrollbar-width: thin;
         }
-        /* Custom Checkbox Styles */
         .custom-checkbox {
           position: relative;
           width: 18px;
@@ -309,7 +317,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
           outline: none;
           box-shadow: 0 0 0 3px ${darkTheme ? 'rgba(59, 130, 246, 0.3)' : 'rgba(37, 99, 235, 0.3)'};
         }
-        /* Event Block Styles for Short Events */
         .short-event .event-time {
           display: none;
         }
@@ -356,9 +363,9 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
               className={`px-3 py-1 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
             >
               <option value="">All Events</option>
-              {['#2563eb', '#059669', '#7c3aed', '#dc2626', '#d97706'].map((color) => (
-                <option key={color} value={color}>
-                  Color {color}
+              {Object.entries(colorMap).map(([hex, name]) => (
+                <option key={hex} value={hex}>
+                  {name}
                 </option>
               ))}
             </select>
@@ -413,7 +420,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                         {day.getDate()}
                       </div>
                     </div>
-                    {/* Time slots */}
                     <div className="relative" style={{ height: `${slotHeight * 24}px` }}>
                       {hours.map((hour) => (
                         <div
@@ -423,7 +429,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                           onClick={() => handleTimeSlotClick(dayIndex, hour)}
                         />
                       ))}
-                      {/* Events */}
                       {getEventsForDay(day).map((event) => {
                         const startMinutes = timeToMinutes(event.startTime);
                         let endMinutes = timeToMinutes(event.endTime);
@@ -449,7 +454,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                           </div>
                         );
                       })}
-                      {/* Current time indicator */}
                       {day.toDateString() === currentTime.toDateString() && (
                         <div
                           className="absolute left-0 right-0 h-[2px] bg-red-500 z-10"
@@ -508,14 +512,15 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
               <div>
                 <label className={`block text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Color</label>
                 <div className="flex gap-3">
-                  {['#2563eb', '#059669', '#7c3aed', '#dc2626', '#d97706'].map((color) => (
+                  {Object.entries(colorMap).map(([hex, name]) => (
                     <div
-                      key={color}
+                      key={hex}
                       className={`w-6 h-6 rounded-full cursor-pointer ${
-                        newEvent.color === color ? 'ring-2 ring-offset-2 ring-gray-300' : ''
+                        newEvent.color === hex ? 'ring-2 ring-offset-2 ring-gray-300' : ''
                       }`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setNewEvent({ ...newEvent, color })}
+                      style={{ backgroundColor: hex }}
+                      onClick={() => setNewEvent({ ...newEvent, color: hex })}
+                      title={name}
                     />
                   ))}
                 </div>
@@ -581,9 +586,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                   Delete
                 </button>
               )}
-
-
-              
               <button
                 onClick={() => setShowEventModal(false)}
                 className={`px-4 py-2 text-sm ${darkTheme ? 'text-gray-300 bg-gray-700 hover:bg-gray-600' : 'text-gray-600 bg-gray-100 hover:bg-gray-200'} rounded-xl transition-colors`}
