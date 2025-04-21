@@ -1,0 +1,6 @@
+{
+    "watch": ["*.js"],
+    "ignore": ["*.json"],
+    "exec": "electron ."
+}
+  

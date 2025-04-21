@@ -1,0 +1,35 @@
+{
+  "name": "electron-backend",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^35.1.4",
+    "electron-packager": "^17.1.2"
+  },
+  "build": {
+  "asar":false,
+  "appId": "com.onda.onda",
+  "productName": "Onda",
+  "directories": {
+    "buildResources": "assets",
+    "output": "dist"
+  },
+  "files": [
+    "**/*",  
+    "!node_modules/{@electron,electron}/**/*"
+  ],
+  "win": {
+    "target": "nsis"
+  }
+  }
+
+}
