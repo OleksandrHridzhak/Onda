@@ -1,0 +1,37 @@
+[
+  {
+    "ColumnId": "1744372318782",
+    "Type": "checkbox",
+    "Name": "New Checkbox",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "✅",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": true,
+      "Tuesday": true,
+      "Wednesday": true,
+      "Thursday": true,
+      "Friday": true,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 60
+  },
+  {
+    "ColumnId": "1744784619638",
+    "Type": "numberbox",
+    "Name": "Mon",
+    "Description": "30h",
+    "EmojiIcon": "🔢",
+    "NameVisible": true,
+    "Chosen": {
+      "Monday": "0.5",
+      "Tuesday": "5",
+      "Wednesday": "3",
+      "Thursday": "2",
+      "Friday": "3",
+      "Saturday": "3",
+      "Sunday": "3"
+    }
+  }
+]

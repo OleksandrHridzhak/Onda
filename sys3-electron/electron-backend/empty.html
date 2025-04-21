@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Electron Backend</title>
+</head>
+<body>
+</body>
+
+<script>
+      const updatedCheckboxObject = {
+        ColumnId: '483',
+        Type: 'checkbox',
+        Name: 'Test Checkbox',
+        Description: 'Checkboxk,nm updated from HTML!',
+        EmojiIcon: '✅',
+        NameVisible: true,
+        Chosen: {
+          Monday: true,
+          Tuesday: true,
+          Wednesday: false,
+          Thursday: true,
+          Friday: false,
+          Saturday: true,
+          Sunday: false
+        }
+      };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+      const response = await window.electronAPI.changeColumn(updatedCheckboxObject)
+      window.electronAPI.createComponent('checkbox');
+      } catch (error) {
+          console.error('Error getting days data:', error);
+      }
+    });
+</script>
+</html>
