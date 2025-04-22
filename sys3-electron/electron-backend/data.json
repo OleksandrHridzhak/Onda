@@ -98,12 +98,33 @@
     "NameVisible": true,
     "Chosen": {
       "Monday": "20",
-      "Tuesday": 0,
-      "Wednesday": 0,
+      "Tuesday": "50",
+      "Wednesday": "45",
       "Thursday": 0,
       "Friday": 0,
       "Saturday": 0,
       "Sunday": 0
+    }
+  },
+  {
+    "ColumnId": "1745263928322",
+    "Type": "multi-select",
+    "Name": "New Multi",
+    "Description": "Multi-select created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": true,
+    "Options": [
+      "Option 1",
+      "Option 2"
+    ],
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
     }
   }
 ]
