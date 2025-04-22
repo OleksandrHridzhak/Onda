@@ -26,22 +26,23 @@ const iconComponents = {
 };
 
 const ColumnHeader = ({
-  columnWidths, 
-  column, 
-  onRemove, 
-  onRename, 
-  onChangeIcon, 
-  onChangeDescription, 
-  onToggleTitleVisibility, 
-  onChangeOptions, 
+  column,
+  onRemove,
+  onRename,
+  onChangeIcon,
+  onChangeDescription,
+  onToggleTitleVisibility,
+  onChangeOptions,
   onMoveUp,
   onMoveDown,
   canMoveUp,
   canMoveDown,
-  darkMode 
+  darkMode,
+  columnWidths,
+  onChangeWidth
 }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const widthClass = columnWidths[column.Type] || '';
+  const style = column.Width ? { width: `${column.Width}px` } : {};
 
   const getIconComponent = (iconName) => {
     return iconComponents[iconName] || null;
@@ -51,7 +52,11 @@ const ColumnHeader = ({
   const isEmptyHeader = !column.EmojiIcon && (column.NameVisible === false || !column.Name);
 
   return (
-    <th className={`font-poppins px-3 py-3 text-left text-sm font-medium ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200'} border-b border-r whitespace-nowrap ${widthClass} overflow-hidden `}>
+    <th 
+      data-column-id={column.ColumnId}
+      className={`font-poppins px-3 py-3 text-left text-sm font-medium ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200'} border-b border-r whitespace-nowrap overflow-hidden`}
+      style={column.ColumnId === 'days' ? { width: '120px', minWidth: '120px', maxWidth: '120px' } : style}
+    >
       <div
         className={`flex items-center justify-between group cursor-pointer ${column.NameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
         onClick={() => column.ColumnId !== 'days' && setShowMenu(true)}
@@ -94,6 +99,7 @@ const ColumnHeader = ({
             canMoveUp={canMoveUp}
             canMoveDown={canMoveDown}
             darkMode={darkMode}
+            onChangeWidth={onChangeWidth}
           />
         )}
       </div>
