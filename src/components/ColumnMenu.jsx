@@ -38,7 +38,8 @@ const ColumnMenu = ({
   onMoveDown,
   canMoveUp,
   canMoveDown,
-  darkMode 
+  darkMode,
+  onChangeWidth 
 }) => {
   const [name, setName] = useState(column.Name);
   const [selectedIcon, setSelectedIcon] = useState(column.EmojiIcon || '');
@@ -46,7 +47,17 @@ const ColumnMenu = ({
   const [showTitle, setShowTitle] = useState(column.NameVisible !== false);
   const [tags, setTags] = useState(column.Options || []);
   const [newTag, setNewTag] = useState('');
+  const [width, setWidth] = useState(column.Width ? parseInt(column.Width) : '');
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    setName(column.Name);
+    setSelectedIcon(column.EmojiIcon || '');
+    setDescription(column.Description || '');
+    setShowTitle(column.NameVisible !== false);
+    setTags(column.Options || []);
+    setWidth(column.Width ? parseInt(column.Width) : '');
+  }, [column]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -80,7 +91,18 @@ const ColumnMenu = ({
     if (column.Type === 'multi-select') {
       onChangeOptions(column.ColumnId, tags);
     }
+    if (onChangeWidth && width !== column.Width) {
+      onChangeWidth(column.ColumnId, width);
+    }
     onClose();
+  };
+
+  const handleWidthChange = (e) => {
+    const newWidth = e.target.value;
+    setWidth(newWidth);
+    if (onChangeWidth) {
+      onChangeWidth(column.ColumnId, newWidth);
+    }
   };
 
   return (
@@ -213,6 +235,18 @@ const ColumnMenu = ({
             {showTitle ? <Eye size={16} /> : <EyeOff size={16} />}
             <span className="text-sm">Show Column Title</span>
           </button>
+        </div>
+        <div className="mb-3">
+          <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Column Width (px)</label>
+          <input
+            type="number"
+            value={width}
+            onChange={handleWidthChange}
+            min="50"
+            max="1000"
+            className={`w-full px-3 py-2 border ${darkMode ? 'border-gray-700 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white'} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+            placeholder="Enter width in pixels"
+          />
         </div>
         <div className="flex justify-between mt-4">
           <button

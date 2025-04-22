@@ -7,7 +7,7 @@ import ColumnHeader from '../ColumnHeader';
 const { CheckboxCell, NumberCell, TagsCell, NotesCell } = Cells;
 
 const columnWidths = {
-  days: 'w-32',
+  days: 'w-20',
   checkbox: 'w-12',
   numberbox: 'w-20',
   'multi-select': 'w-32',
@@ -32,13 +32,25 @@ const Table = ({darkMode, setDarkMode}) => {
           window.electronAPI.getAllDays(),
           window.electronAPI.getSettings()
         ]);
+
+        console.log('Data from backend:', daysResult);
+        console.log('Settings from backend:', settingsResult);
         
         const dayColumn = { ColumnId: 'days', Type: 'days', Name: 'Day', EmojiIcon: '', NameVisible: true };
         let fetchedColumns = [dayColumn];
 
         if (daysResult.status === 'Data fetched' && Array.isArray(daysResult.data)) {
-          fetchedColumns = [dayColumn, ...daysResult.data];
+          // Convert Width to number for each column
+          fetchedColumns = [dayColumn, ...daysResult.data.map(col => {
+            console.log('Processing column:', col.ColumnId, 'Width:', col.Width);
+            return {
+              ...col,
+              Width: col.Width ? parseInt(col.Width) : null
+            };
+          })];
         }
+
+        console.log('Processed columns:', fetchedColumns);
 
         // Apply column order from settings if available
         if (settingsResult.status === 'Settings fetched' && settingsResult.data.columnOrder?.length > 0) {
@@ -55,6 +67,8 @@ const Table = ({darkMode, setDarkMode}) => {
           });
           fetchedColumns = orderedColumns;
         }
+
+        console.log('Final columns with order:', fetchedColumns);
 
         setColumns(fetchedColumns);
         setColumnOrder(fetchedColumns.map(col => col.ColumnId));
@@ -261,11 +275,74 @@ const Table = ({darkMode, setDarkMode}) => {
     }
   };
 
+  const handleChangeWidth = async (columnId, newWidth) => {
+    try {
+      const width = parseInt(newWidth);
+      if (isNaN(width) || width < 50 || width > 1000) {
+        console.error('Invalid width value');
+        return;
+      }
+
+      // Find the column and create a clean copy without any nested objects
+      const column = columns.find(col => col.ColumnId === columnId);
+      if (!column) {
+        console.error('Column not found');
+        return;
+      }
+
+      // Create a clean column object
+      const updatedColumn = {
+        ColumnId: column.ColumnId,
+        Type: column.Type,
+        Name: column.Name,
+        Description: column.Description || '',
+        EmojiIcon: column.EmojiIcon || '',
+        NameVisible: column.NameVisible !== false,
+        Options: column.Options || [],
+        Chosen: column.Chosen || {},
+        Width: width // Set the new width
+      };
+
+      // Update local state first
+      setColumns(prevColumns => 
+        prevColumns.map(col => 
+          col.ColumnId === columnId ? { ...col, Width: width } : col
+        )
+      );
+
+      // Update backend
+      await window.electronAPI.changeColumn(updatedColumn);
+
+      // Update DOM
+      const columnElements = document.querySelectorAll(`[data-column-id="${columnId}"]`);
+      columnElements.forEach(element => {
+        element.style.width = `${width}px`;
+      });
+    } catch (error) {
+      console.error('Error updating column width:', error);
+      // Revert the change if it failed
+      setColumns(prevColumns => 
+        prevColumns.map(col => 
+          col.ColumnId === columnId ? { ...col, Width: col.Width } : col
+        )
+      );
+    }
+  };
+
+  const getWidthClass = (column) => {
+    return column.Width ? `w-[${column.Width}px]` : columnWidths[column.Type] || '';
+  };
+
   const renderCell = (day, column) => {
-    const widthClass = columnWidths[column.Type] || '';
+    const widthClass = getWidthClass(column);
+    const style = column.Width ? { width: `${column.Width}px` } : {};
     if (column.Type === 'days') {
       return (
-        <td className={`px-4 py-3 text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-600 border-gray-200'} border-r whitespace-nowrap ${widthClass}`}>
+        <td 
+          data-column-id={column.ColumnId}
+          className={`px-4 py-3 text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-600 border-gray-200'} border-r whitespace-nowrap`}
+          style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}
+        >
           {day}
         </td>
       );
@@ -273,7 +350,11 @@ const Table = ({darkMode, setDarkMode}) => {
     switch (column.Type) {
       case 'checkbox':
         return (
-          <td className={`py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}>
+          <td 
+            data-column-id={column.ColumnId}
+            className={`py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}
+            style={style}
+          >
             <CheckboxCell
               checked={tableData[day][column.ColumnId] || false}
               onChange={() => handleCellChange(day, column.ColumnId, !tableData[day][column.ColumnId])}
@@ -283,7 +364,11 @@ const Table = ({darkMode, setDarkMode}) => {
         );
       case 'numberbox':
         return (
-          <td className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}>
+          <td 
+            data-column-id={column.ColumnId}
+            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}
+            style={style}
+          >
             <NumberCell
               value={tableData[day][column.ColumnId] || ''}
               onChange={(value) => handleCellChange(day, column.ColumnId, value)}
@@ -293,18 +378,26 @@ const Table = ({darkMode, setDarkMode}) => {
         );
       case 'multi-select':
         return (
-          <td className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}>
+          <td 
+            data-column-id={column.ColumnId}
+            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}
+            style={style}
+          >
             <TagsCell
               value={tableData[day][column.ColumnId] || ''}
-              onChange={(value) => handleCellChange(day, column.ColumnId, value)}
               options={column.Options || []}
+              onChange={(value) => handleCellChange(day, column.ColumnId, value)}
               darkMode={darkMode}
             />
           </td>
         );
       case 'text':
         return (
-          <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}>
+          <td 
+            data-column-id={column.ColumnId}
+            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}
+            style={style}
+          >
             <NotesCell
               value={tableData[day][column.ColumnId] || ''}
               onChange={(value) => handleCellChange(day, column.ColumnId, value)}
@@ -313,7 +406,7 @@ const Table = ({darkMode, setDarkMode}) => {
           </td>
         );
       default:
-        return <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}>-</td>;
+        return null;
     }
   };
 
@@ -362,6 +455,7 @@ const Table = ({darkMode, setDarkMode}) => {
                     canMoveDown={column.ColumnId !== 'days' && columns.indexOf(column) < columns.length - 1}
                     darkMode={darkMode}
                     columnWidths={columnWidths}
+                    onChangeWidth={handleChangeWidth}
                   />
                 ))}
                 <th className={`px-3 py-3 text-center ${darkMode ? 'border-gray-700' : 'border-gray-200'} border-b relative w-auto`}>
@@ -373,7 +467,6 @@ const Table = ({darkMode, setDarkMode}) => {
                       <Plus className="w-4 h-4 mr-1" />
                       Add Column
                     </button>
-
                   </div>
                   {showColumnSelector && (
                     <ColumnTypeSelector
@@ -410,7 +503,7 @@ const Table = ({darkMode, setDarkMode}) => {
                 <tr className={`${darkMode ? 'bg-gray-800 border-t border-gray-700' : 'bg-white border-t border-gray-200'}`}>
                   {columns.map((column, index) => {
                     const summary = calculateSummary(column);
-                    const widthClass = columnWidths[column.Type] || '';
+                    const widthClass = getWidthClass(column);
                     return (
                       <td
                         key={column.ColumnId}
