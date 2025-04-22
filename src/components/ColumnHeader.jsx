@@ -5,7 +5,9 @@ import ColumnMenu from './ColumnMenu';
 import {
   Heart, Star, Zap, Sun, Moon, 
   Coffee, Rocket, Shield, Flag, Bell,
-  Book, Music, Pizza, Gamepad
+  Book, Music, Pizza, Gamepad,
+  Camera, Clock, Globe, Lock, Map,
+  Mic, Pen, Phone, Search, User
 } from 'lucide-react';
 
 const iconComponents = {
@@ -22,7 +24,17 @@ const iconComponents = {
   Book: <Book size={16} />,
   Music: <Music size={16} />,
   Pizza: <Pizza size={16} />,
-  Gamepad: <Gamepad size={16} />
+  Gamepad: <Gamepad size={16} />,
+  Camera: <Camera size={16} />,
+  Clock: <Clock size={16} />,
+  Globe: <Globe size={16} />,
+  Lock: <Lock size={16} />,
+  Map: <Map size={16} />,
+  Mic: <Mic size={16} />,
+  Pen: <Pen size={16} />,
+  Phone: <Phone size={16} />,
+  Search: <Search size={16} />,
+  User: <User size={16} />
 };
 
 const ColumnHeader = ({
