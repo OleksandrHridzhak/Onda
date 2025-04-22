@@ -16,9 +16,21 @@ const ensureDataFileExists = () => {
 const ensureSettingsFileExists = () => {
   if (!fs.existsSync(SETTINGS_FILE)) {
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
-      darkMode: false,
-      cellSettings: {},
-      columnOrder: []
+      theme: {
+        darkMode: false,
+        accentColor: 'blue'
+      },
+      table: {
+        columnOrder: [],
+        showSummaryRow: false,
+        compactMode: false,
+        stickyHeader: true
+      },
+      ui: {
+        animations: true,
+        tooltips: true,
+        confirmDelete: true
+      }
     }, null, 2));
   }
 };
@@ -225,7 +237,7 @@ module.exports = {
         return { status: 'Error parsing settings', error: err.message };
       }
 
-      settings.darkMode = darkMode; // Оновлюємо значення darkMode
+      settings.theme.darkMode = darkMode; // Оновлюємо значення darkMode
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
       return { status: 'Theme switched', darkMode };
     });
@@ -235,7 +247,7 @@ module.exports = {
       ensureSettingsFileExists();
       try {
         const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
-        return { status: 'Theme fetched', darkMode: settings.darkMode };
+        return { status: 'Theme fetched', darkMode: settings.theme.darkMode };
       } catch (err) {
         return { status: 'Error parsing settings', error: err.message };
       }
@@ -246,7 +258,7 @@ module.exports = {
         const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
         return {
           status: 'Cell settings fetched',
-          cellSettings: settings.cellSettings || {}
+          cellSettings: settings.theme.cellSettings || {}
         };
       } catch (err) {
         return { status: 'Error parsing settings', error: err.message };
@@ -259,12 +271,12 @@ module.exports = {
         const settings = JSON.parse(fs.readFileSync(settingsPath));
         
         // Ініціалізуємо cellSettings, якщо їх немає
-        if (!settings.cellSettings) {
-          settings.cellSettings = {};
+        if (!settings.theme.cellSettings) {
+          settings.theme.cellSettings = {};
         }
         
         // Запобігаємо рекурсії - створюємо плоский об'єкт
-        settings.cellSettings[cellId] = {
+        settings.theme.cellSettings[cellId] = {
           width: newSettings.width,
           height: newSettings.height,
           order: newSettings.order
@@ -288,8 +300,8 @@ module.exports = {
         return { status: 'Error parsing settings', error: err.message };
       }
     
-      if (settings.cellSettings && settings.cellSettings[cellId]) {
-        delete settings.cellSettings[cellId];
+      if (settings.theme.cellSettings && settings.theme.cellSettings[cellId]) {
+        delete settings.theme.cellSettings[cellId];
         fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
         return { status: 'Cell settings deleted', cellId };
       }
@@ -311,11 +323,38 @@ module.exports = {
       return { status: 'Settings updated' };
     });
 
+    // Обробник для оновлення теми
+    ipcMain.handle('update-theme', (event, themeSettings) => {
+      ensureSettingsFileExists();
+      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      settings.theme = { ...settings.theme, ...themeSettings };
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+      return { status: 'Theme updated' };
+    });
+
+    // Обробник для оновлення налаштувань таблиці
+    ipcMain.handle('update-table-settings', (event, tableSettings) => {
+      ensureSettingsFileExists();
+      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      settings.table = { ...settings.table, ...tableSettings };
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+      return { status: 'Table settings updated' };
+    });
+
+    // Обробник для оновлення UI налаштувань
+    ipcMain.handle('update-ui-settings', (event, uiSettings) => {
+      ensureSettingsFileExists();
+      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      settings.ui = { ...settings.ui, ...uiSettings };
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+      return { status: 'UI settings updated' };
+    });
+
     // Обробник для оновлення порядку колонок
     ipcMain.handle('update-column-order', (event, columnOrder) => {
       ensureSettingsFileExists();
       const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
-      settings.columnOrder = columnOrder;
+      settings.table.columnOrder = columnOrder;
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
       return { status: 'Column order updated' };
     });

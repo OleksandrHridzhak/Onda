@@ -328,39 +328,48 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
       `}</style>
 
       {/* Header */}
-      <div className={`sticky top-0 z-20 ${darkTheme ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <CalendarIcon size={20} className={darkTheme ? 'text-gray-400' : 'text-gray-600'} />
-            <h2 className={`text-lg font-semibold ${darkTheme ? 'text-gray-200' : 'text-gray-800'}`}>
-              {weekDays[0]?.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-            </h2>
+      <div className={`sticky top-0 z-20 ${darkTheme ? 'bg-gray-800/95 backdrop-blur-sm border-gray-700' : 'bg-white/95 backdrop-blur-sm border-gray-200'} border-b`}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className={`p-3 rounded-2xl ${darkTheme ? 'bg-gray-700/50' : 'bg-blue-50'}`}>
+              <CalendarIcon size={22} className={darkTheme ? 'text-blue-400' : 'text-blue-600'} />
+            </div>
+            <div className="flex flex-col">
+              <h2 className={`text-xl font-semibold tracking-tight ${darkTheme ? 'text-gray-200' : 'text-gray-800'}`}>
+                {weekDays[0]?.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              </h2>
+              <p className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
+                Week {getWeekNumber(currentWeekStart)}
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              onClick={goToPreviousWeek}
-              className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-700' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-100'} rounded-full transition-colors`}
-              aria-label="Previous week"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={goToCurrentWeek}
-              className={`px-3 py-1 text-sm ${darkTheme ? 'text-gray-300 bg-gray-700 hover:bg-gray-600' : 'text-gray-700 bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors`}
-            >
-              Today
-            </button>
-            <button
-              onClick={goToNextWeek}
-              className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-700' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-100'} rounded-full transition-colors`}
-              aria-label="Next week"
-            >
-              <ChevronRight size={18} />
-            </button>
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className={`flex items-center gap-1 p-1 ${darkTheme ? 'bg-gray-700/50' : 'bg-gray-100'} rounded-xl`}>
+              <button
+                onClick={goToPreviousWeek}
+                className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-600' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-200'} rounded-lg transition-colors`}
+                aria-label="Previous week"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={goToCurrentWeek}
+                className={`px-3 py-1.5 text-sm ${darkTheme ? 'text-gray-300 bg-gray-600/50 hover:bg-gray-500' : 'text-gray-700 bg-white hover:bg-gray-50'} rounded-lg transition-colors`}
+              >
+                Today
+              </button>
+              <button
+                onClick={goToNextWeek}
+                className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-600' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-200'} rounded-lg transition-colors`}
+                aria-label="Next week"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
             <select
               value={filterColor || ''}
               onChange={(e) => setFilterColor(e.target.value || null)}
-              className={`px-3 py-1 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
+              className={`px-3 py-1.5 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 border`}
             >
               <option value="">All Events</option>
               {Object.entries(colorMap).map(([hex, name]) => (
@@ -375,7 +384,7 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                 setEditingEventId(null);
                 setShowEventModal(true);
               }}
-              className={`px-3 py-1 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-lg flex items-center gap-1 transition-colors`}
+              className={`px-4 py-1.5 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl flex items-center gap-2 transition-colors shadow-sm hover:shadow-md`}
             >
               <Plus size={16} />
               New Event
@@ -385,7 +394,7 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
       </div>
 
       {/* Timeline */}
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 pb-8 sm:pb-12">
+      <div className="max-w-7xl mx-auto p-2 sm:pх-3 pb-8 sm:pb-12">
         <div className={`rounded-2xl overflow-auto ${darkTheme ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border custom-scroll`}>
           <div className="relative overflow-y-auto max-h-[620px]" ref={gridRef}>
             <div className="flex">
