@@ -456,7 +456,7 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                       })}
                       {day.toDateString() === currentTime.toDateString() && (
                         <div
-                          className="absolute left-0 right-0 h-[2px] bg-red-500 z-10"
+                          className="absolute left-0 right-0 h-[2px] bg-red-500 z-30"
                           style={{ top: `${getCurrentTimePosition()}px` }}
                         >
                           <div className="w-3 h-3 bg-red-500 rounded-full -translate-y-1" />

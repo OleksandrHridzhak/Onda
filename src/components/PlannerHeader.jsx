@@ -25,7 +25,7 @@ const PlannerHeader = ({ darkTheme }) => {
   }, []);
 
   return (
-    <div className={`flex justify-center pt-10 pb-5 ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
+    <div className={`flex justify-center pt-10 pb-9 ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
       <h1 className={`font-poppins text-5xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
         {time}
       </h1>
