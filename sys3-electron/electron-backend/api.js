@@ -17,7 +17,8 @@ const ensureSettingsFileExists = () => {
   if (!fs.existsSync(SETTINGS_FILE)) {
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
       darkMode: false,
-      cellSettings: {}
+      cellSettings: {},
+      columnOrder: []
     }, null, 2));
   }
 };
@@ -294,6 +295,29 @@ module.exports = {
       }
     
       return { status: 'Cell settings not found', cellId };
+    });
+
+    // Обробник для отримання налаштувань
+    ipcMain.handle('get-settings', () => {
+      ensureSettingsFileExists();
+      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      return { status: 'Settings fetched', data: settings };
+    });
+
+    // Обробник для оновлення налаштувань
+    ipcMain.handle('update-settings', (event, settings) => {
+      ensureSettingsFileExists();
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+      return { status: 'Settings updated' };
+    });
+
+    // Обробник для оновлення порядку колонок
+    ipcMain.handle('update-column-order', (event, columnOrder) => {
+      ensureSettingsFileExists();
+      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+      settings.columnOrder = columnOrder;
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+      return { status: 'Column order updated' };
     });
   },
 };

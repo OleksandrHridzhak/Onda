@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ChevronDown, ChevronUp, Sun, Moon } from 'lucide-react';
+import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ChevronDown, ChevronUp, Sun, Moon, ArrowUp, ArrowDown } from 'lucide-react';
 import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
@@ -22,36 +22,58 @@ const Table = ({darkMode, setDarkMode}) => {
   const [highlightedRow, setHighlightedRow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showSummaryRow, setShowSummaryRow] = useState(false);
+  const [columnOrder, setColumnOrder] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await window.electronAPI.getAllDays();
+        const [daysResult, settingsResult] = await Promise.all([
+          window.electronAPI.getAllDays(),
+          window.electronAPI.getSettings()
+        ]);
+        
         const dayColumn = { ColumnId: 'days', Type: 'days', Name: 'Day', EmojiIcon: '', NameVisible: true };
+        let fetchedColumns = [dayColumn];
 
-        if (result.status === 'Data fetched' && Array.isArray(result.data)) {
-          const fetchedColumns = [dayColumn, ...result.data];
-          setColumns(fetchedColumns);
-          const initialTableData = days.reduce((acc, day) => {
-            acc[day] = fetchedColumns.reduce((dayData, col) => {
-              if (col.ColumnId !== 'days') {
-                if (col.Type === 'multi-select') {
-                  const chosenValue = col.Chosen?.[day];
-                  dayData[col.ColumnId] = typeof chosenValue === 'string' ? chosenValue : '';
-                } else {
-                  dayData[col.ColumnId] = col.Chosen?.[day] || '';
-                }
-              }
-              return dayData;
-            }, {});
-            return acc;
-          }, {});
-          setTableData(initialTableData);
-        } else {
-          setColumns([dayColumn]);
-          setTableData(days.reduce((acc, day) => ({ ...acc, [day]: {} }), {}));
+        if (daysResult.status === 'Data fetched' && Array.isArray(daysResult.data)) {
+          fetchedColumns = [dayColumn, ...daysResult.data];
         }
+
+        // Apply column order from settings if available
+        if (settingsResult.status === 'Settings fetched' && settingsResult.data.columnOrder?.length > 0) {
+          const orderedColumns = [];
+          settingsResult.data.columnOrder.forEach(columnId => {
+            const column = fetchedColumns.find(col => col.ColumnId === columnId);
+            if (column) orderedColumns.push(column);
+          });
+          // Add any columns that weren't in the order
+          fetchedColumns.forEach(column => {
+            if (!orderedColumns.find(col => col.ColumnId === column.ColumnId)) {
+              orderedColumns.push(column);
+            }
+          });
+          fetchedColumns = orderedColumns;
+        }
+
+        setColumns(fetchedColumns);
+        setColumnOrder(fetchedColumns.map(col => col.ColumnId));
+        
+        const initialTableData = days.reduce((acc, day) => {
+          acc[day] = fetchedColumns.reduce((dayData, col) => {
+            if (col.ColumnId !== 'days') {
+              if (col.Type === 'multi-select') {
+                const chosenValue = col.Chosen?.[day];
+                dayData[col.ColumnId] = typeof chosenValue === 'string' ? chosenValue : '';
+              } else {
+                dayData[col.ColumnId] = col.Chosen?.[day] || '';
+              }
+            }
+            return dayData;
+          }, {});
+          return acc;
+        }, {});
+        setTableData(initialTableData);
       } catch (err) {
         console.error('Error fetching data:', err);
         setColumns([{ ColumnId: 'days', Type: 'days', Name: 'Day', EmojiIcon: '', NameVisible: true }]);
@@ -214,6 +236,31 @@ const Table = ({darkMode, setDarkMode}) => {
     return '-';
   };
 
+  const handleMoveColumn = async (columnId, direction) => {
+    const currentIndex = columns.findIndex(col => col.ColumnId === columnId);
+    if (
+      (direction === 'up' && currentIndex <= 1) || // Don't move above days column
+      (direction === 'down' && currentIndex === columns.length - 1)
+    ) {
+      return;
+    }
+
+    const newColumns = [...columns];
+    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    const [movedColumn] = newColumns.splice(currentIndex, 1);
+    newColumns.splice(newIndex, 0, movedColumn);
+
+    setColumns(newColumns);
+    const newColumnOrder = newColumns.map(col => col.ColumnId);
+    setColumnOrder(newColumnOrder);
+
+    try {
+      await window.electronAPI.updateColumnOrder(newColumnOrder);
+    } catch (err) {
+      console.error('Failed to update column order:', err);
+    }
+  };
+
   const renderCell = (day, column) => {
     const widthClass = columnWidths[column.Type] || '';
     if (column.Type === 'days') {
@@ -309,6 +356,10 @@ const Table = ({darkMode, setDarkMode}) => {
                     onChangeDescription={handleChangeDescription}
                     onToggleTitleVisibility={handleToggleTitleVisibility}
                     onChangeOptions={handleChangeOptions}
+                    onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
+                    onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
+                    canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}
+                    canMoveDown={column.ColumnId !== 'days' && columns.indexOf(column) < columns.length - 1}
                     darkMode={darkMode}
                     columnWidths={columnWidths}
                   />
