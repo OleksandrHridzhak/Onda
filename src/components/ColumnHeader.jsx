@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu } from 'lucide-react';
+import { Menu, ArrowUp, ArrowDown } from 'lucide-react';
 import ColumnMenu from './ColumnMenu';
 
 import {
@@ -25,7 +25,21 @@ const iconComponents = {
   Gamepad: <Gamepad size={16} />
 };
 
-const ColumnHeader = ({columnWidths, column, onRemove, onRename, onChangeIcon, onChangeDescription, onToggleTitleVisibility, onChangeOptions, darkMode }) => {
+const ColumnHeader = ({
+  columnWidths, 
+  column, 
+  onRemove, 
+  onRename, 
+  onChangeIcon, 
+  onChangeDescription, 
+  onToggleTitleVisibility, 
+  onChangeOptions, 
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown,
+  darkMode 
+}) => {
   const [showMenu, setShowMenu] = useState(false);
   const widthClass = columnWidths[column.Type] || '';
 
@@ -37,7 +51,7 @@ const ColumnHeader = ({columnWidths, column, onRemove, onRename, onChangeIcon, o
   const isEmptyHeader = !column.EmojiIcon && (column.NameVisible === false || !column.Name);
 
   return (
-    <th className={`font-poppins px-3 py-3 text-left text-sm font-medium ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200'} border-b border-r whitespace-nowrap ${widthClass} overflow-hidden`}>
+    <th className={`font-poppins px-3 py-3 text-left text-sm font-medium ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200'} border-b border-r whitespace-nowrap ${widthClass} overflow-hidden `}>
       <div
         className={`flex items-center justify-between group cursor-pointer ${column.NameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
         onClick={() => column.ColumnId !== 'days' && setShowMenu(true)}
@@ -75,6 +89,10 @@ const ColumnHeader = ({columnWidths, column, onRemove, onRename, onChangeIcon, o
             onChangeDescription={onChangeDescription}
             onToggleTitleVisibility={onToggleTitleVisibility}
             onChangeOptions={onChangeOptions}
+            onMoveUp={onMoveUp}
+            onMoveDown={onMoveDown}
+            canMoveUp={canMoveUp}
+            canMoveDown={canMoveDown}
             darkMode={darkMode}
           />
         )}

@@ -32,4 +32,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteCellSettings: (cellId) =>
     ipcRenderer.invoke('delete-cell-settings', cellId),
 
+  // New API endpoints for column order management
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  updateSettings: (settings) => ipcRenderer.invoke('update-settings', settings),
+  updateColumnOrder: (columnOrder) => ipcRenderer.invoke('update-column-order', columnOrder),
 });

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
     X, Plus, Trash2, Eye, EyeOff,
     Heart, Star, Zap, Sun, Moon, 
     Coffee, Rocket, Shield, Flag, Bell,
-    Book, Music, Pizza, Gamepad
+    Book, Music, Pizza, Gamepad,
+    ArrowUp, ArrowDown
 } from 'lucide-react';
 
 const availableIcons = [
@@ -24,13 +25,41 @@ const availableIcons = [
 ];
 
 
-const ColumnMenu = ({ column, handleDeleteColumn, onClose, onRename, onChangeIcon, onChangeDescription, onToggleTitleVisibility, onChangeOptions, darkMode }) => {
+const ColumnMenu = ({ 
+  column, 
+  handleDeleteColumn, 
+  onClose, 
+  onRename, 
+  onChangeIcon, 
+  onChangeDescription, 
+  onToggleTitleVisibility, 
+  onChangeOptions,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown,
+  darkMode 
+}) => {
   const [name, setName] = useState(column.Name);
   const [selectedIcon, setSelectedIcon] = useState(column.EmojiIcon || '');
   const [description, setDescription] = useState(column.Description || '');
   const [showTitle, setShowTitle] = useState(column.NameVisible !== false);
   const [tags, setTags] = useState(column.Options || []);
   const [newTag, setNewTag] = useState('');
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
 
   const handleAddTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
@@ -55,7 +84,10 @@ const ColumnMenu = ({ column, handleDeleteColumn, onClose, onRename, onChangeIco
   };
 
   return (
-    <div className={`absolute z-50 top-10 mt-1 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-64`}>
+    <div 
+      ref={menuRef}
+      className={`absolute z-50 top-10 mt-1 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-64`}
+    >
       <div className={`px-3 py-2 border-b text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-700'} flex justify-between items-center`}>
         <span>Edit Column</span>
         <button onClick={(e) => { e.stopPropagation(); onClose(); }} className={`${darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-400 hover:text-gray-600'}`}>
@@ -66,15 +98,15 @@ const ColumnMenu = ({ column, handleDeleteColumn, onClose, onRename, onChangeIco
         <div className="mb-3">
           <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Icon</label>
           <div className={`grid grid-cols-5 gap-1 p-1 border ${darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-white'} rounded-md`}>
-          {availableIcons.map((icon) => (
-    <button
-        key={icon.name}
-        onClick={() => setSelectedIcon(icon.name)}
-        className={`...`}
-    >
-        {icon.component}
-    </button>
-))}
+            {availableIcons.map((icon) => (
+              <button
+                key={icon.name}
+                onClick={() => setSelectedIcon(icon.name)}
+                className={`p-1 rounded ${selectedIcon === icon.name ? (darkMode ? 'bg-gray-600' : 'bg-gray-200') : ''} ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
+              >
+                {icon.component}
+              </button>
+            ))}
           </div>
         </div>
         <div className="mb-3">
@@ -94,6 +126,43 @@ const ColumnMenu = ({ column, handleDeleteColumn, onClose, onRename, onChangeIco
             className={`w-full px-3 py-2 border ${darkMode ? 'border-gray-700 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white'} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
             rows="2"
           />
+        </div>
+        <div className="mb-3">
+          <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Column Position</label>
+          <div className="flex space-x-2">
+            <button
+              onClick={onMoveUp}
+              disabled={!canMoveUp}
+              className={`flex-1 px-3 py-2 border ${darkMode ? 'border-gray-700' : 'border-gray-300'} rounded-md flex items-center justify-center space-x-1 ${
+                canMoveUp 
+                  ? darkMode 
+                    ? 'text-gray-200 hover:bg-gray-700' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                  : darkMode
+                    ? 'text-gray-600 cursor-not-allowed'
+                    : 'text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              <ArrowUp size={16} />
+              <span>Move Up</span>
+            </button>
+            <button
+              onClick={onMoveDown}
+              disabled={!canMoveDown}
+              className={`flex-1 px-3 py-2 border ${darkMode ? 'border-gray-700' : 'border-gray-300'} rounded-md flex items-center justify-center space-x-1 ${
+                canMoveDown 
+                  ? darkMode 
+                    ? 'text-gray-200 hover:bg-gray-700' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                  : darkMode
+                    ? 'text-gray-600 cursor-not-allowed'
+                    : 'text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              <ArrowDown size={16} />
+              <span>Move Down</span>
+            </button>
+          </div>
         </div>
         {column.Type === 'multi-select' && (
           <div className="mb-3">
@@ -136,64 +205,43 @@ const ColumnMenu = ({ column, handleDeleteColumn, onClose, onRename, onChangeIco
             </div>
           </div>
         )}
-        <div className="flex items-center mb-1">
-          <label className="flex items-center cursor-pointer">
-            <div className="relative">
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={showTitle}
-                onChange={() => setShowTitle(!showTitle)}
-              />
-              <div className={`block w-10 h-6 rounded-full transition ${
-                showTitle 
-                  ? darkMode ? 'bg-blue-600' : 'bg-blue-400' 
-                  : darkMode ? 'bg-gray-600' : 'bg-gray-300'
-              }`}></div>
-              <div
-                className={`absolute left-1 top-1 ${darkMode ? 'bg-gray-300' : 'bg-white'} w-4 h-4 rounded-full transition transform ${
-                  showTitle ? 'translate-x-4' : ''
-                }`}
-              ></div>
-            </div>
-            <div className={`ml-3 text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} flex items-center`}>
-              {showTitle ? (
-                <>
-                  <Eye className="w-4 h-4 mr-1" />
-                  Show Title
-                </>
-              ) : (
-                <>
-                  <EyeOff className="w-4 h-4 mr-1" />
-                  Hide Title
-                </>
-              )}
-            </div>
-          </label>
+        <div className="flex items-center mb-3">
+          <button
+            onClick={() => setShowTitle(!showTitle)}
+            className={`flex items-center space-x-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}
+          >
+            {showTitle ? <Eye size={16} /> : <EyeOff size={16} />}
+            <span className="text-sm">Show Column Title</span>
+          </button>
         </div>
-      </div>
-      <div className={`px-3 py-2 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} flex justify-end`}>
-        <button
-          onClick={() => {
-            handleDeleteColumn(column.ColumnId);
-            onClose();
-          }}
-          className={`px-3 py-1 ${darkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600'} text-white rounded mr-2`}
-        >
-          Delete
-        </button>
-        <button 
-          onClick={(e) => { e.stopPropagation(); onClose(); }} 
-          className={`px-3 py-1 text-sm ${darkMode ? 'text-gray-300 hover:text-gray-100' : 'text-gray-600 hover:text-gray-800'} mr-2`}
-        >
-          Cancel
-        </button>
-        <button 
-          onClick={(e) => { e.stopPropagation(); handleSave(); }} 
-          className={`px-3 py-1 ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white text-sm rounded`}
-        >
-          Save
-        </button>
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteColumn(column.ColumnId);
+            }}
+            className={`px-3 py-2 text-sm font-medium rounded-md ${
+              darkMode
+                ? 'text-red-400 hover:text-red-300'
+                : 'text-red-600 hover:text-red-700'
+            }`}
+          >
+            Delete
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSave();
+            }}
+            className={`px-3 py-2 text-sm font-medium rounded-md ${
+              darkMode
+                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            }`}
+          >
+            Save Changes
+          </button>
+        </div>
       </div>
     </div>
   );
