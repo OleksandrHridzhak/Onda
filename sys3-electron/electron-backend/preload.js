@@ -23,17 +23,23 @@ contextBridge.exposeInMainWorld('electronAPI', {
   calendarDeleteEvent: (eventId) => ipcRenderer.invoke('calendar-delete-event', eventId),
   calendarGetTime: () => ipcRenderer.invoke('calendar-get-time'),
 
+  // Theme settings
   switchTheme: (darkMode) => ipcRenderer.invoke('switch-theme', darkMode),
   getTheme: () => ipcRenderer.invoke('get-theme'),
+  updateTheme: (themeSettings) => ipcRenderer.invoke('update-theme', themeSettings),
+
+  // Table settings
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  updateSettings: (settings) => ipcRenderer.invoke('update-settings', settings),
+  updateTableSettings: (tableSettings) => ipcRenderer.invoke('update-table-settings', tableSettings),
+  updateColumnOrder: (columnOrder) => ipcRenderer.invoke('update-column-order', columnOrder),
+
+  // UI settings
+  updateUISettings: (uiSettings) => ipcRenderer.invoke('update-ui-settings', uiSettings),
 
   getCellSettings: () => ipcRenderer.invoke('get-cell-settings'),
   updateCellSettings: (cellId, newSettings) =>
     ipcRenderer.invoke('update-cell-settings', cellId, newSettings),
   deleteCellSettings: (cellId) =>
     ipcRenderer.invoke('delete-cell-settings', cellId),
-
-  // New API endpoints for column order management
-  getSettings: () => ipcRenderer.invoke('get-settings'),
-  updateSettings: (settings) => ipcRenderer.invoke('update-settings', settings),
-  updateColumnOrder: (columnOrder) => ipcRenderer.invoke('update-column-order', columnOrder),
 });

@@ -1,9 +1,22 @@
 {
-  "columnOrder": [
-    "days",
-    "1745263928322",
-    "1745262091436",
-    "1744784619638"
-  ],
-  "darkMode": true
+  "theme": {
+    "accentColor": "blue",
+    "darkMode": true
+  },
+  "table": {
+    "columnOrder": [
+      "days",
+      "1744784619638",
+      "1745263928322",
+      "1745262091436"
+    ],
+    "showSummaryRow": true,
+    "compactMode": true,
+    "stickyHeader": true
+  },
+  "ui": {
+    "animations": false,
+    "tooltips": true,
+    "confirmDelete": true
+  }
 }
