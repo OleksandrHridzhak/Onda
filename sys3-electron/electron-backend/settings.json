@@ -1,14 +1,14 @@
 {
   "theme": {
     "accentColor": "blue",
-    "darkMode": false
+    "darkMode": true
   },
   "table": {
     "columnOrder": [
       "days",
-      "1744784619638",
-      "1745263928322",
-      "1745262091436"
+      "1745347769520",
+      "1745349604598",
+      "1745347799724"
     ],
     "showSummaryRow": true,
     "compactMode": true,

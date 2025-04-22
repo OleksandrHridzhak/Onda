@@ -4,7 +4,10 @@ import {
     Heart, Star, Zap, Sun, Moon, 
     Coffee, Rocket, Shield, Flag, Bell,
     Book, Music, Pizza, Gamepad,
-    ArrowUp, ArrowDown
+    ArrowUp, ArrowDown,
+    ChevronDown, ChevronUp,
+    Camera, Clock, Globe, Lock, Map,
+    Mic, Pen, Phone, Search, User
 } from 'lucide-react';
 
 const availableIcons = [
@@ -21,7 +24,17 @@ const availableIcons = [
     { component: <Book size={20} />, name: 'Book' },
     { component: <Music size={20} />, name: 'Music' },
     { component: <Pizza size={20} />, name: 'Pizza' },
-    { component: <Gamepad size={20} />, name: 'Gamepad' }
+    { component: <Gamepad size={20} />, name: 'Gamepad' },
+    { component: <Camera size={20} />, name: 'Camera' },
+    { component: <Clock size={20} />, name: 'Clock' },
+    { component: <Globe size={20} />, name: 'Globe' },
+    { component: <Lock size={20} />, name: 'Lock' },
+    { component: <Map size={20} />, name: 'Map' },
+    { component: <Mic size={20} />, name: 'Mic' },
+    { component: <Pen size={20} />, name: 'Pen' },
+    { component: <Phone size={20} />, name: 'Phone' },
+    { component: <Search size={20} />, name: 'Search' },
+    { component: <User size={20} />, name: 'User' }
 ];
 
 
@@ -48,6 +61,7 @@ const ColumnMenu = ({
   const [tags, setTags] = useState(column.Options || []);
   const [newTag, setNewTag] = useState('');
   const [width, setWidth] = useState(column.Width ? parseInt(column.Width) : '');
+  const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -108,9 +122,15 @@ const ColumnMenu = ({
   return (
     <div 
       ref={menuRef}
-      className={`absolute z-50 top-10 mt-1 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-64`}
+      className={`absolute z-50 top-10 left-0 tralefnslate-x-full  ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-64`}
+      style={{ 
+        position: 'absolute',
+        top: '-1px',
+        right: '-1px',
+        transform: 'translateX(100%)',
+      }}
     >
-      <div className={`px-3 py-2 border-b text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-700'} flex justify-between items-center`}>
+      <div className={`sticky top-0 px-3 py-2 border-b text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700 bg-gray-800' : 'text-gray-700 border-gray-200 bg-white'} flex justify-between items-center`}>
         <span>Edit Column</span>
         <button onClick={(e) => { e.stopPropagation(); onClose(); }} className={`${darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-400 hover:text-gray-600'}`}>
           <X className="w-4 h-4" />
@@ -118,18 +138,55 @@ const ColumnMenu = ({
       </div>
       <div className="p-3">
         <div className="mb-3">
-          <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Icon</label>
-          <div className={`grid grid-cols-5 gap-1 p-1 border ${darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-white'} rounded-md`}>
-            {availableIcons.map((icon) => (
-              <button
-                key={icon.name}
-                onClick={() => setSelectedIcon(icon.name)}
-                className={`p-1 rounded ${selectedIcon === icon.name ? (darkMode ? 'bg-gray-600' : 'bg-gray-200') : ''} ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
-              >
-                {icon.component}
-              </button>
-            ))}
-          </div>
+          <button 
+            onClick={() => setIsIconSectionExpanded(!isIconSectionExpanded)}
+            className={`w-full flex items-center justify-between px-2 py-1 rounded-md ${
+              darkMode 
+                ? 'hover:bg-gray-700 text-gray-200' 
+                : 'hover:bg-gray-100 text-gray-700'
+            }`}
+          >
+            <div className="flex items-center space-x-2">
+              {selectedIcon && availableIcons.find(i => i.name === selectedIcon)?.component}
+              <span className={`text-sm font-medium`}>
+                {isIconSectionExpanded ? 'Hide Icons' : 'Choose Icon'}
+              </span>
+            </div>
+            {isIconSectionExpanded ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+          </button>
+          
+          {isIconSectionExpanded && (
+                <div
+                  className={`mt-2 grid grid-cols-5 gap-1 p-1 border ${
+                    darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-white'
+                  } rounded-md`}
+                >
+                  {availableIcons.map((icon) => (
+                    <button
+                      key={icon.name}
+                      onClick={() => {
+                        setSelectedIcon(icon.name);
+                        setIsIconSectionExpanded(false);
+                      }}
+                      className={`flex items-center justify-center p-2 rounded ${
+                        selectedIcon === icon.name
+                          ? darkMode
+                            ? 'bg-gray-600'
+                            : 'bg-gray-200'
+                          : ''
+                      } ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                    >
+                      <div className="flex items-center justify-center w-5 h-5">
+                        {icon.component}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
         </div>
         <div className="mb-3">
           <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Column Name</label>

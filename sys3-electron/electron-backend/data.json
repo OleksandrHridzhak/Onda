@@ -1,60 +1,60 @@
 [
   {
-    "ColumnId": "1744784619638",
-    "Type": "numberbox",
-    "Name": "Mon",
-    "Description": "30h",
-    "EmojiIcon": "Pizza",
-    "NameVisible": true,
-    "Chosen": {
-      "Monday": "0.5",
-      "Tuesday": "5",
-      "Wednesday": "3",
-      "Thursday": "2",
-      "Friday": "3",
-      "Saturday": "3",
-      "Sunday": "3"
-    },
-    "Width": 75
-  },
-  {
-    "ColumnId": "1745262091436",
-    "Type": "numberbox",
-    "Name": "WRK",
-    "Description": "Numberbox created on backend",
-    "EmojiIcon": "Flag",
-    "NameVisible": true,
-    "Chosen": {
-      "Monday": "20",
-      "Tuesday": "50",
-      "Wednesday": "45",
-      "Thursday": 0,
-      "Friday": 0,
-      "Saturday": 0,
-      "Sunday": 0
-    },
-    "Width": 112
-  },
-  {
-    "ColumnId": "1745263928322",
+    "ColumnId": "1745347769520",
     "Type": "multi-select",
-    "Name": "New Multi",
+    "Name": "New Multi-Select",
     "Description": "Multi-select created on backend",
-    "EmojiIcon": "Star",
+    "EmojiIcon": "Shield",
     "NameVisible": true,
     "Options": [
       "Option 1",
       "Option 2"
     ],
     "Chosen": {
-      "Monday": "Option 2, Option 1",
-      "Tuesday": "",
+      "Monday": "Option 1, Option 2",
+      "Tuesday": "Option 2, Option 1",
       "Wednesday": "",
       "Thursday": "",
       "Friday": "",
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": 158
+    "Width": 156
+  },
+  {
+    "ColumnId": "1745347799724",
+    "Type": "checkbox",
+    "Name": "New Checkbox",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "Pizza",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": true,
+      "Tuesday": true,
+      "Wednesday": true,
+      "Thursday": false,
+      "Friday": false,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50
+  },
+  {
+    "ColumnId": "1745349604598",
+    "Type": "numberbox",
+    "Name": "New Numberbox",
+    "Description": "Numberbox created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "10",
+      "Tuesday": 0,
+      "Wednesday": 0,
+      "Thursday": 0,
+      "Friday": 0,
+      "Saturday": 0,
+      "Sunday": 0
+    },
+    "Width": 79
   }
 ]
