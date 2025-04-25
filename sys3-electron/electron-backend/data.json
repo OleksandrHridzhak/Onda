@@ -1,60 +1,36 @@
 [
   {
-    "ColumnId": "1745347769520",
-    "Type": "multi-select",
-    "Name": "New Multi-Select",
-    "Description": "Multi-select created on backend",
-    "EmojiIcon": "Shield",
+    "ColumnId": "1745590120713",
+    "Type": "checkbox",
+    "Name": "New Checkbox",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "Star",
     "NameVisible": true,
-    "Options": [
-      "Option 1",
-      "Option 2"
-    ],
     "Chosen": {
-      "Monday": "Option 1, Option 2",
-      "Tuesday": "Option 2, Option 1",
+      "Monday": false,
+      "Tuesday": false,
+      "Wednesday": false,
+      "Thursday": false,
+      "Friday": false,
+      "Saturday": false,
+      "Sunday": false
+    }
+  },
+  {
+    "ColumnId": "1745590126289",
+    "Type": "text",
+    "Name": "New Text",
+    "Description": "Text created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": true,
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "",
       "Wednesday": "",
       "Thursday": "",
       "Friday": "",
       "Saturday": "",
       "Sunday": ""
-    },
-    "Width": 156
-  },
-  {
-    "ColumnId": "1745347799724",
-    "Type": "checkbox",
-    "Name": "New Checkbox",
-    "Description": "Checkbox created on backend",
-    "EmojiIcon": "Pizza",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": true,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": false,
-      "Friday": false,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 50
-  },
-  {
-    "ColumnId": "1745349604598",
-    "Type": "numberbox",
-    "Name": "New Numberbox",
-    "Description": "Numberbox created on backend",
-    "EmojiIcon": "Star",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": "10",
-      "Tuesday": 0,
-      "Wednesday": 0,
-      "Thursday": 0,
-      "Friday": 0,
-      "Saturday": 0,
-      "Sunday": 0
-    },
-    "Width": 79
+    }
   }
 ]

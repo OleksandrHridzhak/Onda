@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import PomodoroWidget from './widgets/PomodoroWidget';
 
-const PlannerHeader = ({ darkTheme }) => {
+const PlannerHeader = ({ darkTheme, layout = 'withWidget' }) => {
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -24,11 +25,51 @@ const PlannerHeader = ({ darkTheme }) => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const renderLayout = () => {
+    switch (layout) {
+      case 'default':
+        return (
+          <div className="flex justify-center items-center px-2 pt-10 pb-9">
+            <h1 className={`font-poppins text-5xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
+              {time}
+            </h1>
+          </div>
+        );
+      case 'withWidget':
+        return (
+          <div className="flex justify-between items-center px-2 pt-10 pb-9">
+            <h1 className={`font-poppins text-5xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
+              {time}
+            </h1>
+            <PomodoroWidget darkTheme={darkTheme} />
+          </div>
+        );
+      case 'compact':
+        return (
+          <div className="flex flex-col items-center px-2 pt-5 pb-5">
+            <h1 className={`font-poppins text-3xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
+              {time}
+            </h1>
+            <PomodoroWidget darkTheme={darkTheme} />
+          </div>
+        );
+      case 'spacious':
+        return (
+          <div className="flex justify-between items-center px-10 pt-20 pb-20">
+            <h1 className={`font-poppins text-6xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
+              {time}
+            </h1>
+            <PomodoroWidget darkTheme={darkTheme} />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className={`flex justify-center pt-10 pb-9 ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
-      <h1 className={`font-poppins text-5xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
-        {time}
-      </h1>
+    <div className={`${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
+      {renderLayout()}
     </div>
   );
 };

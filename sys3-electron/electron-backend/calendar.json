@@ -1,1 +1,43 @@
-[]
+[
+  {
+    "id": "1745433269538",
+    "title": "р",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1745433278640",
+    "title": "рол",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1745433308176",
+    "title": "р",
+    "date": "Wed Apr 23 2025",
+    "startTime": "20:00",
+    "endTime": "21:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1745433313008",
+    "title": "рол",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  }
+]
