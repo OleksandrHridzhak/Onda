@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   minimizeWindow: () => ipcRenderer.invoke('window-minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window-maximize'),
   closeWindow: () => ipcRenderer.invoke('window-close'),
+  showNotification: (options) => ipcRenderer.invoke('show-notification', options),
 
   // Функція для отримання точного часу
   getTime: () => ipcRenderer.invoke('get-time'),

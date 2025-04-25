@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Clock, Play, Pause, X } from 'lucide-react';
 
 const PomodoroWidget = ({ darkTheme = false }) => {
@@ -7,6 +7,17 @@ const PomodoroWidget = ({ darkTheme = false }) => {
   const [isEnded, setIsEnded] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [initialMinutes, setInitialMinutes] = useState(null);
+  // Control notification/audio - only when timer naturally ends
+  const [notifyEnabled, setNotifyEnabled] = useState(false);
+
+  // Prepare alarm audio
+  const alarmAudio = useRef(null);
+  useEffect(() => {
+    // Use public folder path for audio asset
+    const src = `${process.env.PUBLIC_URL}/alert.mp3`;
+    alarmAudio.current = new Audio(src);
+    alarmAudio.current.loop = true;
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -21,7 +32,39 @@ const PomodoroWidget = ({ darkTheme = false }) => {
     return () => clearInterval(timer);
   }, [isRunning, time]);
 
+  // Play looping alarm when timer ends
+  useEffect(() => {
+    if (isEnded && notifyEnabled && alarmAudio.current) {
+      try {
+        alarmAudio.current.play();
+      } catch (err) {
+        console.warn('Audio play failed:', err);
+      }
+      // Also show notification
+      window.electronAPI.showNotification({
+        title: 'Pomodoro Timer',
+        body: `Your ${initialMinutes}-minute timer has ended!`
+      });
+    }
+  }, [isEnded, notifyEnabled]);
+
+  // Start a custom second-based timer (for testing)
+  const handleStartSeconds = (seconds) => {
+    setNotifyEnabled(true);
+    setTime(seconds);
+    setIsRunning(true);
+    setIsEnded(false);
+    setIsPaused(false);
+    setInitialMinutes(`${seconds}s`);
+  };
+
   const handleStart = (minutes) => {
+    // Stop alarm if playing
+    if (alarmAudio.current) {
+      alarmAudio.current.pause();
+      alarmAudio.current.currentTime = 0;
+    }
+    setNotifyEnabled(true);
     setTime(minutes * 60);
     setIsRunning(true);
     setIsEnded(false);
@@ -40,6 +83,8 @@ const PomodoroWidget = ({ darkTheme = false }) => {
   };
 
   const handleEnd = () => {
+    // disable notification for manual end
+    setNotifyEnabled(false);
     setIsRunning(false);
     setTime(0);
     setIsEnded(true);
@@ -47,6 +92,13 @@ const PomodoroWidget = ({ darkTheme = false }) => {
   };
 
   const handleClose = () => {
+    // disable notification when closing
+    setNotifyEnabled(false);
+    // Stop alarm when closing
+    if (alarmAudio.current) {
+      alarmAudio.current.pause();
+      alarmAudio.current.currentTime = 0;
+    }
     setTime(1500);
     setIsRunning(false);
     setIsEnded(false);
@@ -91,7 +143,7 @@ const PomodoroWidget = ({ darkTheme = false }) => {
           </div>
         </div>
       ) : (
-        <div className="flex items-center">
+        <div className="flex items-center space-x-1">
           <span className={`${darkTheme ? 'text-gray-200' : 'text-gray-600'} px-2 py-1`}>
             <Clock className="h-5 w-5" />
           </span>
