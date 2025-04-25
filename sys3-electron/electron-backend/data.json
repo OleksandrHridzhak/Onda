@@ -2,7 +2,7 @@
   {
     "ColumnId": "1745590120713",
     "Type": "checkbox",
-    "Name": "New Checkbox",
+    "Name": "Checkbox",
     "Description": "Checkbox created on backend",
     "EmojiIcon": "Star",
     "NameVisible": true,
@@ -14,14 +14,15 @@
       "Friday": false,
       "Saturday": false,
       "Sunday": false
-    }
+    },
+    "Width": 109
   },
   {
     "ColumnId": "1745590126289",
     "Type": "text",
     "Name": "New Text",
     "Description": "Text created on backend",
-    "EmojiIcon": "Star",
+    "EmojiIcon": "BicepsFlexed",
     "NameVisible": true,
     "Chosen": {
       "Monday": "про",

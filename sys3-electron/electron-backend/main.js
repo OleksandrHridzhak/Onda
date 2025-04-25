@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
 const path = require('path');
 const api = require(path.join(__dirname, 'api.js'));
 const calendarBackend = require('./calendar');
@@ -31,6 +31,9 @@ app.whenReady().then(() => {
   // Ініціалізація API після того, як вікно готове
   api.init(ipcMain, mainWindow);
   calendarBackend.init(ipcMain, mainWindow);
+  globalShortcut.register('Control+Tab', () => {
+    mainWindow.webContents.send('next-tab');
+  });
 });
 
 console.log('Message from renderer process!');

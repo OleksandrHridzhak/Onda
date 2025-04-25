@@ -7,7 +7,7 @@ import {
   Coffee, Rocket, Shield, Flag, Bell,
   Book, Music, Pizza, Gamepad,
   Camera, Clock, Globe, Lock, Map,
-  Mic, Pen, Phone, Search, User
+  Mic, Pen, Phone, Search, User,BicepsFlexed
 } from 'lucide-react';
 
 const iconComponents = {
@@ -34,7 +34,8 @@ const iconComponents = {
   Pen: <Pen size={16} />,
   Phone: <Phone size={16} />,
   Search: <Search size={16} />,
-  User: <User size={16} />
+  User: <User size={16} />,
+  BicepsFlexed: <BicepsFlexed size={16} />
 };
 
 const ColumnHeader = ({
