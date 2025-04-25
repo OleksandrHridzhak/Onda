@@ -4,6 +4,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getData: () => ipcRenderer.invoke('get-data'),
   saveData: (data) => ipcRenderer.invoke('save-data', data),
 
+  // Додаємо нові методи для експорту та імпорту
+  exportData: () => ipcRenderer.invoke('export-data'),
+  importData: (data) => ipcRenderer.invoke('import-data', data),
+
   getAllDays: () => ipcRenderer.invoke('get-all-days'),
   changeColumn: (checkbox) => ipcRenderer.invoke('column-change', checkbox),
   createComponent: (type) => ipcRenderer.invoke('create-component', type),
