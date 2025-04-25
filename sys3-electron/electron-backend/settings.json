@@ -18,5 +18,8 @@
     "animations": false,
     "tooltips": true,
     "confirmDelete": true
+  },
+  "header": {
+    "layout": "withWidget"
   }
 }

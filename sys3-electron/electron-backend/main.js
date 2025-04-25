@@ -7,9 +7,9 @@ let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 800,
-    frame:false,
+    width: 1920, // Typical maximum width for a screen
+    height: 1080, // Typical maximum heig
+    frame: false,
     webPreferences: {
       nodeIntegration: false, // Вимкнути для безпеки
       contextIsolation: true, // Увімкнути ізоляцію
@@ -21,6 +21,8 @@ function createWindow() {
   //mainWindow.loadFile(path.join(__dirname, './build/index.html'));
   mainWindow.loadURL('http://localhost:3000'); // Завантажуємо локальний сервер React
 
+  // Set the window to full screen
+  mainWindow.maximize();
 }
 
 app.whenReady().then(() => {
