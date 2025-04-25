@@ -364,6 +364,7 @@ const Table = ({darkMode, setDarkMode}) => {
   const renderCell = (day, column) => {
     const widthClass = getWidthClass(column);
     const style = column.Width ? { width: `${column.Width}px` } : {};
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     if (column.Type === 'days') {
       return (
         <td 
@@ -372,6 +373,7 @@ const Table = ({darkMode, setDarkMode}) => {
           style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}
         >
           {day}
+          {day === today && <span className="ml-2 inline-block w-2 h-2 bg-blue-500 rounded-full"></span>}
         </td>
       );
     }

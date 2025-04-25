@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const { app, BrowserWindow, ipcMain, Notification } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification, dialog } = require('electron');
 
 const DATA_FILE = path.join(__dirname, 'data.json');
+const CALENDAR_FILE = path.join(__dirname, 'calendar.json');
 const SETTINGS_FILE = path.join(__dirname, 'settings.json');
 
 // Функція для перевірки та створення файлу data.json, якщо його немає
@@ -32,6 +33,97 @@ const ensureSettingsFileExists = () => {
         confirmDelete: true
       }
     }, null, 2));
+  }
+};
+
+// Функція для отримання даних
+const getData = async () => {
+  try {
+    if (!fs.existsSync(DATA_FILE)) {
+      return [];
+    }
+    const data = await fs.promises.readFile(DATA_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Помилка при читанні даних:', error);
+    return [];
+  }
+};
+
+// Функція для збереження даних
+const saveData = async (data) => {
+  try {
+    await fs.promises.writeFile(DATA_FILE, JSON.stringify(data, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Помилка при збереженні даних:', error);
+    return false;
+  }
+};
+
+// Функція для отримання даних календаря
+const getCalendarData = async () => {
+  try {
+    if (!fs.existsSync(CALENDAR_FILE)) {
+      return [];
+    }
+    const data = await fs.promises.readFile(CALENDAR_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Помилка при читанні даних календаря:', error);
+    return [];
+  }
+};
+
+// Функція для збереження даних календаря
+const saveCalendarData = async (data) => {
+  try {
+    await fs.promises.writeFile(CALENDAR_FILE, JSON.stringify(data, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Помилка при збереженні даних календаря:', error);
+    return false;
+  }
+};
+
+// Функція для отримання налаштувань
+const getSettings = async () => {
+  try {
+    if (!fs.existsSync(SETTINGS_FILE)) {
+      return {
+        theme: {
+          darkMode: false,
+          accentColor: 'blue'
+        },
+        table: {
+          columnOrder: [],
+          showSummaryRow: false,
+          compactMode: false,
+          stickyHeader: true
+        },
+        ui: {
+          animations: true,
+          tooltips: true,
+          confirmDelete: true
+        }
+      };
+    }
+    const data = await fs.promises.readFile(SETTINGS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Помилка при читанні налаштувань:', error);
+    return null;
+  }
+};
+
+// Функція для збереження налаштувань
+const saveSettings = async (settings) => {
+  try {
+    await fs.promises.writeFile(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Помилка при збереженні налаштувань:', error);
+    return false;
   }
 };
 
@@ -362,6 +454,71 @@ module.exports = {
     // Обробник для показу системного повідомлення
     ipcMain.handle('show-notification', (event, { title, body }) => {
       new Notification({ title, body }).show();
+    });
+
+    // Додаємо нові обробники для експорту та імпорту
+    ipcMain.handle('export-data', async () => {
+      try {
+        const [data, calendarData, settings] = await Promise.all([
+          getData(),
+          getCalendarData(),
+          getSettings()
+        ]);
+
+        const exportData = {
+          data,
+          calendar: calendarData,
+          settings
+        };
+
+        const { filePath } = await dialog.showSaveDialog({
+          title: 'Експорт даних',
+          defaultPath: path.join(app.getPath('documents'), 'onda-data.json'),
+          filters: [{ name: 'JSON', extensions: ['json'] }]
+        });
+
+        if (filePath) {
+          await fs.promises.writeFile(filePath, JSON.stringify(exportData, null, 2));
+          return { success: true, filePath };
+        }
+        return { success: false, error: 'Експорт скасовано' };
+      } catch (error) {
+        console.error('Помилка при експорті даних:', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle('import-data', async (event, data) => {
+      try {
+        const { filePaths } = await dialog.showOpenDialog({
+          title: 'Імпорт даних',
+          properties: ['openFile'],
+          filters: [{ name: 'JSON', extensions: ['json'] }]
+        });
+
+        if (filePaths && filePaths.length > 0) {
+          const fileContent = await fs.promises.readFile(filePaths[0], 'utf8');
+          const importedData = JSON.parse(fileContent);
+          
+          // Валідація імпортованих даних
+          if (!importedData || typeof importedData !== 'object') {
+            throw new Error('Невірний формат даних');
+          }
+
+          // Зберігаємо всі імпортовані дані
+          await Promise.all([
+            saveData(importedData.data || []),
+            saveCalendarData(importedData.calendar || []),
+            saveSettings(importedData.settings || {})
+          ]);
+
+          return { success: true };
+        }
+        return { success: false, error: 'Імпорт скасовано' };
+      } catch (error) {
+        console.error('Помилка при імпорті даних:', error);
+        return { success: false, error: error.message };
+      }
     });
   },
 };
