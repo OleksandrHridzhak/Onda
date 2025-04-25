@@ -112,7 +112,7 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
     const minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
     const scrollPosition = (minutes / 60) * slotHeight - gridRef.current.clientHeight / 2 + slotHeight / 2;
     gridRef.current.scrollTo({ top: Math.max(0, scrollPosition) });
-  }, [weekDays, currentTime]);
+  }, []);
 
   // Navigation
   const goToPreviousWeek = () => {
@@ -251,6 +251,31 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
     });
 
     return dayEvents.filter((event) => !filterColor || event.color === filterColor);
+  };
+
+  // Helper to adjust start/end time by delta minutes
+  const adjustEventTime = (field, delta) => {
+    const [h, m] = newEvent[field].split(':').map(Number);
+    let total = h * 60 + m + delta;
+    if (total < 0) total += 24 * 60;
+    if (total >= 24 * 60) total -= 24 * 60;
+    const nh = Math.floor(total / 60).toString().padStart(2, '0');
+    const nm = (total % 60).toString().padStart(2, '0');
+    setNewEvent({ ...newEvent, [field]: `${nh}:${nm}` });
+  };
+
+  // Helper to shift both start and end times by delta minutes
+  const adjustEventTimes = (delta) => {
+    const shift = (time) => {
+      const [h, m] = time.split(':').map(Number);
+      let total = h * 60 + m + delta;
+      if (total < 0) total += 24 * 60;
+      if (total >= 24 * 60) total -= 24 * 60;
+      const nh = Math.floor(total / 60).toString().padStart(2, '0');
+      const nm = (total % 60).toString().padStart(2, '0');
+      return nh + ':' + nm;
+    };
+    setNewEvent({ ...newEvent, startTime: shift(newEvent.startTime), endTime: shift(newEvent.endTime) });
   };
 
   return (
@@ -454,9 +479,9 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                             onClick={() => handleEditEvent(event)}
                             title={`${event.title} (${event.startTime} - ${event.endTime})`}
                           >
-                            <div className="flex justify-between items-start">
+                            <div className="flex text-ellipsis overflow-hidden justify-between items-start">
                               <div>
-                                <div className="event-title font-medium truncate">{event.title}</div>
+                                <div className="event-title font-medium ">{event.title}</div>
                                 <div className="event-time truncate">{event.startTime} - {event.endTime}</div>
                               </div>
                             </div>
@@ -499,24 +524,44 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className={`block text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Start</label>
-                  <input
-                    type="text"
-                    value={newEvent.startTime}
-                    onChange={(e) => setNewEvent({ ...newEvent, startTime: e.target.value })}
-                    className={`w-full border ${darkTheme ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-200 bg-white text-gray-600'} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 ${!validateTime(newEvent.startTime) && newEvent.startTime ? 'border-red-500' : ''}`}
-                    placeholder="HH:mm"
-                  />
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={newEvent.startTime}
+                      onChange={(e) => setNewEvent({ ...newEvent, startTime: e.target.value })}
+                      className={`w-full border ${darkTheme ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-200 bg-white text-gray-600'} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 ${!validateTime(newEvent.startTime) && newEvent.startTime ? 'border-red-500' : ''}`}
+                      placeholder="HH:mm"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className={`block text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-600'} mb-1`}>End</label>
-                  <input
-                    type="text"
-                    value={newEvent.endTime}
-                    onChange={(e) => setNewEvent({ ...newEvent, endTime: e.target.value })}
-                    className={`w-full border ${darkTheme ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-200 bg-white text-gray-600'} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 ${!validateTime(newEvent.endTime) && newEvent.endTime ? 'border-red-500' : ''}`}
-                    placeholder="HH:mm"
-                  />
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={newEvent.endTime}
+                      onChange={(e) => setNewEvent({ ...newEvent, endTime: e.target.value })}
+                      className={`w-full border ${darkTheme ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-200 bg-white text-gray-600'} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 ${!validateTime(newEvent.endTime) && newEvent.endTime ? 'border-red-500' : ''}`}
+                      placeholder="HH:mm"
+                    />
+                  </div>
                 </div>
+              </div>
+              <div className="flex justify-center gap-2 mb-4">
+                <button
+                  type="button"
+                  onClick={() => adjustEventTimes(-5)}
+                  className={`px-3 py-1.5 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors`}
+                >
+                  -5m
+                </button>
+                <button
+                  type="button"
+                  onClick={() => adjustEventTimes(5)}
+                  className={`px-3 py-1.5 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors`}
+                >
+                  +5m
+                </button>
               </div>
               <div>
                 <label className={`block text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Color</label>
