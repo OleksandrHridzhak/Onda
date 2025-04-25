@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ChevronDown, ChevronUp, Sun, Moon, ArrowUp, ArrowDown } from 'lucide-react';
 import PlannerHeader from '../PlannerHeader';
+import PomodoroWidget from '../widgets/PomodoroWidget';
+
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
 import ColumnHeader from '../ColumnHeader';
@@ -21,7 +23,7 @@ const Table = ({darkMode, setDarkMode}) => {
   const [showColumnSelector, setShowColumnSelector] = useState(false);
   const [highlightedRow, setHighlightedRow] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showSummaryRow, setShowSummaryRow] = useState(false);
+  const [showSummaryRow, setShowSummaryRow] = useState(true);
   const [columnOrder, setColumnOrder] = useState([]);
 
   useEffect(() => {
@@ -520,24 +522,7 @@ const Table = ({darkMode, setDarkMode}) => {
           </table>
         </div>
       </div>
-      <div className="mt-2 flex items-center justify-center">
-        <button
-          onClick={() => setShowSummaryRow(!showSummaryRow)}
-          className={`text-sm ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-700'} flex items-center`}
-        >
-          {showSummaryRow ? (
-            <>
-              <ChevronUp className="w-4 h-4 mr-1" />
-              Hide Summary
-            </>
-          ) : (
-            <>
-              <ChevronDown className="w-4 h-4 mr-1" />
-              Show Summary
-            </>
-          )}
-        </button>
-      </div>
+
     </div>
   );
 };
