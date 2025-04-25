@@ -7,7 +7,7 @@ import {
     ArrowUp, ArrowDown,
     ChevronDown, ChevronUp,
     Camera, Clock, Globe, Lock, Map,
-    Mic, Pen, Phone, Search, User
+    Mic, Pen, Phone, Search, User,BicepsFlexed
 } from 'lucide-react';
 
 const availableIcons = [
@@ -34,7 +34,8 @@ const availableIcons = [
     { component: <Pen size={20} />, name: 'Pen' },
     { component: <Phone size={20} />, name: 'Phone' },
     { component: <Search size={20} />, name: 'Search' },
-    { component: <User size={20} />, name: 'User' }
+    { component: <User size={20} />, name: 'User' },
+    { component: <BicepsFlexed size={20} />, name: 'BicepsFlexed' }
 ];
 
 

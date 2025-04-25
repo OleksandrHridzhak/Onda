@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
+import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Table from './components/pages/Table';
 import MenuWin from './components/MenuWin';
 import Calendar from './components/pages/Calendar';
 import Settings from './components/pages/Settings';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
-// Окремий компонент для основного вмісту
+const routes = ['/', '/calendar', '/settings'];
+
 function MainContent({ isDarkMode, setIsDarkMode }) {
   const location = useLocation();
 
@@ -15,8 +16,8 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
       <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
       <Routes>
         <Route path="/" element={<Table darkMode={isDarkMode} setDarkMode={setIsDarkMode} />} />
-        <Route path="/settings" element={<Settings darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />} />
         <Route path="/calendar" element={<Calendar darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />} />
+        <Route path="/settings" element={<Settings darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />} />
       </Routes>
     </div>
   );
@@ -24,29 +25,63 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState();
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  // Початкове отримання теми
   useEffect(() => {
-    window.electronAPI.getTheme().then((res) => {
+    window.electronAPI?.getTheme?.().then((res) => {
       if (res?.darkMode !== undefined) {
         setIsDarkMode(res.darkMode);
       }
     });
   }, []);
 
+  // Зміна теми
   useEffect(() => {
-    window.electronAPI.switchTheme(isDarkMode);
+    if (isDarkMode !== undefined) {
+      window.electronAPI?.switchTheme(isDarkMode);
+    }
   }, [isDarkMode]);
 
+  // Гаряча клавіша для перемикання вкладок
+  useEffect(() => {
+    let isProcessing = false;
+
+    const handleNextTab = () => {
+      if (isProcessing) return;
+      isProcessing = true;
+
+      const currentIndex = routes.indexOf(location.pathname);
+      const nextIndex = (currentIndex + 1) % routes.length;
+      navigate(routes[nextIndex]);
+
+      setTimeout(() => {
+        isProcessing = false;
+      }, 300);
+    };
+
+    window.electronAPI?.onNextTab?.(handleNextTab);
+
+    return () => {
+      window.electronAPI?.removeListener?.('onNextTab', handleNextTab);
+    };
+  }, [navigate, location.pathname]);
+
   return (
-    <Router>
-      <div className={`flex flex-col h-screen ${isDarkMode ? 'dark' : ''}`}>
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar darkMode={isDarkMode} setDarkMode={setIsDarkMode} />
-          <MainContent isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
-        </div>
+    <div className={`flex flex-col h-screen ${isDarkMode ? 'dark' : ''}`}>
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar darkMode={isDarkMode} setDarkMode={setIsDarkMode} />
+        <MainContent isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
       </div>
-    </Router>
+    </div>
   );
 }
 
-export default App;
+export default function WrappedApp() {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+}

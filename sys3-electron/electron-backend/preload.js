@@ -43,4 +43,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('update-cell-settings', cellId, newSettings),
   deleteCellSettings: (cellId) =>
     ipcRenderer.invoke('delete-cell-settings', cellId),
+
+
+  onNextTab: (callback) => ipcRenderer.on('next-tab', callback)
+
 });
