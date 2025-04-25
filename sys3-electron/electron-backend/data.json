@@ -24,13 +24,14 @@
     "EmojiIcon": "Star",
     "NameVisible": true,
     "Chosen": {
-      "Monday": "",
-      "Tuesday": "",
+      "Monday": "про",
+      "Tuesday": "мит",
       "Wednesday": "",
       "Thursday": "",
       "Friday": "",
       "Saturday": "",
       "Sunday": ""
-    }
+    },
+    "Width": null
   }
 ]

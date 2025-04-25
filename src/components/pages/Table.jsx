@@ -23,8 +23,9 @@ const Table = ({darkMode, setDarkMode}) => {
   const [showColumnSelector, setShowColumnSelector] = useState(false);
   const [highlightedRow, setHighlightedRow] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showSummaryRow, setShowSummaryRow] = useState(true);
+  const [showSummaryRow, setShowSummaryRow] = useState(false);
   const [columnOrder, setColumnOrder] = useState([]);
+  const [headerLayout, setHeaderLayout] = useState('withWidget');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,6 +100,31 @@ const Table = ({darkMode, setDarkMode}) => {
       }
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    window.electronAPI.getSettings().then(({ data }) => {
+      if (data?.table && typeof data.table.showSummaryRow === 'boolean') {
+        setShowSummaryRow(data.table.showSummaryRow);
+      }
+    }).catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    window.electronAPI.getSettings().then(({ data }) => {
+      if (data?.header?.layout) {
+        setHeaderLayout(data.header.layout);
+      }
+    }).catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const onHeaderChange = (e) => {
+      const newHeader = e.detail;
+      if (newHeader?.layout) setHeaderLayout(newHeader.layout);
+    };
+    window.addEventListener('header-settings-changed', onHeaderChange);
+    return () => window.removeEventListener('header-settings-changed', onHeaderChange);
   }, []);
 
   const handleAddColumn = async (type) => {
@@ -413,7 +439,22 @@ const Table = ({darkMode, setDarkMode}) => {
   };
 
   if (loading) {
-    return <div className={`p-4 text-center ${darkMode ? 'text-gray-200' : 'text-gray-600'}`}>Loading...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-full py-20">
+        <div className="flex space-x-1 text-5xl font-bold text-blue-500  font-poppins" >
+          {['O', 'N', 'D', 'A'].map((ch, idx) => (
+            <span
+              key={idx}
+              className="inline-block animate-bounce"
+              style={{ animationDelay: `${idx * 0.2}s` }}
+            >
+              {ch}
+            </span>
+          ))}
+        </div>
+        <p className={`mt-4 text-lg ${darkMode ? 'text-gray-200' : 'text-gray-600'}`}>Loading data...</p>
+      </div>
+    );
   }
 
   return (
@@ -435,7 +476,9 @@ const Table = ({darkMode, setDarkMode}) => {
           background: ${darkMode ? 'rgba(107, 114, 128, 0.9)' : 'rgba(107, 114, 128, 0.7)'};
         }
       `}</style>
-      <PlannerHeader darkTheme={darkMode} onExport={handleExport} />
+      <div className="p-4">
+        <PlannerHeader darkTheme={darkMode} layout={headerLayout} onExport={handleExport} />
+      </div>
       <div className={`overflow-hidden border ${darkMode ? 'border-gray-700' : 'border-gray-200'} rounded-xl m-2 custom-scroll`}>
         <div className="overflow-x-auto">
           <table className="w-full table-fixed">

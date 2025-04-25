@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Settings, Home, Calendar1, Sun, Moon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = ({darkMode,setDarkMode}) => {
-  const [active, setActive] = useState("home");
-
+  const location = useLocation();
+  const deriveActive = (path) => {
+    if (path.startsWith('/calendar')) return 'calendar';
+    if (path.startsWith('/settings')) return 'settings';
+    return 'home';
+  };
+  const [active, setActive] = useState(deriveActive(location.pathname));
 
   // Зберігаємо вибір теми в localStorage
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
+
+  useEffect(() => {
+    setActive(deriveActive(location.pathname));
+  }, [location.pathname]);
 
   const linkClass = (name) =>
     `transition-all duration-300 ease-in-out transform p-2 rounded-xl 

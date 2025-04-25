@@ -18,20 +18,28 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
       animations: true,
       tooltips: true,
       confirmDelete: true
+    },
+    header: {
+      layout: 'withWidget'
     }
   });
 
   useEffect(() => {
-    // Load settings from electron API
+    // Load settings from electron API and preserve default header if missing
     window.electronAPI.getSettings().then(({ data }) => {
-      setSettings(data);
-    });
+      setSettings(prev => ({
+        ...prev,
+        ...data,
+        header: data.header ?? prev.header
+      }));
+    }).catch(console.error);
   }, []);
 
   const sections = [
     { id: 'theme', name: 'Theme', icon: <Palette className="w-4 h-4" /> },
     { id: 'table', name: 'Table', icon: <Table className="w-4 h-4" /> },
     { id: 'ui', name: 'Interface', icon: <Eye className="w-4 h-4" /> },
+    { id: 'header', name: 'Header', icon: <LayoutGrid className="w-4 h-4" /> },
   ];
 
   const handleThemeChange = async (newTheme) => {
@@ -44,12 +52,21 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
     const updatedSettings = { ...settings, table: { ...settings.table, ...newTable } };
     setSettings(updatedSettings);
     await window.electronAPI.updateTableSettings(newTable);
+    // notify other parts of the app about table settings change
+    window.dispatchEvent(new CustomEvent('table-settings-changed', { detail: newTable }));
   };
 
   const handleUIChange = async (newUI) => {
     const updatedSettings = { ...settings, ui: { ...settings.ui, ...newUI } };
     setSettings(updatedSettings);
     await window.electronAPI.updateUISettings(newUI);
+  };
+
+  const handleHeaderChange = async (newHeader) => {
+    const updatedSettings = { ...settings, header: { ...settings.header, ...newHeader } };
+    setSettings(updatedSettings);
+    await window.electronAPI.updateSettings(updatedSettings);
+    window.dispatchEvent(new CustomEvent('header-settings-changed', { detail: newHeader }));
   };
 
   const renderSection = () => {
@@ -78,6 +95,29 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
             onUIChange={handleUIChange}
             darkTheme={darkTheme}
           />
+        );
+      case 'header':
+        return (
+          <div className="space-y-6">
+            <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
+              <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Header Layout</h3>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Layout</span>
+                  <select
+                    value={settings.header.layout}
+                    onChange={(e) => handleHeaderChange({ layout: e.target.value })}
+                    className={`block w-40 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-200' : 'border-gray-200 bg-white text-gray-600'}`}
+                  >
+                    <option value="default">Default</option>
+                    <option value="withWidget">With Widget</option>
+                    <option value="compact">Compact</option>
+                    <option value="spacious">Spacious</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
         );
       default:
         return null;
