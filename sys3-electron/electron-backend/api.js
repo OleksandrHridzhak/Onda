@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 
 const DATA_FILE = path.join(__dirname, 'data.json');
 const SETTINGS_FILE = path.join(__dirname, 'settings.json');
@@ -210,7 +210,7 @@ module.exports = {
 
     // Обробник для закриття вікна
     ipcMain.handle('window-close', () => {
-      app.quit();
+      mainWindow.hide();
     });
 
     // Обробник для мінімізації вікна
@@ -357,6 +357,11 @@ module.exports = {
       settings.table.columnOrder = columnOrder;
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
       return { status: 'Column order updated' };
+    });
+
+    // Обробник для показу системного повідомлення
+    ipcMain.handle('show-notification', (event, { title, body }) => {
+      new Notification({ title, body }).show();
     });
   },
 };
