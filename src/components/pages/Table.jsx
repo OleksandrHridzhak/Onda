@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ChevronDown, ChevronUp, Sun, Moon, ArrowUp, ArrowDown } from 'lucide-react';
 import PlannerHeader from '../PlannerHeader';
 import PomodoroWidget from '../widgets/PomodoroWidget';
+import TimelineWidget from '../widgets/TimelineWidget';
 
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
@@ -479,8 +480,13 @@ const Table = ({darkMode, setDarkMode}) => {
         }
       `}</style>
       <div className="p-4">
-        <PlannerHeader darkTheme={darkMode} layout={headerLayout} onExport={handleExport} />
+        <PlannerHeader 
+          darkTheme={darkMode} 
+          layout={headerLayout} 
+          onExport={handleExport} 
+        />
       </div>
+      
       <div className={`overflow-hidden border ${darkMode ? 'border-gray-700' : 'border-gray-200'} rounded-xl m-2 custom-scroll`}>
         <div className="overflow-x-auto">
           <table className="w-full table-fixed">
@@ -567,7 +573,6 @@ const Table = ({darkMode, setDarkMode}) => {
           </table>
         </div>
       </div>
-
     </div>
   );
 };

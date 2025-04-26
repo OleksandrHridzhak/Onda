@@ -7,7 +7,7 @@
     "EmojiIcon": "Star",
     "NameVisible": true,
     "Chosen": {
-      "Monday": false,
+      "Monday": true,
       "Tuesday": false,
       "Wednesday": false,
       "Thursday": false,
