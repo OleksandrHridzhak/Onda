@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PomodoroWidget from './widgets/PomodoroWidget';
+import TimelineWidget from './widgets/TimelineWidget';
 
-const PlannerHeader = ({ darkTheme, layout = 'withWidget' }) => {
+const PlannerHeader = ({ darkTheme, layout = 'withWidget', widgetChoice = 'pomodoro', onExport, showColumnSelector, setShowColumnSelector, headerLayout, setHeaderLayout }) => {
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -25,6 +26,23 @@ const PlannerHeader = ({ darkTheme, layout = 'withWidget' }) => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const renderWidgets = () => {
+    switch (widgetChoice) {
+      case 'pomodoro':
+        return <PomodoroWidget darkTheme={darkTheme} />;
+      case 'timeline':
+        return <TimelineWidget darkTheme={darkTheme} />;
+      case 'both':
+      default:
+        return (
+          <>
+            <TimelineWidget darkTheme={darkTheme} />
+            <PomodoroWidget darkTheme={darkTheme} />
+          </>
+        );
+    }
+  };
+
   const renderLayout = () => {
     switch (layout) {
       case 'default':
@@ -41,7 +59,9 @@ const PlannerHeader = ({ darkTheme, layout = 'withWidget' }) => {
             <h1 className={`font-poppins text-5xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
               {time}
             </h1>
-            <PomodoroWidget darkTheme={darkTheme} />
+            <div className="flex items-center">
+              {renderWidgets()}
+            </div>
           </div>
         );
       case 'compact':
@@ -50,7 +70,9 @@ const PlannerHeader = ({ darkTheme, layout = 'withWidget' }) => {
             <h1 className={`font-poppins text-3xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
               {time}
             </h1>
-            <PomodoroWidget darkTheme={darkTheme} />
+            <div className="flex items-center mt-2">
+              {renderWidgets()}
+            </div>
           </div>
         );
       case 'spacious':
@@ -59,7 +81,9 @@ const PlannerHeader = ({ darkTheme, layout = 'withWidget' }) => {
             <h1 className={`font-poppins text-6xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
               {time}
             </h1>
-            <PomodoroWidget darkTheme={darkTheme} />
+            <div className="flex items-center">
+              {renderWidgets()}
+            </div>
           </div>
         );
       default:
