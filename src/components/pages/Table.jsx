@@ -7,7 +7,7 @@ import TimelineWidget from '../widgets/TimelineWidget';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
 import ColumnHeader from '../ColumnHeader';
-const { CheckboxCell, NumberCell, TagsCell, NotesCell } = Cells;
+const { CheckboxCell, NumberCell, TagsCell, NotesCell, TodoCell } = Cells;
 
 const columnWidths = {
   days: 'w-20',
@@ -57,18 +57,23 @@ const Table = ({darkMode, setDarkMode}) => {
         console.log('Processed columns:', fetchedColumns);
 
         // Apply column order from settings if available
-        if (settingsResult.status === 'Settings fetched' && settingsResult.data.columnOrder?.length > 0) {
+        if (settingsResult.status === 'Settings fetched' && settingsResult.data.table?.columnOrder?.length > 0) {
           const orderedColumns = [];
-          settingsResult.data.columnOrder.forEach(columnId => {
+          const savedOrder = settingsResult.data.table.columnOrder;
+          
+          // Спочатку додаємо колонки в порядку з налаштувань
+          savedOrder.forEach(columnId => {
             const column = fetchedColumns.find(col => col.ColumnId === columnId);
             if (column) orderedColumns.push(column);
           });
-          // Add any columns that weren't in the order
+          
+          // Потім додаємо нові колонки, яких немає в налаштуваннях
           fetchedColumns.forEach(column => {
             if (!orderedColumns.find(col => col.ColumnId === column.ColumnId)) {
               orderedColumns.push(column);
             }
           });
+          
           fetchedColumns = orderedColumns;
         }
 
@@ -77,6 +82,18 @@ const Table = ({darkMode, setDarkMode}) => {
         setColumns(fetchedColumns);
         setColumnOrder(fetchedColumns.map(col => col.ColumnId));
         
+        // Оновлюємо налаштування, щоб зберегти поточний порядок
+        if (settingsResult.status === 'Settings fetched') {
+          const newSettings = {
+            ...settingsResult.data,
+            table: {
+              ...settingsResult.data.table,
+              columnOrder: fetchedColumns.map(col => col.ColumnId)
+            }
+          };
+          await window.electronAPI.updateSettings(newSettings);
+        }
+
         const initialTableData = days.reduce((acc, day) => {
           acc[day] = fetchedColumns.reduce((dayData, col) => {
             if (col.ColumnId !== 'days') {
@@ -173,10 +190,12 @@ const Table = ({darkMode, setDarkMode}) => {
     setColumns((prevColumns) => {
       return prevColumns.map((col) => {
         if (col.ColumnId === columnId) {
-          const updatedChosen = {
-            ...(col.Chosen || {}),
-            [day]: value
-          };
+          const updatedChosen = col.Type === 'todo' 
+            ? { global: value }
+            : {
+                ...(col.Chosen || {}),
+                [day]: value
+              };
           window.electronAPI.changeColumn({ ...col, Chosen: updatedChosen })
             .catch((err) => console.error('Update failed:', err));
           return { ...col, Chosen: updatedChosen };
@@ -273,6 +292,10 @@ const Table = ({darkMode, setDarkMode}) => {
         }
         return sum;
       }, 0);
+    } else if (column.Type === 'todo') {
+      const todos = column.Chosen?.global || [];
+      const completed = todos.filter(todo => todo.completed).length;
+      return `${completed}/${todos.length}`;
     } else if (column.Type === 'days') {
       return '';
     }
@@ -378,6 +401,22 @@ const Table = ({darkMode, setDarkMode}) => {
         </td>
       );
     }
+    if (column.Type === 'todo') {
+      return (
+        <td 
+          data-column-id={column.ColumnId}
+          className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass} todo-cell`}
+          style={style}
+          rowSpan={days.length}
+        >
+          <TodoCell
+            value={column.Chosen?.global || []}
+            onChange={(value) => handleCellChange('global', column.ColumnId, value)}
+            darkMode={darkMode}
+          />
+        </td>
+      );
+    }
     switch (column.Type) {
       case 'checkbox':
         return (
@@ -478,6 +517,14 @@ const Table = ({darkMode, setDarkMode}) => {
         .custom-scroll::-webkit-scrollbar-thumb:hover {
           background: ${darkMode ? 'rgba(107, 114, 128, 0.9)' : 'rgba(107, 114, 128, 0.7)'};
         }
+        .todo-cell {
+          position: relative;
+          z-index: 1;
+          height: 100%;
+        }
+        .todo-cell > div {
+          height: 100%;
+        }
       `}</style>
       <div className="p-4">
         <PlannerHeader 
@@ -539,14 +586,15 @@ const Table = ({darkMode, setDarkMode}) => {
                 <tr
                   key={day}
                   className={`
-                    ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-blue-50'} 
+                    ${darkMode ? 'bg-gray-800' : 'bg-white'} 
                     transition-colors duration-150
                     ${idx !== days.length - 1 ? (darkMode ? 'border-b border-gray-700' : 'border-b border-gray-200') : ''}
                   `}
-                  onMouseEnter={() => setHighlightedRow(day)}
-                  onMouseLeave={() => setHighlightedRow(null)}
                 >
-                  {columns.map((column) => renderCell(day, column))}
+                  {columns.map((column) => {
+                    if (column.Type === 'todo' && idx > 0) return null;
+                    return renderCell(day, column);
+                  })}
                   <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} w-full`}></td>
                 </tr>
               ))}
