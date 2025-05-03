@@ -46,6 +46,7 @@ const ColumnHeader = ({
   onChangeDescription,
   onToggleTitleVisibility,
   onChangeOptions,
+  onChangeCheckboxColor,
   onMoveUp,
   onMoveDown,
   canMoveUp,
@@ -107,6 +108,7 @@ const ColumnHeader = ({
             onChangeDescription={onChangeDescription}
             onToggleTitleVisibility={onToggleTitleVisibility}
             onChangeOptions={onChangeOptions}
+            onChangeCheckboxColor={onChangeCheckboxColor}
             onMoveUp={onMoveUp}
             onMoveDown={onMoveDown}
             canMoveUp={canMoveUp}

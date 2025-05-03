@@ -226,11 +226,15 @@ const Table = ({darkMode, setDarkMode}) => {
     updateBackend(columnId, { NameVisible: showTitle });
   };
 
-  const handleChangeOptions = async (columnId, newOptions) => {
+  const handleChangeOptions = async (columnId, options, tagColors) => {
     setColumns((prev) =>
-      prev.map((col) => (col.ColumnId === columnId ? { ...col, Options: newOptions } : col))
+      prev.map((col) =>
+        col.ColumnId === columnId
+          ? { ...col, Options: options, TagColors: tagColors }
+          : col
+      )
     );
-    updateBackend(columnId, { Options: newOptions });
+    updateBackend(columnId, { Options: options, TagColors: tagColors });
   };
 
   const handleRename = async (columnId, newName) => {
@@ -385,6 +389,13 @@ const Table = ({darkMode, setDarkMode}) => {
     return column.Width ? `w-[${column.Width}px]` : columnWidths[column.Type] || '';
   };
 
+  const handleChangeCheckboxColor = async (columnId, color) => {
+    setColumns((prev) =>
+      prev.map((col) => (col.ColumnId === columnId ? { ...col, CheckboxColor: color } : col))
+    );
+    updateBackend(columnId, { CheckboxColor: color });
+  };
+
   const renderCell = (day, column) => {
     const widthClass = getWidthClass(column);
     const style = column.Width ? { width: `${column.Width}px` } : {};
@@ -406,7 +417,7 @@ const Table = ({darkMode, setDarkMode}) => {
         <td 
           data-column-id={column.ColumnId}
           className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass} todo-cell`}
-          style={style}
+          style={{ ...style, verticalAlign: 'top' }}
           rowSpan={days.length}
         >
           <TodoCell
@@ -429,6 +440,7 @@ const Table = ({darkMode, setDarkMode}) => {
               checked={tableData[day][column.ColumnId] || false}
               onChange={() => handleCellChange(day, column.ColumnId, !tableData[day][column.ColumnId])}
               darkMode={darkMode}
+              color={column.CheckboxColor || 'green'}
             />
           </td>
         );
@@ -458,6 +470,7 @@ const Table = ({darkMode, setDarkMode}) => {
               options={column.Options || []}
               onChange={(value) => handleCellChange(day, column.ColumnId, value)}
               darkMode={darkMode}
+              tagColors={column.TagColors || {}}
             />
           </td>
         );
@@ -549,6 +562,7 @@ const Table = ({darkMode, setDarkMode}) => {
                     onChangeDescription={handleChangeDescription}
                     onToggleTitleVisibility={handleToggleTitleVisibility}
                     onChangeOptions={handleChangeOptions}
+                    onChangeCheckboxColor={handleChangeCheckboxColor}
                     onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
                     onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
                     canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}

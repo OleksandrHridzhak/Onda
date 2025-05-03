@@ -53,17 +53,27 @@ const ColumnMenu = ({
   canMoveUp,
   canMoveDown,
   darkMode,
-  onChangeWidth 
+  onChangeWidth,
+  onChangeCheckboxColor = () => {}
 }) => {
   const [name, setName] = useState(column.Name);
   const [selectedIcon, setSelectedIcon] = useState(column.EmojiIcon || '');
   const [description, setDescription] = useState(column.Description || '');
   const [showTitle, setShowTitle] = useState(column.NameVisible !== false);
   const [tags, setTags] = useState(column.Options || []);
+  const [tagColors, setTagColors] = useState(column.TagColors || {});
+  const [checkboxColor, setCheckboxColor] = useState(column.CheckboxColor || 'green');
   const [newTag, setNewTag] = useState('');
   const [width, setWidth] = useState(column.Width ? parseInt(column.Width) : '');
   const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
   const menuRef = useRef(null);
+
+  const colorOptions = [
+    { name: 'green', bg: darkMode ? 'bg-green-900' : 'bg-green-100', text: darkMode ? 'text-green-100' : 'text-green-800' },
+    { name: 'blue', bg: darkMode ? 'bg-blue-900' : 'bg-blue-100', text: darkMode ? 'text-blue-100' : 'text-blue-800' },
+    { name: 'purple', bg: darkMode ? 'bg-purple-900' : 'bg-purple-100', text: darkMode ? 'text-purple-100' : 'text-purple-800' },
+    { name: 'orange', bg: darkMode ? 'bg-orange-900' : 'bg-orange-100', text: darkMode ? 'text-orange-100' : 'text-orange-800' }
+  ];
 
   useEffect(() => {
     setName(column.Name);
@@ -71,6 +81,8 @@ const ColumnMenu = ({
     setDescription(column.Description || '');
     setShowTitle(column.NameVisible !== false);
     setTags(column.Options || []);
+    setTagColors(column.TagColors || {});
+    setCheckboxColor(column.CheckboxColor || 'green');
     setWidth(column.Width ? parseInt(column.Width) : '');
   }, [column]);
 
@@ -90,12 +102,22 @@ const ColumnMenu = ({
   const handleAddTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
+      setTagColors(prev => ({ ...prev, [newTag.trim()]: 'blue' }));
       setNewTag('');
     }
   };
 
   const handleRemoveTag = (tag) => {
     setTags(tags.filter((t) => t !== tag));
+    setTagColors(prev => {
+      const newColors = { ...prev };
+      delete newColors[tag];
+      return newColors;
+    });
+  };
+
+  const handleColorChange = (tag, color) => {
+    setTagColors(prev => ({ ...prev, [tag]: color }));
   };
 
   const handleSave = () => {
@@ -104,7 +126,10 @@ const ColumnMenu = ({
     onChangeDescription(column.ColumnId, description);
     onToggleTitleVisibility(column.ColumnId, showTitle);
     if (column.Type === 'multi-select') {
-      onChangeOptions(column.ColumnId, tags);
+      onChangeOptions(column.ColumnId, tags, tagColors);
+    }
+    if (column.Type === 'checkbox') {
+      onChangeCheckboxColor(column.ColumnId, checkboxColor);
     }
     if (onChangeWidth && width !== column.Width) {
       onChangeWidth(column.ColumnId, width);
@@ -252,34 +277,42 @@ const ColumnMenu = ({
                 type="text"
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
-                className={`w-full px-3 py-2 border ${darkMode ? 'border-gray-700 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white'} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="New tag"
                 onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
+                placeholder="Add new tag..."
+                className={`flex-1 px-3 py-2 border ${darkMode ? 'border-gray-700 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white'} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
               />
               <button
                 onClick={handleAddTag}
-                className={`ml-2 p-2 ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white rounded-md`}
+                className={`ml-2 p-2 rounded-md ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
               >
-                <Plus className="w-4 h-4" />
+                <Plus size={16} />
               </button>
             </div>
-            <div className={`max-h-24 overflow-y-auto border ${darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-white'} rounded-md p-1`}>
+            <div className="space-y-2">
               {tags.map((tag) => (
-                <div
-                  key={tag}
-                  className={`flex items-center justify-between px-2 py-1 rounded-full text-sm mb-1 ${
-                    darkMode 
-                      ? 'bg-blue-900 text-blue-200' 
-                      : 'bg-blue-100 text-blue-800'
-                  }`}
-                >
-                  <span>{tag}</span>
-                  <button
-                    onClick={() => handleRemoveTag(tag)}
-                    className={`ml-2 ${darkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-800'}`}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                <div key={tag} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorOptions.find(c => c.name === tagColors[tag])?.bg} ${colorOptions.find(c => c.name === tagColors[tag])?.text}`}>
+                      {tag}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex gap-1">
+                      {colorOptions.map(color => (
+                        <button
+                          key={color.name}
+                          onClick={() => handleColorChange(tag, color.name)}
+                          className={`w-4 h-4 rounded-full ${color.bg} ${color.text} border ${tagColors[tag] === color.name ? 'border-white' : 'border-transparent'}`}
+                        />
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => handleRemoveTag(tag)}
+                      className={`p-1 rounded-md ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-500 hover:bg-gray-100'}`}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -306,6 +339,22 @@ const ColumnMenu = ({
             placeholder="Enter width in pixels"
           />
         </div>
+        {column.Type === 'checkbox' && (
+          <div className="mb-3">
+            <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Checkbox Color</label>
+            <div className="flex gap-2">
+              {colorOptions.map(color => (
+                <button
+                  key={color.name}
+                  onClick={() => setCheckboxColor(color.name)}
+                  className={`w-6 h-6 rounded-full ${color.bg} ${color.text} border ${
+                    checkboxColor === color.name ? 'border-white' : 'border-transparent'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
         <div className="flex justify-between mt-4">
           <button
             onClick={(e) => {
