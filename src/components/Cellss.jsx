@@ -7,7 +7,7 @@ import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeO
 const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) => {
   const colorOptions = {
     green: {
-      bg: darkMode ? 'bg-green-700' : 'bg-green-500',
+      bg: darkMode ? 'bg-green-500' : 'bg-green-500',
       border: 'border-transparent',
       hover: darkMode ? 'hover:bg-green-600' : 'hover:bg-green-400'
     },
@@ -31,7 +31,7 @@ const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) => {
   const selectedColor = colorOptions[color] || colorOptions.green;
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center ">
       <label className="relative flex items-center justify-center w-6 h-6 cursor-pointer">
         <input
           type="checkbox"
@@ -63,7 +63,7 @@ const NumberCell = ({ value, onChange }) => {
       type="number"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-16 text-center px-1 py-0.5 text-lg bg-transparent border-none 
+      className="w-full text-center px-1 py-0.5 text-lg bg-transparent border-none 
                  outline-none ring-0 focus:ring-0 focus:outline-none focus:border-none
                  [&::-webkit-outer-spin-button]:appearance-none
                  [&::-webkit-inner-spin-button]:appearance-none"

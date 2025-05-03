@@ -118,7 +118,7 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
                   >
                     <option value="default">Default</option>
                     <option value="withWidget">With Widget</option>
-                    <option value="compact">Compact</option>
+                    <option value="bothWidgets">Both widgets</option>
                     <option value="spacious">Spacious</option>
                   </select>
                 </div>

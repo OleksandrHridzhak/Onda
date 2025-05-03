@@ -41,7 +41,7 @@ const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
   ];
 
   return (
-    <div className={`absolute right-0 top-full mt-1 w-56 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-xl z-20 border overflow-hidden animate-fade-in`}>
+    <div className={`absolute  top-36 left-80 mt-1 w-56 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-xl z-20 border overflow-hidden animate-fade-in`}>
       <div className={`p-3 border-b ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-100 bg-white'} flex justify-between items-center`}>
         <h3 className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>Select Column Type</h3>
         <button 

@@ -74,19 +74,6 @@
     "repeatFrequency": "weekly"
   },
   {
-    "id": "1746079335490",
-    "title": "СЕРВІСНІ РОБОТИ",
-    "date": "Mon Apr 28 2025",
-    "startTime": "09:00",
-    "endTime": "10:00",
-    "color": "#dc2626",
-    "isRepeating": true,
-    "repeatDays": [
-      1
-    ],
-    "repeatFrequency": "weekly"
-  },
-  {
     "id": "1746120662582",
     "title": "Статистика",
     "date": "Thu May 01 2025",
@@ -106,6 +93,28 @@
     "startTime": "15:20",
     "endTime": "16:20",
     "color": "#d97706",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1746290217846",
+    "title": "sdcs",
+    "date": "Sat May 03 2025",
+    "startTime": "23:00",
+    "endTime": "00:00",
+    "color": "#059669",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1746290967656",
+    "title": "ав",
+    "date": "Sun May 04 2025",
+    "startTime": "00:00",
+    "endTime": "01:00",
+    "color": "#2563eb",
     "isRepeating": false,
     "repeatDays": [],
     "repeatFrequency": "weekly"

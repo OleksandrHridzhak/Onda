@@ -3,21 +3,21 @@ import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff,
 import PlannerHeader from '../PlannerHeader';
 import PomodoroWidget from '../widgets/PomodoroWidget';
 import TimelineWidget from '../widgets/TimelineWidget';
-
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
 import ColumnHeader from '../ColumnHeader';
 const { CheckboxCell, NumberCell, TagsCell, NotesCell, TodoCell } = Cells;
 
 const columnWidths = {
-  days: 'w-20',
-  checkbox: 'w-12',
-  numberbox: 'w-20',
-  'multi-select': 'w-32',
-  text: 'w-64'
+  days: '120px', // Fixed width for days column
+  checkbox: '48px',
+  numberbox: '80px',
+  'multi-select': '128px',
+  text: '256px',
+  filler: 'auto' // Filler column to take remaining space
 };
 
-const Table = ({darkMode, setDarkMode}) => {
+const Table = ({ darkMode, setDarkMode }) => {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState({});
@@ -28,6 +28,12 @@ const Table = ({darkMode, setDarkMode}) => {
   const [columnOrder, setColumnOrder] = useState([]);
   const [headerLayout, setHeaderLayout] = useState('withWidget');
 
+  // Create a derived columns array with a filler column
+  const displayColumns = [
+    ...columns,
+    { ColumnId: 'filler', Type: 'filler', Name: '', EmojiIcon: '', NameVisible: false }
+  ];
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,37 +43,25 @@ const Table = ({darkMode, setDarkMode}) => {
           window.electronAPI.getSettings()
         ]);
 
-        console.log('Data from backend:', daysResult);
-        console.log('Settings from backend:', settingsResult);
-        
         const dayColumn = { ColumnId: 'days', Type: 'days', Name: 'Day', EmojiIcon: '', NameVisible: true };
         let fetchedColumns = [dayColumn];
 
         if (daysResult.status === 'Data fetched' && Array.isArray(daysResult.data)) {
-          // Convert Width to number for each column
-          fetchedColumns = [dayColumn, ...daysResult.data.map(col => {
-            console.log('Processing column:', col.ColumnId, 'Width:', col.Width);
-            return {
-              ...col,
-              Width: col.Width ? parseInt(col.Width) : null
-            };
-          })];
+          fetchedColumns = [dayColumn, ...daysResult.data.map(col => ({
+            ...col,
+            Width: col.Width ? parseInt(col.Width) : null
+          }))];
         }
 
-        console.log('Processed columns:', fetchedColumns);
-
-        // Apply column order from settings if available
         if (settingsResult.status === 'Settings fetched' && settingsResult.data.table?.columnOrder?.length > 0) {
           const orderedColumns = [];
           const savedOrder = settingsResult.data.table.columnOrder;
           
-          // Спочатку додаємо колонки в порядку з налаштувань
           savedOrder.forEach(columnId => {
             const column = fetchedColumns.find(col => col.ColumnId === columnId);
             if (column) orderedColumns.push(column);
           });
           
-          // Потім додаємо нові колонки, яких немає в налаштуваннях
           fetchedColumns.forEach(column => {
             if (!orderedColumns.find(col => col.ColumnId === column.ColumnId)) {
               orderedColumns.push(column);
@@ -77,12 +71,9 @@ const Table = ({darkMode, setDarkMode}) => {
           fetchedColumns = orderedColumns;
         }
 
-        console.log('Final columns with order:', fetchedColumns);
-
         setColumns(fetchedColumns);
         setColumnOrder(fetchedColumns.map(col => col.ColumnId));
         
-        // Оновлюємо налаштування, щоб зберегти поточний порядок
         if (settingsResult.status === 'Settings fetched') {
           const newSettings = {
             ...settingsResult.data,
@@ -260,7 +251,7 @@ const Table = ({darkMode, setDarkMode}) => {
           setColumns((prev) => prev.map((col) => (col.ColumnId === columnId ? column : col)));
         });
       }
-      return prevColumns;
+ return prevColumns;
     });
   };
 
@@ -339,54 +330,46 @@ const Table = ({darkMode, setDarkMode}) => {
         return;
       }
 
-      // Find the column and create a clean copy without any nested objects
       const column = columns.find(col => col.ColumnId === columnId);
       if (!column) {
         console.error('Column not found');
         return;
       }
 
-      // Create a clean column object
       const updatedColumn = {
         ColumnId: column.ColumnId,
         Type: column.Type,
         Name: column.Name,
         Description: column.Description || '',
         EmojiIcon: column.EmojiIcon || '',
-        NameVisible: column.NameVisible !== false,
+        NameVisible: column
+
+.NameVisible !== false,
         Options: column.Options || [],
         Chosen: column.Chosen || {},
-        Width: width // Set the new width
+        Width: width
       };
 
-      // Update local state first
       setColumns(prevColumns => 
         prevColumns.map(col => 
           col.ColumnId === columnId ? { ...col, Width: width } : col
         )
       );
 
-      // Update backend
       await window.electronAPI.changeColumn(updatedColumn);
 
-      // Update DOM
       const columnElements = document.querySelectorAll(`[data-column-id="${columnId}"]`);
       columnElements.forEach(element => {
         element.style.width = `${width}px`;
       });
     } catch (error) {
       console.error('Error updating column width:', error);
-      // Revert the change if it failed
       setColumns(prevColumns => 
         prevColumns.map(col => 
           col.ColumnId === columnId ? { ...col, Width: col.Width } : col
         )
       );
     }
-  };
-
-  const getWidthClass = (column) => {
-    return column.Width ? `w-[${column.Width}px]` : columnWidths[column.Type] || '';
   };
 
   const handleChangeCheckboxColor = async (columnId, color) => {
@@ -396,27 +379,48 @@ const Table = ({darkMode, setDarkMode}) => {
     updateBackend(columnId, { CheckboxColor: color });
   };
 
-  const renderCell = (day, column) => {
-    const widthClass = getWidthClass(column);
-    const style = column.Width ? { width: `${column.Width}px` } : {};
+  const getWidthStyle = (column) => {
+    if (column.Type === 'days') {
+      return { width: '120px', minWidth: '120px' }; // Always fixed for days
+    }
+    if (column.Type === 'filler') {
+      return { width: 'auto', minWidth: '0px' }; // Filler column takes remaining space
+    }
+    if (column.Width) {
+      return { width: `${column.Width}px`, minWidth: `${column.Width}px` };
+    }
+    return { width: columnWidths[column.Type], minWidth: columnWidths[column.Type] };
+  };
+
+  const renderCell = (day, column, columnIndex) => {
+    const style = getWidthStyle(column);
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     if (column.Type === 'days') {
       return (
         <td 
           data-column-id={column.ColumnId}
           className={`px-4 py-3 text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-600 border-gray-200'} border-r whitespace-nowrap`}
-          style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}
+          style={style}
         >
           {day}
           {day === today && <span className="ml-2 inline-block w-2 h-2 bg-blue-500 rounded-full"></span>}
         </td>
       );
     }
+    if (column.Type === 'filler') {
+      return (
+        <td 
+          data-column-id={column.ColumnId}
+          className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`}
+          style={style}
+        />
+      );
+    }
     if (column.Type === 'todo') {
       return (
         <td 
           data-column-id={column.ColumnId}
-          className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass} todo-cell`}
+          className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r todo-cell`}
           style={{ ...style, verticalAlign: 'top' }}
           rowSpan={days.length}
         >
@@ -433,7 +437,7 @@ const Table = ({darkMode, setDarkMode}) => {
         return (
           <td 
             data-column-id={column.ColumnId}
-            className={`py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}
+            className={`py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
             style={style}
           >
             <CheckboxCell
@@ -448,7 +452,7 @@ const Table = ({darkMode, setDarkMode}) => {
         return (
           <td 
             data-column-id={column.ColumnId}
-            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}
+            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
             style={style}
           >
             <NumberCell
@@ -462,7 +466,7 @@ const Table = ({darkMode, setDarkMode}) => {
         return (
           <td 
             data-column-id={column.ColumnId}
-            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}
+            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
             style={style}
           >
             <TagsCell
@@ -478,7 +482,7 @@ const Table = ({darkMode, setDarkMode}) => {
         return (
           <td 
             data-column-id={column.ColumnId}
-            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${widthClass}`}
+            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
             style={style}
           >
             <NotesCell
@@ -496,7 +500,7 @@ const Table = ({darkMode, setDarkMode}) => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-20">
-        <div className="flex space-x-1 text-5xl font-bold text-blue-500  font-poppins" >
+        <div className="flex space-x-1 text-5xl font-bold text-blue-500 font-poppins">
           {['O', 'N', 'D', 'A'].map((ch, idx) => (
             <span
               key={idx}
@@ -538,61 +542,72 @@ const Table = ({darkMode, setDarkMode}) => {
         .todo-cell > div {
           height: 100%;
         }
+        table {
+          table-layout: fixed;
+        }
+        .add-column-tab {
+          transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        .add-column-tab:hover {
+          transform: translateY(-2px);
+        }
       `}</style>
-      <div className="p-4">
+      <div className="p-4 relative">
         <PlannerHeader 
           darkTheme={darkMode} 
           layout={headerLayout} 
           onExport={handleExport} 
+          setShowColumnSelector={setShowColumnSelector}
+          showColumnSelector={showColumnSelector}
         />
+        {showColumnSelector && (
+          <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-50">
+            <ColumnTypeSelector
+              onSelect={(type) => {
+                handleAddColumn(type);
+                setShowColumnSelector(false);
+              }}
+              onCancel={() => setShowColumnSelector(false)}
+              darkMode={darkMode}
+            />
+          </div>
+        )}
       </div>
       
       <div className={`overflow-hidden border ${darkMode ? 'border-gray-700' : 'border-gray-200'} rounded-xl m-2 custom-scroll`}>
         <div className="overflow-x-auto">
-          <table className="w-full table-fixed">
+          <table className="w-full">
             <thead>
-              <tr className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
-                {columns.map((column) => (
-                  <ColumnHeader
-                    key={column.ColumnId}
-                    column={column}
-                    onRemove={handleDeleteColumn}
-                    onRename={handleRename}
-                    onChangeIcon={handleChangeIcon}
-                    onChangeDescription={handleChangeDescription}
-                    onToggleTitleVisibility={handleToggleTitleVisibility}
-                    onChangeOptions={handleChangeOptions}
-                    onChangeCheckboxColor={handleChangeCheckboxColor}
-                    onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
-                    onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
-                    canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}
-                    canMoveDown={column.ColumnId !== 'days' && columns.indexOf(column) < columns.length - 1}
-                    darkMode={darkMode}
-                    columnWidths={columnWidths}
-                    onChangeWidth={handleChangeWidth}
-                  />
-                ))}
-                <th className={`px-3 py-3 text-center ${darkMode ? 'border-gray-700' : 'border-gray-200'} border-b relative w-auto`}>
-                  <div className="flex items-center justify-center gap-4">
-                    <button
-                      onClick={() => setShowColumnSelector(!showColumnSelector)}
-                      className={`text-sm ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-700'} flex items-center justify-center whitespace-nowrap`}
-                    >
-                      <Plus className="w-4 h-4 mr-1" />
-                      Add Column
-                    </button>
-                  </div>
-                  {showColumnSelector && (
-                    <ColumnTypeSelector
-                      onSelect={(type) => {
-                        handleAddColumn(type);
-                        setShowColumnSelector(false);
-                      }}
-                      onCancel={() => setShowColumnSelector(false)}
-                      darkMode={darkMode}
+              <tr className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} border-b`}>
+                {displayColumns.map((column, index) => (
+                  column.Type === 'filler' ? (
+                    <th
+                      key={column.ColumnId}
+                      className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r border-b`}
+                      style={getWidthStyle(column)}
                     />
-                  )}
-                </th>
+                  ) : (
+                    <ColumnHeader
+                      key={column.ColumnId}
+                      column={column}
+                      onRemove={handleDeleteColumn}
+                      onRename={handleRename}
+                      onChangeIcon={handleChangeIcon}
+                      onChangeDescription={handleChangeDescription}
+                      onToggleTitleVisibility={handleToggleTitleVisibility}
+                      onChangeOptions={handleChangeOptions}
+                      onChangeCheckboxColor={handleChangeCheckboxColor}
+                      onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
+                      onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
+                      canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}
+                      canMoveDown={column.ColumnId !== 'days' && columns.indexOf(column) < columns.length - 1}
+                      darkMode={darkMode}
+                      columnWidths={columnWidths}
+                      onChangeWidth={handleChangeWidth}
+                      style={getWidthStyle(column)}
+                    />
+                  )
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -605,30 +620,38 @@ const Table = ({darkMode, setDarkMode}) => {
                     ${idx !== days.length - 1 ? (darkMode ? 'border-b border-gray-700' : 'border-b border-gray-200') : ''}
                   `}
                 >
-                  {columns.map((column) => {
+                  {displayColumns.map((column, index) => {
                     if (column.Type === 'todo' && idx > 0) return null;
-                    return renderCell(day, column);
+                    return renderCell(day, column, index);
                   })}
-                  <td className={`px-4 py-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} w-full`}></td>
                 </tr>
               ))}
             </tbody>
             {showSummaryRow && (
               <tfoot>
                 <tr className={`${darkMode ? 'bg-gray-800 border-t border-gray-700' : 'bg-white border-t border-gray-200'}`}>
-                  {columns.map((column, index) => {
+                  {displayColumns.map((column, index) => {
+                    if (column.Type === 'filler') {
+                      return (
+                        <td
+                          key={column.ColumnId}
+                          className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`}
+                          style={getWidthStyle(column)}
+                        />
+                      );
+                    }
                     const summary = calculateSummary(column);
-                    const widthClass = getWidthClass(column);
+                    const style = getWidthStyle(column);
                     return (
                       <td
                         key={column.ColumnId}
-                        className={`px-4 py-2 text-center text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-700 border-gray-200'} border-r ${widthClass}`}
+                        className={`px-4 py-2 text-center text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-700 border-gray-200'} border-r`}
+                        style={style}
                       >
                         {summary}
                       </td>
                     );
                   })}
-                  <td className={`px-4 py-2 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'} w-full`}></td>
                 </tr>
               </tfoot>
             )}
