@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
-import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
 
 
 
@@ -51,7 +51,7 @@ const NumberCell = ({ value, onChange }) => {
 
 
   
-const TagsCell = ({ value, onChange, options }) => {
+const TagsCell = ({ value, onChange, options, darkMode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState(
     typeof value === 'string' && value.trim() !== '' ? value.split(', ').filter(tag => tag.trim() !== '') : []
@@ -93,7 +93,11 @@ const TagsCell = ({ value, onChange, options }) => {
             {selectedTags.map((tag) => (
               <span 
                 key={tag} 
-                className="px-2 py-1 bg-blue-100 text-center text-blue-800 rounded-full text-xs font-medium"
+                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  darkMode 
+                    ? 'bg-blue-900 text-blue-100' 
+                    : 'bg-blue-100 text-blue-800'
+                }`}
               >
                 {tag}
               </span>
@@ -179,8 +183,224 @@ const TagsCell = ({ value, onChange, options }) => {
       </div>
     );
   };
-
-
-
   
-  export default { CheckboxCell, NumberCell, TagsCell, NotesCell };
+  const TodoCell = ({ value, onChange, darkMode }) => {
+    const [todos, setTodos] = useState(value || []);
+    const [newTodo, setNewTodo] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingIndex, setEditingIndex] = useState(null);
+    const [editText, setEditText] = useState('');
+  
+    useEffect(() => {
+      const sortedTodos = [...(value || [])].sort((a, b) => {
+        if (a.completed === b.completed) return 0;
+        return a.completed ? 1 : -1;
+      });
+      setTodos(sortedTodos);
+    }, [value]);
+  
+    const handleAddTodo = () => {
+      if (newTodo.trim()) {
+        const updatedTodos = [...todos, { text: newTodo.trim(), completed: false }];
+        setTodos(updatedTodos);
+        onChange(updatedTodos);
+        setNewTodo('');
+      }
+    };
+  
+    const handleToggleTodo = (index) => {
+      const updatedTodos = todos.map((todo, i) =>
+        i === index ? { ...todo, completed: !todo.completed } : todo
+      );
+      const sortedTodos = updatedTodos.sort((a, b) => {
+        if (a.completed === b.completed) return 0;
+        return a.completed ? 1 : -1;
+      });
+      setTodos(sortedTodos);
+      onChange(sortedTodos);
+    };
+  
+    const handleDeleteTodo = (index) => {
+      const updatedTodos = todos.filter((_, i) => i !== index);
+      const sortedTodos = updatedTodos.sort((a, b) => {
+        if (a.completed === b.completed) return 0;
+        return a.completed ? 1 : -1;
+      });
+      setTodos(sortedTodos);
+      onChange(sortedTodos);
+    };
+  
+    const handleEditTodo = (index) => {
+      setIsEditing(true);
+      setEditingIndex(index);
+      setEditText(todos[index].text);
+    };
+  
+    const handleSaveEdit = () => {
+      if (editText.trim()) {
+        const updatedTodos = todos.map((todo, i) =>
+          i === editingIndex ? { ...todo, text: editText.trim() } : todo
+        );
+        setTodos(updatedTodos);
+        onChange(updatedTodos);
+        setIsEditing(false);
+        setEditingIndex(null);
+        setEditText('');
+      }
+    };
+  
+    return (
+      <div className="h-full flex flex-col">
+        <div className="flex items-center mb-2">
+          <input
+            type="text"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleAddTodo()}
+            placeholder="Add new todo..."
+            className={`w-full px-2 py-1 text-sm rounded-md ${
+              darkMode
+                ? 'bg-gray-700 text-gray-200 border-gray-600'
+                : 'bg-white text-gray-700 border-gray-300'
+            } border focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          />
+          <button
+            onClick={handleAddTodo}
+            className={`ml-2 p-1 rounded-md ${
+              darkMode
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white`}
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+        <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[330px] 
+          [&::-webkit-scrollbar]:w-1/2
+          [&::-webkit-scrollbar-track]:bg-transparent
+          [&::-webkit-scrollbar-thumb]:rounded-full
+          [&::-webkit-scrollbar-thumb]:transition-colors
+          [&::-webkit-scrollbar-thumb]:duration-200
+          ${darkMode 
+            ? '[&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:hover:bg-gray-500'
+            : '[&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:hover:bg-gray-300'
+          }`}>
+          {todos.map((todo, index) => (
+            <div
+              key={index}
+              className={`group flex items-center justify-between p-2 rounded-md ${
+                darkMode ? 'bg-gray-700' : 'bg-gray-50'
+              } ${index !== todos.length - 1 ? 'mb-[2px]' : ''} relative`}
+            >
+              <div className="flex items-center flex-1 min-w-0 w-full">
+                <button
+                  onClick={() => handleToggleTodo(index)}
+                  className={`mr-2 p-1 rounded-full z-20 ${
+                    todo.completed
+                      ? darkMode
+                        ? 'bg-green-600 text-white'
+                        : 'bg-green-500 text-white'
+                      : darkMode
+                        ? 'bg-gray-600 text-gray-400'
+                        : 'bg-gray-200 text-gray-400'
+                  }`}
+                >
+                  <Check size={14} />
+                </button>
+                {isEditing && editingIndex === index ? (
+                  <input
+                    type="text"
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit()}
+                    onBlur={handleSaveEdit}
+                    className={`flex-1 px-2 py-1 text-sm rounded-md z-20 ${
+                      darkMode
+                        ? 'bg-gray-600 text-gray-200 border-gray-500'
+                        : 'bg-white text-gray-700 border-gray-300'
+                    } border focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0`}
+                    autoFocus
+                  />
+                ) : (
+                  <div
+                    className={`
+                      flex-1 min-w-0 w-full
+                      text-sm
+                      ${todo.completed
+                        ? darkMode
+                          ? 'text-gray-500 line-through'
+                          : 'text-gray-400 line-through'
+                        : darkMode
+                          ? 'text-gray-200'
+                          : 'text-gray-700'
+                      }
+                      transition-opacity
+                      duration-150
+                      group-hover:opacity-0
+                      break-words
+                      overflow-hidden
+                      whitespace-pre-line
+                      cursor-default
+                      z-10
+                    `}
+                    style={{ wordBreak: 'break-word' }}
+                  >
+                    {todo.text}
+                  </div>
+                )}
+              </div>
+              <div
+                className="flex space-x-1 absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-full justify-center z-10"
+              >
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleEditTodo(index);
+                  }}
+                  className={`p-2 rounded-md flex items-center justify-center ${
+                    darkMode
+                      ? 'bg-gray-800 text-gray-400 hover:text-gray-200'
+                      : 'bg-gray-100 text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <Edit2 size={14} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteTodo(index);
+                  }}
+                  className={`p-2 rounded-md flex items-center justify-center ${
+                    darkMode
+                      ? 'bg-gray-800 text-red-400 hover:text-red-300'
+                      : 'bg-gray-100 text-red-500 hover:text-red-700'
+                  }`}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+              <div
+                className={`absolute z-50 left-0 bottom-full mb-2 px-2 py-1 text-sm rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity ${
+                  darkMode
+                    ? 'bg-gray-800 text-gray-200 border-gray-700'
+                    : 'bg-gray-800 text-white'
+                } ${todo.text ? '' : 'hidden'} pointer-events-none`}
+              >
+                {todo.text}
+                <div
+                  className={`absolute left-2 top-full h-0 w-0 border-x-4 border-x-transparent border-t-4 ${
+                    darkMode ? 'border-t-gray-800' : 'border-t-gray-800'
+                  }`}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+  
+
+export default { CheckboxCell, NumberCell, TagsCell, NotesCell, TodoCell };

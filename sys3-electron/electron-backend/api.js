@@ -187,6 +187,17 @@ module.exports = {
     // Обробник для створення компонента у data.json
     ipcMain.handle('create-component', (event, type) => {
       const templates = {
+        todo: {
+          ColumnId: Date.now().toString(),
+          Type: 'todo',
+          Name: 'Todo List',
+          Description: 'Todo list created on backend',
+          EmojiIcon: 'ListTodo',
+          NameVisible: true,
+          Chosen: {
+            global: [] // Масив для зберігання todo-елементів
+          },
+        },
         checkbox: {
           ColumnId: Date.now().toString(),
           Type: 'checkbox',

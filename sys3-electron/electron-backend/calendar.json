@@ -30,28 +30,6 @@
     "repeatFrequency": "weekly"
   },
   {
-    "id": "1745639218273",
-    "title": "ол",
-    "date": "Sat Apr 26 2025",
-    "startTime": "07:00",
-    "endTime": "08:00",
-    "color": "#2563eb",
-    "isRepeating": false,
-    "repeatDays": [],
-    "repeatFrequency": "weekly"
-  },
-  {
-    "id": "1745639237000",
-    "title": "ит",
-    "date": "Sat Apr 26 2025",
-    "startTime": "14:00",
-    "endTime": "15:00",
-    "color": "#dc2626",
-    "isRepeating": false,
-    "repeatDays": [],
-    "repeatFrequency": "weekly"
-  },
-  {
     "id": "1745639451636",
     "title": "helo",
     "startTime": "09:20",
@@ -62,67 +40,72 @@
     "repeatFrequency": "weekly"
   },
   {
-    "id": "1745639461130",
-    "title": "ghj",
-    "date": "Sat Apr 26 2025",
-    "startTime": "10:00",
-    "endTime": "11:00",
-    "color": "#059669",
-    "isRepeating": false,
-    "repeatDays": [],
-    "repeatFrequency": "weekly"
-  },
-  {
-    "id": "1745639471245",
-    "title": "ghj",
-    "date": "Sat Apr 26 2025",
-    "startTime": "11:00",
-    "endTime": "14:00",
-    "color": "#7c3aed",
-    "isRepeating": false,
-    "repeatDays": [],
-    "repeatFrequency": "weekly"
-  },
-  {
-    "id": "1745639517998",
-    "title": "nm,",
-    "date": "Sat Apr 26 2025",
-    "startTime": "16:00",
-    "endTime": "17:00",
-    "color": "#d97706",
-    "isRepeating": false,
-    "repeatDays": [],
-    "repeatFrequency": "weekly"
-  },
-  {
-    "id": "1745639522997",
-    "title": "bnm",
-    "date": "Sat Apr 26 2025",
-    "startTime": "17:00",
-    "endTime": "18:00",
-    "color": "#059669",
-    "isRepeating": false,
-    "repeatDays": [],
-    "repeatFrequency": "weekly"
-  },
-  {
-    "id": "1745639528272",
-    "title": "bnm,",
-    "date": "Sat Apr 26 2025",
-    "startTime": "18:00",
-    "endTime": "22:00",
-    "color": "#dc2626",
-    "isRepeating": false,
-    "repeatDays": [],
-    "repeatFrequency": "weekly"
-  },
-  {
-    "id": "1745639533169",
-    "title": "vbnm",
-    "date": "Sat Apr 26 2025",
-    "startTime": "15:00",
-    "endTime": "16:00",
+    "id": "1745782363629",
+    "title": "а",
+    "startTime": "09:00",
+    "endTime": "10:00",
     "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1745782370153",
+    "title": "к",
+    "date": "Sun Apr 27 2025",
+    "startTime": "02:00",
+    "endTime": "03:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1746079180965",
+    "title": "ММДО",
+    "date": "Thu May 01 2025",
+    "startTime": "13:30",
+    "endTime": "14:50",
+    "color": "#2563eb",
+    "isRepeating": true,
+    "repeatDays": [
+      4
+    ],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1746079335490",
+    "title": "СЕРВІСНІ РОБОТИ",
+    "date": "Mon Apr 28 2025",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "color": "#dc2626",
+    "isRepeating": true,
+    "repeatDays": [
+      1
+    ],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1746120662582",
+    "title": "Статистика",
+    "date": "Thu May 01 2025",
+    "startTime": "16:40",
+    "endTime": "18:00",
+    "color": "#dc2626",
+    "isRepeating": true,
+    "repeatDays": [
+      4
+    ],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1746120699819",
+    "title": "auto",
+    "date": "Fri May 02 2025",
+    "startTime": "15:20",
+    "endTime": "16:20",
+    "color": "#d97706",
     "isRepeating": false,
     "repeatDays": [],
     "repeatFrequency": "weekly"

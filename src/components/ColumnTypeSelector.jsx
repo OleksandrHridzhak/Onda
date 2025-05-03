@@ -1,8 +1,15 @@
 import React from 'react';
-import { CheckSquare, Hash, Tag, Type, X } from 'lucide-react';
+import { CheckSquare, Hash, Tag, Type, X, ListTodo } from 'lucide-react';
 
 const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
   const columnTypes = [
+    { 
+      id: 'todo', 
+      label: 'Todo List', 
+      icon: <ListTodo className={`w-5 h-5 ${darkMode ? 'text-red-400' : 'text-red-600'}`} />,
+      bgColor: darkMode ? 'bg-red-900' : 'bg-red-50',
+      hoverColor: darkMode ? 'hover:bg-red-800' : 'hover:bg-red-100'
+    },
     { 
       id: 'checkbox', 
       label: 'Checkbox', 

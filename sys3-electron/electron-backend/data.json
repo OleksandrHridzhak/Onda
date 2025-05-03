@@ -1,13 +1,143 @@
 [
   {
-    "ColumnId": "1745590120713",
+    "ColumnId": "1745672754726",
     "Type": "checkbox",
-    "Name": "Checkbox",
-    "Description": "Checkbox created on backend",
-    "EmojiIcon": "Star",
-    "NameVisible": true,
+    "Name": "1H-OUT",
+    "Description": "WW",
+    "EmojiIcon": "Map",
+    "NameVisible": false,
     "Chosen": {
       "Monday": true,
+      "Tuesday": true,
+      "Wednesday": true,
+      "Thursday": true,
+      "Friday": true,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50
+  },
+  {
+    "ColumnId": "1745672763311",
+    "Type": "numberbox",
+    "Name": "STUDY",
+    "Description": "~25H",
+    "EmojiIcon": "Book",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "4.5",
+      "Tuesday": "1",
+      "Wednesday": "1.5",
+      "Thursday": "2",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": "-7.5"
+    },
+    "Width": 76
+  },
+  {
+    "ColumnId": "1745672766295",
+    "Type": "numberbox",
+    "Name": "SIDE PROJECTS",
+    "Description": "~5H\n",
+    "EmojiIcon": "Rocket",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "2",
+      "Tuesday": "0",
+      "Wednesday": "0.5",
+      "Thursday": "3",
+      "Friday": "0.5",
+      "Saturday": "",
+      "Sunday": 0
+    },
+    "Width": 76
+  },
+  {
+    "ColumnId": "1745672769562",
+    "Type": "multi-select",
+    "Name": "ACTIVITY",
+    "Description": "WW",
+    "EmojiIcon": "BicepsFlexed",
+    "NameVisible": true,
+    "Options": [
+      "CARDIO3",
+      "WORKOUT2",
+      "10K"
+    ],
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "WORKOUT2",
+      "Wednesday": "10K",
+      "Thursday": "CARDIO3",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": null
+  },
+  {
+    "ColumnId": "1745780352394",
+    "Type": "numberbox",
+    "Name": "New Numberbox",
+    "Description": "Numberbox created on backend",
+    "EmojiIcon": "Coffee",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "7",
+      "Tuesday": "7",
+      "Wednesday": "7",
+      "Thursday": "9",
+      "Friday": "3",
+      "Saturday": 0,
+      "Sunday": 0
+    },
+    "Width": 75
+  },
+  {
+    "ColumnId": "1745821660572",
+    "Type": "multi-select",
+    "Name": "New Multi-Select",
+    "Description": "Multi-select created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Options": [
+      "1/3",
+      "2/3",
+      "3/3"
+    ],
+    "Chosen": {
+      "Monday": "1/3",
+      "Tuesday": "3/3",
+      "Wednesday": "2/3",
+      "Thursday": "2/3",
+      "Friday": "3/3",
+      "Saturday": "1/3",
+      "Sunday": "3/3"
+    },
+    "Width": 50
+  },
+  {
+    "ColumnId": "1746166079836",
+    "Type": "todo",
+    "Name": "Todo List",
+    "Description": "Todo list created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Chosen": {
+      "global": []
+    },
+    "Width": 194
+  },
+  {
+    "ColumnId": "1746184029826",
+    "Type": "checkbox",
+    "Name": "New Checkbox",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": false,
       "Tuesday": false,
       "Wednesday": false,
       "Thursday": false,
@@ -15,24 +145,6 @@
       "Saturday": false,
       "Sunday": false
     },
-    "Width": 109
-  },
-  {
-    "ColumnId": "1745590126289",
-    "Type": "text",
-    "Name": "New Text",
-    "Description": "Text created on backend",
-    "EmojiIcon": "BicepsFlexed",
-    "NameVisible": true,
-    "Chosen": {
-      "Monday": "про",
-      "Tuesday": "мит",
-      "Wednesday": "",
-      "Thursday": "",
-      "Friday": "",
-      "Saturday": "",
-      "Sunday": ""
-    },
-    "Width": null
+    "Width": 50
   }
 ]
