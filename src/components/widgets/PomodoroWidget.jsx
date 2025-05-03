@@ -1,36 +1,43 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Clock, Play, Pause, X } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setTime,
+  setIsRunning,
+  setIsEnded,
+  setIsPaused,
+  setInitialMinutes,
+  setNotifyEnabled,
+  resetTimer,
+  updateTime,
+} from '../../store/slices/pomodoroSlice';
 
 const PomodoroWidget = ({ darkTheme = false }) => {
-  const [time, setTime] = useState(1500);
-  const [isRunning, setIsRunning] = useState(false);
-  const [isEnded, setIsEnded] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [initialMinutes, setInitialMinutes] = useState(null);
-  // Control notification/audio - only when timer naturally ends
-  const [notifyEnabled, setNotifyEnabled] = useState(false);
+  const dispatch = useDispatch();
+  const {
+    time,
+    isRunning,
+    isEnded,
+    isPaused,
+    initialMinutes,
+    notifyEnabled,
+  } = useSelector((state) => state.pomodoro);
 
   // Prepare alarm audio
   const alarmAudio = useRef(null);
   useEffect(() => {
-    // Use public folder path for audio asset
     const src = `${process.env.PUBLIC_URL}/alert.mp3`;
     alarmAudio.current = new Audio(src);
     alarmAudio.current.loop = true;
   }, []);
 
+  // Update time every second
   useEffect(() => {
-    let timer;
-    if (isRunning && time > 0) {
-      timer = setInterval(() => {
-        setTime(prevTime => prevTime - 1);
-      }, 1000);
-    } else if (time === 0) {
-      setIsEnded(true);
-      setIsRunning(false);
-    }
-    return () => clearInterval(timer);
-  }, [isRunning, time]);
+    const interval = setInterval(() => {
+      dispatch(updateTime());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [dispatch]);
 
   // Play looping alarm when timer ends
   useEffect(() => {
@@ -40,70 +47,51 @@ const PomodoroWidget = ({ darkTheme = false }) => {
       } catch (err) {
         console.warn('Audio play failed:', err);
       }
-      // Also show notification
       window.electronAPI.showNotification({
         title: 'Pomodoro Timer',
         body: `Your ${initialMinutes}-minute timer has ended!`
       });
     }
-  }, [isEnded, notifyEnabled]);
-
-  // Start a custom second-based timer (for testing)
-  const handleStartSeconds = (seconds) => {
-    setNotifyEnabled(true);
-    setTime(seconds);
-    setIsRunning(true);
-    setIsEnded(false);
-    setIsPaused(false);
-    setInitialMinutes(`${seconds}s`);
-  };
+  }, [isEnded, notifyEnabled, initialMinutes]);
 
   const handleStart = (minutes) => {
-    // Stop alarm if playing
     if (alarmAudio.current) {
       alarmAudio.current.pause();
       alarmAudio.current.currentTime = 0;
     }
-    setNotifyEnabled(true);
-    setTime(minutes * 60);
-    setIsRunning(true);
-    setIsEnded(false);
-    setIsPaused(false);
-    setInitialMinutes(minutes);
+    dispatch(setNotifyEnabled(true));
+    dispatch(setTime(minutes * 60));
+    dispatch(setIsRunning(true));
+    dispatch(setIsEnded(false));
+    dispatch(setIsPaused(false));
+    dispatch(setInitialMinutes(minutes));
   };
 
   const handlePause = () => {
-    setIsRunning(false);
-    setIsPaused(true);
+    dispatch(setIsRunning(false));
+    dispatch(setIsPaused(true));
   };
 
   const handleResume = () => {
-    setIsRunning(true);
-    setIsPaused(false);
+    dispatch(setIsRunning(true));
+    dispatch(setIsPaused(false));
   };
 
   const handleEnd = () => {
-    // disable notification for manual end
-    setNotifyEnabled(false);
-    setIsRunning(false);
-    setTime(0);
-    setIsEnded(true);
-    setIsPaused(false);
+    dispatch(setNotifyEnabled(false));
+    dispatch(setIsRunning(false));
+    dispatch(setTime(0));
+    dispatch(setIsEnded(true));
+    dispatch(setIsPaused(false));
   };
 
   const handleClose = () => {
-    // disable notification when closing
-    setNotifyEnabled(false);
-    // Stop alarm when closing
+    dispatch(setNotifyEnabled(false));
     if (alarmAudio.current) {
       alarmAudio.current.pause();
       alarmAudio.current.currentTime = 0;
     }
-    setTime(1500);
-    setIsRunning(false);
-    setIsEnded(false);
-    setIsPaused(false);
-    setInitialMinutes(null);
+    dispatch(resetTimer());
   };
 
   const formatTime = (seconds) => {
@@ -128,7 +116,7 @@ const PomodoroWidget = ({ darkTheme = false }) => {
         <div className="flex flex-row items-center justify-between w-full">
           <div className="text-lg pl-1 font-poppins">{formatTime(time)}</div>
           <div className="flex space-x-2">
-                <button
+            <button
               className={`h-8 w-8 flex items-center justify-center rounded-full ${isRunning ? (darkTheme ? 'bg-transparent hover:bg-blue-200 text-blue-600' : 'bg-blue-100 hover:bg-blue-200 text-blue-600') : (darkTheme ? 'bg-transparent hover:bg-blue-200 text-blue-600' : 'bg-blue-100 hover:bg-blue-200 text-blue-600')}`}
               onClick={isRunning ? handlePause : handleResume}
             >

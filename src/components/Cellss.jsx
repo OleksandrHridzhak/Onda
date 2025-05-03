@@ -4,7 +4,32 @@ import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeO
 
 
 
-const CheckboxCell = ({ checked, onChange }) => {
+const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) => {
+  const colorOptions = {
+    green: {
+      bg: darkMode ? 'bg-green-700' : 'bg-green-500',
+      border: 'border-transparent',
+      hover: darkMode ? 'hover:bg-green-600' : 'hover:bg-green-400'
+    },
+    blue: {
+      bg: darkMode ? 'bg-blue-700' : 'bg-blue-500',
+      border: 'border-transparent',
+      hover: darkMode ? 'hover:bg-blue-600' : 'hover:bg-blue-400'
+    },
+    purple: {
+      bg: darkMode ? 'bg-purple-700' : 'bg-purple-500',
+      border: 'border-transparent',
+      hover: darkMode ? 'hover:bg-purple-600' : 'hover:bg-purple-400'
+    },
+    orange: {
+      bg: darkMode ? 'bg-orange-700' : 'bg-orange-500',
+      border: 'border-transparent',
+      hover: darkMode ? 'hover:bg-orange-600' : 'hover:bg-orange-400'
+    }
+  };
+
+  const selectedColor = colorOptions[color] || colorOptions.green;
+
   return (
     <div className="flex justify-center">
       <label className="relative flex items-center justify-center w-6 h-6 cursor-pointer">
@@ -14,10 +39,11 @@ const CheckboxCell = ({ checked, onChange }) => {
           onChange={onChange}
           className="sr-only peer"
         />
-        <div className="w-6 h-6 rounded-full border border-gray-400 flex items-center justify-center 
+        <div className={`w-6 h-6 rounded-full border flex items-center justify-center 
                         transition-all duration-150 ease-in-out
-                        hover:border-gray-500
-                        peer-checked:bg-green-400 peer-checked:border-green-500 peer-checked:hover:bg-green-600">
+                        ${selectedColor.border}
+                        ${checked ? selectedColor.bg : ''}
+                        ${checked ? selectedColor.hover : 'hover:border-gray-500'}`}>
           <Check
             size={16}
             className={`absolute text-white transition-opacity duration-150 ${
@@ -51,12 +77,19 @@ const NumberCell = ({ value, onChange }) => {
 
 
   
-const TagsCell = ({ value, onChange, options, darkMode }) => {
+const TagsCell = ({ value, onChange, options, darkMode, tagColors = {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState(
     typeof value === 'string' && value.trim() !== '' ? value.split(', ').filter(tag => tag.trim() !== '') : []
   );
   const dropdownRef = useRef(null);
+
+  const colorOptions = [
+    { name: 'blue', bg: darkMode ? 'bg-blue-900' : 'bg-blue-100', text: darkMode ? 'text-blue-100' : 'text-blue-800' },
+    { name: 'green', bg: darkMode ? 'bg-green-900' : 'bg-green-100', text: darkMode ? 'text-green-100' : 'text-green-800' },
+    { name: 'purple', bg: darkMode ? 'bg-purple-900' : 'bg-purple-100', text: darkMode ? 'text-purple-100' : 'text-purple-800' },
+    { name: 'orange', bg: darkMode ? 'bg-orange-900' : 'bg-orange-100', text: darkMode ? 'text-orange-100' : 'text-orange-800' }
+  ];
 
   const handleTagChange = (tag) => {
     setSelectedTags((prevTags) => {
@@ -86,45 +119,50 @@ const TagsCell = ({ value, onChange, options, darkMode }) => {
     <div className="relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="px-0 py-0 rounded-md cursor-pointer flex  items-center justify-between h-full w-full bg-transparent hover:bg-transparent transition-colors"
+        className="px-0 py-0 rounded-md cursor-pointer flex items-center justify-between h-full w-full bg-transparent hover:bg-transparent transition-colors"
       >
         {selectedTags.length > 0 ? (
           <div className="flex flex-wrap gap-1">
-            {selectedTags.map((tag) => (
-              <span 
-                key={tag} 
-                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  darkMode 
-                    ? 'bg-blue-900 text-blue-100' 
-                    : 'bg-blue-100 text-blue-800'
-                }`}
-              >
-                {tag}
-              </span>
-            ))}
+            {selectedTags.map((tag) => {
+              const color = tagColors[tag] || 'blue';
+              const colorOption = colorOptions.find(opt => opt.name === color);
+              return (
+                <span 
+                  key={tag} 
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text}`}
+                >
+                  {tag}
+                </span>
+              );
+            })}
           </div>
         ) : (
           <div className="h-full w-full min-h-[2rem]"></div>
-
         )}
       </div>
       
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg max-h-48 overflow-auto">
-          {(options || []).map((option) => (
-            <div
-              key={option}
-              className="px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm whitespace-nowrap"
-              onClick={() => {
-                handleTagChange(option);
-                setIsOpen(false); // Закриваємо після вибору
-              }}
-            >
-              <span className={selectedTags.includes(option) ? 'text-blue-500' : 'text-gray-700'}>
-                {option}
-              </span>
-            </div>
-          ))}
+        <div className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}>
+          {(options || []).map((option) => {
+            const color = tagColors[option] || 'blue';
+            const colorOption = colorOptions.find(opt => opt.name === color);
+            return (
+              <div
+                key={option}
+                className={`px-3 py-2 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-blue-50'} cursor-pointer text-sm whitespace-nowrap`}
+                onClick={() => {
+                  handleTagChange(option);
+                  setIsOpen(false);
+                }}
+              >
+                <div className="flex items-center">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text} mr-2`}>
+                    {option}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -258,24 +296,24 @@ const TagsCell = ({ value, onChange, options, darkMode }) => {
             onChange={(e) => setNewTodo(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddTodo()}
             placeholder="Add new todo..."
-            className={`w-full px-2 py-1 text-sm rounded-md ${
-              darkMode
-                ? 'bg-gray-700 text-gray-200 border-gray-600'
-                : 'bg-white text-gray-700 border-gray-300'
-            } border focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className={`w-full px-3 py-2 text-sm rounded-md transition-all duration-200
+              ${darkMode 
+                ? 'bg-gray-700 text-gray-200 placeholder-gray-400 border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500' 
+                : 'bg-white text-gray-700 placeholder-gray-400 border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+              } border outline-none`}
           />
           <button
             onClick={handleAddTodo}
-            className={`ml-2 p-1 rounded-md ${
+            className={`ml-2 p-2 rounded-md transition-colors duration-200 ${
               darkMode
-                ? 'bg-blue-600 hover:bg-blue-700'
-                : 'bg-blue-500 hover:bg-blue-600'
-            } text-white`}
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-blue-500 hover:bg-blue-600 text-white'
+            }`}
           >
             <Plus size={16} />
           </button>
         </div>
-        <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[330px] 
+        <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[330px] mt-0
           [&::-webkit-scrollbar]:w-1/2
           [&::-webkit-scrollbar-track]:bg-transparent
           [&::-webkit-scrollbar-thumb]:rounded-full
@@ -316,9 +354,9 @@ const TagsCell = ({ value, onChange, options, darkMode }) => {
                     onBlur={handleSaveEdit}
                     className={`flex-1 px-2 py-1 text-sm rounded-md z-20 ${
                       darkMode
-                        ? 'bg-gray-600 text-gray-200 border-gray-500'
-                        : 'bg-white text-gray-700 border-gray-300'
-                    } border focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0`}
+                        ? 'bg-gray-600 text-gray-200 border-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                        : 'bg-white text-gray-700 border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    } border outline-none focus:outline-none min-w-0`}
                     autoFocus
                   />
                 ) : (

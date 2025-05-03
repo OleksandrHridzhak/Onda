@@ -8,14 +8,21 @@
     "NameVisible": false,
     "Chosen": {
       "Monday": true,
-      "Tuesday": true,
+      "Tuesday": "true",
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
-      "Saturday": false,
-      "Sunday": false
+      "Saturday": true,
+      "Sunday": true
     },
-    "Width": 50
+    "Width": 50,
+    "Options": [],
+    "TagColors": {
+      "TagColors": {
+        "color": "purple"
+      }
+    },
+    "CheckboxColor": "blue"
   },
   {
     "ColumnId": "1745672763311",
@@ -63,18 +70,25 @@
     "Options": [
       "CARDIO3",
       "WORKOUT2",
-      "10K"
+      "10K",
+      "рудд"
     ],
     "Chosen": {
-      "Monday": "",
+      "Monday": "рудд",
       "Tuesday": "WORKOUT2",
       "Wednesday": "10K",
       "Thursday": "CARDIO3",
-      "Friday": "",
+      "Friday": "CARDIO3",
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": null
+    "Width": null,
+    "TagColors": {
+      "CARDIO3": "purple",
+      "WORKOUT2": "blue",
+      "10K": "orange",
+      "рудд": "green"
+    }
   },
   {
     "ColumnId": "1745780352394",
@@ -115,7 +129,12 @@
       "Saturday": "1/3",
       "Sunday": "3/3"
     },
-    "Width": 50
+    "Width": 50,
+    "TagColors": {
+      "3/3": "orange",
+      "2/3": "blue",
+      "1/3": "orange"
+    }
   },
   {
     "ColumnId": "1746166079836",
@@ -137,14 +156,15 @@
     "EmojiIcon": "Star",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
-      "Tuesday": false,
-      "Wednesday": false,
-      "Thursday": false,
-      "Friday": false,
-      "Saturday": false,
-      "Sunday": false
+      "Monday": "true",
+      "Tuesday": "true",
+      "Wednesday": "true",
+      "Thursday": "true",
+      "Friday": true,
+      "Saturday": true,
+      "Sunday": true
     },
-    "Width": 50
+    "Width": 50,
+    "CheckboxColor": "green"
   }
 ]
