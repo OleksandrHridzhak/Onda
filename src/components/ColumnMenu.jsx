@@ -148,7 +148,7 @@ const ColumnMenu = ({
   return (
     <div 
       ref={menuRef}
-      className={`absolute z-50 top-10 left-0 tralefnslate-x-full  ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-64`}
+      className={`absolute z-50 top-10 left-40 tralefnslate-x-full  ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-80`}
       style={{ 
         position: 'absolute',
         top: '-1px',
