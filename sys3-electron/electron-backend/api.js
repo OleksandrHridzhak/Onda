@@ -329,6 +329,10 @@ module.exports = {
         mainWindow.maximize();
       }
     });
+    ipcMain.on('next-tab', () => {
+      // Відправляємо подію до рендер-процесу, щоб перемкнути вкладку
+      mainWindow.webContents.send('next-tab');
+    });
 
     // Обробник для перемикання теми
     ipcMain.handle('switch-theme', (event, darkMode) => {

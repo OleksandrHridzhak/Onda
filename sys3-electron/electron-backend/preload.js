@@ -33,6 +33,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getTheme: () => ipcRenderer.invoke('get-theme'),
   updateTheme: (themeSettings) => ipcRenderer.invoke('update-theme', themeSettings),
 
+  sendNextTab: () => ipcRenderer.send('next-tab'),
+  onNextTab: (callback) => {
+    ipcRenderer.on('next-tab', callback);
+    return () => ipcRenderer.removeListener('next-tab', callback);
+  },
+
   // Table settings
   getSettings: () => ipcRenderer.invoke('get-settings'),
   updateSettings: (settings) => ipcRenderer.invoke('update-settings', settings),
