@@ -142,9 +142,69 @@
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
     "Chosen": {
-      "global": []
+      "global": [
+        {
+          "text": "лльт",
+          "completed": false,
+          "category": null
+        },
+        {
+          "text": "олд",
+          "completed": false,
+          "category": null
+        },
+        {
+          "text": "д",
+          "completed": true,
+          "category": null
+        },
+        {
+          "text": "фів",
+          "completed": true,
+          "category": null
+        },
+        {
+          "text": "фів",
+          "completed": true,
+          "category": null
+        },
+        {
+          "text": "а",
+          "completed": true,
+          "category": null
+        },
+        {
+          "text": "Зробити те і те і все",
+          "completed": true,
+          "category": "Робота"
+        },
+        {
+          "text": "j",
+          "completed": true,
+          "category": null
+        },
+        {
+          "text": "d",
+          "completed": true,
+          "category": null
+        },
+        {
+          "text": "d",
+          "completed": true,
+          "category": "Особисте"
+        },
+        {
+          "text": "р",
+          "completed": true
+        },
+        {
+          "text": "т",
+          "completed": false,
+          "category": "No category"
+        }
+      ]
     },
-    "Width": 200
+    "Width": 285
   },
   {
     "ColumnId": "1746294856234",

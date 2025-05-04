@@ -1,7 +1,7 @@
 {
   "theme": {
     "accentColor": "green",
-    "darkMode": true
+    "darkMode": false
   },
   "table": {
     "columnOrder": [

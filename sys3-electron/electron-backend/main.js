@@ -9,31 +9,54 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    icon: path.join(__dirname, 'onda-logo.png'), // Use ONDA logo
+    icon: path.join(__dirname, 'onda-logo.png'),
     frame: false,
     webPreferences: {
-      nodeIntegration: false, // Вимкнути для безпеки
-      contextIsolation: true, // Увімкнути ізоляцію
-      preload: path.join(__dirname, 'preload.js'), // Підключаємо preload
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
-  // Завантажуємо пусту HTML-сторінку (бо фронтенду ще емає)
+// Завантажуємо пусту HTML-сторінку (бо фронтенду ще немає)
   //mainWindow.loadFile(path.join(__dirname, './build/index.html'));
   mainWindow.loadURL('http://localhost:3000'); // Завантажуємо локальний сервер React
-
-  // Set the window to full screen
   mainWindow.maximize();
+
 }
 
-app.whenReady().then(() => {
-  createWindow();
-  // Ініціалізація API після того, як вікно готове
-  api.init(ipcMain, mainWindow);
-  calendarBackend.init(ipcMain, mainWindow);
-  globalShortcut.register('Control+Tab', () => {
-    mainWindow.webContents.send('next-tab');
-  });
-});
+const gotTheLock = app.requestSingleInstanceLock();
 
-console.log('Message from renderer process!');
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      if (!mainWindow.isVisible()) mainWindow.show();
+      mainWindow.focus();
+    }
+  });
+
+  app.whenReady().then(() => {
+    createWindow();
+    api.init(ipcMain, mainWindow);
+    calendarBackend.init(ipcMain, mainWindow);
+  });
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    } else {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      if (!mainWindow.isVisible()) mainWindow.show();
+      mainWindow.focus();
+    }
+  });
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+}
