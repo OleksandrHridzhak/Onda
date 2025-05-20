@@ -1,7 +1,7 @@
 {
   "theme": {
     "accentColor": "green",
-    "darkMode": true,
+    "darkMode": false,
     "autoThemeSettings": {
       "enabled": true,
       "startTime": "07:00",

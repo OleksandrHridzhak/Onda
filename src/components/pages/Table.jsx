@@ -426,6 +426,7 @@ const Table = ({ darkMode, setDarkMode }) => {
         >
           <TodoCell
             value={column.Chosen?.global || []}
+            column={column}
             onChange={(value) => handleCellChange('global', column.ColumnId, value)}
             darkMode={darkMode}
           />

@@ -7,7 +7,7 @@ import {
     ArrowUp, ArrowDown,
     ChevronDown, ChevronUp,
     Camera, Clock, Globe, Lock, Map,
-    Mic, Pen, Phone, Search, User,BicepsFlexed
+    Mic, Pen, Phone, Search, User, BicepsFlexed
 } from 'lucide-react';
 
 const availableIcons = [
@@ -38,7 +38,6 @@ const availableIcons = [
     { component: <BicepsFlexed size={20} />, name: 'BicepsFlexed' }
 ];
 
-
 const ColumnMenu = ({ 
   column, 
   handleDeleteColumn, 
@@ -62,8 +61,11 @@ const ColumnMenu = ({
   const [showTitle, setShowTitle] = useState(column.NameVisible !== false);
   const [tags, setTags] = useState(column.Options || []);
   const [tagColors, setTagColors] = useState(column.TagColors || {});
+  const [categories, setCategories] = useState(column.Options || []); // New state for todo categories
+  const [categoryColors, setCategoryColors] = useState(column.TagColors || {}); // New state for category colors
   const [checkboxColor, setCheckboxColor] = useState(column.CheckboxColor || 'green');
   const [newTag, setNewTag] = useState('');
+  const [newCategory, setNewCategory] = useState(''); // New state for new category input
   const [width, setWidth] = useState(column.Width ? parseInt(column.Width) : '');
   const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
   const menuRef = useRef(null);
@@ -82,6 +84,8 @@ const ColumnMenu = ({
     setShowTitle(column.NameVisible !== false);
     setTags(column.Options || []);
     setTagColors(column.TagColors || {});
+    setCategories(column.Options || []); // Initialize categories
+    setCategoryColors(column.TagColors || {}); // Initialize category colors
     setCheckboxColor(column.CheckboxColor || 'green');
     setWidth(column.Width ? parseInt(column.Width) : '');
   }, [column]);
@@ -120,6 +124,27 @@ const ColumnMenu = ({
     setTagColors(prev => ({ ...prev, [tag]: color }));
   };
 
+  const handleAddCategory = () => {
+    if (newCategory.trim() && !categories.includes(newCategory.trim())) {
+      setCategories([...categories, newCategory.trim()]);
+      setCategoryColors(prev => ({ ...prev, [newCategory.trim()]: 'blue' }));
+      setNewCategory('');
+    }
+  };
+
+  const handleRemoveCategory = (category) => {
+    setCategories(categories.filter((c) => c !== category));
+    setCategoryColors(prev => {
+      const newColors = { ...prev };
+      delete newColors[category];
+      return newColors;
+    });
+  };
+
+  const handleCategoryColorChange = (category, color) => {
+    setCategoryColors(prev => ({ ...prev, [category]: color }));
+  };
+
   const handleSave = () => {
     onRename(column.ColumnId, name);
     onChangeIcon(column.ColumnId, selectedIcon);
@@ -127,6 +152,8 @@ const ColumnMenu = ({
     onToggleTitleVisibility(column.ColumnId, showTitle);
     if (column.Type === 'multi-select') {
       onChangeOptions(column.ColumnId, tags, tagColors);
+    } else if (column.Type === 'todo') {
+      onChangeOptions(column.ColumnId, categories, categoryColors); // Save categories for todo
     }
     if (column.Type === 'checkbox') {
       onChangeCheckboxColor(column.ColumnId, checkboxColor);
@@ -148,7 +175,7 @@ const ColumnMenu = ({
   return (
     <div 
       ref={menuRef}
-      className={`absolute z-50 top-10 left-40 tralefnslate-x-full  ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-80`}
+      className={`absolute z-50 top-10 left-40 translate-x-full ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-80`}
       style={{ 
         position: 'absolute',
         top: '-1px',
@@ -186,33 +213,33 @@ const ColumnMenu = ({
           </button>
           
           {isIconSectionExpanded && (
-                <div
-                  className={`mt-2 grid grid-cols-5 gap-1 p-1 border ${
-                    darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-white'
-                  } rounded-md`}
+            <div
+              className={`mt-2 grid grid-cols-5 gap-1 p-1 border ${
+                darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-white'
+              } rounded-md`}
+            >
+              {availableIcons.map((icon) => (
+                <button
+                  key={icon.name}
+                  onClick={() => {
+                    setSelectedIcon(icon.name);
+                    setIsIconSectionExpanded(false);
+                  }}
+                  className={`flex items-center justify-center p-2 rounded ${
+                    selectedIcon === icon.name
+                      ? darkMode
+                        ? 'bg-gray-600'
+                        : 'bg-gray-200'
+                      : ''
+                  } ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
                 >
-                  {availableIcons.map((icon) => (
-                    <button
-                      key={icon.name}
-                      onClick={() => {
-                        setSelectedIcon(icon.name);
-                        setIsIconSectionExpanded(false);
-                      }}
-                      className={`flex items-center justify-center p-2 rounded ${
-                        selectedIcon === icon.name
-                          ? darkMode
-                            ? 'bg-gray-600'
-                            : 'bg-gray-200'
-                          : ''
-                      } ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
-                    >
-                      <div className="flex items-center justify-center w-5 h-5">
-                        {icon.component}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
+                  <div className="flex items-center justify-center w-5 h-5">
+                    {icon.component}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="mb-3">
           <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Column Name</label>
@@ -308,6 +335,55 @@ const ColumnMenu = ({
                     </div>
                     <button
                       onClick={() => handleRemoveTag(tag)}
+                      className={`p-1 rounded-md ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-500 hover:bg-gray-100'}`}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {column.Type === 'todo' && (
+          <div className="mb-3">
+            <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Categories</label>
+            <div className="flex items-center mb-2">
+              <input
+                type="text"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAddCategory()}
+                placeholder="Add new category..."
+                className={`flex-1 px-3 py-2 border ${darkMode ? 'border-gray-700 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white'} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+              />
+              <button
+                onClick={handleAddCategory}
+                className={`ml-2 p-2 rounded-md ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+            <div className="space-y-2">
+              {categories.map((category) => (
+                <div key={category} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorOptions.find(c => c.name === categoryColors[category])?.bg} ${colorOptions.find(c => c.name === categoryColors[category])?.text}`}>
+                      {category}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex gap-1">
+                      {colorOptions.map(color => (
+                        <button
+                          key={color.name}
+                          onClick={() => handleCategoryColorChange(category, color.name)}
+                          className={`w-4 h-4 rounded-full ${color.bg} ${color.text} border ${categoryColors[category] === color.name ? 'border-white' : 'border-transparent'}`}
+                        />
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => handleRemoveCategory(category)}
                       className={`p-1 rounded-md ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-500 hover:bg-gray-100'}`}
                     >
                       <Trash2 size={14} />
