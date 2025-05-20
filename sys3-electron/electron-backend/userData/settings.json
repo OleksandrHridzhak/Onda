@@ -1,7 +1,12 @@
 {
   "theme": {
     "accentColor": "green",
-    "darkMode": false
+    "darkMode": true,
+    "autoThemeSettings": {
+      "enabled": true,
+      "startTime": "07:00",
+      "endTime": "18:01"
+    }
   },
   "table": {
     "columnOrder": [
@@ -12,17 +17,17 @@
       "1745672769562",
       "1745780352394",
       "1745821660572",
-      "1746294856234",
-      "1746292320986"
+      "1746292320986",
+      "1746294856234"
     ],
     "showSummaryRow": true,
-    "compactMode": true,
+    "compactMode": false,
     "stickyHeader": true
   },
   "ui": {
-    "animations": false,
+    "animations": true,
     "tooltips": true,
-    "confirmDelete": true
+    "confirmDelete": false
   },
   "header": {
     "layout": "bothWidgets"

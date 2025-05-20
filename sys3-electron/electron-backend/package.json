@@ -16,20 +16,22 @@
     "electron-packager": "^17.1.2"
   },
   "build": {
-  "asar":false,
-  "appId": "com.onda.onda",
-  "productName": "Onda",
-  "directories": {
-    "buildResources": "assets",
-    "output": "dist"
+    "asar": false,
+    "appId": "com.onda.onda",
+    "productName": "Onda",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/{@electron,electron}/**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    }
   },
-  "files": [
-    "**/*",  
-    "!node_modules/{@electron,electron}/**/*"
-  ],
-  "win": {
-    "target": "nsis"
+  "dependencies": {
+    "node-cron": "^4.0.5"
   }
-  }
-
 }

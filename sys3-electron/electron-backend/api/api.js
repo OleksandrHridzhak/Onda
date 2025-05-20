@@ -2,9 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const { app, BrowserWindow, ipcMain, Notification, dialog } = require('electron');
 
-const DATA_FILE = path.join(__dirname, 'data.json');
-const CALENDAR_FILE = path.join(__dirname, 'calendar.json');
-const SETTINGS_FILE = path.join(__dirname, 'settings.json');
+const DATA_FILE = path.join(__dirname, '../userData/data.json');
+const CALENDAR_FILE = path.join(__dirname, '../userData/calendar.json');
+const SETTINGS_FILE = path.join(__dirname, '../userData/settings.json');
+const { updateThemeBasedOnTime } = require('../utils/utils');
 
 // Функція для перевірки та створення файлу data.json, якщо його немає
 const ensureDataFileExists = () => {
@@ -36,7 +37,7 @@ const ensureSettingsFileExists = () => {
   }
 };
 
-// Функція для отримання даних
+
 const getData = async () => {
   try {
     if (!fs.existsSync(DATA_FILE)) {
@@ -436,6 +437,7 @@ module.exports = {
       const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
       settings.theme = { ...settings.theme, ...themeSettings };
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+      updateThemeBasedOnTime();
       return { status: 'Theme updated' };
     });
 
