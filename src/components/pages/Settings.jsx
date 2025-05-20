@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Settings, Bell, LayoutGrid, CalendarDays, Monitor, Shield, User, Table, Palette, Eye, Download, Upload } from 'lucide-react';
 
-export default function SettingsDashboard({darkTheme, setDarkTheme}) {
-  const [activeSection, setActiveSection] = useState('table');
+export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
+  const [activeSection, setActiveSection] = useState(() => {
+    // Initialize activeSection from localStorage, default to 'table' if not found
+    return localStorage.getItem('activeSection') || 'table';
+  });
   const [settings, setSettings] = useState({
     theme: {
       accentColor: 'blue',
@@ -29,6 +32,7 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
     }
   });
 
+  // Load settings from electronAPI
   useEffect(() => {
     window.electronAPI.getSettings().then(({ data }) => {
       setSettings(prev => ({
@@ -40,6 +44,12 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
     console.log('Settings loaded:', settings);
   }, []);
 
+  // Save activeSection to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('activeSection', activeSection);
+  }, [activeSection]);
+
+  // Rest of your code remains unchanged
   const sections = [
     { id: 'table', name: 'Table', icon: <Table className="w-4 h-4" /> },
     { id: 'ui', name: 'Interface', icon: <Eye className="w-4 h-4" /> },
@@ -54,10 +64,14 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
   handleThemeChange(updatedTheme);
 };
 
+
   const handleThemeChange = async (newTheme) => {
     const updatedSettings = { ...settings, theme: { ...settings.theme, ...newTheme } };
     setSettings(updatedSettings);
     await window.electronAPI.updateTheme(newTheme);
+    if (newTheme.autoThemeSettings?.enabled === true) {
+      window.location.reload();
+    }
   };
 
   const handleTableChange = async (newTable) => {
@@ -154,7 +168,9 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
     </div>
   );
 
-  const UISection = ({ settings, onUIChange, darkTheme, onThemeChange, setDarkTheme, autoThemeSettings, onAutoThemeChange }) => (
+  const UISection = ({ settings, onUIChange, darkTheme, onThemeChange, setDarkTheme, autoThemeSettings, onAutoThemeChange }) => {
+    return (
+
     <div className="space-y-6">
       <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
         <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Interface Settings</h3>
@@ -203,7 +219,8 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
 
   const DataSection = ({ darkTheme }) => {

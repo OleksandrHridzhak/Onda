@@ -16,6 +16,12 @@ const TimelineWidget = ({ darkTheme = false }) => {
           const nowMinus2h = new Date(now.getTime() - 2 * 60 * 60 * 1000);
           const todayDay = now.getDay(); // 0 - Sunday, 1 - Monday, ..., 6 - Saturday
 
+          const isSameDate = (d1, d2) =>
+            d1.getFullYear() === d2.getFullYear() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getDate() === d2.getDate();
+
+
           const filteredEvents = response.data.filter(event => {
             const [startHour, startMinute] = event.startTime.split(':').map(Number);
             const [endHour, endMinute] = event.endTime.split(':').map(Number);
@@ -36,7 +42,9 @@ const TimelineWidget = ({ darkTheme = false }) => {
               endDateTime.setHours(endHour, endMinute, 0, 0);
             } else {
               // Звичайна одноразова подія
+
               const eventDate = new Date(event.date);
+              if (!isRepeatingToday && !isSameDate(eventDate, now)) return false;
               startDateTime = new Date(eventDate);
               startDateTime.setHours(startHour, startMinute, 0, 0);
 

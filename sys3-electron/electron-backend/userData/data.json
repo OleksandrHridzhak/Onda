@@ -144,27 +144,26 @@
     "Chosen": {
       "global": [
         {
-          "text": "j",
+          "text": "dss",
           "completed": false,
-          "category": null
+          "category": ""
         },
         {
-          "text": "d",
+          "text": "HELLO",
           "completed": false,
-          "category": null
-        },
-        {
-          "text": "d",
-          "completed": false,
-          "category": "Особисте"
-        },
-        {
-          "text": "р",
-          "completed": false
+          "category": "BLUE"
         }
       ]
     },
-    "Width": 285
+    "Width": 285,
+    "Options": [
+      "NEW",
+      "BLUE"
+    ],
+    "TagColors": {
+      "NEW": "purple",
+      "BLUE": "blue"
+    }
   },
   {
     "ColumnId": "1746294856234",
