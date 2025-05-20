@@ -2,9 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { app, BrowserWindow, ipcMain } = require('electron');
 
-const DATA_FILE = path.join(__dirname, 'calendar.json');
+const DATA_FILE = path.join(__dirname, '../userData/calendar.json');
 
-// Ensure calendar.json exists
+
 const ensureDataFileExists = () => {
   if (!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));

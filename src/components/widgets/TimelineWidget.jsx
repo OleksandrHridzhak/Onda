@@ -13,19 +13,43 @@ const TimelineWidget = ({ darkTheme = false }) => {
         const response = await window.electronAPI.calendarGetEvents();
         if (response.status === 'success') {
           const now = new Date();
+          const nowMinus2h = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+          const todayDay = now.getDay(); // 0 - Sunday, 1 - Monday, ..., 6 - Saturday
 
           const filteredEvents = response.data.filter(event => {
-            const eventDate = new Date(event.date);
-            const eventTime = event.startTime.split(':').map(Number);
-            eventDate.setHours(eventTime[0], eventTime[1], 0, 0);
+            const [startHour, startMinute] = event.startTime.split(':').map(Number);
+            const [endHour, endMinute] = event.endTime.split(':').map(Number);
 
-            const eventEndTime = event.endTime.split(':').map(Number);
-            const eventEndDate = new Date(event.date);
-            eventEndDate.setHours(eventEndTime[0], eventEndTime[1], 0, 0);
+            let startDateTime, endDateTime;
 
-            return eventDate >= new Date(now.getTime() - 2 * 60 * 60 * 1000) || 
-                   (eventDate <= now && eventEndDate >= now);
+            const isRepeatingToday =
+              event.isRepeating &&
+              Array.isArray(event.repeatDays) &&
+              event.repeatDays.includes(todayDay);
+
+            if (isRepeatingToday) {
+              // Повторювана подія на сьогодні
+              startDateTime = new Date(now);
+              startDateTime.setHours(startHour, startMinute, 0, 0);
+
+              endDateTime = new Date(now);
+              endDateTime.setHours(endHour, endMinute, 0, 0);
+            } else {
+              // Звичайна одноразова подія
+              const eventDate = new Date(event.date);
+              startDateTime = new Date(eventDate);
+              startDateTime.setHours(startHour, startMinute, 0, 0);
+
+              endDateTime = new Date(eventDate);
+              endDateTime.setHours(endHour, endMinute, 0, 0);
+            }
+
+            return (
+              startDateTime >= nowMinus2h ||
+              (startDateTime <= now && endDateTime >= now)
+            );
           });
+
 
           filteredEvents.sort((a, b) => {
             const timeA = a.startTime.split(':').map(Number);

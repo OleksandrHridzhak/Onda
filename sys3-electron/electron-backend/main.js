@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
 const path = require('path');
-const api = require(path.join(__dirname, 'api.js'));
-const calendarBackend = require('./calendar');
+const api = require(path.join(__dirname, './api/api.js'));
+const calendarBackend = require('./api/calendar');
+
+const { initCronJobs } = require('./services/cronServices');
 
 let mainWindow;
 
@@ -9,7 +11,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    icon: path.join(__dirname, 'onda-logo.png'),
+    icon: path.join(__dirname, './assets/onda-logo.png'),
     frame: false,
     webPreferences: {
       nodeIntegration: false,
@@ -42,6 +44,7 @@ if (!gotTheLock) {
     createWindow();
     api.init(ipcMain, mainWindow);
     calendarBackend.init(ipcMain, mainWindow);
+    initCronJobs();
   });
 
   app.on('activate', () => {

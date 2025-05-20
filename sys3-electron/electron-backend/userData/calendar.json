@@ -76,12 +76,14 @@
   {
     "id": "1746120662582",
     "title": "Статистика",
-    "date": "Thu May 01 2025",
-    "startTime": "16:40",
-    "endTime": "18:00",
+    "date": "Thu May 23 2025",
+    "startTime": "18:40",
+    "endTime": "19:00",
     "color": "#dc2626",
     "isRepeating": true,
     "repeatDays": [
+      0,
+      1,
       4
     ],
     "repeatFrequency": "weekly"
@@ -114,6 +116,17 @@
     "date": "Sun May 04 2025",
     "startTime": "00:00",
     "endTime": "01:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1747664330674",
+    "title": "f",
+    "date": "Tue May 20 2025",
+    "startTime": "12:00",
+    "endTime": "18:00",
     "color": "#2563eb",
     "isRepeating": false,
     "repeatDays": [],

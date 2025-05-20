@@ -2,11 +2,16 @@ import { useState, useEffect } from 'react';
 import { Settings, Bell, LayoutGrid, CalendarDays, Monitor, Shield, User, Table, Palette, Eye, Download, Upload } from 'lucide-react';
 
 export default function SettingsDashboard({darkTheme, setDarkTheme}) {
-  const [activeSection, setActiveSection] = useState('theme');
+  const [activeSection, setActiveSection] = useState('table');
   const [settings, setSettings] = useState({
     theme: {
       accentColor: 'blue',
-      darkMode: true
+      darkMode: true,
+      autoThemeSettings: {
+        enabled: false,
+        startTime: '',
+        endTime: ''
+      }
     },
     table: {
       columnOrder: [],
@@ -25,7 +30,6 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
   });
 
   useEffect(() => {
-    // Load settings from electron API and preserve default header if missing
     window.electronAPI.getSettings().then(({ data }) => {
       setSettings(prev => ({
         ...prev,
@@ -33,15 +37,22 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
         header: data.header ?? prev.header
       }));
     }).catch(console.error);
+    console.log('Settings loaded:', settings);
   }, []);
 
   const sections = [
-    { id: 'theme', name: 'Theme', icon: <Palette className="w-4 h-4" /> },
     { id: 'table', name: 'Table', icon: <Table className="w-4 h-4" /> },
     { id: 'ui', name: 'Interface', icon: <Eye className="w-4 h-4" /> },
     { id: 'data', name: 'Data', icon: <Download className="w-4 h-4" /> },
     { id: 'header', name: 'Header', icon: <LayoutGrid className="w-4 h-4" /> },
   ];
+  const handleAutoThemeChange = (newAutoThemeSettings) => {
+  const updatedTheme = {
+    ...settings.theme,
+    autoThemeSettings: { ...settings.theme.autoThemeSettings, ...newAutoThemeSettings }
+  };
+  handleThemeChange(updatedTheme);
+};
 
   const handleThemeChange = async (newTheme) => {
     const updatedSettings = { ...settings, theme: { ...settings.theme, ...newTheme } };
@@ -72,15 +83,6 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
 
   const renderSection = () => {
     switch (activeSection) {
-      case 'theme':
-        return (
-          <ThemeSection
-            settings={settings.theme}
-            onThemeChange={handleThemeChange}
-            darkTheme={darkTheme}
-            setDarkTheme={setDarkTheme}
-          />
-        );
       case 'table':
         return (
           <TableSection
@@ -92,9 +94,13 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
       case 'ui':
         return (
           <UISection
-            settings={settings.ui}
+            settings={settings}
             onUIChange={handleUIChange}
             darkTheme={darkTheme}
+            onThemeChange={handleThemeChange}
+            setDarkTheme={setDarkTheme}
+            autoThemeSettings={settings.theme.autoThemeSettings}
+            onAutoThemeChange={handleAutoThemeChange}
           />
         );
       case 'data':
@@ -131,39 +137,6 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
     }
   };
 
-  const ThemeSection = ({ settings, onThemeChange, darkTheme, setDarkTheme }) => (
-    <div className="space-y-6">
-      <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
-        <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Theme Settings</h3>
-        <div className="mt-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Dark Theme</span>
-            <ToggleSwitch 
-              checked={settings.darkMode} 
-              onChange={(checked) => {
-                onThemeChange({ darkMode: checked });
-                setDarkTheme(checked);
-              }} 
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Accent Color</span>
-            <select
-              value={settings.accentColor}
-              onChange={(e) => onThemeChange({ accentColor: e.target.value })}
-              className={`block w-32 ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-200' : 'border-gray-200 bg-white text-gray-600'} rounded-md text-sm focus:ring-blue-500 focus:border-blue-500`}
-            >
-              <option value="blue">Blue</option>
-              <option value="green">Green</option>
-              <option value="purple">Purple</option>
-              <option value="red">Red</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   const TableSection = ({ settings, onTableChange, darkTheme }) => (
     <div className="space-y-6">
       <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
@@ -176,55 +149,62 @@ export default function SettingsDashboard({darkTheme, setDarkTheme}) {
               onChange={(checked) => onTableChange({ showSummaryRow: checked })} 
             />
           </div>
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Compact Mode</span>
-            <ToggleSwitch 
-              checked={settings.compactMode} 
-              onChange={(checked) => onTableChange({ compactMode: checked })} 
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Sticky Header</span>
-            <ToggleSwitch 
-              checked={settings.stickyHeader} 
-              onChange={(checked) => onTableChange({ stickyHeader: checked })} 
-            />
-          </div>
         </div>
       </div>
     </div>
   );
 
-  const UISection = ({ settings, onUIChange, darkTheme }) => (
+  const UISection = ({ settings, onUIChange, darkTheme, onThemeChange, setDarkTheme, autoThemeSettings, onAutoThemeChange }) => (
     <div className="space-y-6">
       <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
         <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Interface Settings</h3>
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Enable Animations</span>
+            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Dark Theme</span>
             <ToggleSwitch 
-              checked={settings.animations} 
-              onChange={(checked) => onUIChange({ animations: checked })} 
+              checked={settings.theme.darkMode} 
+              onChange={(checked) => {
+                onThemeChange({ darkMode: checked });
+                setDarkTheme(checked);
+              }} 
             />
           </div>
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Show Tooltips</span>
-            <ToggleSwitch 
-              checked={settings.tooltips} 
-              onChange={(checked) => onUIChange({ tooltips: checked })} 
+
+          <div className="flex items-center justify-between mt-4">
+            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Auto Theme Switcher</span>
+            <ToggleSwitch
+              checked={autoThemeSettings.enabled}
+              onChange={(checked) => onAutoThemeChange({ enabled: checked })}
             />
           </div>
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Confirm Delete</span>
-            <ToggleSwitch 
-              checked={settings.confirmDelete} 
-              onChange={(checked) => onUIChange({ confirmDelete: checked })} 
-            />
-          </div>
+
+          {autoThemeSettings.enabled && (
+            <div className="mt-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Start of Day</label>
+                <input
+                  type="time"
+                  value={autoThemeSettings.startTime}
+                  onChange={(e) => onAutoThemeChange({ startTime: e.target.value })}
+                  className={` w-32 rounded-md text-m px-2 py-1 ${darkTheme ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-600 border border-gray-300'}`}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <label className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>End of Day</label>
+                <input
+                  type="time"
+                  value={autoThemeSettings.endTime}
+                  onChange={(e) => onAutoThemeChange({ endTime: e.target.value })}
+                  className={` w-32 rounded-md text-m px-2 py-1 ${darkTheme ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-600 border border-gray-300'}`}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
+
 
   const DataSection = ({ darkTheme }) => {
     const handleExportData = async () => {
