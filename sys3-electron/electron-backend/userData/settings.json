@@ -1,11 +1,11 @@
 {
   "theme": {
-    "accentColor": "green",
-    "darkMode": false,
+    "accentColor": "purple",
+    "darkMode": true,
     "autoThemeSettings": {
       "enabled": true,
-      "startTime": "07:00",
-      "endTime": "18:01"
+      "startTime": "18:00",
+      "endTime": "06:00"
     }
   },
   "table": {
@@ -14,22 +14,26 @@
       "1745672754726",
       "1745672763311",
       "1745672766295",
+      "1746420337324",
+      "1746639791331",
       "1745672769562",
       "1745780352394",
-      "1745821660572",
-      "1746292320986",
-      "1746294856234"
+      "1745672772312",
+      "1746299199914"
     ],
     "showSummaryRow": true,
-    "compactMode": false,
+    "compactMode": true,
     "stickyHeader": true
   },
   "ui": {
-    "animations": true,
+    "animations": false,
     "tooltips": true,
-    "confirmDelete": false
+    "confirmDelete": true
   },
   "header": {
     "layout": "bothWidgets"
+  },
+  "calendar": {
+    "notifications": true
   }
 }

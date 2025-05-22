@@ -3,7 +3,6 @@ import { Settings, Bell, LayoutGrid, CalendarDays, Monitor, Shield, User, Table,
 
 export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
   const [activeSection, setActiveSection] = useState(() => {
-    // Initialize activeSection from localStorage, default to 'table' if not found
     return localStorage.getItem('activeSection') || 'table';
   });
   const [settings, setSettings] = useState({
@@ -29,41 +28,42 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
     },
     header: {
       layout: 'withWidget'
+    },
+    calendar: { 
+      notifications: true
     }
   });
 
-  // Load settings from electronAPI
   useEffect(() => {
     window.electronAPI.getSettings().then(({ data }) => {
       setSettings(prev => ({
         ...prev,
         ...data,
-        header: data.header ?? prev.header
+        header: data.header ?? prev.header,
+        calendar: data.calendar ?? prev.calendar
       }));
     }).catch(console.error);
-    console.log('Settings loaded:', settings);
   }, []);
 
-  // Save activeSection to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('activeSection', activeSection);
   }, [activeSection]);
 
-  // Rest of your code remains unchanged
   const sections = [
     { id: 'table', name: 'Table', icon: <Table className="w-4 h-4" /> },
     { id: 'ui', name: 'Interface', icon: <Eye className="w-4 h-4" /> },
     { id: 'data', name: 'Data', icon: <Download className="w-4 h-4" /> },
     { id: 'header', name: 'Header', icon: <LayoutGrid className="w-4 h-4" /> },
+    { id: 'calendar', name: 'Calendar', icon: <CalendarDays className="w-4 h-4" /> },
   ];
-  const handleAutoThemeChange = (newAutoThemeSettings) => {
-  const updatedTheme = {
-    ...settings.theme,
-    autoThemeSettings: { ...settings.theme.autoThemeSettings, ...newAutoThemeSettings }
-  };
-  handleThemeChange(updatedTheme);
-};
 
+  const handleAutoThemeChange = (newAutoThemeSettings) => {
+    const updatedTheme = {
+      ...settings.theme,
+      autoThemeSettings: { ...settings.theme.autoThemeSettings, ...newAutoThemeSettings }
+    };
+    handleThemeChange(updatedTheme);
+  };
 
   const handleThemeChange = async (newTheme) => {
     const updatedSettings = { ...settings, theme: { ...settings.theme, ...newTheme } };
@@ -78,7 +78,6 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
     const updatedSettings = { ...settings, table: { ...settings.table, ...newTable } };
     setSettings(updatedSettings);
     await window.electronAPI.updateTableSettings(newTable);
-    // notify other parts of the app about table settings change
     window.dispatchEvent(new CustomEvent('table-settings-changed', { detail: newTable }));
   };
 
@@ -93,6 +92,12 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
     setSettings(updatedSettings);
     await window.electronAPI.updateSettings(updatedSettings);
     window.dispatchEvent(new CustomEvent('header-settings-changed', { detail: newHeader }));
+  };
+
+  const handleCalendarChange = async (newCalendar) => {
+    const updatedSettings = { ...settings, calendar: { ...settings.calendar, ...newCalendar } };
+    setSettings(updatedSettings);
+    await window.electronAPI.updateSettings(updatedSettings);
   };
 
   const renderSection = () => {
@@ -146,6 +151,14 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
             </div>
           </div>
         );
+      case 'calendar':
+        return (
+          <CalendarSection
+            settings={settings}
+            onCalendarChange={handleCalendarChange}
+            darkTheme={darkTheme}
+          />
+        );
       default:
         return null;
     }
@@ -168,9 +181,7 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
     </div>
   );
 
-  const UISection = ({ settings, onUIChange, darkTheme, onThemeChange, setDarkTheme, autoThemeSettings, onAutoThemeChange }) => {
-    return (
-
+  const UISection = ({ settings, onUIChange, darkTheme, onThemeChange, setDarkTheme, autoThemeSettings, onAutoThemeChange }) => (
     <div className="space-y-6">
       <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
         <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Interface Settings</h3>
@@ -202,7 +213,7 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
                   type="time"
                   value={autoThemeSettings.startTime}
                   onChange={(e) => onAutoThemeChange({ startTime: e.target.value })}
-                  className={` w-32 rounded-md text-m px-2 py-1 ${darkTheme ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-600 border border-gray-300'}`}
+                  className={`w-32 rounded-md text-m px-2 py-1 ${darkTheme ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-600 border border-gray-300'}`}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -211,7 +222,7 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
                   type="time"
                   value={autoThemeSettings.endTime}
                   onChange={(e) => onAutoThemeChange({ endTime: e.target.value })}
-                  className={` w-32 rounded-md text-m px-2 py-1 ${darkTheme ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-600 border border-gray-300'}`}
+                  className={`w-32 rounded-md text-m px-2 py-1 ${darkTheme ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-600 border border-gray-300'}`}
                 />
               </div>
             </div>
@@ -219,9 +230,24 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
         </div>
       </div>
     </div>
-    );
-  };
+  );
 
+  const CalendarSection = ({ settings, onCalendarChange, darkTheme }) => (
+    <div className="space-y-6">
+      <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
+        <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Calendar Settings</h3>
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Event Notifications</span>
+            <ToggleSwitch 
+              checked={settings.calendar.notifications} 
+              onChange={(checked) => onCalendarChange({ notifications: checked })} 
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   const DataSection = ({ darkTheme }) => {
     const handleExportData = async () => {
@@ -329,7 +355,6 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
         .custom-scroll::-webkit-scrollbar-thumb:active {
           background: ${darkTheme ? 'rgba(75, 85, 99, 1)' : 'rgba(75, 85, 99, 0.9)'};
         }
-        /* Firefox scrollbar */
         .custom-scroll {
           scrollbar-color: ${
             darkTheme
