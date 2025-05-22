@@ -1,6 +1,6 @@
 {
   "name": "electron-backend",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -13,6 +13,7 @@
   "description": "",
   "devDependencies": {
     "electron": "^35.1.4",
+    "electron-builder": "^26.0.12",
     "electron-packager": "^17.1.2"
   },
   "build": {
@@ -28,7 +29,8 @@
       "!node_modules/{@electron,electron}/**/*"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "assets/onda-logo.ico"
     }
   },
   "dependencies": {

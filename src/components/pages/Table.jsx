@@ -28,6 +28,7 @@ const Table = ({ darkMode, setDarkMode }) => {
   const [columnOrder, setColumnOrder] = useState([]);
   const [headerLayout, setHeaderLayout] = useState('withWidget');
 
+
   // Create a derived columns array with a filler column
   const displayColumns = [
     ...columns,

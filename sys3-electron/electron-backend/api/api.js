@@ -20,7 +20,12 @@ const ensureSettingsFileExists = () => {
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
       theme: {
         darkMode: false,
-        accentColor: 'blue'
+        accentColor: 'blue',
+        autoThemeSettings: {
+          enabled: false,
+          startTime: '08:00',
+          endTime: '20:00'
+        }
       },
       table: {
         columnOrder: [],

@@ -265,7 +265,6 @@ const TodoCell = ({ value, column, onChange, darkMode }) => {
       setTodos(updatedTodos);
       onChange(updatedTodos);
       setNewTodo('');
-      setNewCategory('');
       setIsCategoryMenuOpen(false);
     }
   };
@@ -434,7 +433,7 @@ const TodoCell = ({ value, column, onChange, darkMode }) => {
           </div>
         )}
       </div>
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[330px] mt-0
+      <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[310px] mt-0
         [&::-webkit-scrollbar]:w-1/2
         [&::-webkit-scrollbar-track]:bg-transparent
         [&::-webkit-scrollbar-thumb]:rounded-full
@@ -481,35 +480,6 @@ const TodoCell = ({ value, column, onChange, darkMode }) => {
                     } border outline-none focus:outline-none min-w-0`}
                     autoFocus
                   />
-                  {column?.Options?.length > 0 && (
-                    <div className="flex gap-2 flex-wrap">
-                      {column.Options.map((category) => (
-                        <button
-                          key={category}
-                          onClick={() => setEditCategory(category)}
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            editCategory === category
-                              ? `${colorOptions.find(c => c.name === column.TagColors[category])?.bg} ${colorOptions.find(c => c.name === column.TagColors[category])?.text}`
-                              : darkMode
-                                ? 'bg-gray-600 text-gray-200'
-                                : 'bg-gray-200 text-gray-700'
-                          }`}
-                        >
-                          {category}
-                        </button>
-                      ))}
-                      {editCategory && (
-                        <button
-                          onClick={() => setEditCategory('')}
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            darkMode ? 'bg-gray-600 text-gray-400' : 'bg-gray-200 text-gray-400'
-                          }`}
-                        >
-                          Clear Category
-                        </button>
-                      )}
-                    </div>
-                  )}
                 </div>
               ) : (
                 <div className="flex items-center flex-1 min-w-0 w-full gap-2">
@@ -550,7 +520,8 @@ const TodoCell = ({ value, column, onChange, darkMode }) => {
                 </div>
               )}
             </div>
-            <div
+            {!isEditing && (
+              <div
               className="flex space-x-1 absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-full justify-center z-10"
             >
               <button
@@ -582,6 +553,8 @@ const TodoCell = ({ value, column, onChange, darkMode }) => {
                 <Trash2 size={14} />
               </button>
             </div>
+            )}
+            
             <div
               className={`absolute z-50 left-0 bottom-full mb-2 px-2 py-1 text-sm rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity ${
                 darkMode
