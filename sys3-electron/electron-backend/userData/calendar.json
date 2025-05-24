@@ -123,10 +123,10 @@
   {
     "id": "1747577037467",
     "title": "mOURNING",
-    "date": "Wed May 21 2025",
+    "date": "Thu May 22 2025",
     "startTime": "07:00",
     "endTime": "08:00",
-    "color": "#2563eb",
+    "color": "#dc2626",
     "isRepeating": true,
     "repeatDays": [
       0,
@@ -161,10 +161,10 @@
   {
     "id": "1747577673425",
     "title": "SPEAK+AUTO+(UNI OR LEARN)",
-    "date": "Tue May 20 2025",
+    "date": "Thu May 22 2025",
     "startTime": "17:00",
     "endTime": "18:30",
-    "color": "#7c3aed",
+    "color": "#059669",
     "isRepeating": true,
     "repeatDays": [
       0,
@@ -180,10 +180,10 @@
   {
     "id": "1747577959677",
     "title": "LEARN OR PROJ",
-    "date": "Wed May 21 2025",
+    "date": "Thu May 22 2025",
     "startTime": "14:00",
     "endTime": "15:30",
-    "color": "#2563eb",
+    "color": "#059669",
     "isRepeating": true,
     "repeatDays": [
       0,
