@@ -42,7 +42,6 @@ const ensureSettingsFileExists = () => {
   }
 };
 
-
 const getData = async () => {
   try {
     if (!fs.existsSync(DATA_FILE)) {
@@ -166,8 +165,8 @@ module.exports = {
       }
     });
 
-    // Обробник для оновлення checkbox у data.json
-    ipcMain.handle('column-change', (event, updatedCheckbox) => {
+    // Обробник для оновлення колонки у data.json
+    ipcMain.handle('column-change', (event, updatedColumn) => {
       ensureDataFileExists();
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       let data;
@@ -178,16 +177,16 @@ module.exports = {
       }
 
       const index = data.findIndex(
-        (item) => item.ColumnId === updatedCheckbox.ColumnId
+        (item) => item.ColumnId === updatedColumn.ColumnId
       );
 
       if (index === -1) {
-        return { status: 'Checkbox not found' };
+        return { status: 'Column not found' };
       }
 
-      data[index] = updatedCheckbox;
+      data[index] = updatedColumn;
       fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-      return { status: 'Checkbox updated', data: updatedCheckbox };
+      return { status: 'Column updated', data: updatedColumn };
     });
 
     // Обробник для створення компонента у data.json
@@ -263,6 +262,32 @@ module.exports = {
           EmojiIcon: 'Star',
           NameVisible: true,
           Options: ['Option 1', 'Option 2'],
+          TagColors: {
+            'Option 1': 'blue',
+            'Option 2': 'green'
+          },
+          Chosen: {
+            Monday: '',
+            Tuesday: '',
+            Wednesday: '',
+            Thursday: '',
+            Friday: '',
+            Saturday: '',
+            Sunday: '',
+          },
+        },
+        multicheckbox: {
+          ColumnId: Date.now().toString(),
+          Type: 'multicheckbox',
+          Name: 'New Multi Checkbox',
+          Description: 'Multi-checkbox created on backend',
+          EmojiIcon: 'Circle',
+          NameVisible: true,
+          Options: ['Task 1', 'Task 2'],
+          TagColors: {
+            'Task 1': 'blue',
+            'Task 2': 'green'
+          },
           Chosen: {
             Monday: '',
             Tuesday: '',
@@ -335,6 +360,7 @@ module.exports = {
         mainWindow.maximize();
       }
     });
+
     ipcMain.on('next-tab', () => {
       // Відправляємо подію до рендер-процесу, щоб перемкнути вкладку
       mainWindow.webContents.send('next-tab');
@@ -365,6 +391,7 @@ module.exports = {
         return { status: 'Error parsing settings', error: err.message };
       }
     });
+
     ipcMain.handle('get-cell-settings', () => {
       ensureSettingsFileExists();
       try {
@@ -377,11 +404,11 @@ module.exports = {
         return { status: 'Error parsing settings', error: err.message };
       }
     });
-    
+
     // Обробник для оновлення налаштувань клітинки
     ipcMain.handle('update-cell-settings', async (event, cellId, newSettings) => {
       try {
-        const settings = JSON.parse(fs.readFileSync(settingsPath));
+        const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE));
         
         // Ініціалізуємо cellSettings, якщо їх немає
         if (!settings.theme.cellSettings) {
@@ -395,14 +422,14 @@ module.exports = {
           order: newSettings.order
         };
         
-        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
         return { status: 'success' };
       } catch (err) {
         console.error('Error saving cell settings:', err);
         return { status: 'error', message: err.message };
       }
     });
-    
+
     // Обробник для видалення налаштувань клітинки
     ipcMain.handle('delete-cell-settings', (event, cellId) => {
       ensureSettingsFileExists();
@@ -478,7 +505,7 @@ module.exports = {
       new Notification({ title, body }).show();
     });
 
-    // Додаємо нові обробники для експорту та імпорту
+    // Обробники для експорту та імпорту
     ipcMain.handle('export-data', async () => {
       try {
         const [data, calendarData, settings] = await Promise.all([

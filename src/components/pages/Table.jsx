@@ -6,7 +6,7 @@ import TimelineWidget from '../widgets/TimelineWidget';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
 import ColumnHeader from '../ColumnHeader';
-const { CheckboxCell, NumberCell, TagsCell, NotesCell, TodoCell } = Cells;
+const { CheckboxCell, NumberCell, TagsCell, NotesCell, TodoCell, MultiCheckboxCell } = Cells;
 
 const columnWidths = {
   days: '120px', // Fixed width for days column
@@ -14,6 +14,7 @@ const columnWidths = {
   numberbox: '80px',
   'multi-select': '128px',
   text: '256px',
+  multicheckbox: '80px', // Додано ширину для multicheckbox
   filler: 'auto' // Filler column to take remaining space
 };
 
@@ -27,7 +28,6 @@ const Table = ({ darkMode, setDarkMode }) => {
   const [showSummaryRow, setShowSummaryRow] = useState(false);
   const [columnOrder, setColumnOrder] = useState([]);
   const [headerLayout, setHeaderLayout] = useState('withWidget');
-
 
   // Create a derived columns array with a filler column
   const displayColumns = [
@@ -89,7 +89,7 @@ const Table = ({ darkMode, setDarkMode }) => {
         const initialTableData = days.reduce((acc, day) => {
           acc[day] = fetchedColumns.reduce((dayData, col) => {
             if (col.ColumnId !== 'days') {
-              if (col.Type === 'multi-select') {
+              if (col.Type === 'multi-select' || col.Type === 'multicheckbox') {
                 const chosenValue = col.Chosen?.[day];
                 dayData[col.ColumnId] = typeof chosenValue === 'string' ? chosenValue : '';
               } else {
@@ -182,7 +182,7 @@ const Table = ({ darkMode, setDarkMode }) => {
     setColumns((prevColumns) => {
       return prevColumns.map((col) => {
         if (col.ColumnId === columnId) {
-          const updatedChosen = col.Type === 'todo' 
+          const updatedChosen = col.Type === 'todo'
             ? { global: value }
             : {
                 ...(col.Chosen || {}),
@@ -252,7 +252,7 @@ const Table = ({ darkMode, setDarkMode }) => {
           setColumns((prev) => prev.map((col) => (col.ColumnId === columnId ? column : col)));
         });
       }
- return prevColumns;
+      return prevColumns;
     });
   };
 
@@ -279,7 +279,7 @@ const Table = ({ darkMode, setDarkMode }) => {
       return days.reduce((sum, day) => sum + (tableData[day][column.ColumnId] ? 1 : 0), 0);
     } else if (column.Type === 'numberbox') {
       return days.reduce((sum, day) => sum + (parseFloat(tableData[day][column.ColumnId]) || 0), 0);
-    } else if (column.Type === 'multi-select') {
+    } else if (column.Type === 'multi-select' || column.Type === 'multicheckbox') {
       return days.reduce((sum, day) => {
         const tags = tableData[day][column.ColumnId];
         if (typeof tags === 'string' && tags.trim() !== '') {
@@ -296,6 +296,20 @@ const Table = ({ darkMode, setDarkMode }) => {
       return '';
     }
     return '-';
+  };
+
+  const licences = () => {
+    return {
+      name: 'Table',
+      version: '1.0.0',
+      description: 'A table component for the planner application',
+      author: 'Your Name',
+      license: 'MIT',
+      dependencies: {
+        react: '^18.2.0',
+        'lucide-react': '^0.4.0'
+      }
+    };
   };
 
   const handleMoveColumn = async (columnId, direction) => {
@@ -343,16 +357,15 @@ const Table = ({ darkMode, setDarkMode }) => {
         Name: column.Name,
         Description: column.Description || '',
         EmojiIcon: column.EmojiIcon || '',
-        NameVisible: column
-
-.NameVisible !== false,
+        NameVisible: column.NameVisible !== false,
         Options: column.Options || [],
+        TagColors: column.TagColors || {},
         Chosen: column.Chosen || {},
         Width: width
       };
 
-      setColumns(prevColumns => 
-        prevColumns.map(col => 
+      setColumns(prevColumns =>
+        prevColumns.map(col =>
           col.ColumnId === columnId ? { ...col, Width: width } : col
         )
       );
@@ -365,8 +378,8 @@ const Table = ({ darkMode, setDarkMode }) => {
       });
     } catch (error) {
       console.error('Error updating column width:', error);
-      setColumns(prevColumns => 
-        prevColumns.map(col => 
+      setColumns(prevColumns =>
+        prevColumns.map(col =>
           col.ColumnId === columnId ? { ...col, Width: col.Width } : col
         )
       );
@@ -382,10 +395,10 @@ const Table = ({ darkMode, setDarkMode }) => {
 
   const getWidthStyle = (column) => {
     if (column.Type === 'days') {
-      return { width: '120px', minWidth: '120px' }; // Always fixed for days
+      return { width: '120px', minWidth: '120px' };
     }
     if (column.Type === 'filler') {
-      return { width: 'auto', minWidth: '0px' }; // Filler column takes remaining space
+      return { width: 'auto', minWidth: '0px' };
     }
     if (column.Width) {
       return { width: `${column.Width}px`, minWidth: `${column.Width}px` };
@@ -398,7 +411,7 @@ const Table = ({ darkMode, setDarkMode }) => {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     if (column.Type === 'days') {
       return (
-        <td 
+        <td
           data-column-id={column.ColumnId}
           className={`px-4 py-3 text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-600 border-gray-200'} border-r whitespace-nowrap`}
           style={style}
@@ -410,7 +423,7 @@ const Table = ({ darkMode, setDarkMode }) => {
     }
     if (column.Type === 'filler') {
       return (
-        <td 
+        <td
           data-column-id={column.ColumnId}
           className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`}
           style={style}
@@ -419,7 +432,7 @@ const Table = ({ darkMode, setDarkMode }) => {
     }
     if (column.Type === 'todo') {
       return (
-        <td 
+        <td
           data-column-id={column.ColumnId}
           className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r todo-cell`}
           style={{ ...style, verticalAlign: 'top' }}
@@ -437,7 +450,7 @@ const Table = ({ darkMode, setDarkMode }) => {
     switch (column.Type) {
       case 'checkbox':
         return (
-          <td 
+          <td
             data-column-id={column.ColumnId}
             className={`py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
             style={style}
@@ -452,7 +465,7 @@ const Table = ({ darkMode, setDarkMode }) => {
         );
       case 'numberbox':
         return (
-          <td 
+          <td
             data-column-id={column.ColumnId}
             className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
             style={style}
@@ -466,7 +479,7 @@ const Table = ({ darkMode, setDarkMode }) => {
         );
       case 'multi-select':
         return (
-          <td 
+          <td
             data-column-id={column.ColumnId}
             className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
             style={style}
@@ -482,7 +495,7 @@ const Table = ({ darkMode, setDarkMode }) => {
         );
       case 'text':
         return (
-          <td 
+          <td
             data-column-id={column.ColumnId}
             className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
             style={style}
@@ -491,6 +504,22 @@ const Table = ({ darkMode, setDarkMode }) => {
               value={tableData[day][column.ColumnId] || ''}
               onChange={(value) => handleCellChange(day, column.ColumnId, value)}
               darkMode={darkMode}
+            />
+          </td>
+        );
+      case 'multicheckbox':
+        return (
+          <td
+            data-column-id={column.ColumnId}
+            className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r`}
+            style={style}
+          >
+            <MultiCheckboxCell
+              value={tableData[day][column.ColumnId] || ''}
+              options={column.Options || []}
+              onChange={(value) => handleCellChange(day, column.ColumnId, value)}
+              darkMode={darkMode}
+              tagColors={column.TagColors || {}}
             />
           </td>
         );
@@ -555,10 +584,10 @@ const Table = ({ darkMode, setDarkMode }) => {
         }
       `}</style>
       <div className="p-4 relative">
-        <PlannerHeader 
-          darkTheme={darkMode} 
-          layout={headerLayout} 
-          onExport={handleExport} 
+        <PlannerHeader
+          darkTheme={darkMode}
+          layout={headerLayout}
+          onExport={handleExport}
           setShowColumnSelector={setShowColumnSelector}
           showColumnSelector={showColumnSelector}
         />
@@ -575,7 +604,7 @@ const Table = ({ darkMode, setDarkMode }) => {
           </div>
         )}
       </div>
-      
+
       <div className={`overflow-hidden border ${darkMode ? 'border-gray-700' : 'border-gray-200'} rounded-xl m-2 custom-scroll`}>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -617,7 +646,7 @@ const Table = ({ darkMode, setDarkMode }) => {
                 <tr
                   key={day}
                   className={`
-                    ${darkMode ? 'bg-gray-800' : 'bg-white'} 
+                    ${darkMode ? 'bg-gray-800' : 'bg-white'}
                     transition-colors duration-150
                     ${idx !== days.length - 1 ? (darkMode ? 'border-b border-gray-700' : 'border-b border-gray-200') : ''}
                   `}
