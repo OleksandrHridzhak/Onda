@@ -1,51 +1,49 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-    X, Plus, Trash2, Eye, EyeOff,
-    Heart, Star, Zap, Sun, Moon, 
-    Coffee, Rocket, Shield, Flag, Bell,
-    Book, Music, Pizza, Gamepad,
-    ArrowUp, ArrowDown,
-    ChevronDown, ChevronUp,
-    Camera, Clock, Globe, Lock, Map,
-    Mic, Pen, Phone, Search, User, BicepsFlexed
+import {
+  X, Plus, Trash2, Eye, EyeOff,
+  Heart, Star, Zap, Sun, Moon,
+  Coffee, Rocket, Shield, Flag, Bell,
+  Book, Music, Pizza, Gamepad,
+  Camera, Clock, Globe, Lock, Map,
+  Mic, Pen, Phone, Search, User, BicepsFlexed,ChevronDown, ChevronUp,ArrowUp, ArrowDown
 } from 'lucide-react';
 
 const availableIcons = [
-    { component: <Heart size={20} />, name: 'Heart' },
-    { component: <Star size={20} />, name: 'Star' },
-    { component: <Zap size={20} />, name: 'Zap' },
-    { component: <Sun size={20} />, name: 'Sun' },
-    { component: <Moon size={20} />, name: 'Moon' },
-    { component: <Coffee size={20} />, name: 'Coffee' },
-    { component: <Rocket size={20} />, name: 'Rocket' },
-    { component: <Shield size={20} />, name: 'Shield' },
-    { component: <Flag size={20} />, name: 'Flag' },
-    { component: <Bell size={20} />, name: 'Bell' },
-    { component: <Book size={20} />, name: 'Book' },
-    { component: <Music size={20} />, name: 'Music' },
-    { component: <Pizza size={20} />, name: 'Pizza' },
-    { component: <Gamepad size={20} />, name: 'Gamepad' },
-    { component: <Camera size={20} />, name: 'Camera' },
-    { component: <Clock size={20} />, name: 'Clock' },
-    { component: <Globe size={20} />, name: 'Globe' },
-    { component: <Lock size={20} />, name: 'Lock' },
-    { component: <Map size={20} />, name: 'Map' },
-    { component: <Mic size={20} />, name: 'Mic' },
-    { component: <Pen size={20} />, name: 'Pen' },
-    { component: <Phone size={20} />, name: 'Phone' },
-    { component: <Search size={20} />, name: 'Search' },
-    { component: <User size={20} />, name: 'User' },
-    { component: <BicepsFlexed size={20} />, name: 'BicepsFlexed' }
+  { component: <Heart size={20} />, name: 'Heart' },
+  { component: <Star size={20} />, name: 'Star' },
+  { component: <Zap size={20} />, name: 'Zap' },
+  { component: <Sun size={20} />, name: 'Sun' },
+  { component: <Moon size={20} />, name: 'Moon' },
+  { component: <Coffee size={20} />, name: 'Coffee' },
+  { component: <Rocket size={20} />, name: 'Rocket' },
+  { component: <Shield size={20} />, name: 'Shield' },
+  { component: <Flag size={20} />, name: 'Flag' },
+  { component: <Bell size={20} />, name: 'Bell' },
+  { component: <Book size={20} />, name: 'Book' },
+  { component: <Music size={20} />, name: 'Music' },
+  { component: <Pizza size={20} />, name: 'Pizza' },
+  { component: <Gamepad size={20} />, name: 'Gamepad' },
+  { component: <Camera size={20} />, name: 'Camera' },
+  { component: <Clock size={20} />, name: 'Clock' },
+  { component: <Globe size={20} />, name: 'Globe' },
+  { component: <Lock size={20} />, name: 'Lock' },
+  { component: <Map size={20} />, name: 'Map' },
+  { component: <Mic size={20} />, name: 'Mic' },
+  { component: <Pen size={20} />, name: 'Pen' },
+  { component: <Phone size={20} />, name: 'Phone' },
+  { component: <Search size={20} />, name: 'Search' },
+  { component: <User size={20} />, name: 'User' },
+  { component: <BicepsFlexed size={20} />, name: 'BicepsFlexed' }
 ];
 
-const ColumnMenu = ({ 
-  column, 
-  handleDeleteColumn, 
-  onClose, 
-  onRename, 
-  onChangeIcon, 
-  onChangeDescription, 
-  onToggleTitleVisibility, 
+const ColumnMenu = ({
+  column,
+  handleDeleteColumn,
+  onClose,
+  onRename,
+  onChangeIcon,
+  onChangeDescription,
+  onToggleTitleVisibility,
   onChangeOptions,
   onMoveUp,
   onMoveDown,
@@ -59,13 +57,10 @@ const ColumnMenu = ({
   const [selectedIcon, setSelectedIcon] = useState(column.EmojiIcon || '');
   const [description, setDescription] = useState(column.Description || '');
   const [showTitle, setShowTitle] = useState(column.NameVisible !== false);
-  const [tags, setTags] = useState(column.Options || []);
-  const [tagColors, setTagColors] = useState(column.TagColors || {});
-  const [categories, setCategories] = useState(column.Options || []); // New state for todo categories
-  const [categoryColors, setCategoryColors] = useState(column.TagColors || {}); // New state for category colors
+  const [options, setOptions] = useState(column.Options || []); // Універсальний стан для options (tags, categories, checkboxes)
+  const [optionColors, setOptionColors] = useState(column.TagColors || {}); // Універсальний стан для кольорів
   const [checkboxColor, setCheckboxColor] = useState(column.CheckboxColor || 'green');
-  const [newTag, setNewTag] = useState('');
-  const [newCategory, setNewCategory] = useState(''); // New state for new category input
+  const [newOption, setNewOption] = useState(''); // Універсальний стан для нової опції
   const [width, setWidth] = useState(column.Width ? parseInt(column.Width) : '');
   const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
   const menuRef = useRef(null);
@@ -82,10 +77,8 @@ const ColumnMenu = ({
     setSelectedIcon(column.EmojiIcon || '');
     setDescription(column.Description || '');
     setShowTitle(column.NameVisible !== false);
-    setTags(column.Options || []);
-    setTagColors(column.TagColors || {});
-    setCategories(column.Options || []); // Initialize categories
-    setCategoryColors(column.TagColors || {}); // Initialize category colors
+    setOptions(column.Options || []);
+    setOptionColors(column.TagColors || {});
     setCheckboxColor(column.CheckboxColor || 'green');
     setWidth(column.Width ? parseInt(column.Width) : '');
   }, [column]);
@@ -103,46 +96,25 @@ const ColumnMenu = ({
     };
   }, [onClose]);
 
-  const handleAddTag = () => {
-    if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
-      setTagColors(prev => ({ ...prev, [newTag.trim()]: 'blue' }));
-      setNewTag('');
+  const handleAddOption = () => {
+    if (newOption.trim() && !options.includes(newOption.trim())) {
+      setOptions([...options, newOption.trim()]);
+      setOptionColors(prev => ({ ...prev, [newOption.trim()]: 'blue' }));
+      setNewOption('');
     }
   };
 
-  const handleRemoveTag = (tag) => {
-    setTags(tags.filter((t) => t !== tag));
-    setTagColors(prev => {
+  const handleRemoveOption = (option) => {
+    setOptions(options.filter((opt) => opt !== option));
+    setOptionColors(prev => {
       const newColors = { ...prev };
-      delete newColors[tag];
+      delete newColors[option];
       return newColors;
     });
   };
 
-  const handleColorChange = (tag, color) => {
-    setTagColors(prev => ({ ...prev, [tag]: color }));
-  };
-
-  const handleAddCategory = () => {
-    if (newCategory.trim() && !categories.includes(newCategory.trim())) {
-      setCategories([...categories, newCategory.trim()]);
-      setCategoryColors(prev => ({ ...prev, [newCategory.trim()]: 'blue' }));
-      setNewCategory('');
-    }
-  };
-
-  const handleRemoveCategory = (category) => {
-    setCategories(categories.filter((c) => c !== category));
-    setCategoryColors(prev => {
-      const newColors = { ...prev };
-      delete newColors[category];
-      return newColors;
-    });
-  };
-
-  const handleCategoryColorChange = (category, color) => {
-    setCategoryColors(prev => ({ ...prev, [category]: color }));
+  const handleColorChange = (option, color) => {
+    setOptionColors(prev => ({ ...prev, [option]: color }));
   };
 
   const handleSave = () => {
@@ -150,10 +122,8 @@ const ColumnMenu = ({
     onChangeIcon(column.ColumnId, selectedIcon);
     onChangeDescription(column.ColumnId, description);
     onToggleTitleVisibility(column.ColumnId, showTitle);
-    if (column.Type === 'multi-select') {
-      onChangeOptions(column.ColumnId, tags, tagColors);
-    } else if (column.Type === 'todo') {
-      onChangeOptions(column.ColumnId, categories, categoryColors); // Save categories for todo
+    if (['multi-select', 'todo', 'multicheckbox'].includes(column.Type)) {
+      onChangeOptions(column.ColumnId, options, optionColors);
     }
     if (column.Type === 'checkbox') {
       onChangeCheckboxColor(column.ColumnId, checkboxColor);
@@ -173,10 +143,10 @@ const ColumnMenu = ({
   };
 
   return (
-    <div 
+    <div
       ref={menuRef}
       className={`absolute z-50 top-10 left-40 translate-x-full ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-md shadow-lg w-80`}
-      style={{ 
+      style={{
         position: 'absolute',
         top: '-1px',
         right: '-1px',
@@ -191,11 +161,11 @@ const ColumnMenu = ({
       </div>
       <div className="p-3">
         <div className="mb-3">
-          <button 
+          <button
             onClick={() => setIsIconSectionExpanded(!isIconSectionExpanded)}
             className={`w-full flex items-center justify-between px-2 py-1 rounded-md ${
-              darkMode 
-                ? 'hover:bg-gray-700 text-gray-200' 
+              darkMode
+                ? 'hover:bg-gray-700 text-gray-200'
                 : 'hover:bg-gray-100 text-gray-700'
             }`}
           >
@@ -266,9 +236,9 @@ const ColumnMenu = ({
               onClick={onMoveUp}
               disabled={!canMoveUp}
               className={`flex-1 px-3 py-2 border ${darkMode ? 'border-gray-700' : 'border-gray-300'} rounded-md flex items-center justify-center space-x-1 ${
-                canMoveUp 
-                  ? darkMode 
-                    ? 'text-gray-200 hover:bg-gray-700' 
+                canMoveUp
+                  ? darkMode
+                    ? 'text-gray-200 hover:bg-gray-700'
                     : 'text-gray-700 hover:bg-gray-100'
                   : darkMode
                     ? 'text-gray-600 cursor-not-allowed'
@@ -282,9 +252,9 @@ const ColumnMenu = ({
               onClick={onMoveDown}
               disabled={!canMoveDown}
               className={`flex-1 px-3 py-2 border ${darkMode ? 'border-gray-700' : 'border-gray-300'} rounded-md flex items-center justify-center space-x-1 ${
-                canMoveDown 
-                  ? darkMode 
-                    ? 'text-gray-200 hover:bg-gray-700' 
+                canMoveDown
+                  ? darkMode
+                    ? 'text-gray-200 hover:bg-gray-700'
                     : 'text-gray-700 hover:bg-gray-100'
                   : darkMode
                     ? 'text-gray-600 cursor-not-allowed'
@@ -296,31 +266,33 @@ const ColumnMenu = ({
             </button>
           </div>
         </div>
-        {column.Type === 'multi-select' && (
+        {['multi-select', 'todo', 'multicheckbox'].includes(column.Type) && (
           <div className="mb-3">
-            <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Tags</label>
+            <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>
+              {column.Type === 'multi-select' ? 'Tags' : column.Type === 'todo' ? 'Categories' : 'Checkboxes'}
+            </label>
             <div className="flex items-center mb-2">
               <input
                 type="text"
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
-                placeholder="Add new tag..."
+                value={newOption}
+                onChange={(e) => setNewOption(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
+                placeholder={`Add new ${column.Type === 'multi-select' ? 'tag' : column.Type === 'todo' ? 'category' : 'checkbox'}...`}
                 className={`flex-1 px-3 py-2 border ${darkMode ? 'border-gray-700 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white'} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
               />
               <button
-                onClick={handleAddTag}
+                onClick={handleAddOption}
                 className={`ml-2 p-2 rounded-md ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
               >
                 <Plus size={16} />
               </button>
             </div>
             <div className="space-y-2">
-              {tags.map((tag) => (
-                <div key={tag} className="flex items-center justify-between">
+              {options.map((option) => (
+                <div key={option} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorOptions.find(c => c.name === tagColors[tag])?.bg} ${colorOptions.find(c => c.name === tagColors[tag])?.text}`}>
-                      {tag}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorOptions.find(c => c.name === optionColors[option])?.bg} ${colorOptions.find(c => c.name === optionColors[option])?.text}`}>
+                      {option}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -328,62 +300,13 @@ const ColumnMenu = ({
                       {colorOptions.map(color => (
                         <button
                           key={color.name}
-                          onClick={() => handleColorChange(tag, color.name)}
-                          className={`w-4 h-4 rounded-full ${color.bg} ${color.text} border ${tagColors[tag] === color.name ? 'border-white' : 'border-transparent'}`}
+                          onClick={() => handleColorChange(option, color.name)}
+                          className={`w-4 h-4 rounded-full ${color.bg} ${color.text} border ${optionColors[option] === color.name ? 'border-white' : 'border-transparent'}`}
                         />
                       ))}
                     </div>
                     <button
-                      onClick={() => handleRemoveTag(tag)}
-                      className={`p-1 rounded-md ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-500 hover:bg-gray-100'}`}
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        {column.Type === 'todo' && (
-          <div className="mb-3">
-            <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Categories</label>
-            <div className="flex items-center mb-2">
-              <input
-                type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddCategory()}
-                placeholder="Add new category..."
-                className={`flex-1 px-3 py-2 border ${darkMode ? 'border-gray-700 bg-gray-700 text-gray-200' : 'border-gray-300 bg-white'} rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-              />
-              <button
-                onClick={handleAddCategory}
-                className={`ml-2 p-2 rounded-md ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
-              >
-                <Plus size={16} />
-              </button>
-            </div>
-            <div className="space-y-2">
-              {categories.map((category) => (
-                <div key={category} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorOptions.find(c => c.name === categoryColors[category])?.bg} ${colorOptions.find(c => c.name === categoryColors[category])?.text}`}>
-                      {category}
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="flex gap-1">
-                      {colorOptions.map(color => (
-                        <button
-                          key={color.name}
-                          onClick={() => handleCategoryColorChange(category, color.name)}
-                          className={`w-4 h-4 rounded-full ${color.bg} ${color.text} border ${categoryColors[category] === color.name ? 'border-white' : 'border-transparent'}`}
-                        />
-                      ))}
-                    </div>
-                    <button
-                      onClick={() => handleRemoveCategory(category)}
+                      onClick={() => handleRemoveOption(option)}
                       className={`p-1 rounded-md ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-500 hover:bg-gray-100'}`}
                     >
                       <Trash2 size={14} />
