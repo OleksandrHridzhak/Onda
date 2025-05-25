@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ChevronDown, ChevronUp, Sun, Moon, ArrowUp, ArrowDown } from 'lucide-react';
 import PlannerHeader from '../PlannerHeader';
-import PomodoroWidget from '../widgets/PomodoroWidget';
-import TimelineWidget from '../widgets/TimelineWidget';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
 import ColumnHeader from '../ColumnHeader';
@@ -298,19 +296,6 @@ const Table = ({ darkMode, setDarkMode }) => {
     return '-';
   };
 
-  const licences = () => {
-    return {
-      name: 'Table',
-      version: '1.0.0',
-      description: 'A table component for the planner application',
-      author: 'Your Name',
-      license: 'MIT',
-      dependencies: {
-        react: '^18.2.0',
-        'lucide-react': '^0.4.0'
-      }
-    };
-  };
 
   const handleMoveColumn = async (columnId, direction) => {
     const currentIndex = columns.findIndex(col => col.ColumnId === columnId);
@@ -628,6 +613,7 @@ const Table = ({ darkMode, setDarkMode }) => {
                       onToggleTitleVisibility={handleToggleTitleVisibility}
                       onChangeOptions={handleChangeOptions}
                       onChangeCheckboxColor={handleChangeCheckboxColor}
+                      
                       onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
                       onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
                       canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}

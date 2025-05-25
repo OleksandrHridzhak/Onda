@@ -6,6 +6,7 @@ import {
   Book, Music, Pizza, Gamepad,
   Camera, Clock, Globe, Lock, Map,
   Mic, Pen, Phone, Search, User, BicepsFlexed,ChevronDown, ChevronUp,ArrowUp, ArrowDown
+  
 } from 'lucide-react';
 
 const availableIcons = [

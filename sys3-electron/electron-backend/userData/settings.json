@@ -1,7 +1,7 @@
 {
   "theme": {
     "accentColor": "purple",
-    "darkMode": false,
+    "darkMode": true,
     "autoThemeSettings": {
       "enabled": true,
       "startTime": "07:00",
@@ -10,7 +10,17 @@
   },
   "table": {
     "columnOrder": [
-      "days"
+      "days",
+      "1745672754726",
+      "1745672763311",
+      "1745672766295",
+      "1746420337324",
+      "1748153991558",
+      "1746639791331",
+      "1745672769562",
+      "1745780352394",
+      "1745672772312",
+      "1746299199914"
     ],
     "showSummaryRow": true,
     "compactMode": true,
