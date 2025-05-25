@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, Filter, Trash2 } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, Filter, Trash2,ChevronDown } from 'lucide-react';
 
 export default function Calendar({ darkTheme, setDarkTheme }) {
   const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [viewMode, setViewMode] = useState(() => {
+    // Load viewMode from localStorage, default to 'week' if not set
+    return localStorage.getItem('calendarViewMode') || 'week';
+  });
   const [weekDays, setWeekDays] = useState(getWeekDays(getMonday(new Date())));
   const [events, setEvents] = useState([]);
   const [showEventModal, setShowEventModal] = useState(false);
@@ -32,6 +37,11 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
     '#dc2626': 'Red',
     '#d97706': 'Orange',
   };
+
+  // Save viewMode to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('calendarViewMode', viewMode);
+  }, [viewMode]);
 
   // Helper functions
   function getMonday(date) {
@@ -115,27 +125,48 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
   }, []);
 
   // Navigation
-  const goToPreviousWeek = () => {
-    const prevMonday = new Date(currentWeekStart);
-    prevMonday.setDate(prevMonday.getDate() - 7);
-    setCurrentWeekStart(prevMonday);
+  const goToPrevious = () => {
+    if (viewMode === 'week') {
+      const prevMonday = new Date(currentWeekStart);
+      prevMonday.setDate(prevMonday.getDate() - 7);
+      setCurrentWeekStart(prevMonday);
+      setSelectedDate(new Date(prevMonday));
+    } else {
+      const prevDay = new Date(selectedDate);
+      prevDay.setDate(prevDay.getDate() - 1);
+      setSelectedDate(prevDay);
+      setCurrentWeekStart(getMonday(prevDay));
+    }
   };
 
-  const goToNextWeek = () => {
-    const nextMonday = new Date(currentWeekStart);
-    nextMonday.setDate(nextMonday.getDate() + 7);
-    setCurrentWeekStart(nextMonday);
+  const goToNext = () => {
+    if (viewMode === 'week') {
+      const nextMonday = new Date(currentWeekStart);
+      nextMonday.setDate(nextMonday.getDate() + 7);
+      setCurrentWeekStart(nextMonday);
+      setSelectedDate(new Date(nextMonday));
+    } else {
+      const nextDay = new Date(selectedDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+      setSelectedDate(nextDay);
+      setCurrentWeekStart(getMonday(nextDay));
+    }
   };
 
-  const goToCurrentWeek = () => setCurrentWeekStart(getMonday(new Date()));
+  const goToCurrent = () => {
+    const today = new Date();
+    setCurrentWeekStart(getMonday(today));
+    setSelectedDate(today);
+  };
 
   // Handle time slot click
   const handleTimeSlotClick = (dayIndex, hour) => {
     const startTime = formatTime(hour);
     const endTime = formatTime((hour + 1) % 24);
+    const selectedDay = viewMode === 'day' ? selectedDate : weekDays[dayIndex];
     setNewEvent({
       title: '',
-      date: weekDays[dayIndex].toDateString(),
+      date: selectedDay.toDateString(),
       startTime,
       endTime,
       color: '#2563eb',
@@ -278,6 +309,11 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
     setNewEvent({ ...newEvent, startTime: shift(newEvent.startTime), endTime: shift(newEvent.endTime) });
   };
 
+  // Get days to display based on view mode
+  const getDisplayDays = () => {
+    return viewMode === 'day' ? [selectedDate] : weekDays;
+  };
+
   return (
     <div className={`font-poppins min-h-screen ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
       <style jsx global>{`
@@ -361,48 +397,70 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
             </div>
             <div className="flex flex-col">
               <h2 className={`text-xl font-semibold tracking-tight ${darkTheme ? 'text-gray-200' : 'text-gray-800'}`}>
-                {weekDays[0]?.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                {viewMode === 'day'
+                  ? selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                  : weekDays[0]?.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </h2>
               <p className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
-                Week {getWeekNumber(currentWeekStart)}
+                {viewMode === 'day' ? dayNames[selectedDate.getDay()] : `Week ${getWeekNumber(currentWeekStart)}`}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <div className={`flex items-center gap-1 p-1 ${darkTheme ? 'bg-gray-700/50' : 'bg-gray-100'} rounded-xl`}>
               <button
-                onClick={goToPreviousWeek}
+                onClick={goToPrevious}
                 className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-600' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-200'} rounded-lg transition-colors`}
-                aria-label="Previous week"
+                aria-label={viewMode === 'day' ? 'Previous day' : 'Previous week'}
               >
                 <ChevronLeft size={18} />
               </button>
               <button
-                onClick={goToCurrentWeek}
+                onClick={goToCurrent}
                 className={`px-3 py-1.5 text-sm ${darkTheme ? 'text-gray-300 bg-gray-600/50 hover:bg-gray-500' : 'text-gray-700 bg-white hover:bg-gray-50'} rounded-lg transition-colors`}
               >
                 Today
               </button>
               <button
-                onClick={goToNextWeek}
+                onClick={goToNext}
                 className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-600' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-200'} rounded-lg transition-colors`}
-                aria-label="Next week"
+                aria-label={viewMode === 'day' ? 'Next day' : 'Next week'}
               >
                 <ChevronRight size={18} />
               </button>
             </div>
-            <select
-              value={filterColor || ''}
-              onChange={(e) => setFilterColor(e.target.value || null)}
-              className={`px-3 py-1.5 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 border`}
-            >
-              <option value="">All Events</option>
-              {Object.entries(colorMap).map(([hex, name]) => (
-                <option key={hex} value={hex}>
-                  {name}
-                </option>
-              ))}
-            </select>
+              <div className="relative ">
+                <select
+                  value={viewMode}
+                  onChange={(e) => setViewMode(e.target.value)}
+                  className={`appearance-none w-32   px-3 pr-10 py-1.5 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 border`}
+                >
+                  <option value="week">Week View</option>
+                  <option value="day">Day View</option>
+                </select>
+
+                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <ChevronDown size={16} />
+                </div>
+              </div>
+            <div className="relative">
+              <select
+                value={filterColor || ''}
+                onChange={(e) => setFilterColor(e.target.value || null)}
+                className={`appearance-none w-32  px-3 pr-10 py-1.5 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 border`}
+              >
+                <option value="">All Events</option>
+                {Object.entries(colorMap).map(([hex, name]) => (
+                  <option key={hex} value={hex}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+
+              <div className="pointer-events-none absolute right-3  top-1/2 -translate-y-1/2 text-gray-400">
+                <ChevronDown size={16} />
+              </div>
+            </div>
             <button
               onClick={() => {
                 setNewEvent({ title: '', startTime: '09:00', endTime: '10:00', color: '#2563eb', isRepeating: false, repeatDays: [], repeatFrequency: 'weekly' });
@@ -419,7 +477,7 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
       </div>
 
       {/* Timeline */}
-      <div className="max-w-7xl mx-auto p-2 sm:pх-3 pb-8 sm:pb-12">
+      <div className="max-w-7xl mx-auto p-2 sm:px-3 pb-8 sm:pb-12">
         <div className={`rounded-2xl overflow-auto ${darkTheme ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border custom-scroll`}>
           <div className="relative overflow-y-auto max-h-[620px]" ref={gridRef}>
             <div className="flex">
@@ -437,11 +495,11 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
               </div>
 
               {/* Days and events */}
-              <div className="flex-1 flex min-w-[840px]">
-                {weekDays.map((day, dayIndex) => (
-                  <div key={dayIndex} className={`flex-1 ${darkTheme ? 'border-gray-700' : 'border-gray-200'} border-l relative`}>
+              <div className="flex-1 flex min-w-[120px]">
+                {getDisplayDays().map((day, dayIndex) => (
+                  <div key={day.toDateString()} className={`flex-1 ${darkTheme ? 'border-gray-700' : 'border-gray-200'} border-l relative`}>
                     <div className={`sticky top-0 ${darkTheme ? 'bg-gray-800' : 'bg-white'} z-40 py-3 text-center ${darkTheme ? 'border-gray-700' : 'border-gray-200'} border-b`}>
-                      <div className={`text-xs ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>{dayNames[dayIndex]}</div>
+                      <div className={`text-xs ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>{dayNames[day.getDay()]}</div>
                       <div
                         className={`mt-1 text-sm font-medium ${
                           day.toDateString() === new Date().toDateString()

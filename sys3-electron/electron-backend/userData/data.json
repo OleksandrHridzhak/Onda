@@ -1,1 +1,247 @@
-[]
+[
+  {
+    "ColumnId": "1745672754726",
+    "Type": "checkbox",
+    "Name": "1H-OUT",
+    "Description": "WW",
+    "EmojiIcon": "Map",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": true,
+      "Tuesday": true,
+      "Wednesday": true,
+      "Thursday": true,
+      "Friday": true,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50,
+    "CheckboxColor": "green"
+  },
+  {
+    "ColumnId": "1745672763311",
+    "Type": "numberbox",
+    "Name": "W-STUDY",
+    "Description": "~18H",
+    "EmojiIcon": "Book",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "0.5",
+      "Tuesday": "0",
+      "Wednesday": "0.5",
+      "Thursday": "0",
+      "Friday": "0",
+      "Saturday": "",
+      "Sunday": "-32"
+    },
+    "Width": 63
+  },
+  {
+    "ColumnId": "1745672766295",
+    "Type": "numberbox",
+    "Name": "W-SIDE PROJECTS",
+    "Description": "~5H\n",
+    "EmojiIcon": "Rocket",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "3",
+      "Tuesday": "3.5",
+      "Wednesday": "3.5",
+      "Thursday": "3",
+      "Friday": "3",
+      "Saturday": "2.5",
+      "Sunday": ""
+    },
+    "Width": 61
+  },
+  {
+    "ColumnId": "1745672769562",
+    "Type": "multi-select",
+    "Name": "ACTIVITY",
+    "Description": "WW",
+    "EmojiIcon": "BicepsFlexed",
+    "NameVisible": true,
+    "Options": [
+      "CARDIO3",
+      "WORKOUT2",
+      "10K"
+    ],
+    "Chosen": {
+      "Monday": "CARDIO3",
+      "Tuesday": "WORKOUT2",
+      "Wednesday": "10K, CARDIO3",
+      "Thursday": "CARDIO3",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 106,
+    "TagColors": {
+      "CARDIO3": "blue",
+      "WORKOUT2": "green",
+      "10K": "orange"
+    }
+  },
+  {
+    "ColumnId": "1745672772312",
+    "Type": "text",
+    "Name": "NOTES and TODOs",
+    "Description": "Text created on backend",
+    "EmojiIcon": "Pen",
+    "NameVisible": true,
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "AUTO 12-40 30число",
+      "Saturday": "lox",
+      "Sunday": ""
+    },
+    "Width": 164
+  },
+  {
+    "ColumnId": "1745780352394",
+    "Type": "numberbox",
+    "Name": "New Numberbox",
+    "Description": "Numberbox created on backend",
+    "EmojiIcon": "Coffee",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "7",
+      "Tuesday": "7",
+      "Wednesday": "7",
+      "Thursday": "7",
+      "Friday": "7",
+      "Saturday": "4",
+      "Sunday": ""
+    },
+    "Width": 50
+  },
+  {
+    "ColumnId": "1746299199914",
+    "Type": "todo",
+    "Name": "Todo List",
+    "Description": "Todo list created on backend",
+    "EmojiIcon": "Flag",
+    "NameVisible": true,
+    "Options": [
+      "UNIVERSITY",
+      "ONDA",
+      "ideas"
+    ],
+    "Chosen": {
+      "global": [
+        {
+          "text": "Змінити 10к на 20к",
+          "completed": false,
+          "category": ""
+        },
+        {
+          "text": "FAST CONTENT CREATOR FOR APPS",
+          "completed": false,
+          "category": "ideas"
+        },
+        {
+          "text": "придумати шось з кардіо",
+          "completed": false,
+          "category": ""
+        },
+        {
+          "text": "Створити пространство для збережння ссилок на ресерсерчі",
+          "completed": false,
+          "category": ""
+        },
+        {
+          "text": "Скласти нарешті якийсь план їжі",
+          "completed": false,
+          "category": ""
+        },
+        {
+          "text": "Marketing idea",
+          "completed": false,
+          "category": "ONDA"
+        },
+        {
+          "text": "Мульти чек бокс",
+          "completed": true,
+          "category": "ONDA"
+        }
+      ]
+    },
+    "Width": 367,
+    "TagColors": {
+      "UNIVERSITY": "purple",
+      "ONDA": "blue",
+      "ideas": "orange"
+    }
+  },
+  {
+    "ColumnId": "1746420337324",
+    "Type": "checkbox",
+    "Name": "W-SPEECH: 3.5h ",
+    "Description": "тренування вимови, публічних виступів, формулювання думок, сторітейлінг прийомів, читання в голос",
+    "EmojiIcon": "Heart",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": true,
+      "Tuesday": true,
+      "Wednesday": true,
+      "Thursday": true,
+      "Friday": true,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50,
+    "CheckboxColor": "orange"
+  },
+  {
+    "ColumnId": "1746639791331",
+    "Type": "checkbox",
+    "Name": "3.5H AUTO ",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "Gamepad",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": true,
+      "Tuesday": true,
+      "Wednesday": true,
+      "Thursday": true,
+      "Friday": true,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50,
+    "CheckboxColor": "purple"
+  },
+  {
+    "ColumnId": "1748153991558",
+    "Type": "multicheckbox",
+    "Name": "New Multi Checkbox",
+    "Description": "Multi-checkbox created on backend",
+    "EmojiIcon": "Music",
+    "NameVisible": false,
+    "Options": [
+      "Task 1",
+      "Task 2",
+      "f",
+      "m"
+    ],
+    "TagColors": {
+      "Task 1": "green",
+      "Task 2": "orange",
+      "f": "purple",
+      "m": "purple"
+    },
+    "Chosen": {
+      "Monday": "Task 2, Task 1",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 50
+  }
+]

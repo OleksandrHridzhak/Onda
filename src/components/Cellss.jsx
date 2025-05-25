@@ -550,7 +550,7 @@ const TodoCell = ({ value, column, onChange, darkMode }) => {
                   e.stopPropagation();
                   handleDeleteTodo(todos.findIndex(t => t === todo));
                 }}
-                className={`p-2 rounded-md flex items-center justify-center ${
+                className={`p-2  rounded-md flex items-center justify-center ${
                   darkMode
                     ? 'bg-gray-800 text-red-400 hover:text-red-300'
                     : 'bg-gray-100 text-red-500 hover:text-red-700'
@@ -561,20 +561,6 @@ const TodoCell = ({ value, column, onChange, darkMode }) => {
             </div>
             )}
             
-            <div
-              className={`absolute z-50 left-0 bottom-full mb-2 px-2 py-1 text-sm rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity ${
-                darkMode
-                  ? 'bg-gray-800 text-gray-200 border-gray-700'
-                  : 'bg-gray-800 text-white'
-              } ${todo.text ? '' : 'hidden'} pointer-events-none`}
-            >
-              {todo.text}
-              <div
-                className={`absolute left-2 top-full h-0 w-0 border-x-4 border-x-transparent border-t-4 ${
-                  darkMode ? 'border-t-gray-800' : 'border-t-gray-800'
-                }`}
-              ></div>
-            </div>
           </div>
         ))}
       </div>
