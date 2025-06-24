@@ -75,7 +75,7 @@
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": 106,
+    "Width": 201,
     "TagColors": {
       "CARDIO3": "blue",
       "WORKOUT2": "green",
@@ -98,7 +98,7 @@
       "Saturday": "lox",
       "Sunday": ""
     },
-    "Width": 164
+    "Width": 200
   },
   {
     "ColumnId": "1745780352394",
@@ -163,9 +163,34 @@
           "category": "ONDA"
         },
         {
+          "text": "н",
+          "completed": false,
+          "category": ""
+        },
+        {
+          "text": "г",
+          "completed": false,
+          "category": ""
+        },
+        {
+          "text": "г",
+          "completed": false,
+          "category": ""
+        },
+        {
+          "text": "г",
+          "completed": false,
+          "category": ""
+        },
+        {
           "text": "Мульти чек бокс",
           "completed": true,
           "category": "ONDA"
+        },
+        {
+          "text": "г",
+          "completed": false,
+          "category": ""
         }
       ]
     },
@@ -234,10 +259,10 @@
       "m": "purple"
     },
     "Chosen": {
-      "Monday": "Task 2, Task 1",
-      "Tuesday": "",
-      "Wednesday": "",
-      "Thursday": "",
+      "Monday": "Task 2, Task 1, f, m",
+      "Tuesday": "Task 2, f, m, Task 1",
+      "Wednesday": "f, Task 2, Task 1, m",
+      "Thursday": "Task 1, Task 2, f, m",
       "Friday": "",
       "Saturday": "",
       "Sunday": ""

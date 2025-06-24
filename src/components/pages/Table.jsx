@@ -591,7 +591,7 @@ const Table = ({ darkMode, setDarkMode }) => {
       </div>
 
       <div className={`overflow-hidden border ${darkMode ? 'border-gray-700' : 'border-gray-200'} rounded-xl m-2 custom-scroll`}>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
               <tr className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} border-b`}>
