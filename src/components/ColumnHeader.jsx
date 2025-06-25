@@ -68,7 +68,7 @@ const ColumnHeader = ({
   return (
     <th 
       data-column-id={column.ColumnId}
-      className={`font-poppins px-3 py-3 text-left text-sm font-medium ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200'} border-b border-r whitespace-nowrap overflow-hidden`}
+      className={`font-poppins px-3 py-3 text-left text-sm font-medium ${darkMode ? 'bg-gray-800 text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200'} border-b border-r whitespace-nowrap overflow-hidden`}
       style={column.ColumnId === 'days' ? { width: '120px', minWidth: '120px', maxWidth: '120px' } : style}
     >
       <div
