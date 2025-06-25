@@ -1,5 +1,4 @@
-import React from 'react';
-import { CheckSquare, Hash, Tag, Type, X, ListTodo, Circle } from 'lucide-react';
+import { CheckSquare, Hash, Tag, Type, X, ListTodo, Circle,Table } from 'lucide-react';
 
 const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
   const columnTypes = [
@@ -44,6 +43,13 @@ const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
       icon: <Circle className={`w-5 h-5 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`} />,
       bgColor: darkMode ? 'bg-teal-900' : 'bg-teal-50',
       hoverColor: darkMode ? 'hover:bg-teal-800' : 'hover:bg-teal-100'
+    },
+    {
+      id: 'tasktable',
+      label: 'Tasktable',
+      icon: <Table className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />,
+      bgColor: darkMode ? 'bg-gray-900' : 'bg-gray-50',
+      hoverColor: darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
     }
   ];
 
@@ -78,7 +84,6 @@ const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
   );
 };
 
-// Додайте цей CSS для анімації
 const styles = `
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
@@ -89,7 +94,6 @@ const styles = `
   }
 `;
 
-// Додаємо стилі до документа
 if (typeof document !== 'undefined') {
   const styleElement = document.createElement('style');
   styleElement.innerHTML = styles;

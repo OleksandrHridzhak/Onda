@@ -42,6 +42,14 @@ const ensureSettingsFileExists = () => {
   }
 };
 
+// Функція для перевірки та створення файлу calendar.json, якщо його немає
+const ensureCalendarFileExists = () => {
+  if (!fs.existsSync(CALENDAR_FILE)) {
+    fs.writeFileSync(CALENDAR_FILE, JSON.stringify([], null, 2));
+  }
+};
+
+// Функція для отримання даних із data.json
 const getData = async () => {
   try {
     if (!fs.existsSync(DATA_FILE)) {
@@ -55,7 +63,7 @@ const getData = async () => {
   }
 };
 
-// Функція для збереження даних
+// Функція для збереження даних у data.json
 const saveData = async (data) => {
   try {
     await fs.promises.writeFile(DATA_FILE, JSON.stringify(data, null, 2));
@@ -189,7 +197,7 @@ module.exports = {
       return { status: 'Column updated', data: updatedColumn };
     });
 
-    // Обробник для створення компонента у data.json
+    // Обробник для створення компонента
     ipcMain.handle('create-component', (event, type) => {
       const templates = {
         todo: {
@@ -200,8 +208,13 @@ module.exports = {
           EmojiIcon: 'ListTodo',
           NameVisible: true,
           Chosen: {
-            global: [] // Масив для зберігання todo-елементів
+            global: []
           },
+          Options: ['Option 1', 'Option 2'],
+          TagColors: {
+            'Option 1': 'blue',
+            'Option 2': 'green'
+          }
         },
         checkbox: {
           ColumnId: Date.now().toString(),
@@ -217,8 +230,9 @@ module.exports = {
             Thursday: false,
             Friday: false,
             Saturday: false,
-            Sunday: false,
+            Sunday: false
           },
+          CheckboxColor: 'green'
         },
         numberbox: {
           ColumnId: Date.now().toString(),
@@ -228,14 +242,14 @@ module.exports = {
           EmojiIcon: 'Star',
           NameVisible: true,
           Chosen: {
-            Monday: 0,
-            Tuesday: 0,
-            Wednesday: 0,
-            Thursday: 0,
-            Friday: 0,
-            Saturday: 0,
-            Sunday: 0,
-          },
+            Monday: '',
+            Tuesday: '',
+            Wednesday: '',
+            Thursday: '',
+            Friday: '',
+            Saturday: '',
+            Sunday: ''
+          }
         },
         text: {
           ColumnId: Date.now().toString(),
@@ -251,8 +265,8 @@ module.exports = {
             Thursday: '',
             Friday: '',
             Saturday: '',
-            Sunday: '',
-          },
+            Sunday: ''
+          }
         },
         'multi-select': {
           ColumnId: Date.now().toString(),
@@ -273,8 +287,8 @@ module.exports = {
             Thursday: '',
             Friday: '',
             Saturday: '',
-            Sunday: '',
-          },
+            Sunday: ''
+          }
         },
         multicheckbox: {
           ColumnId: Date.now().toString(),
@@ -295,9 +309,25 @@ module.exports = {
             Thursday: '',
             Friday: '',
             Saturday: '',
-            Sunday: '',
-          },
+            Sunday: ''
+          }
         },
+        tasktable: {
+          ColumnId: Date.now().toString(),
+          Type: 'tasktable',
+          Name: 'New Task List',
+          Description: 'Task table created on backend',
+          EmojiIcon: 'ListTodo',
+          NameVisible: true,
+          Options: ['Task 1', 'Task 2'],
+          TagColors: {
+            'Task 1': 'blue',
+            'Task 2': 'green'
+          },
+          Chosen: {
+            global: []
+          }
+        }
       };
 
       if (!templates[type]) {
@@ -320,7 +350,7 @@ module.exports = {
       return { status: 'Success', data: newComponent };
     });
 
-    // Обробник для видалення компонента з data.json
+    // Обробник для видалення компонента
     ipcMain.handle('delete-component', (event, columnId) => {
       ensureDataFileExists();
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
@@ -361,8 +391,8 @@ module.exports = {
       }
     });
 
+    // Обробник для перемикання вкладок
     ipcMain.on('next-tab', () => {
-      // Відправляємо подію до рендер-процесу, щоб перемкнути вкладку
       mainWindow.webContents.send('next-tab');
     });
 
@@ -376,7 +406,7 @@ module.exports = {
         return { status: 'Error parsing settings', error: err.message };
       }
 
-      settings.theme.darkMode = darkMode; // Оновлюємо значення darkMode
+      settings.theme.darkMode = darkMode;
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
       return { status: 'Theme switched', darkMode };
     });
@@ -392,6 +422,7 @@ module.exports = {
       }
     });
 
+    // Обробник для отримання налаштувань клітинок
     ipcMain.handle('get-cell-settings', () => {
       ensureSettingsFileExists();
       try {
@@ -409,19 +440,14 @@ module.exports = {
     ipcMain.handle('update-cell-settings', async (event, cellId, newSettings) => {
       try {
         const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE));
-        
-        // Ініціалізуємо cellSettings, якщо їх немає
         if (!settings.theme.cellSettings) {
           settings.theme.cellSettings = {};
         }
-        
-        // Запобігаємо рекурсії - створюємо плоский об'єкт
         settings.theme.cellSettings[cellId] = {
           width: newSettings.width,
           height: newSettings.height,
           order: newSettings.order
         };
-        
         fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
         return { status: 'success' };
       } catch (err) {
@@ -439,13 +465,13 @@ module.exports = {
       } catch (err) {
         return { status: 'Error parsing settings', error: err.message };
       }
-    
+
       if (settings.theme.cellSettings && settings.theme.cellSettings[cellId]) {
         delete settings.theme.cellSettings[cellId];
         fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
         return { status: 'Cell settings deleted', cellId };
       }
-    
+
       return { status: 'Cell settings not found', cellId };
     });
 
@@ -505,7 +531,7 @@ module.exports = {
       new Notification({ title, body }).show();
     });
 
-    // Обробники для експорту та імпорту
+    // Обробник для експорту даних
     ipcMain.handle('export-data', async () => {
       try {
         const [data, calendarData, settings] = await Promise.all([
@@ -523,51 +549,53 @@ module.exports = {
         const { filePath } = await dialog.showSaveDialog({
           title: 'Експорт даних',
           defaultPath: path.join(app.getPath('documents'), 'onda-data.json'),
-          filters: [{ name: 'JSON', extensions: ['json'] }]
+          filters: [{ name: 'JSON Files', extensions: ['json'] }]
         });
 
-        if (filePath) {
-          await fs.promises.writeFile(filePath, JSON.stringify(exportData, null, 2));
-          return { success: true, filePath };
+        if (!filePath) {
+          return { status: 'Export cancelled' };
         }
-        return { success: false, error: 'Експорт скасовано' };
+
+        await fs.promises.writeFile(filePath, JSON.stringify(exportData, null, 2));
+        return { status: 'Data exported', filePath };
       } catch (error) {
         console.error('Помилка при експорті даних:', error);
-        return { success: false, error: error.message };
+        return { status: 'Export failed', error: error.message };
       }
     });
 
-    ipcMain.handle('import-data', async (event, data) => {
+    // Обробник для імпорту даних
+    ipcMain.handle('import-data', async () => {
       try {
         const { filePaths } = await dialog.showOpenDialog({
           title: 'Імпорт даних',
-          properties: ['openFile'],
-          filters: [{ name: 'JSON', extensions: ['json'] }]
+          defaultPath: app.getPath('documents'),
+          filters: [{ name: 'JSON Files', extensions: ['json'] }],
+          properties: ['openFile']
         });
 
-        if (filePaths && filePaths.length > 0) {
-          const fileContent = await fs.promises.readFile(filePaths[0], 'utf8');
-          const importedData = JSON.parse(fileContent);
-          
-          // Валідація імпортованих даних
-          if (!importedData || typeof importedData !== 'object') {
-            throw new Error('Невірний формат даних');
-          }
-
-          // Зберігаємо всі імпортовані дані
-          await Promise.all([
-            saveData(importedData.data || []),
-            saveCalendarData(importedData.calendar || []),
-            saveSettings(importedData.settings || {})
-          ]);
-
-          return { success: true };
+        if (!filePaths || filePaths.length === 0) {
+          return { status: 'Import cancelled' };
         }
-        return { success: false, error: 'Імпорт скасовано' };
+
+        const fileContent = await fs.promises.readFile(filePaths[0], 'utf8');
+        const importData = JSON.parse(fileContent);
+
+        if (importData.data) {
+          await saveData(importData.data);
+        }
+        if (importData.calendar) {
+          await saveCalendarData(importData.calendar);
+        }
+        if (importData.settings) {
+          await saveSettings(importData.settings);
+        }
+
+        return { status: 'Data imported' };
       } catch (error) {
         console.error('Помилка при імпорті даних:', error);
-        return { success: false, error: error.message };
+        return { status: 'Import failed', error: error.message };
       }
     });
-  },
+  }
 };

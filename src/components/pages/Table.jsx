@@ -4,16 +4,18 @@ import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import Cells from '../Cellss';
 import ColumnHeader from '../ColumnHeader';
-const { CheckboxCell, NumberCell, TagsCell, NotesCell, TodoCell, MultiCheckboxCell } = Cells;
+const { CheckboxCell, NumberCell, TagsCell, NotesCell, TodoCell, MultiCheckboxCell, TaskTableCell } = Cells;
 
 const columnWidths = {
-  days: '120px', // Fixed width for days column
+  days: '120px',
   checkbox: '48px',
   numberbox: '80px',
   'multi-select': '128px',
   text: '256px',
-  multicheckbox: '80px', // Додано ширину для multicheckbox
-  filler: 'auto' // Filler column to take remaining space
+  tasktable: '200px',
+  multicheckbox: '80px',
+  todo: '128px',
+  filler: 'auto'
 };
 
 const Table = ({ darkMode, setDarkMode }) => {
@@ -27,7 +29,6 @@ const Table = ({ darkMode, setDarkMode }) => {
   const [columnOrder, setColumnOrder] = useState([]);
   const [headerLayout, setHeaderLayout] = useState('withWidget');
 
-  // Create a derived columns array with a filler column
   const displayColumns = [
     ...columns,
     { ColumnId: 'filler', Type: 'filler', Name: '', EmojiIcon: '', NameVisible: false }
@@ -86,7 +87,7 @@ const Table = ({ darkMode, setDarkMode }) => {
 
         const initialTableData = days.reduce((acc, day) => {
           acc[day] = fetchedColumns.reduce((dayData, col) => {
-            if (col.ColumnId !== 'days') {
+            if (col.ColumnId !== 'days' && col.Type !== 'tasktable') {
               if (col.Type === 'multi-select' || col.Type === 'multicheckbox') {
                 const chosenValue = col.Chosen?.[day];
                 dayData[col.ColumnId] = typeof chosenValue === 'string' ? chosenValue : '';
@@ -143,7 +144,9 @@ const Table = ({ darkMode, setDarkMode }) => {
         setTableData((prev) => {
           const newData = { ...prev };
           days.forEach((day) => {
-            newData[day][result.data.ColumnId] = '';
+            if (type !== 'tasktable') {
+              newData[day][result.data.ColumnId] = '';
+            }
           });
           return newData;
         });
@@ -171,7 +174,39 @@ const Table = ({ darkMode, setDarkMode }) => {
     }
   };
 
+  const handleAddTask = async (columnId, taskText) => {
+    const column = columns.find((col) => col.ColumnId === columnId);
+    if (!column || column.Type !== 'tasktable') return;
+
+    const updatedOptions = [...(column.Options || []), taskText];
+    const updatedTagColors = { ...column.TagColors, [taskText]: 'blue' };
+
+    setColumns((prevColumns) =>
+      prevColumns.map((col) =>
+        col.ColumnId === columnId ? { ...col, Options: updatedOptions, TagColors: updatedTagColors } : col
+      )
+    );
+
+    try {
+      await window.electronAPI.changeColumn({
+        ...column,
+        Options: updatedOptions,
+        TagColors: updatedTagColors
+      });
+    } catch (err) {
+      console.error('Failed to add task:', err);
+      setColumns((prevColumns) =>
+        prevColumns.map((col) =>
+          col.ColumnId === columnId ? { ...col, Options: column.Options, TagColors: column.TagColors } : col
+        )
+      );
+    }
+  };
+
   const handleCellChange = async (day, columnId, value) => {
+    const column = columns.find(col => col.ColumnId === columnId);
+    if (!column || column.Type === 'tasktable') return;
+
     setTableData((prev) => ({
       ...prev,
       [day]: { ...prev[day], [columnId]: value }
@@ -180,12 +215,10 @@ const Table = ({ darkMode, setDarkMode }) => {
     setColumns((prevColumns) => {
       return prevColumns.map((col) => {
         if (col.ColumnId === columnId) {
-          const updatedChosen = col.Type === 'todo'
-            ? { global: value }
-            : {
-                ...(col.Chosen || {}),
-                [day]: value
-              };
+          const updatedChosen = {
+            ...(col.Chosen || {}),
+            [day]: value
+          };
           window.electronAPI.changeColumn({ ...col, Chosen: updatedChosen })
             .catch((err) => console.error('Update failed:', err));
           return { ...col, Chosen: updatedChosen };
@@ -216,15 +249,15 @@ const Table = ({ darkMode, setDarkMode }) => {
     updateBackend(columnId, { NameVisible: showTitle });
   };
 
-  const handleChangeOptions = async (columnId, options, tagColors) => {
+  const handleChangeOptions = async (columnId, options, tagColors, doneTags = []) => {
     setColumns((prev) =>
       prev.map((col) =>
         col.ColumnId === columnId
-          ? { ...col, Options: options, TagColors: tagColors }
+          ? { ...col, Options: options, TagColors: tagColors, DoneTags: doneTags }
           : col
       )
     );
-    updateBackend(columnId, { Options: options, TagColors: tagColors });
+    updateBackend(columnId, { Options: options, TagColors: tagColors, DoneTags: doneTags });
   };
 
   const handleRename = async (columnId, newName) => {
@@ -247,8 +280,9 @@ const Table = ({ darkMode, setDarkMode }) => {
         const updatedColumn = { ...column, ...updates };
         window.electronAPI.changeColumn(updatedColumn).catch((err) => {
           console.error('Update failed:', err);
-          setColumns((prev) => prev.map((col) => (col.ColumnId === columnId ? column : col)));
+          setColumns((prev) => prev.map(col => col.ColumnId === columnId ? column : col));
         });
+        return prevColumns.map((col) => (col.ColumnId === columnId ? updatedColumn : col));
       }
       return prevColumns;
     });
@@ -257,10 +291,10 @@ const Table = ({ darkMode, setDarkMode }) => {
   const handleExport = () => {
     const exportData = columns.filter((col) => col.Type !== 'days').map((col) => ({
       ...col,
-      Chosen: days.reduce((acc, day) => {
+      Chosen: col.Type !== 'tasktable' ? days.reduce((acc, day) => {
         acc[day] = tableData[day][col.ColumnId] || '';
         return acc;
-      }, {})
+      }, {}) : undefined
     }));
     const json = JSON.stringify(exportData, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
@@ -290,17 +324,18 @@ const Table = ({ darkMode, setDarkMode }) => {
       const todos = column.Chosen?.global || [];
       const completed = todos.filter(todo => todo.completed).length;
       return `${completed}/${todos.length}`;
+    } else if (column.Type === 'tasktable') {
+      return `${column.DoneTags?.length || 0}/${(column.Options?.length || 0) + (column.DoneTags?.length || 0)}`;
     } else if (column.Type === 'days') {
       return '';
     }
     return '-';
   };
 
-
   const handleMoveColumn = async (columnId, direction) => {
     const currentIndex = columns.findIndex(col => col.ColumnId === columnId);
     if (
-      (direction === 'up' && currentIndex <= 1) || // Don't move above days column
+      (direction === 'up' && currentIndex <= 1) ||
       (direction === 'down' && currentIndex === columns.length - 1)
     ) {
       return;
@@ -345,7 +380,8 @@ const Table = ({ darkMode, setDarkMode }) => {
         NameVisible: column.NameVisible !== false,
         Options: column.Options || [],
         TagColors: column.TagColors || {},
-        Chosen: column.Chosen || {},
+        DoneTags: column.DoneTags || [],
+        Chosen: column.Type !== 'tasktable' ? column.Chosen || {} : undefined,
         Width: width
       };
 
@@ -363,8 +399,8 @@ const Table = ({ darkMode, setDarkMode }) => {
       });
     } catch (error) {
       console.error('Error updating column width:', error);
-      setColumns(prevColumns =>
-        prevColumns.map(col =>
+      setColumns((prevColumns) =>
+        prevColumns.map((col) =>
           col.ColumnId === columnId ? { ...col, Width: col.Width } : col
         )
       );
@@ -391,7 +427,7 @@ const Table = ({ darkMode, setDarkMode }) => {
     return { width: columnWidths[column.Type], minWidth: columnWidths[column.Type] };
   };
 
-  const renderCell = (day, column, columnIndex) => {
+  const renderCell = (day, column, columnIndex, rowIndex) => {
     const style = getWidthStyle(column);
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     if (column.Type === 'days') {
@@ -415,6 +451,9 @@ const Table = ({ darkMode, setDarkMode }) => {
         />
       );
     }
+    if ((column.Type === 'todo' || column.Type === 'tasktable') && rowIndex > 0) {
+      return null;
+    }
     if (column.Type === 'todo') {
       return (
         <td
@@ -427,6 +466,22 @@ const Table = ({ darkMode, setDarkMode }) => {
             value={column.Chosen?.global || []}
             column={column}
             onChange={(value) => handleCellChange('global', column.ColumnId, value)}
+            darkMode={darkMode}
+          />
+        </td>
+      );
+    }
+    if (column.Type === 'tasktable') {
+      return (
+        <td
+          data-column-id={column.ColumnId}
+          className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r todo-cell`}
+          style={{ ...style, verticalAlign: 'top' }}
+          rowSpan={days.length}
+        >
+          <TaskTableCell
+            column={column}
+            onChangeOptions={handleChangeOptions}
             darkMode={darkMode}
           />
         </td>
@@ -516,8 +571,8 @@ const Table = ({ darkMode, setDarkMode }) => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-20">
-        <div className="flex space-x-1 text-5xl font-bold text-blue-500 font-poppins">
-          {['O', 'N', 'D', 'A'].map((ch, idx) => (
+        <div className="flex space-x-1 text-5xl font-bold text-blue-600 font-poppins">
+          {['O', 'S', 'S', 'A'].map((ch, idx) => (
             <span
               key={idx}
               className="inline-block animate-bounce"
@@ -544,7 +599,7 @@ const Table = ({ darkMode, setDarkMode }) => {
           border-radius: 4px;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-          background: ${darkMode ? 'rgba(156, 163, 175, 0.7)' : 'rgba(156, 163, 175, 0.5)'};
+          background: ${darkMode ? 'rgba(51, 85, 144, 0.64)' : 'rgba(156, 163, 175, 0.5)'};
           border-radius: 4px;
         }
         .custom-scroll::-webkit-scrollbar-thumb:hover {
@@ -594,12 +649,12 @@ const Table = ({ darkMode, setDarkMode }) => {
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
-              <tr className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} border-b`}>
+              <tr className={`${darkMode ? 'bg-gray-500 border-gray-600' : 'bg-gray-100 border-gray-200'} border-b`}>
                 {displayColumns.map((column, index) => (
                   column.Type === 'filler' ? (
                     <th
                       key={column.ColumnId}
-                      className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r border-b`}
+                      className={`${darkMode ? 'border-gray-600' : 'border-gray-200'} border-r border-b`}
                       style={getWidthStyle(column)}
                     />
                   ) : (
@@ -612,8 +667,6 @@ const Table = ({ darkMode, setDarkMode }) => {
                       onChangeDescription={handleChangeDescription}
                       onToggleTitleVisibility={handleToggleTitleVisibility}
                       onChangeOptions={handleChangeOptions}
-                      onChangeCheckboxColor={handleChangeCheckboxColor}
-                      
                       onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
                       onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
                       canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}
@@ -621,7 +674,9 @@ const Table = ({ darkMode, setDarkMode }) => {
                       darkMode={darkMode}
                       columnWidths={columnWidths}
                       onChangeWidth={handleChangeWidth}
+                      onChangeCheckboxColor={handleChangeCheckboxColor}
                       style={getWidthStyle(column)}
+                      onAddTask={handleAddTask}
                     />
                   )
                 ))}
@@ -634,13 +689,12 @@ const Table = ({ darkMode, setDarkMode }) => {
                   className={`
                     ${darkMode ? 'bg-gray-800' : 'bg-white'}
                     transition-colors duration-150
-                    ${idx !== days.length - 1 ? (darkMode ? 'border-b border-gray-700' : 'border-b border-gray-200') : ''}
+                    ${idx !== days.length - 1 ? (darkMode ? 'border-gray-700 border-b' : 'border-gray-200 border-b') : ''}
                   `}
                 >
-                  {displayColumns.map((column, index) => {
-                    if (column.Type === 'todo' && idx > 0) return null;
-                    return renderCell(day, column, index);
-                  })}
+                  {displayColumns.map((column, index) => (
+                    renderCell(day, column, index, idx)
+                  ))}
                 </tr>
               ))}
             </tbody>

@@ -75,30 +75,12 @@
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": 201,
+    "Width": 131,
     "TagColors": {
       "CARDIO3": "blue",
       "WORKOUT2": "green",
       "10K": "orange"
     }
-  },
-  {
-    "ColumnId": "1745672772312",
-    "Type": "text",
-    "Name": "NOTES and TODOs",
-    "Description": "Text created on backend",
-    "EmojiIcon": "Pen",
-    "NameVisible": true,
-    "Chosen": {
-      "Monday": "",
-      "Tuesday": "",
-      "Wednesday": "",
-      "Thursday": "",
-      "Friday": "AUTO 12-40 30число",
-      "Saturday": "lox",
-      "Sunday": ""
-    },
-    "Width": 200
   },
   {
     "ColumnId": "1745780352394",
@@ -117,89 +99,6 @@
       "Sunday": ""
     },
     "Width": 50
-  },
-  {
-    "ColumnId": "1746299199914",
-    "Type": "todo",
-    "Name": "Todo List",
-    "Description": "Todo list created on backend",
-    "EmojiIcon": "Flag",
-    "NameVisible": true,
-    "Options": [
-      "UNIVERSITY",
-      "ONDA",
-      "ideas"
-    ],
-    "Chosen": {
-      "global": [
-        {
-          "text": "Змінити 10к на 20к",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "FAST CONTENT CREATOR FOR APPS",
-          "completed": false,
-          "category": "ideas"
-        },
-        {
-          "text": "придумати шось з кардіо",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "Створити пространство для збережння ссилок на ресерсерчі",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "Скласти нарешті якийсь план їжі",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "Marketing idea",
-          "completed": false,
-          "category": "ONDA"
-        },
-        {
-          "text": "н",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "г",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "г",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "г",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "Мульти чек бокс",
-          "completed": true,
-          "category": "ONDA"
-        },
-        {
-          "text": "г",
-          "completed": false,
-          "category": ""
-        }
-      ]
-    },
-    "Width": 367,
-    "TagColors": {
-      "UNIVERSITY": "purple",
-      "ONDA": "blue",
-      "ideas": "orange"
-    }
   },
   {
     "ColumnId": "1746420337324",
@@ -240,33 +139,74 @@
     "CheckboxColor": "purple"
   },
   {
-    "ColumnId": "1748153991558",
-    "Type": "multicheckbox",
-    "Name": "New Multi Checkbox",
-    "Description": "Multi-checkbox created on backend",
-    "EmojiIcon": "Music",
-    "NameVisible": false,
-    "Options": [
-      "Task 1",
-      "Task 2",
-      "f",
-      "m"
-    ],
+    "ColumnId": "1750832346226",
+    "Type": "tasktable",
+    "Name": "New Task List",
+    "Description": "Task table created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Options": [],
     "TagColors": {
-      "Task 1": "green",
-      "Task 2": "orange",
-      "f": "purple",
-      "m": "purple"
+      "Task 1": "blue",
+      "Task 2": "green",
+      "і": "blue",
+      "BREAD1": "orange",
+      "BREAD2": "orange",
+      "BREAD3": "orange",
+      "BREAD4": "orange"
     },
     "Chosen": {
-      "Monday": "Task 2, Task 1, f, m",
-      "Tuesday": "Task 2, f, m, Task 1",
-      "Wednesday": "f, Task 2, Task 1, m",
-      "Thursday": "Task 1, Task 2, f, m",
-      "Friday": "",
-      "Saturday": "",
-      "Sunday": ""
+      "global": []
     },
-    "Width": 50
+    "DoneTags": [
+      "HT",
+      "SGE",
+      "SAF",
+      "JYT",
+      "BREAD1",
+      "BREAD2",
+      "BREAD3",
+      "Task 2",
+      "BREAD4",
+      "Task 1",
+      "S",
+      "SSS",
+      "і",
+      "SS",
+      "SSSAD"
+    ],
+    "Width": 400
+  },
+  {
+    "ColumnId": "1750832611778",
+    "Type": "todo",
+    "Name": "Todo List",
+    "Description": "Todo list created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Chosen": {
+      "global": [
+        {
+          "text": "HELLO",
+          "completed": false,
+          "category": "Option 2"
+        },
+        {
+          "text": "HOW ARE YOU",
+          "completed": false,
+          "category": "Option 2"
+        }
+      ]
+    },
+    "Options": [
+      "Option 1",
+      "Option 2"
+    ],
+    "TagColors": {
+      "Option 1": "blue",
+      "Option 2": "green"
+    },
+    "Width": 200,
+    "DoneTags": []
   }
 ]
