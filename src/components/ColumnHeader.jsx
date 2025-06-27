@@ -1,42 +1,7 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { Menu, ArrowUp, ArrowDown } from 'lucide-react';
+import { getIconComponent } from './icons'; // Імпорт функції
 import ColumnMenu from './ColumnMenu';
-
-import {
-  Heart, Star, Zap, Sun, Moon, 
-  Coffee, Rocket, Shield, Flag, Bell,
-  Book, Music, Pizza, Gamepad,
-  Camera, Clock, Globe, Lock, Map,
-  Mic, Pen, Phone, Search, User,BicepsFlexed
-} from 'lucide-react';
-
-const iconComponents = {
-  Heart: <Heart size={16} />,
-  Star: <Star size={16} />,
-  Zap: <Zap size={16} />,
-  Sun: <Sun size={16} />,
-  Moon: <Moon size={16} />,
-  Coffee: <Coffee size={16} />,
-  Rocket: <Rocket size={16} />,
-  Shield: <Shield size={16} />,
-  Flag: <Flag size={16} />,
-  Bell: <Bell size={16} />,
-  Book: <Book size={16} />,
-  Music: <Music size={16} />,
-  Pizza: <Pizza size={16} />,
-  Gamepad: <Gamepad size={16} />,
-  Camera: <Camera size={16} />,
-  Clock: <Clock size={16} />,
-  Globe: <Globe size={16} />,
-  Lock: <Lock size={16} />,
-  Map: <Map size={16} />,
-  Mic: <Mic size={16} />,
-  Pen: <Pen size={16} />,
-  Phone: <Phone size={16} />,
-  Search: <Search size={16} />,
-  User: <User size={16} />,
-  BicepsFlexed: <BicepsFlexed size={16} />
-};
 
 const ColumnHeader = ({
   column,
@@ -58,11 +23,6 @@ const ColumnHeader = ({
   const [showMenu, setShowMenu] = useState(false);
   const style = column.Width ? { width: `${column.Width}px` } : {};
 
-  const getIconComponent = (iconName) => {
-    return iconComponents[iconName] || null;
-  };
-
-  // Перевіряємо, чи заголовок порожній (немає ні іконки, ні тексту)
   const isEmptyHeader = !column.EmojiIcon && (column.NameVisible === false || !column.Name);
 
   return (
@@ -78,7 +38,7 @@ const ColumnHeader = ({
         <div className={`flex items-center ${column.NameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`} data-tooltip-id={`tooltip-${column.ColumnId}`}>
           {column.EmojiIcon && (
             <span className={column.NameVisible !== false ? "mr-1" : ""}>
-              {getIconComponent(column.EmojiIcon)}
+              {getIconComponent(column.EmojiIcon, 16)}
             </span>
           )}
           {column.NameVisible !== false && column.Name && (
@@ -86,7 +46,6 @@ const ColumnHeader = ({
               {column.Name}
             </span>
           )}
-          {/* Додаємо невидимий елемент для порожніх заголовків, щоб вони займали місце */}
           {isEmptyHeader && <span className="opacity-0">∅</span>}
         </div>
         {column.Description && (
@@ -104,7 +63,6 @@ const ColumnHeader = ({
             onClose={() => setShowMenu(false)}
             onRename={onRename}
             onChangeIcon={onChangeIcon}
-            handleDeleteColumn={onRemove}
             onChangeDescription={onChangeDescription}
             onToggleTitleVisibility={onToggleTitleVisibility}
             onChangeOptions={onChangeOptions}

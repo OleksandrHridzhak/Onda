@@ -2,9 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ChevronDown, ChevronUp, Sun, Moon, ArrowUp, ArrowDown } from 'lucide-react';
 import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
-import Cells from '../Cellss';
+
+import {CheckboxCell} from '../cells/CheckboxCell';
+import {MultiCheckboxCell} from '../cells/MultiCheckboxCell';
+import {NumberCell} from '../cells/NumberCell';
+import {TagsCell} from '../cells/TagsCell';
+import {NotesCell} from '../cells/NotesCell';
+import {TodoCell} from '../cells/TodoCell';
+import {TaskTableCell} from '../cells/TaskTableCell';
+
+
 import ColumnHeader from '../ColumnHeader';
-const { CheckboxCell, NumberCell, TagsCell, NotesCell, TodoCell, MultiCheckboxCell, TaskTableCell } = Cells;
+
+
+
 
 const columnWidths = {
   days: '120px',
@@ -572,7 +583,7 @@ const Table = ({ darkMode, setDarkMode }) => {
     return (
       <div className="flex flex-col items-center justify-center h-full py-20">
         <div className="flex space-x-1 text-5xl font-bold text-blue-600 font-poppins">
-          {['O', 'S', 'S', 'A'].map((ch, idx) => (
+          {['O', 'N', 'D', 'A'].map((ch, idx) => (
             <span
               key={idx}
               className="inline-block animate-bounce"
