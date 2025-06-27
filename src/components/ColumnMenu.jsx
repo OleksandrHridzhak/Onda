@@ -1,40 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   X, Plus, Trash2, Eye, EyeOff,
-  Heart, Star, Zap, Sun, Moon,
-  Coffee, Rocket, Shield, Flag, Bell,
-  Book, Music, Pizza, Gamepad,
-  Camera, Clock, Globe, Lock, Map,
-  Mic, Pen, Phone, Search, User, BicepsFlexed, ChevronDown, ChevronUp, ArrowUp, ArrowDown, ListTodo
+  ChevronDown, ChevronUp, ArrowUp, ArrowDown
 } from 'lucide-react';
-
-const availableIcons = [
-  { component: <Heart size={20} />, name: 'Heart' },
-  { component: <Star size={20} />, name: 'Star' },
-  { component: <Zap size={20} />, name: 'Zap' },
-  { component: <Sun size={20} />, name: 'Sun' },
-  { component: <Moon size={20} />, name: 'Moon' },
-  { component: <Coffee size={20} />, name: 'Coffee' },
-  { component: <Rocket size={20} />, name: 'Rocket' },
-  { component: <Shield size={20} />, name: 'Shield' },
-  { component: <Flag size={20} />, name: 'Flag' },
-  { component: <Bell size={20} />, name: 'Bell' },
-  { component: <Book size={20} />, name: 'Book' },
-  { component: <Music size={20} />, name: 'Music' },
-  { component: <Pizza size={20} />, name: 'Pizza' },
-  { component: <Gamepad size={20} />, name: 'Gamepad' },
-  { component: <Camera size={20} />, name: 'Camera' },
-  { component: <Clock size={20} />, name: 'Clock' },
-  { component: <Globe size={20} />, name: 'Globe' },
-  { component: <Lock size={20} />, name: 'Lock' },
-  { component: <Map size={20} />, name: 'Map' },
-  { component: <Mic size={20} />, name: 'Mic' },
-  { component: <Pen size={20} />, name: 'Pen' },
-  { component: <Phone size={20} />, name: 'Phone' },
-  { component: <Search size={20} />, name: 'Search' },
-  { component: <User size={20} />, name: 'User' },
-  { component: <BicepsFlexed size={20} />, name: 'BicepsFlexed' }
-];
+import { icons, getIconComponent } from './icons';
 
 const ColumnMenu = ({
   column,
@@ -187,7 +156,7 @@ const ColumnMenu = ({
             }`}
           >
             <div className="flex items-center space-x-2">
-              {selectedIcon && availableIcons.find(i => i.name === selectedIcon)?.component}
+              {selectedIcon && getIconComponent(selectedIcon, 20)}
               <span className="text-sm font-medium">
                 {isIconSectionExpanded ? 'Hide Icons' : 'Choose Icon'}
               </span>
@@ -200,7 +169,7 @@ const ColumnMenu = ({
                 darkMode ? 'border-gray-700 bg-gray-700' : 'border-gray-200 bg-white'
               } rounded-md`}
             >
-              {availableIcons.map((icon) => (
+              {icons.map((icon) => (
                 <button
                   key={icon.name}
                   onClick={() => {
@@ -216,7 +185,7 @@ const ColumnMenu = ({
                   } ${darkMode ? 'text-gray-200 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
                 >
                   <div className="flex items-center justify-center w-5 h-5">
-                    {icon.component}
+                    {getIconComponent(icon.name, 20)}
                   </div>
                 </button>
               ))}

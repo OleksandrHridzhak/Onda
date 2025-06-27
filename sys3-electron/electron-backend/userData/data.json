@@ -27,7 +27,7 @@
     "NameVisible": false,
     "Chosen": {
       "Monday": "0.5",
-      "Tuesday": "0",
+      "Tuesday": "02",
       "Wednesday": "0.5",
       "Thursday": "0",
       "Friday": "0",
@@ -59,7 +59,7 @@
     "Type": "multi-select",
     "Name": "ACTIVITY",
     "Description": "WW",
-    "EmojiIcon": "BicepsFlexed",
+    "EmojiIcon": "Book",
     "NameVisible": true,
     "Options": [
       "CARDIO3",
@@ -71,7 +71,7 @@
       "Tuesday": "WORKOUT2",
       "Wednesday": "10K, CARDIO3",
       "Thursday": "CARDIO3",
-      "Friday": "",
+      "Friday": "WORKOUT2",
       "Saturday": "",
       "Sunday": ""
     },
@@ -80,7 +80,8 @@
       "CARDIO3": "blue",
       "WORKOUT2": "green",
       "10K": "orange"
-    }
+    },
+    "DoneTags": []
   },
   {
     "ColumnId": "1745780352394",
@@ -108,8 +109,8 @@
     "EmojiIcon": "Heart",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
-      "Tuesday": true,
+      "Monday": false,
+      "Tuesday": false,
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
@@ -145,7 +146,13 @@
     "Description": "Task table created on backend",
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
-    "Options": [],
+    "Options": [
+      "SAF",
+      "SGE",
+      "JYT",
+      "BREAD1",
+      "BREAD2"
+    ],
     "TagColors": {
       "Task 1": "blue",
       "Task 2": "green",
@@ -159,13 +166,6 @@
       "global": []
     },
     "DoneTags": [
-      "HT",
-      "SGE",
-      "SAF",
-      "JYT",
-      "BREAD1",
-      "BREAD2",
-      "BREAD3",
       "Task 2",
       "BREAD4",
       "Task 1",
@@ -173,9 +173,11 @@
       "SSS",
       "і",
       "SS",
-      "SSSAD"
+      "SSSAD",
+      "HT",
+      "BREAD3"
     ],
-    "Width": 400
+    "Width": 350
   },
   {
     "ColumnId": "1750832611778",
