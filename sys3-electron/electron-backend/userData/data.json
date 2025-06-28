@@ -39,7 +39,7 @@
   {
     "ColumnId": "1745672766295",
     "Type": "numberbox",
-    "Name": "W-SIDE PROJECTS",
+    "Name": "W-SIDE PROJEвпрCTS",
     "Description": "~5H\n",
     "EmojiIcon": "Rocket",
     "NameVisible": false,
@@ -58,13 +58,14 @@
     "ColumnId": "1745672769562",
     "Type": "multi-select",
     "Name": "ACTIVITY",
-    "Description": "WW",
-    "EmojiIcon": "Book",
+    "Description": "WWsadada",
+    "EmojiIcon": "Phone",
     "NameVisible": true,
     "Options": [
       "CARDIO3",
       "WORKOUT2",
-      "10K"
+      "10K",
+      "ап"
     ],
     "Chosen": {
       "Monday": "CARDIO3",
@@ -72,14 +73,15 @@
       "Wednesday": "10K, CARDIO3",
       "Thursday": "CARDIO3",
       "Friday": "WORKOUT2",
-      "Saturday": "",
+      "Saturday": "ап",
       "Sunday": ""
     },
-    "Width": 131,
+    "Width": 130,
     "TagColors": {
       "CARDIO3": "blue",
       "WORKOUT2": "green",
-      "10K": "orange"
+      "10K": "orange",
+      "ап": "blue"
     },
     "DoneTags": []
   },
@@ -99,7 +101,7 @@
       "Saturday": "4",
       "Sunday": ""
     },
-    "Width": 50
+    "Width": 70
   },
   {
     "ColumnId": "1746420337324",
@@ -125,7 +127,7 @@
     "Type": "checkbox",
     "Name": "3.5H AUTO ",
     "Description": "Checkbox created on backend",
-    "EmojiIcon": "Gamepad",
+    "EmojiIcon": "Lock",
     "NameVisible": false,
     "Chosen": {
       "Monday": true,
@@ -137,7 +139,7 @@
       "Sunday": false
     },
     "Width": 50,
-    "CheckboxColor": "purple"
+    "CheckboxColor": "blue"
   },
   {
     "ColumnId": "1750832346226",
@@ -146,13 +148,7 @@
     "Description": "Task table created on backend",
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
-    "Options": [
-      "SAF",
-      "SGE",
-      "JYT",
-      "BREAD1",
-      "BREAD2"
-    ],
+    "Options": [],
     "TagColors": {
       "Task 1": "blue",
       "Task 2": "green",
@@ -175,9 +171,13 @@
       "SS",
       "SSSAD",
       "HT",
-      "BREAD3"
+      "BREAD3",
+      "SAF",
+      "JYT",
+      "BREAD1",
+      "BREAD2"
     ],
-    "Width": 350
+    "Width": 200
   },
   {
     "ColumnId": "1750832611778",
@@ -209,6 +209,33 @@
       "Option 2": "green"
     },
     "Width": 200,
+    "DoneTags": []
+  },
+  {
+    "ColumnId": "1751097343267",
+    "Type": "multicheckbox",
+    "Name": "New Multi Checkbox",
+    "Description": "Multi-checkbox created on backend",
+    "EmojiIcon": "Circle",
+    "NameVisible": true,
+    "Options": [
+      "Task 2",
+      "фв"
+    ],
+    "TagColors": {
+      "Task 2": "green",
+      "фв": "orange"
+    },
+    "Chosen": {
+      "Monday": "фв, Task 2",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": null,
     "DoneTags": []
   }
 ]
