@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, ArrowUp, ArrowDown } from 'lucide-react';
-import { getIconComponent } from './icons'; // Імпорт функції
+import { getIconComponent } from './utils/icons'; // Імпорт функції
 import ColumnMenu from './ColumnMenu';
 
 const ColumnHeader = ({

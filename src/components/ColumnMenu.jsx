@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Plus, Trash2, Eye, EyeOff, ChevronDown, ChevronUp, ArrowUp, ArrowDown } from 'lucide-react';
-import { icons, getIconComponent } from './icons';
+import { icons, getIconComponent } from './utils/icons';
 
-// Common layout constants for shared UI sections
+
 const commonLayouts = {
   columnName: ({ name, setName, darkMode }) => (
     <div className="mb-3">

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Settings, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ChevronDown, ChevronUp, Sun, Moon, ArrowUp, ArrowDown } from 'lucide-react';
 import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import ColumnHeader from '../ColumnHeader';
+import {LoadingScreen} from '../LoadingScreen';
 import { useTableLogic, DAYS, COLUMN_WIDTHS, getWidthStyle, calculateSummary, renderCell } from '../utils/TableLogic';
 import { useColumnMenuLogic } from '../utils/ColumnMenuLogic';
 
@@ -33,16 +33,7 @@ const Table = ({ darkMode, setDarkMode }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full py-20">
-        <div className="flex space-x-1 text-5xl font-bold text-blue-600 font-poppins">
-          {['O', 'N', 'D', 'A'].map((ch, idx) => (
-            <span key={idx} className="inline-block animate-bounce" style={{ animationDelay: `${idx * 0.2}s` }}>
-              {ch}
-            </span>
-          ))}
-        </div>
-        <p className={`mt-4 text-lg ${darkMode ? 'text-gray-200' : 'text-gray-600'}`}>Loading data...</p>
-      </div>
+      LoadingScreen({ darkMode })
     );
   }
 
@@ -91,7 +82,7 @@ const Table = ({ darkMode, setDarkMode }) => {
           showColumnSelector={showColumnSelector}
         />
         {showColumnSelector && (
-          <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="absolute right-0 z-50">
             <ColumnTypeSelector
               onSelect={(type) => {
                 handleAddColumn(type);
@@ -107,7 +98,7 @@ const Table = ({ darkMode, setDarkMode }) => {
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
-              <tr className={`${darkMode ? 'bg-gray-500 border-gray-600' : 'bg-gray-100 border-gray-200'} border-b`}>
+              <tr className={`${darkMode ? 'bg-gray-800 border-gray-600' : 'bg-gray-100 border-gray-200'} border-b`}>
                 {displayColumns.map((column) => (
                   column.Type === 'filler' ? (
                     <th
