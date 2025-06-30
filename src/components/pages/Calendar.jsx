@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, Filter, Trash2,ChevronDown } from 'lucide-react';
+import { BubbleBtn } from '../atoms/BubbleBtn';
 
 export default function Calendar({ darkTheme, setDarkTheme }) {
   const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewMode, setViewMode] = useState(() => {
-    // Load viewMode from localStorage, default to 'week' if not set
     return localStorage.getItem('calendarViewMode') || 'week';
   });
   const [weekDays, setWeekDays] = useState(getWeekDays(getMonday(new Date())));
@@ -606,20 +606,12 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                 </div>
               </div>
               <div className="flex justify-center gap-2 mb-4">
-                <button
-                  type="button"
-                  onClick={() => adjustEventTimes(-5)}
-                  className={`px-3 py-1.5 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors`}
-                >
+                <BubbleBtn onClick={() => adjustEventTimes(-5)} darkTheme={darkTheme}>
                   -5m
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustEventTimes(5)}
-                  className={`px-3 py-1.5 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors`}
-                >
+                </BubbleBtn>
+                <BubbleBtn onClick={() => adjustEventTimes(5)} darkTheme={darkTheme}>
                   +5m
-                </button>
+                </BubbleBtn>
               </div>
               <div>
                 <label className={`block text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Color</label>
@@ -704,13 +696,13 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
               >
                 Cancel
               </button>
-              <button
-                onClick={handleSaveEvent}
-                className={`px-4 py-2 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors`}
+              <BubbleBtn 
+                onClick={handleSaveEvent} 
+                darkTheme={darkTheme}
                 disabled={!validateTime(newEvent.startTime) || !validateTime(newEvent.endTime)}
               >
                 {editingEventId ? 'Update' : 'Create'}
-              </button>
+              </BubbleBtn>
             </div>
           </div>
         </div>

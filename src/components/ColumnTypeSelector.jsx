@@ -48,13 +48,13 @@ const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
       id: 'tasktable',
       label: 'Tasktable',
       icon: <Table className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />,
-      bgColor: darkMode ? 'bg-gray-900' : 'bg-gray-50',
+      bgColor: darkMode ? 'bg-gray-800' : 'bg-gray-50',
       hoverColor: darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
     }
   ];
 
   return (
-    <div className={`absolute top-36 left-80 mt-1 w-56 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-xl z-20 border overflow-hidden animate-fade-in`}>
+    <div className={` mt-1 w-56 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-xl z-20 border overflow-hidden animate-fade-in`}>
       <div className={`p-3 border-b ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-100 bg-white'} flex justify-between items-center`}>
         <h3 className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>Select Column Type</h3>
         <button
