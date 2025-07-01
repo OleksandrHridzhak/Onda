@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
-import('js-circle-progress').then(() => {
-  // Веб-компонент має бути зареєстрований після імпорту
-  if (!customElements.get('circle-progress')) {
-    console.warn('circle-progress not registered');
-  }
-});
+
 export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, darkMode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(
@@ -143,7 +138,6 @@ export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, da
         />
       </div>
 
-      {/* Simplified dropdown menu */}
       {isOpen && (
         <div
           className={`absolute z-10 mt-2 w-48 ${

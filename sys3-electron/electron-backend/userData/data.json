@@ -7,7 +7,7 @@
     "EmojiIcon": "Map",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
+      "Monday": false,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
@@ -30,8 +30,8 @@
       "Tuesday": "02",
       "Wednesday": "0.5",
       "Thursday": "0",
-      "Friday": "0",
-      "Saturday": "",
+      "Friday": "5",
+      "Saturday": "3",
       "Sunday": "-32"
     },
     "Width": 63
@@ -74,7 +74,7 @@
       "Thursday": "CARDIO3",
       "Friday": "WORKOUT2",
       "Saturday": "ап",
-      "Sunday": ""
+      "Sunday": "10K"
     },
     "Width": 130,
     "TagColors": {
@@ -99,7 +99,7 @@
       "Thursday": "7",
       "Friday": "7",
       "Saturday": "4",
-      "Sunday": ""
+      "Sunday": "678"
     },
     "Width": 70
   },
@@ -116,7 +116,7 @@
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
-      "Saturday": false,
+      "Saturday": true,
       "Sunday": false
     },
     "Width": 50,
@@ -135,7 +135,7 @@
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
-      "Saturday": false,
+      "Saturday": true,
       "Sunday": false
     },
     "Width": 50,
@@ -148,7 +148,12 @@
     "Description": "Task table created on backend",
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
-    "Options": [],
+    "Options": [
+      "в",
+      "BREAD4",
+      "Task 1",
+      "S"
+    ],
     "TagColors": {
       "Task 1": "blue",
       "Task 2": "green",
@@ -156,16 +161,13 @@
       "BREAD1": "orange",
       "BREAD2": "orange",
       "BREAD3": "orange",
-      "BREAD4": "orange"
+      "BREAD4": "orange",
+      "в": "blue"
     },
     "Chosen": {
       "global": []
     },
     "DoneTags": [
-      "Task 2",
-      "BREAD4",
-      "Task 1",
-      "S",
       "SSS",
       "і",
       "SS",
@@ -175,7 +177,8 @@
       "SAF",
       "JYT",
       "BREAD1",
-      "BREAD2"
+      "BREAD2",
+      "Task 2"
     ],
     "Width": 200
   },
@@ -189,13 +192,23 @@
     "Chosen": {
       "global": [
         {
-          "text": "HELLO",
+          "text": "df",
           "completed": false,
           "category": "Option 2"
         },
         {
-          "text": "HOW ARE YOU",
+          "text": "випарвити чекбокс",
           "completed": false,
+          "category": ""
+        },
+        {
+          "text": "HELLO",
+          "completed": true,
+          "category": "Option 2"
+        },
+        {
+          "text": "HOW ARE YOU",
+          "completed": true,
           "category": "Option 2"
         }
       ]
@@ -228,9 +241,9 @@
     },
     "Chosen": {
       "Monday": "фв, Task 2",
-      "Tuesday": "",
-      "Wednesday": "",
-      "Thursday": "",
+      "Tuesday": "Task 2",
+      "Wednesday": "Task 2, фв",
+      "Thursday": "Task 2",
       "Friday": "",
       "Saturday": "",
       "Sunday": ""

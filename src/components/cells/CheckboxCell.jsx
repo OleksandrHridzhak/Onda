@@ -1,14 +1,5 @@
-
-import React, { useState, useEffect } from 'react';
-import { useRef } from 'react';
-import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
-import('js-circle-progress').then(() => {
-  // Веб-компонент має бути зареєстрований після імпорту
-  if (!customElements.get('circle-progress')) {
-    console.warn('circle-progress not registered');
-  }
-});
-
+import React from 'react';
+import { Check } from 'lucide-react';
 
 export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) => {
   const colorOptions = {
@@ -36,13 +27,17 @@ export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) =
 
   const selectedColor = colorOptions[color] || colorOptions.green;
 
+  const handleToggle = () => {
+    onChange(!checked); 
+  };
+
   return (
-    <div className="flex justify-center ">
+    <div className="flex justify-center items-center w-full h-full">
       <label className="relative flex items-center justify-center w-6 h-6 cursor-pointer">
         <input
           type="checkbox"
           checked={checked}
-          onChange={onChange}
+          onChange={handleToggle} 
           className="sr-only peer"
         />
         <div className={`w-6 h-6 rounded-full border flex items-center justify-center 

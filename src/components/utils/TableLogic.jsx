@@ -26,7 +26,8 @@ const electronAPI = window.electronAPI || {
   getSettings: async () => ({ status: 'Settings fetched', data: {} }),
   updateSettings: async () => {},
   createComponent: async () => ({ status: false }),
-  updateColumnOrder: async () => {}
+  updateColumnOrder: async () => {},
+  changeColumn: async () => {}
 };
 
 const handleError = (message, error) => {
@@ -151,16 +152,33 @@ export const useTableLogic = () => {
     const column = columns.find(col => col.ColumnId === columnId);
     if (!column || column.Type === 'tasktable') return;
 
+    // Нормалізуємо значення для чекбокса
+    const normalizedValue = column.Type === 'checkbox' ? !!value : value;
+
+    // Тимчасове оновлення для миттєвого відображення
     setTableData(prev => ({
       ...prev,
-      [day]: { ...prev[day], [columnId]: value }
+      [day]: { ...prev[day], [columnId]: normalizedValue }
     }));
-    const updatedColumn = { ...column, Chosen: { ...(column.Chosen || {}), [day]: value } };
+
+    const updatedColumn = {
+      ...column,
+      Chosen: {
+        ...(column.Chosen || {}),
+        [day]: normalizedValue
+      }
+    };
+
     try {
       await electronAPI.changeColumn(updatedColumn);
       setColumns(prev => prev.map(col => col.ColumnId === columnId ? updatedColumn : col));
     } catch (err) {
       handleError('Update failed:', err);
+      // Відкатуємо до попереднього значення
+      setTableData(prev => ({
+        ...prev,
+        [day]: { ...prev[day], [columnId]: column.Chosen?.[day] || false }
+      }));
     }
   }, [columns, setTableData, setColumns]);
 
@@ -336,7 +354,7 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
     column,
     onChange: (value) => handleCellChange(column.Type === 'todo' ? 'global' : day, column.ColumnId, value),
     darkMode,
-    ...(column.Type === 'checkbox' && { checked: tableData[day]?.[column.ColumnId] || false, color: column.CheckboxColor || 'green' }),
+    ...(column.Type === 'checkbox' && { checked: !!tableData[day]?.[column.ColumnId], color: column.CheckboxColor || 'green' }), // Гарантуємо булеве значення
     ...(column.Type === 'multi-select' || column.Type === 'multicheckbox' ? { options: column.Options || [], tagColors: column.TagColors || {} } : {}),
     ...(column.Type === 'tasktable' && { onChangeOptions: handleChangeOptions })
   };
@@ -352,4 +370,4 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
       <Component {...props} />
     </td>
   );
-};
+};  

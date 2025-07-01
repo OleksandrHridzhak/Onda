@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
+import { getColorOptions } from '../utils/colorOptions';
+
 import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
-import('js-circle-progress').then(() => {
-  // Веб-компонент має бути зареєстрований після імпорту
-  if (!customElements.get('circle-progress')) {
-    console.warn('circle-progress not registered');
-  }
-});
+
 export const TodoCell = ({ value, column, onChange, darkMode }) => {
   const [todos, setTodos] = useState(value || []);
   const [newTodo, setNewTodo] = useState('');
@@ -20,12 +17,7 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
   const categoryMenuRef = useRef(null);
 
   // Color options from ColumnMenu
-  const colorOptions = [
-    { name: 'green', bg: darkMode ? 'bg-green-900' : 'bg-green-100', text: darkMode ? 'text-green-100' : 'text-green-800' },
-    { name: 'blue', bg: darkMode ? 'bg-blue-900' : 'bg-blue-100', text: darkMode ? 'text-blue-100' : 'text-blue-800' },
-    { name: 'purple', bg: darkMode ? 'bg-purple-900' : 'bg-purple-100', text: darkMode ? 'text-purple-100' : 'text-purple-800' },
-    { name: 'orange', bg: darkMode ? 'bg-orange-900' : 'bg-orange-100', text: darkMode ? 'text-orange-100' : 'text-orange-800' }
-  ];
+  const colorOptions = getColorOptions({darkMode});
 
   useEffect(() => {
     const sortedTodos = [...(value || [])].sort((a, b) => {

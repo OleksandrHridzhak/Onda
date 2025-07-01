@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
-import('js-circle-progress').then(() => {
-  // Веб-компонент має бути зареєстрований після імпорту
-  if (!customElements.get('circle-progress')) {
-    console.warn('circle-progress not registered');
-  }
-});
+import { getColorOptions } from '../utils/colorOptions';
+
 export const TagsCell = ({ value, onChange, options, darkMode, tagColors = {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState(
@@ -14,12 +10,8 @@ export const TagsCell = ({ value, onChange, options, darkMode, tagColors = {} })
   );
   const dropdownRef = useRef(null);
 
-  const colorOptions = [
-    { name: 'blue', bg: darkMode ? 'bg-blue-900' : 'bg-blue-100', text: darkMode ? 'text-blue-100' : 'text-blue-800' },
-    { name: 'green', bg: darkMode ? 'bg-green-900' : 'bg-green-100', text: darkMode ? 'text-green-100' : 'text-green-800' },
-    { name: 'purple', bg: darkMode ? 'bg-purple-900' : 'bg-purple-100', text: darkMode ? 'text-purple-100' : 'text-purple-800' },
-    { name: 'orange', bg: darkMode ? 'bg-orange-900' : 'bg-orange-100', text: darkMode ? 'text-orange-100' : 'text-orange-800' }
-  ];
+
+  const colorOptions = getColorOptions({darkMode});
 
   const handleTagChange = (tag) => {
     setSelectedTags((prevTags) => {
