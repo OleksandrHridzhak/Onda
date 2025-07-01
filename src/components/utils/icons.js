@@ -1,12 +1,15 @@
 import {
-  Heart, Star, Zap, Sun, Moon, 
+  Heart, Star, Zap, Sun, Moon,
   Coffee, Rocket, Shield, Flag, Bell,
   Book, Music, Pizza, Gamepad,
   Camera, Clock, Globe, Lock, Map,
-  Mic, Pen, Phone, Search, User, BicepsFlexed
+  Mic, Pen, Phone, Search, User, BicepsFlexed,
+  Smile, Flame, Brain, Bug, Wand2,
+  Cloud, Eye, Gift, Hammer, Home,
+  IceCream, Leaf, Lightbulb, Trophy, Wallet,Circle, ListTodo
 } from 'lucide-react';
 
-// Масив із визначенням іконок
+
 export const icons = [
   { name: 'Heart', component: Heart },
   { name: 'Star', component: Star },
@@ -32,7 +35,24 @@ export const icons = [
   { name: 'Phone', component: Phone },
   { name: 'Search', component: Search },
   { name: 'User', component: User },
-  { name: 'BicepsFlexed', component: BicepsFlexed }
+  { name: 'BicepsFlexed', component: BicepsFlexed },
+  { name: 'Smile', component: Smile },
+  { name: 'Flame', component: Flame },
+  { name: 'Brain', component: Brain },
+  { name: 'Bug', component: Bug },
+  { name: 'Wand2', component: Wand2 },
+  { name: 'Cloud', component: Cloud },
+  { name: 'Eye', component: Eye },
+  { name: 'Gift', component: Gift },
+  { name: 'Hammer', component: Hammer },
+  { name: 'Home', component: Home },
+  { name: 'IceCream', component: IceCream },
+  { name: 'Leaf', component: Leaf },
+  { name: 'Lightbulb', component: Lightbulb },
+  { name: 'Trophy', component: Trophy },
+  { name: 'Wallet', component: Wallet },
+  { name: 'Circle', component: Circle },
+  { name: 'ListTodo', component: ListTodo }
 ];
 
 // Функція для рендерингу іконки з потрібним розміром

@@ -61,6 +61,7 @@ const ColumnHeader = ({
           <ColumnMenu
             column={column}
             onClose={() => setShowMenu(false)}
+            handleDeleteColumn={onRemove}
             onRename={onRename}
             onChangeIcon={onChangeIcon}
             onChangeDescription={onChangeDescription}

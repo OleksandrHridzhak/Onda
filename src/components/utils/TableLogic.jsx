@@ -10,14 +10,14 @@ import { TaskTableCell } from '../cells/TaskTableCell';
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export const COLUMN_WIDTHS = {
-  days: '120px',
-  checkbox: '48px',
-  numberbox: '80px',
-  'multi-select': '128px',
-  text: '256px',
-  tasktable: '200px',
-  multicheckbox: '80px',
-  todo: '128px',
+  days: '100px',
+  checkbox: '100px',
+  numberbox: '100px',
+  'multi-select': '100px',
+  text: '100px',
+  tasktable: '100px',
+  multicheckbox: '100px',
+  todo: '1000px',
   filler: 'auto'
 };
 
@@ -278,7 +278,7 @@ export const useTableLogic = () => {
 export const getWidthStyle = (column) => {
   if (column.Type === 'days') return { width: '120px', minWidth: '120px' };
   if (column.Type === 'filler') return { width: 'auto', minWidth: '0px' };
-  return { width: column.Width ? `${column.Width}px` : COLUMN_WIDTHS[column.Type], minWidth: column.Width ? `${column.Width}px` : COLUMN_WIDTHS[column.Type] };
+  return { width: `${column.Width}px`, minWidth: `${column.Width}px`};
 };
 
 export const calculateSummary = (column, tableData) => {
