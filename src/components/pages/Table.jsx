@@ -2,7 +2,7 @@ import React from 'react';
 import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import ColumnHeader from '../ColumnHeader';
-import {LoadingScreen} from '../LoadingScreen';
+import { LoadingScreen } from '../LoadingScreen';
 import { useTableLogic, DAYS, COLUMN_WIDTHS, getWidthStyle, calculateSummary, renderCell } from '../utils/TableLogic';
 import { useColumnMenuLogic } from '../utils/ColumnMenuLogic';
 
@@ -32,9 +32,7 @@ const Table = ({ darkMode, setDarkMode }) => {
   ];
 
   if (loading) {
-    return (
-      LoadingScreen({ darkMode })
-    );
+    return <LoadingScreen darkMode={darkMode} />;
   }
 
   return (
@@ -98,7 +96,7 @@ const Table = ({ darkMode, setDarkMode }) => {
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
-              <tr className={`${darkMode ? 'bg-gray-800 border-gray-600' : 'bg-gray-100 border-gray-200'} border-b`}>
+              <tr className={`${darkMode ? 'bg-gray-800 border-gray-600' : 'bg-gray-50 border-gray-200'} border-b`}>
                 {displayColumns.map((column) => (
                   column.Type === 'filler' ? (
                     <th

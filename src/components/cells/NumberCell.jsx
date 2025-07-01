@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
-import('js-circle-progress').then(() => {
-  // Веб-компонент має бути зареєстрований після імпорту
-  if (!customElements.get('circle-progress')) {
-    console.warn('circle-progress not registered');
-  }
-});
+
 export const NumberCell = ({ value, onChange }) => {
   return (
     <input
