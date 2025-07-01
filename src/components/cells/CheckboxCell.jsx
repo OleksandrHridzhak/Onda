@@ -1,29 +1,10 @@
 import React from 'react';
 import { Check } from 'lucide-react';
+import {getCheckBoxColorOptions} from '../utils/colorOptions';
 
 export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) => {
-  const colorOptions = {
-    green: {
-      bg: darkMode ? 'bg-green-500' : 'bg-green-500',
-      border: 'border-transparent',
-      hover: darkMode ? 'hover:bg-green-600' : 'hover:bg-green-400'
-    },
-    blue: {
-      bg: darkMode ? 'bg-blue-700' : 'bg-blue-500',
-      border: 'border-transparent',
-      hover: darkMode ? 'hover:bg-blue-600' : 'hover:bg-blue-400'
-    },
-    purple: {
-      bg: darkMode ? 'bg-purple-700' : 'bg-purple-500',
-      border: 'border-transparent',
-      hover: darkMode ? 'hover:bg-purple-600' : 'hover:bg-purple-400'
-    },
-    orange: {
-      bg: darkMode ? 'bg-orange-700' : 'bg-orange-500',
-      border: 'border-transparent',
-      hover: darkMode ? 'hover:bg-orange-600' : 'hover:bg-orange-400'
-    }
-  };
+  
+  const colorOptions = getCheckBoxColorOptions({ darkMode });
 
   const selectedColor = colorOptions[color] || colorOptions.green;
 
@@ -42,7 +23,7 @@ export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) =
         />
         <div className={`w-6 h-6 rounded-full border flex items-center justify-center 
                         transition-all duration-150 ease-in-out
-                        ${selectedColor.border}
+                        border-transparent
                         ${checked ? selectedColor.bg : ''}
                         ${checked ? selectedColor.hover : 'hover:border-gray-500'}`}>
           <Check

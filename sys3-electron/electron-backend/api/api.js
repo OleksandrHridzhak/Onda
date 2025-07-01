@@ -214,7 +214,8 @@ module.exports = {
           TagColors: {
             'Option 1': 'blue',
             'Option 2': 'green'
-          }
+          },
+          Width: 150
         },
         checkbox: {
           ColumnId: Date.now().toString(),
@@ -222,7 +223,7 @@ module.exports = {
           Name: 'New Checkbox',
           Description: 'Checkbox created on backend',
           EmojiIcon: 'Star',
-          NameVisible: true,
+          NameVisible: false,
           Chosen: {
             Monday: false,
             Tuesday: false,
@@ -232,6 +233,7 @@ module.exports = {
             Saturday: false,
             Sunday: false
           },
+          Width: 50,
           CheckboxColor: 'green'
         },
         numberbox: {
@@ -240,7 +242,7 @@ module.exports = {
           Name: 'New Numberbox',
           Description: 'Numberbox created on backend',
           EmojiIcon: 'Star',
-          NameVisible: true,
+          NameVisible: false,
           Chosen: {
             Monday: '',
             Tuesday: '',
@@ -249,7 +251,8 @@ module.exports = {
             Friday: '',
             Saturday: '',
             Sunday: ''
-          }
+          },
+          Width: 60
         },
         text: {
           ColumnId: Date.now().toString(),
@@ -266,7 +269,8 @@ module.exports = {
             Friday: '',
             Saturday: '',
             Sunday: ''
-          }
+          },
+          Width: 130
         },
         'multi-select': {
           ColumnId: Date.now().toString(),
@@ -288,7 +292,8 @@ module.exports = {
             Friday: '',
             Saturday: '',
             Sunday: ''
-          }
+          },
+          Width: 90
         },
         multicheckbox: {
           ColumnId: Date.now().toString(),
@@ -296,7 +301,7 @@ module.exports = {
           Name: 'New Multi Checkbox',
           Description: 'Multi-checkbox created on backend',
           EmojiIcon: 'Circle',
-          NameVisible: true,
+          NameVisible: false,
           Options: ['Task 1', 'Task 2'],
           TagColors: {
             'Task 1': 'blue',
@@ -310,7 +315,8 @@ module.exports = {
             Friday: '',
             Saturday: '',
             Sunday: ''
-          }
+          },
+          Width: 50
         },
         tasktable: {
           ColumnId: Date.now().toString(),
@@ -326,7 +332,8 @@ module.exports = {
           },
           Chosen: {
             global: []
-          }
+          },
+          Width: 150
         }
       };
 

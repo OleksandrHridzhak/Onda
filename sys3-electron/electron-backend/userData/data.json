@@ -7,41 +7,23 @@
     "EmojiIcon": "Map",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
+      "Monday": true,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
-      "Saturday": false,
+      "Saturday": true,
       "Sunday": false
     },
     "Width": 50,
     "CheckboxColor": "green"
   },
   {
-    "ColumnId": "1745672763311",
-    "Type": "numberbox",
-    "Name": "W-STUDY",
-    "Description": "~18H",
-    "EmojiIcon": "Book",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": "0.5",
-      "Tuesday": "02",
-      "Wednesday": "0.5",
-      "Thursday": "0",
-      "Friday": "5",
-      "Saturday": "3",
-      "Sunday": "-32"
-    },
-    "Width": 63
-  },
-  {
     "ColumnId": "1745672766295",
     "Type": "numberbox",
     "Name": "W-SIDE PROJEвпрCTS",
     "Description": "~5H\n",
-    "EmojiIcon": "Rocket",
+    "EmojiIcon": "Brain",
     "NameVisible": false,
     "Chosen": {
       "Monday": "3",
@@ -108,11 +90,11 @@
     "Type": "checkbox",
     "Name": "W-SPEECH: 3.5h ",
     "Description": "тренування вимови, публічних виступів, формулювання думок, сторітейлінг прийомів, читання в голос",
-    "EmojiIcon": "Heart",
+    "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
-      "Tuesday": false,
+      "Monday": true,
+      "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
@@ -139,7 +121,7 @@
       "Sunday": false
     },
     "Width": 50,
-    "CheckboxColor": "blue"
+    "CheckboxColor": "purple"
   },
   {
     "ColumnId": "1750832346226",
@@ -187,7 +169,7 @@
     "Type": "todo",
     "Name": "Todo List",
     "Description": "Todo list created on backend",
-    "EmojiIcon": "ListTodo",
+    "EmojiIcon": "Rocket",
     "NameVisible": true,
     "Chosen": {
       "global": [
@@ -221,34 +203,130 @@
       "Option 1": "blue",
       "Option 2": "green"
     },
-    "Width": 200,
+    "Width": 201,
     "DoneTags": []
   },
   {
-    "ColumnId": "1751097343267",
-    "Type": "multicheckbox",
-    "Name": "New Multi Checkbox",
-    "Description": "Multi-checkbox created on backend",
-    "EmojiIcon": "Circle",
+    "ColumnId": "1751353773552",
+    "Type": "checkbox",
+    "Name": "New Checkbox",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "Star",
     "NameVisible": true,
-    "Options": [
-      "Task 2",
-      "фв"
-    ],
+    "Chosen": {
+      "Monday": false,
+      "Tuesday": false,
+      "Wednesday": false,
+      "Thursday": false,
+      "Friday": false,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50,
+    "CheckboxColor": "green"
+  },
+  {
+    "ColumnId": "1751353777045",
+    "Type": "tasktable",
+    "Name": "New Task List",
+    "Description": "Task table created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Options": [],
     "TagColors": {
-      "Task 2": "green",
-      "фв": "orange"
+      "Task 1": "blue",
+      "Task 2": "green"
     },
     "Chosen": {
-      "Monday": "фв, Task 2",
-      "Tuesday": "Task 2",
-      "Wednesday": "Task 2, фв",
-      "Thursday": "Task 2",
+      "global": []
+    },
+    "Width": 150,
+    "DoneTags": [
+      "Task 1",
+      "Task 2"
+    ]
+  },
+  {
+    "ColumnId": "1751353998281",
+    "Type": "checkbox",
+    "Name": "New Checkbox",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": false,
+      "Tuesday": false,
+      "Wednesday": false,
+      "Thursday": false,
+      "Friday": false,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50,
+    "CheckboxColor": "green"
+  },
+  {
+    "ColumnId": "1751354256127",
+    "Type": "numberbox",
+    "Name": "New Numberbox",
+    "Description": "Numberbox created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
       "Friday": "",
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": null,
-    "DoneTags": []
+    "Width": 60
+  },
+  {
+    "ColumnId": "1751354264387",
+    "Type": "multicheckbox",
+    "Name": "New Multi Checkbox",
+    "Description": "Multi-checkbox created on backend",
+    "EmojiIcon": "Circle",
+    "NameVisible": false,
+    "Options": [
+      "Task 1",
+      "Task 2"
+    ],
+    "TagColors": {
+      "Task 1": "blue",
+      "Task 2": "green"
+    },
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 50
+  },
+  {
+    "ColumnId": "1751354268457",
+    "Type": "tasktable",
+    "Name": "New Task List",
+    "Description": "Task table created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Options": [
+      "Task 1",
+      "Task 2"
+    ],
+    "TagColors": {
+      "Task 1": "blue",
+      "Task 2": "green"
+    },
+    "Chosen": {
+      "global": []
+    },
+    "Width": 150
   }
 ]

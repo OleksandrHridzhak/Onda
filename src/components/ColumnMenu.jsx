@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Plus, Trash2, Eye, EyeOff, ChevronDown, ChevronUp, ArrowUp, ArrowDown } from 'lucide-react';
 import { icons, getIconComponent } from './utils/icons';
-
+import { getColorOptions } from './utils/colorOptions';
 
 const commonLayouts = {
   columnName: ({ name, setName, darkMode }) => (
@@ -168,12 +168,7 @@ const typeSpecificLayouts = {
   ),
 
   optionsList: ({ columnType, options, doneTags, newOption, setNewOption, handleAddOption, handleRemoveOption, handleColorChange, optionColors, darkMode }) => {
-    const colorOptions = [
-      { name: 'green', bg: darkMode ? 'bg-green-900' : 'bg-green-100', text: darkMode ? 'text-green-100' : 'text-green-800' },
-      { name: 'blue', bg: darkMode ? 'bg-blue-900' : 'bg-blue-100', text: darkMode ? 'text-blue-100' : 'text-blue-800' },
-      { name: 'purple', bg: darkMode ? 'bg-purple-900' : 'bg-purple-100', text: darkMode ? 'text-purple-100' : 'text-purple-800' },
-      { name: 'orange', bg: darkMode ? 'bg-orange-900' : 'bg-orange-100', text: darkMode ? 'text-orange-100' : 'text-orange-800' }
-    ];
+    const colorOptions = getColorOptions({ darkMode });
 
     return (
       <div className="mb-3">
@@ -229,12 +224,7 @@ const typeSpecificLayouts = {
   },
 
   checkbox: ({ checkboxColor, setCheckboxColor, darkMode }) => {
-    const colorOptions = [
-      { name: 'green', bg: darkMode ? 'bg-green-900' : 'bg-green-100', text: darkMode ? 'text-green-100' : 'text-green-800' },
-      { name: 'blue', bg: darkMode ? 'bg-blue-900' : 'bg-blue-100', text: darkMode ? 'text-blue-100' : 'text-blue-800' },
-      { name: 'purple', bg: darkMode ? 'bg-purple-900' : 'bg-purple-100', text: darkMode ? 'text-purple-100' : 'text-purple-800' },
-      { name: 'orange', bg: darkMode ? 'bg-orange-900' : 'bg-orange-100', text: darkMode ? 'text-orange-100' : 'text-orange-800' }
-    ];
+    const colorOptions = getColorOptions({ darkMode });
 
     return (
       <div className="mb-3">
