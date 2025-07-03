@@ -9,14 +9,14 @@
     "Chosen": {
       "Monday": true,
       "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": true,
+      "Wednesday": false,
+      "Thursday": false,
       "Friday": true,
       "Saturday": true,
       "Sunday": false
     },
     "Width": 50,
-    "CheckboxColor": "green"
+    "CheckboxColor": "blue"
   },
   {
     "ColumnId": "1745672766295",
@@ -41,7 +41,7 @@
     "Type": "multi-select",
     "Name": "ACTIVITY",
     "Description": "WWsadada",
-    "EmojiIcon": "Phone",
+    "EmojiIcon": "Hammer",
     "NameVisible": true,
     "Options": [
       "CARDIO3",
@@ -60,9 +60,9 @@
     },
     "Width": 130,
     "TagColors": {
-      "CARDIO3": "blue",
-      "WORKOUT2": "green",
-      "10K": "orange",
+      "CARDIO3": "teal",
+      "WORKOUT2": "yellow",
+      "10K": "red",
       "ап": "blue"
     },
     "DoneTags": []
@@ -93,7 +93,7 @@
     "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
+      "Monday": false,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
@@ -121,7 +121,7 @@
       "Sunday": false
     },
     "Width": 50,
-    "CheckboxColor": "purple"
+    "CheckboxColor": "blue"
   },
   {
     "ColumnId": "1750832346226",
@@ -131,37 +131,21 @@
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
     "Options": [
-      "в",
-      "BREAD4",
-      "Task 1",
-      "S"
+      "SS",
+      "SSSAD",
+      "BREAD2",
+      "і"
     ],
     "TagColors": {
-      "Task 1": "blue",
-      "Task 2": "green",
-      "і": "blue",
-      "BREAD1": "orange",
-      "BREAD2": "orange",
-      "BREAD3": "orange",
-      "BREAD4": "orange",
-      "в": "blue"
+      "і": "gray",
+      "BREAD2": "purple",
+      "SS": "yellow",
+      "SSSAD": "yellow"
     },
     "Chosen": {
       "global": []
     },
-    "DoneTags": [
-      "SSS",
-      "і",
-      "SS",
-      "SSSAD",
-      "HT",
-      "BREAD3",
-      "SAF",
-      "JYT",
-      "BREAD1",
-      "BREAD2",
-      "Task 2"
-    ],
+    "DoneTags": [],
     "Width": 200
   },
   {
@@ -216,10 +200,10 @@
     "Chosen": {
       "Monday": false,
       "Tuesday": false,
-      "Wednesday": false,
-      "Thursday": false,
+      "Wednesday": true,
+      "Thursday": true,
       "Friday": false,
-      "Saturday": false,
+      "Saturday": true,
       "Sunday": false
     },
     "Width": 50,
@@ -235,7 +219,8 @@
     "Options": [],
     "TagColors": {
       "Task 1": "blue",
-      "Task 2": "green"
+      "Task 2": "green",
+      "ва": "blue"
     },
     "Chosen": {
       "global": []
@@ -243,7 +228,8 @@
     "Width": 150,
     "DoneTags": [
       "Task 1",
-      "Task 2"
+      "Task 2",
+      "ва"
     ]
   },
   {
@@ -255,9 +241,9 @@
     "NameVisible": false,
     "Chosen": {
       "Monday": false,
-      "Tuesday": false,
+      "Tuesday": true,
       "Wednesday": false,
-      "Thursday": false,
+      "Thursday": true,
       "Friday": false,
       "Saturday": false,
       "Sunday": false
@@ -295,11 +281,11 @@
       "Task 2"
     ],
     "TagColors": {
-      "Task 1": "blue",
-      "Task 2": "green"
+      "Task 1": "teal",
+      "Task 2": "red"
     },
     "Chosen": {
-      "Monday": "",
+      "Monday": "Task 1, Task 2",
       "Tuesday": "",
       "Wednesday": "",
       "Thursday": "",
@@ -307,7 +293,8 @@
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": 50
+    "Width": 50,
+    "DoneTags": []
   },
   {
     "ColumnId": "1751354268457",
@@ -318,15 +305,20 @@
     "NameVisible": true,
     "Options": [
       "Task 1",
-      "Task 2"
+      "Task 2",
+      "в",
+      "а"
     ],
     "TagColors": {
       "Task 1": "blue",
-      "Task 2": "green"
+      "Task 2": "green",
+      "в": "blue",
+      "а": "blue"
     },
     "Chosen": {
       "global": []
     },
-    "Width": 150
+    "Width": 150,
+    "DoneTags": []
   }
 ]

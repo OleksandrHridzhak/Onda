@@ -33,7 +33,7 @@ export const TaskTableCell = ({ column, onChangeOptions, darkMode }) => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[310px]
+      <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[380px]
         [&::-webkit-scrollbar]:w-1/2
         [&::-webkit-scrollbar-track]:bg-transparent
         [&::-webkit-scrollbar-thumb]:rounded-full
