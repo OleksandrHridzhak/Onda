@@ -25,3 +25,6 @@ mintty.exe -h always --title="Backend" /bin/bash -lc "cd '$(pwd)/sys3-electron/e
 # 🧠 VS Code
 echo "🧠 Відкриваю VS Code..."
 code .
+
+echo "🌐 Відкриваю проєкт у браузері..."
+start "" "https://github.com/users/OleksandrHridzhak/projects/2/views/1"
