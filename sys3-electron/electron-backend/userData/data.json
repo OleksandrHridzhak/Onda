@@ -126,7 +126,7 @@
     "Type": "tasktable",
     "Name": "New Task List",
     "Description": "Task table created on backend",
-    "EmojiIcon": "ListTodo",
+    "EmojiIcon": "Leaf",
     "NameVisible": true,
     "Options": [
       "SS",
