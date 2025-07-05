@@ -44,7 +44,6 @@
     "EmojiIcon": "Hammer",
     "NameVisible": true,
     "Options": [
-      "CARDIO3",
       "WORKOUT2",
       "10K",
       "ап"
@@ -60,10 +59,9 @@
     },
     "Width": 130,
     "TagColors": {
-      "CARDIO3": "teal",
-      "WORKOUT2": "yellow",
-      "10K": "red",
-      "ап": "blue"
+      "WORKOUT2": "pink",
+      "10K": "blue",
+      "ап": "purple"
     },
     "DoneTags": []
   },
@@ -89,7 +87,7 @@
     "ColumnId": "1746420337324",
     "Type": "checkbox",
     "Name": "W-SPEECH: 3.5h ",
-    "Description": "тренування вимови, публічних виступів, формулювання думок, сторітейлінг прийомів, читання в голос",
+    "Description": "тПРОЛД",
     "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
@@ -134,13 +132,21 @@
       "SS",
       "SSSAD",
       "BREAD2",
-      "і"
+      "і",
+      "ж",
+      "ргрлрлрлгрл",
+      "рорпллор",
+      "ропорпорпо"
     ],
     "TagColors": {
       "і": "gray",
-      "BREAD2": "purple",
-      "SS": "yellow",
-      "SSSAD": "yellow"
+      "BREAD2": "blue",
+      "SS": "blue",
+      "SSSAD": "yellow",
+      "ж": "blue",
+      "ргрлрлрлгрл": "blue",
+      "рорпллор": "blue",
+      "ропорпорпо": "blue"
     },
     "Chosen": {
       "global": []
@@ -184,7 +190,7 @@
       "Option 2"
     ],
     "TagColors": {
-      "Option 1": "blue",
+      "Option 1": "gray",
       "Option 2": "green"
     },
     "Width": 201,
@@ -195,8 +201,8 @@
     "Type": "checkbox",
     "Name": "New Checkbox",
     "Description": "Checkbox created on backend",
-    "EmojiIcon": "Star",
-    "NameVisible": true,
+    "EmojiIcon": "Wallet",
+    "NameVisible": false,
     "Chosen": {
       "Monday": false,
       "Tuesday": false,
@@ -207,7 +213,7 @@
       "Sunday": false
     },
     "Width": 50,
-    "CheckboxColor": "green"
+    "CheckboxColor": "purple"
   },
   {
     "ColumnId": "1751353777045",
@@ -216,11 +222,16 @@
     "Description": "Task table created on backend",
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
-    "Options": [],
+    "Options": [
+      "ОЛЖД"
+    ],
     "TagColors": {
       "Task 1": "blue",
-      "Task 2": "green",
-      "ва": "blue"
+      "Task 2": "yellow",
+      "ва": "blue",
+      "РО": "blue",
+      "РОЛ": "blue",
+      "ОЛЖД": "blue"
     },
     "Chosen": {
       "global": []
@@ -229,7 +240,9 @@
     "DoneTags": [
       "Task 1",
       "Task 2",
-      "ва"
+      "ва",
+      "РОЛ",
+      "РО"
     ]
   },
   {
