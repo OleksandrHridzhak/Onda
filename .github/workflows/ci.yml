@@ -17,16 +17,21 @@ jobs:
       - run: npm ci
       - run: npm test -- --watchAll=false
 
-  build:
-    runs-on: ubuntu-latest
-    needs: test
-    if: contains(github.event.head_commit.message, '[build]')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: CI=false npm run build
-      - run: npm run dist
+build:
+  runs-on: ubuntu-latest
+  needs: test
+  if: contains(github.event.head_commit.message, '[build]')
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - run: npm ci
+    - run: CI=false npm run build
+    # переходимо в папку electron-backend
+    - run: npm ci
+      working-directory: ./sys3-electron/electron-backend
+    - run: npm run dist
+      working-directory: ./sys3-electron/electron-backend
+
 
