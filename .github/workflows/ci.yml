@@ -27,7 +27,6 @@ jobs:
         with:
           node-version: 20
 
-      # React build
       - run: npm ci
       - run: CI=false npm run build
 
