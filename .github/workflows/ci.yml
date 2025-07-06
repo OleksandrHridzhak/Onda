@@ -45,7 +45,7 @@ jobs:
 
       # Збереження Electron білда (папка dist)
       - name: Upload Electron build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: electron-build
           path: ./sys3-electron/electron-backend/dist/
