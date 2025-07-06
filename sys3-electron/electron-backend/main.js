@@ -28,6 +28,7 @@ function createWindow() {
 
 }
 
+// Enable global shortcuts
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
