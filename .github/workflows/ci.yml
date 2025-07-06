@@ -26,11 +26,27 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      # React build
       - run: npm ci
       - run: CI=false npm run build
+
+      # Electron backend build
       - run: npm ci
         working-directory: ./sys3-electron/electron-backend
       - run: npm run dist
         working-directory: ./sys3-electron/electron-backend
 
+      # Збереження React білда
+      - name: Upload React build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-build
+          path: build/
 
+      # Збереження Electron білда (папка dist)
+      - name: Upload Electron build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: electron-build
+          path: ./sys3-electron/electron-backend/dist/
