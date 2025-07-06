@@ -20,10 +20,11 @@ function createWindow() {
     },
   });
 
-// Завантажуємо пусту HTML-сторінку (бо фронтенду ще немає)
-  //mainWindow.loadFile(path.join(__dirname, './build/index.html'));
-  mainWindow.loadURL('http://localhost:3000'); // Завантажуємо локальний сервер React
-  mainWindow.maximize();
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.loadURL('http://localhost:3000');
+  } else {
+    mainWindow.loadFile(path.join(__dirname, '../../build/index.html'));
+  }
 
 }
 
