@@ -12,16 +12,16 @@ export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) =
     onChange(!checked); 
   };
 
-  return (
+       return (
     <div className="flex justify-center items-center w-full h-full">
       <label className="relative flex items-center justify-center w-6 h-6 cursor-pointer">
         <input
           type="checkbox"
-          checked={checked}
+                  checked={checked}
           onChange={handleToggle} 
           className="sr-only peer"
         />
-        <div className={`w-6 h-6 rounded-full border flex items-center justify-center 
+                <div className={`w-6 h-6 rounded-full border flex items-center justify-center 
                         transition-all duration-150 ease-in-out
                         border-transparent
                         ${checked ? selectedColor.bg : ''}
@@ -35,7 +35,7 @@ export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) =
           />
         </div>
 
-        
+
       </label>
     </div>
   );
