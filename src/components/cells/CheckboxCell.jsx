@@ -34,6 +34,8 @@ export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) =
             strokeWidth={3}
           />
         </div>
+
+        
       </label>
     </div>
   );

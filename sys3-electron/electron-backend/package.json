@@ -37,7 +37,6 @@
     "node-cron": "^4.0.5"
   },
   "lint-staged": {
-  "*.js": ["eslint --fix", "prettier --write", "git add"]
+    "**/*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"]
   }
-
 }
