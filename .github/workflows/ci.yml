@@ -44,7 +44,6 @@ jobs:
           npm ci
           npm run dist
 
-      # Upload React build artifact
       - name: Upload React build
         uses: actions/upload-artifact@v4
         with:
