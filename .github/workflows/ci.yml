@@ -1,4 +1,4 @@
-name: CI - Test and Optional Build
+name: CI - Test and Windows Build
 
 on:
   push:
@@ -7,51 +7,48 @@ on:
     branches: [main]
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm ci
-        working-directory: ./sys3-electron/electron-backend
-      - run: npm run dist
-        working-directory: ./sys3-electron/electron-backend
-    artifacts:
-      - name: Windows Build
-        path: ./sys3-electron/electron-backend/dist/*.exe
+      - run: npm test -- --watchAll=false
 
-
-  build:
-    runs-on: ubuntu-latest
+  build-windows:
+    runs-on: windows-latest
     needs: test
     if: contains(github.event.head_commit.message, '[build]')
     steps:
       - uses: actions/checkout@v4
+
+      # React build
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - run: npm ci
+        working-directory: ./sys3-electron/react-frontend
       - run: CI=false npm run build
+        working-directory: ./sys3-electron/react-frontend
 
-      # Electron backend build
+      # Electron backend build (Windows .exe)
       - run: npm ci
         working-directory: ./sys3-electron/electron-backend
       - run: npm run dist
         working-directory: ./sys3-electron/electron-backend
 
-      # Збереження React білда
+      # Upload React build artifact
       - name: Upload React build artifact
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: build/
+          path: ./sys3-electron/react-frontend/build/
 
-      # Збереження Electron білда (папка dist)
-      - name: Upload Electron build artifact
+      # Upload Electron Windows .exe artifact
+      - name: Upload Windows Electron artifact
         uses: actions/upload-artifact@v4
         with:
-          name: electron-build
-          path: ./sys3-electron/electron-backend/dist/
+          name: windows-electron-build
+          path: ./sys3-electron/electron-backend/dist/*.exe
