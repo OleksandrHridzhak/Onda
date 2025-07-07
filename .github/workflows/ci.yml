@@ -24,31 +24,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # підняти Node (20)
       - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # React фронтенд
-      - run: npm ci
+      # React frontend
+      - name: Build React frontend
         working-directory: sys3-electron/react-frontend
-      - run: CI=false npm run build
-        working-directory: sys3-electron/react-frontend
+        env:
+          CI: false
+        run: |
+          npm ci
+          npm run build
 
-      # Electron бекенд → .exe
-      - run: npm ci
+      # Electron backend → .exe
+      - name: Build Electron backend (Windows .exe)
         working-directory: sys3-electron/electron-backend
-      - run: npm run dist
-        working-directory: sys3-electron/electron-backend
+        run: |
+          npm ci
+          npm run dist
 
-      # артефакт React
-      - name: Upload React build artifact
+      # Upload React build artifact
+      - name: Upload React build
         uses: actions/upload-artifact@v4
         with:
           name: react-build
           path: sys3-electron/react-frontend/build/
 
-      # артефакт Windows .exe
+      # Upload Windows .exe artifact
       - name: Upload Windows Electron artifact
         uses: actions/upload-artifact@v4
         with:
