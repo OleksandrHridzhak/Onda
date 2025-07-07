@@ -17,17 +17,17 @@
     "electron-packager": "^17.1.2"
   },
   "build": {
-    "asar": false,
+    "asar": true,
+    "asarUnpack": [
+      "assets/**",
+      "userData/**"
+    ],
     "appId": "com.onda.onda",
     "productName": "Onda",
     "directories": {
       "buildResources": "assets",
       "output": "dist"
     },
-    "files": [
-      "**/*",
-      "!node_modules/{@electron,electron}/**/*"
-    ],
     "win": {
       "target": "nsis",
       "icon": "assets/onda-logo.ico"
