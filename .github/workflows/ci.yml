@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: sys3-electron\react-frontend\build\
+          path: build\
 
       # Upload Windows .exe artifact
       - name: Upload Windows Electron artifact
