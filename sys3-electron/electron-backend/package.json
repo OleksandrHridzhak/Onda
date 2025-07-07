@@ -35,5 +35,9 @@
   },
   "dependencies": {
     "node-cron": "^4.0.5"
+  },
+  "lint-staged": {
+  "*.js": ["eslint --fix", "prettier --write", "git add"]
   }
+
 }
