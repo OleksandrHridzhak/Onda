@@ -30,7 +30,6 @@ jobs:
 
       # React frontend
       - name: Build React frontend
-        working-directory: sys3-electron\react-frontend
         env:
           CI: false
         run: |
