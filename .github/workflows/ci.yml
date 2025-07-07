@@ -30,7 +30,7 @@ jobs:
 
       # React frontend
       - name: Build React frontend
-        working-directory: sys3-electron/react-frontend
+        working-directory: sys3-electron\react-frontend
         env:
           CI: false
         run: |
@@ -39,7 +39,7 @@ jobs:
 
       # Electron backend → .exe
       - name: Build Electron backend (Windows .exe)
-        working-directory: sys3-electron/electron-backend
+        working-directory: sys3-electron\electron-backend
         run: |
           npm ci
           npm run dist
@@ -48,11 +48,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: sys3-electron/react-frontend/build/
+          path: sys3-electron\react-frontend\build\
 
       # Upload Windows .exe artifact
       - name: Upload Windows Electron artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-electron-build
-          path: sys3-electron/electron-backend/dist/*.exe
+          path: sys3-electron\electron-backend\dist\*.exe
