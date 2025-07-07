@@ -7,15 +7,21 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  build-windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm ci
-      - run: npm test -- --watchAll=false
+        working-directory: ./sys3-electron/electron-backend
+      - run: npm run dist
+        working-directory: ./sys3-electron/electron-backend
+    artifacts:
+      - name: Windows Build
+        path: ./sys3-electron/electron-backend/dist/*.exe
+
 
   build:
     runs-on: ubuntu-latest

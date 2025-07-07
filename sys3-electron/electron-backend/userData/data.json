@@ -59,7 +59,7 @@
     },
     "Width": 130,
     "TagColors": {
-      "WORKOUT2": "pink",
+      "WORKOUT2": "teal",
       "10K": "blue",
       "ап": "purple"
     },
@@ -129,9 +129,6 @@
     "EmojiIcon": "Leaf",
     "NameVisible": true,
     "Options": [
-      "SS",
-      "SSSAD",
-      "BREAD2",
       "і",
       "ж",
       "ргрлрлрлгрл",
@@ -151,7 +148,11 @@
     "Chosen": {
       "global": []
     },
-    "DoneTags": [],
+    "DoneTags": [
+      "SS",
+      "SSSAD",
+      "BREAD2"
+    ],
     "Width": 200
   },
   {
