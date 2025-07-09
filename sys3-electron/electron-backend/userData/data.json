@@ -7,9 +7,9 @@
     "EmojiIcon": "Map",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
-      "Tuesday": true,
-      "Wednesday": false,
+      "Monday": false,
+      "Tuesday": false,
+      "Wednesday": true,
       "Thursday": false,
       "Friday": true,
       "Saturday": true,
@@ -23,7 +23,7 @@
     "Type": "numberbox",
     "Name": "W-SIDE PROJEвпрCTS",
     "Description": "~5H\n",
-    "EmojiIcon": "Brain",
+    "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
       "Monday": "3",
@@ -39,14 +39,15 @@
   {
     "ColumnId": "1745672769562",
     "Type": "multi-select",
-    "Name": "ACTIVITY",
-    "Description": "WWsadada",
-    "EmojiIcon": "Hammer",
+    "Name": "",
+    "Description": "",
+    "EmojiIcon": "Music",
     "NameVisible": true,
     "Options": [
       "WORKOUT2",
       "10K",
-      "ап"
+      "ап",
+      "Hello"
     ],
     "Chosen": {
       "Monday": "CARDIO3",
@@ -54,14 +55,15 @@
       "Wednesday": "10K, CARDIO3",
       "Thursday": "CARDIO3",
       "Friday": "WORKOUT2",
-      "Saturday": "ап",
+      "Saturday": "ап, Hello",
       "Sunday": "10K"
     },
     "Width": 130,
     "TagColors": {
       "WORKOUT2": "teal",
       "10K": "blue",
-      "ап": "purple"
+      "ап": "purple",
+      "Hello": "blue"
     },
     "DoneTags": []
   },
@@ -133,7 +135,16 @@
       "ж",
       "ргрлрлрлгрл",
       "рорпллор",
-      "ропорпорпо"
+      "ропорпорпо",
+      "dg",
+      "df",
+      "fdg",
+      "dfgdf",
+      "dfgdfgdgd",
+      "fdgdgdfgdg",
+      "dfgdgdg",
+      "dfgdgdgdg",
+      "dfgdgdfgdg"
     ],
     "TagColors": {
       "і": "gray",
@@ -143,7 +154,21 @@
       "ж": "blue",
       "ргрлрлрлгрл": "blue",
       "рорпллор": "blue",
-      "ропорпорпо": "blue"
+      "ропорпорпо": "blue",
+      "dg": "blue",
+      "df": "blue",
+      "dfdf": "blue",
+      "fdg": "blue",
+      "dfgdf": "blue",
+      "dfgdfgdgd": "blue",
+      "fdgdgdfgdg": "blue",
+      "dfgdfgdfg": "blue",
+      "fdgdfdgd": "blue",
+      "dfgdgdg": "blue",
+      "dfgdgdfgdfg": "blue",
+      "dfgdgdgdg": "blue",
+      "dfgdfgdgdgd": "blue",
+      "dfgdgdfgdg": "blue"
     },
     "Chosen": {
       "global": []
@@ -151,7 +176,12 @@
     "DoneTags": [
       "SS",
       "SSSAD",
-      "BREAD2"
+      "BREAD2",
+      "dfgdgdfgdfg",
+      "dfgdfgdfg",
+      "fdgdfdgd",
+      "dfdf",
+      "dfgdfgdgdgd"
     ],
     "Width": 200
   },
@@ -221,10 +251,13 @@
     "Type": "tasktable",
     "Name": "New Task List",
     "Description": "Task table created on backend",
-    "EmojiIcon": "ListTodo",
+    "EmojiIcon": "Circle",
     "NameVisible": true,
     "Options": [
-      "ОЛЖД"
+      "Task 1",
+      "РОЛ",
+      "РО",
+      "ва"
     ],
     "TagColors": {
       "Task 1": "blue",
@@ -232,18 +265,17 @@
       "ва": "blue",
       "РО": "blue",
       "РОЛ": "blue",
-      "ОЛЖД": "blue"
+      "ОЛЖД": "blue",
+      "hi": "blue"
     },
     "Chosen": {
       "global": []
     },
     "Width": 150,
     "DoneTags": [
-      "Task 1",
       "Task 2",
-      "ва",
-      "РОЛ",
-      "РО"
+      "ОЛЖД",
+      "hi"
     ]
   },
   {
@@ -300,7 +332,7 @@
     },
     "Chosen": {
       "Monday": "Task 1, Task 2",
-      "Tuesday": "",
+      "Tuesday": "Task 1, Task 2",
       "Wednesday": "",
       "Thursday": "",
       "Friday": "",
