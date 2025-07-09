@@ -17,11 +17,7 @@
     "electron-packager": "^17.1.2"
   },
   "build": {
-    "asar": true,
-    "asarUnpack": [
-      "assets/**",
-      "userData/**"
-    ],
+    "asar": false,
     "appId": "com.onda.onda",
     "productName": "Onda",
     "directories": {
@@ -31,12 +27,18 @@
     "win": {
       "target": "nsis",
       "icon": "assets/onda-logo.ico"
-    }
+    },
+    "files": [
+      "**/*"
+    ]
   },
   "dependencies": {
     "node-cron": "^4.0.5"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"]
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

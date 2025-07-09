@@ -1,7 +1,7 @@
 {
   "theme": {
     "accentColor": "purple",
-    "darkMode": false,
+    "darkMode": true,
     "autoThemeSettings": {
       "enabled": true,
       "startTime": "07:00",

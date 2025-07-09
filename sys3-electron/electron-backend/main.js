@@ -3,6 +3,7 @@ const path = require('path');
 const api = require(path.join(__dirname, './api/api.js'));
 const calendarBackend = require('./api/calendar');
 
+
 const { initCronJobs } = require('./services/cronServices');
 
 let mainWindow;
@@ -20,10 +21,11 @@ function createWindow() {
     },
   });
 
+
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:3000');
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../../build/index.html'));
+        mainWindow.loadURL('http://localhost:3000');
   }
 
 }
