@@ -15,7 +15,7 @@
       "Saturday": true,
       "Sunday": false
     },
-    "Width": 50,
+    "Width": 68,
     "CheckboxColor": "blue"
   },
   {
@@ -34,7 +34,7 @@
       "Saturday": "2.5",
       "Sunday": ""
     },
-    "Width": 61
+    "Width": 75
   },
   {
     "ColumnId": "1745672769562",
@@ -110,7 +110,7 @@
     "Name": "3.5H AUTO ",
     "Description": "Checkbox created on backend",
     "EmojiIcon": "Lock",
-    "NameVisible": false,
+    "NameVisible": true,
     "Chosen": {
       "Monday": true,
       "Tuesday": true,
@@ -120,7 +120,7 @@
       "Saturday": true,
       "Sunday": false
     },
-    "Width": 50,
+    "Width": 71,
     "CheckboxColor": "blue"
   },
   {
@@ -131,20 +131,16 @@
     "EmojiIcon": "Leaf",
     "NameVisible": true,
     "Options": [
-      "і",
       "ж",
-      "ргрлрлрлгрл",
-      "рорпллор",
-      "ропорпорпо",
-      "dg",
       "df",
       "fdg",
       "dfgdf",
       "dfgdfgdgd",
-      "fdgdgdfgdg",
       "dfgdgdg",
       "dfgdgdgdg",
-      "dfgdgdfgdg"
+      "dfgdgdfgdg",
+      "BREAD2",
+      "SSSAD"
     ],
     "TagColors": {
       "і": "gray",
@@ -152,10 +148,6 @@
       "SS": "blue",
       "SSSAD": "yellow",
       "ж": "blue",
-      "ргрлрлрлгрл": "blue",
-      "рорпллор": "blue",
-      "ропорпорпо": "blue",
-      "dg": "blue",
       "df": "blue",
       "dfdf": "blue",
       "fdg": "blue",
@@ -163,27 +155,27 @@
       "dfgdfgdgd": "blue",
       "fdgdgdfgdg": "blue",
       "dfgdfgdfg": "blue",
-      "fdgdfdgd": "blue",
+      "fdgdfdgd": "gray",
       "dfgdgdg": "blue",
-      "dfgdgdfgdfg": "blue",
-      "dfgdgdgdg": "blue",
+      "dfgdgdfgdfg": "yellow",
+      "dfgdgdgdg": "orange",
       "dfgdfgdgdgd": "blue",
-      "dfgdgdfgdg": "blue"
+      "dfgdgdfgdg": "gray"
     },
     "Chosen": {
       "global": []
     },
     "DoneTags": [
       "SS",
-      "SSSAD",
-      "BREAD2",
       "dfgdgdfgdfg",
       "dfgdfgdfg",
       "fdgdfdgd",
       "dfdf",
-      "dfgdfgdgdgd"
+      "dfgdfgdgdgd",
+      "і",
+      "fdgdgdfgdg"
     ],
-    "Width": 200
+    "Width": 304
   },
   {
     "ColumnId": "1750832611778",
@@ -254,27 +246,28 @@
     "EmojiIcon": "Circle",
     "NameVisible": true,
     "Options": [
-      "Task 1",
-      "РОЛ",
-      "РО",
-      "ва"
+      "dssf",
+      "fs"
     ],
     "TagColors": {
       "Task 1": "blue",
-      "Task 2": "yellow",
-      "ва": "blue",
-      "РО": "blue",
-      "РОЛ": "blue",
-      "ОЛЖД": "blue",
-      "hi": "blue"
+      "hi": "yellow",
+      "Hello": "blue",
+      "I don say that": "blue",
+      "how are y": "blue",
+      "I don't like that": "blue",
+      "daf": "blue",
+      "adsfaf": "blue",
+      "asfa": "gray",
+      "f": "blue",
+      "dssf": "purple",
+      "fs": "green"
     },
     "Chosen": {
       "global": []
     },
-    "Width": 150,
+    "Width": 154,
     "DoneTags": [
-      "Task 2",
-      "ОЛЖД",
       "hi"
     ]
   },
