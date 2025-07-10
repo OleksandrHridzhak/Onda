@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { X, Plus, Trash2, Eye, EyeOff, ChevronDown, ChevronUp, ArrowUp, ArrowDown, Edit2 } from 'lucide-react';
+import { X, Plus, Trash2, Eye, EyeOff, ChevronDown, ChevronUp, ArrowUp,ArrowRight,ArrowLeft, ArrowDown, Edit2,ChevronRight, ChevronLeft } from 'lucide-react';
   import { debounce } from 'lodash';
 import { icons, getIconComponent } from './utils/icons';
 import { getColorOptions } from './utils/colorOptions';
 import { InputText } from './atoms/InputText';
 import { BubbleBtn } from './atoms/BubbleBtn';
+import { TransparentBtn } from './atoms/TransparentBtn';
 
-const ColumnNameInput = ({ name, setName, darkMode }) => {
+const ColumnNameInput = ({ name, setName, darkMode,showTitle,setShowTitle }) => {
   return (
-    <div className="w-full">
+    <div className="w-full flex relative">
       <input
         type="text"
         value={name}
@@ -16,6 +17,7 @@ const ColumnNameInput = ({ name, setName, darkMode }) => {
         className={`w-full h-[50px] px-4 py-2 border ${darkMode ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-300 bg-white text-gray-900'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all duration-200`}
         placeholder='Column name'
       />
+      <TitleVisibilityToggle showTitle={showTitle} setShowTitle={setShowTitle} darkMode={darkMode} />
     </div>
   );
 };
@@ -99,10 +101,6 @@ const IconSelector = ({
     </div>
   );
 };
-
-
-
-
 const DescriptionInput = ({ description, setDescription, darkMode }) => {
   return (
     <div className="">
@@ -122,62 +120,60 @@ const DescriptionInput = ({ description, setDescription, darkMode }) => {
 
 
 const TitleVisibilityToggle = ({ showTitle, setShowTitle, darkMode }) => (
-  <div className="flex items-center mb-4">
+  <div className="flex items-center h-12 w-12 justify-center absolute right-0 top-0">
     <button
       onClick={() => setShowTitle(!showTitle)}
       className={`flex items-center space-x-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'} transition-colors duration-200`}
       aria-label={showTitle ? 'Hide column title' : 'Show column title'}
     >
       {showTitle ? <Eye size={18} /> : <EyeOff size={18} />}
-      <span className="text-sm">Show Column Title</span>
     </button>
   </div>
 );
 
-const ColumnWidthInput = ({ width, handleWidthChange, darkMode }) => (
-  <div className="mb-4">
-    <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Column Width (px)</label>
+export const ColumnWidthInput = ({ width, handleWidthChange, darkMode }) => (
+  <div className="w-full">
     <input
       type="number"
       value={width}
       onChange={handleWidthChange}
-      min="50"
+      min="0"
       max="1000"
-      className={`w-full px-4 py-2 border ${darkMode ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-300 bg-white text-gray-900'} rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all duration-200`}
+      className={`w-full px-3 py-2.5 flex items-center text-sm border ${
+        darkMode
+          ? "bg-transparent  border-gray-700 text-gray-200 hover:text-white"
+          : "bg-transparent   border-gray-300 text-gray-900"
+      } rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600`}
       placeholder="Enter width in pixels"
       aria-label="Column width"
     />
   </div>
 );
 
-const ColumnPositionControls = ({ onMoveUp, onMoveDown, canMoveUp, canMoveDown, darkMode }) => (
+const ColumnPositionControls = ({ onMoveUp, onMoveDown, canMoveUp, canMoveDown, darkMode, width, handleWidthChange }) => (
   <div className="mb-4">
-    <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Column Position</label>
+    <label className={`block text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-700'} mb-1`}>Column Position and width</label>
     <div className="flex space-x-2">
-      <button
+      <ColumnWidthInput width={width} handleWidthChange={handleWidthChange} darkMode={darkMode} />
+      <TransparentBtn 
         onClick={onMoveUp}
         disabled={!canMoveUp}
-        className={`flex-1 px-4 py-2 border ${darkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg flex items-center justify-center space-x-1 ${canMoveUp ? (darkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100') : (darkMode ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 cursor-not-allowed')} transition-colors duration-200`}
-        aria-label="Move column up"
+        darkTheme={darkMode}
       >
-        <ArrowUp size={18} />
-        <span>Move Up</span>
-      </button>
-      <button
+        <ArrowLeft size={18} /> LEFT
+      </TransparentBtn>
+      <TransparentBtn 
         onClick={onMoveDown}
         disabled={!canMoveDown}
-        className={`flex-1 px-4 py-2 border ${darkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg flex items-center justify-center space-x-1 ${canMoveDown ? (darkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100') : (darkMode ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 cursor-not-allowed')} transition-colors duration-200`}
-        aria-label="Move column down"
+        darkTheme={darkMode}
       >
-        <ArrowDown size={18} />
-        <span>Move Down</span>
-      </button>
+        RIGHT <ArrowRight size={18} />
+      </TransparentBtn>
     </div>
   </div>
 );
 
-// Updated OptionItem component with horizontal and styled color menu
-const OptionItem = ({ option, options, doneTags, optionColors, darkMode, handleColorChange, handleRemoveOption, handleEditOption, toggleColorMenu }) => {
+const OptionItem = ({ option, options, doneTags, optionColors, darkMode, handleColorChange, handleRemoveOption, handleEditOption }) => {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const [editingOption, setEditingOption] = useState(null);
   const [editValue, setEditValue] = useState('');
@@ -197,12 +193,21 @@ const OptionItem = ({ option, options, doneTags, optionColors, darkMode, handleC
     setIsContextMenuOpen(false);
   };
 
-  const handleMouseEnter = () => setIsContextMenuOpen(true);
-  const handleMouseLeave = (e) => {
-    if (!menuRef.current?.contains(e.relatedTarget)) {
-      setIsContextMenuOpen(false);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsContextMenuOpen(false);
+      }
+    };
+
+    if (isContextMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
-  };
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isContextMenuOpen]);
 
   return (
     <div key={option} className="relative">
@@ -226,19 +231,17 @@ const OptionItem = ({ option, options, doneTags, optionColors, darkMode, handleC
         </div>
       ) : (
         <>
-          <span
+          <button
+            onClick={() => setIsContextMenuOpen(!isContextMenuOpen)}
             className={`px-2 py-1 rounded-full text-xs font-medium ${getColorOptions({ darkMode }).find(c => c.name === optionColors[option])?.bg} ${getColorOptions({ darkMode }).find(c => c.name === optionColors[option])?.text || (darkMode ? 'text-gray-200' : 'text-gray-800')}`}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            aria-label={`Options for ${option}`}
           >
             {option} {doneTags.includes(option) && '(Completed)'}
-          </span>
+          </button>
           {isContextMenuOpen && (
             <div
               ref={menuRef}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              className={`absolute left-0 top-full mt-1 ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-lg p-2 z-10 transform transition-all duration-200 ease-in-out`}
+              className={`absolute left-0 top-full mt-1 ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-lg p-2 z-10`}
             >
               <div className="flex items-center space-x-2 p-2 overflow-x-auto max-w-xs">
                 {getColorOptions({ darkMode }).map(color => (
@@ -291,25 +294,35 @@ const OptionsList = ({ columnType, options, doneTags, newOption, setNewOption, h
         {columnType === 'tasktable' ? 'Tasks' : columnType === 'multi-select' ? 'Tags' : columnType === 'todo' ? 'Categories' : 'Checkboxes'}
       </label>
       <div className="space-y-2">
-        <div className="flex items-center relative mb-2">
+        <div className="flex items-center gap-2 mb-2">
           <input
             type="text"
             value={newOption}
             onChange={(e) => setNewOption(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
             placeholder={`Add new ${columnType === 'multicheckbox' ? 'checkbox' : 'option'}...`}
-            className={`flex-1 px-4 py-2 border ${darkMode ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-300 bg-white text-gray-900'} rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm pr-12 transition-all duration-200`}
+            className={`flex-1 px-4 py-2 h-9 border ${
+              darkMode 
+                ? 'border-gray-700 bg-gray-900 text-gray-200 placeholder-gray-500' 
+                : 'border-gray-300 bg-white text-gray-900 placeholder-gray-400'
+            } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all duration-200`}
             aria-label={`Add new ${columnType}`}
           />
           <button
             onClick={handleAddOption}
-            className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg ${darkMode ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-500 hover:bg-indigo-600'} text-white transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+            className={`flex items-center justify-center w-9 h-9 rounded-xl ${
+              darkMode 
+                ? 'bg-blue-600 hover:bg-blue-700 text-blue-100' 
+                : 'bg-blue-500 hover:bg-blue-600 text-white'
+            } transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+              darkMode ? 'focus:ring-blue-500' : 'focus:ring-blue-500'
+            }`}
             aria-label="Add new option"
           >
-            <Plus size={16} />
+            <Plus size={18} className="stroke-2" />
           </button>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2.5">
           {[...options, ...doneTags].map((option) => (
             <OptionItem
               key={option}
@@ -329,7 +342,6 @@ const OptionsList = ({ columnType, options, doneTags, newOption, setNewOption, h
     </div>
   );
 };
-
 const CheckboxColorPicker = ({ checkboxColor, setCheckboxColor, darkMode, isColorMenuOpen, toggleColorMenu }) => (
   <div className="mb-4">
     <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Checkbox Color</label>
@@ -528,11 +540,12 @@ const ColumnMenu = ({
               setIsIconSectionExpanded={setIsIconSectionExpanded}
               icons={icons}
               darkMode={darkMode}
+
             />
-            <ColumnNameInput name={name} setName={setName} darkMode={darkMode} />
+            <ColumnNameInput name={name} setName={setName} darkMode={darkMode} setShowTitle={setShowTitle} showTitle={showTitle} />
           </div>
           <DescriptionInput description={description} setDescription={setDescription} darkMode={darkMode} />
-          <ColumnPositionControls onMoveUp={onMoveUp} onMoveDown={onMoveDown} canMoveUp={canMoveUp} canMoveDown={canMoveDown} darkMode={darkMode} />
+          <ColumnPositionControls onMoveUp={onMoveUp} onMoveDown={onMoveDown} canMoveUp={canMoveUp} canMoveDown={canMoveDown} darkMode={darkMode} width={width} handleWidthChange={handleWidthChange} />
           {['multi-select', 'todo', 'multicheckbox', 'tasktable'].includes(column.Type) && (
             <OptionsList
               columnType={column.Type}
@@ -550,8 +563,6 @@ const ColumnMenu = ({
               toggleColorMenu={toggleColorMenu}
             />
           )}
-          <TitleVisibilityToggle showTitle={showTitle} setShowTitle={setShowTitle} darkMode={darkMode} />
-          <ColumnWidthInput width={width} handleWidthChange={handleWidthChange} darkMode={darkMode} />
           {column.Type === 'checkbox' && (
             <CheckboxColorPicker
               checkboxColor={checkboxColor}
@@ -569,7 +580,7 @@ const ColumnMenu = ({
             >
               Delete
             </button>
-            <BubbleBtn onClick={handleSave} disablet={isSaving}>
+            <BubbleBtn onClick={handleSave} disablet={isSaving} darkTheme={darkMode} light={false}>
               Save Changes
             </BubbleBtn>
           </div>
