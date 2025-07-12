@@ -537,6 +537,7 @@ const ColumnMenu = ({
           </h2>
           <button
             onClick={(e) => { e.stopPropagation(); onClose(); }}
+            aria-label="Close column settings"
             className={`p-1 rounded-full ${darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100'} transition-colors duration-200`}
           >
             <X size={20} />
@@ -591,7 +592,7 @@ const ColumnMenu = ({
             >
               Delete
             </button>
-            <BubbleBtn onClick={handleSave} disablet={isSaving} darkTheme={darkMode} light={false}>
+            <BubbleBtn onClick={handleSave} disablet={isSaving} darkTheme={darkMode} light={false} >
               Save Changes
             </BubbleBtn>
           </div>
