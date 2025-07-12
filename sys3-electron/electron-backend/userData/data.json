@@ -47,11 +47,12 @@
       "WORKOUT2",
       "10K",
       "ап",
-      "Hello"
+      "Hello",
+      "hello"
     ],
     "Chosen": {
       "Monday": "CARDIO3",
-      "Tuesday": "WORKOUT2",
+      "Tuesday": "WORKOUT2, ап",
       "Wednesday": "10K, CARDIO3",
       "Thursday": "CARDIO3",
       "Friday": "WORKOUT2",
@@ -63,7 +64,8 @@
       "WORKOUT2": "teal",
       "10K": "blue",
       "ап": "purple",
-      "Hello": "blue"
+      "Hello": "blue",
+      "hello": "blue"
     },
     "DoneTags": []
   },
@@ -93,13 +95,13 @@
     "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
+      "Monday": true,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
       "Saturday": true,
-      "Sunday": false
+      "Sunday": true
     },
     "Width": 50,
     "CheckboxColor": "orange"
@@ -109,8 +111,8 @@
     "Type": "checkbox",
     "Name": "3.5H AUTO ",
     "Description": "Checkbox created on backend",
-    "EmojiIcon": "Lock",
-    "NameVisible": true,
+    "EmojiIcon": "Gift",
+    "NameVisible": false,
     "Chosen": {
       "Monday": true,
       "Tuesday": true,
@@ -128,7 +130,7 @@
     "Type": "tasktable",
     "Name": "New Task List",
     "Description": "Task table created on backend",
-    "EmojiIcon": "Leaf",
+    "EmojiIcon": "Map",
     "NameVisible": true,
     "Options": [
       "ж",
@@ -159,7 +161,7 @@
       "dfgdgdg": "blue",
       "dfgdgdfgdfg": "yellow",
       "dfgdgdgdg": "orange",
-      "dfgdfgdgdgd": "blue",
+      "dfgdfgdgdgd": "gray",
       "dfgdgdfgdg": "gray"
     },
     "Chosen": {
