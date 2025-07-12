@@ -301,7 +301,7 @@ const OptionsList = ({ columnType, options, doneTags, newOption, setNewOption, h
             onChange={(e) => setNewOption(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
             placeholder={`Add new ${columnType === 'multicheckbox' ? 'checkbox' : 'option'}...`}
-            className={`flex-1 px-4 py-2 h-9 border ${
+            className={`flex-1 px-4 py-2 h-12 border ${
               darkMode 
                 ? 'border-gray-700 bg-gray-900 text-gray-200 placeholder-gray-500' 
                 : 'border-gray-300 bg-white text-gray-900 placeholder-gray-400'
@@ -310,7 +310,7 @@ const OptionsList = ({ columnType, options, doneTags, newOption, setNewOption, h
           />
           <button
             onClick={handleAddOption}
-            className={`flex items-center justify-center w-9 h-9 rounded-xl ${
+            className={`flex items-center justify-center w-12 h-12 rounded-xl ${
               darkMode 
                 ? 'bg-blue-600 hover:bg-blue-700 text-blue-100' 
                 : 'bg-blue-500 hover:bg-blue-600 text-white'
@@ -474,7 +474,7 @@ const ColumnMenu = ({
       onChangeOptions(column.ColumnId, newOptions, newColors, doneTags);
     } else if (isInDoneTags) {
       const newDoneTags = doneTags.map(tag => tag === oldOption ? newOption : tag);
-      setDoneTags(newDoneTags);
+    setDoneTags(newDoneTags);
       const newColors = { ...optionColors, [newOption]: optionColors[oldOption] };
       delete newColors[oldOption];
       setOptionColors(newColors);
@@ -527,10 +527,21 @@ const ColumnMenu = ({
 
   return (
     <div
-      ref={menuRef}
-      className={`fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}
+      className={`fixed z-50 cursor-default inset-0 flex items-center justify-center bg-black bg-opacity-50 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}
     >
-      <div className={`w-full max-w-md rounded-2xl ${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border shadow-md p-4`}>
+      
+      <div className={`w-full max-w-md rounded-2xl ${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border shadow-md p-4`}      ref={menuRef}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className={`text-lg z-55 font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+            Column Settings
+          </h2>
+          <button
+            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            className={`p-1 rounded-full ${darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100'} transition-colors duration-200`}
+          >
+            <X size={20} />
+          </button>
+        </div>
         <div className="">
           <div className="flex gap-2 w-full">
             <IconSelector
