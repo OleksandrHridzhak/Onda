@@ -109,7 +109,7 @@
   {
     "ColumnId": "1746639791331",
     "Type": "checkbox",
-    "Name": "3.5H AUTO ",
+    "Name": "3.5H AUTO d",
     "Description": "Checkbox created on backend",
     "EmojiIcon": "Gift",
     "NameVisible": false,
@@ -128,9 +128,9 @@
   {
     "ColumnId": "1750832346226",
     "Type": "tasktable",
-    "Name": "New Task List",
-    "Description": "Task table created on backend",
-    "EmojiIcon": "Map",
+    "Name": "New Task Listss",
+    "Description": "Task table created on badfckend",
+    "EmojiIcon": "Zap",
     "NameVisible": true,
     "Options": [
       "ж",
@@ -142,7 +142,8 @@
       "dfgdgdgdg",
       "dfgdgdfgdg",
       "BREAD2",
-      "SSSAD"
+      "SSSAD",
+      "sd"
     ],
     "TagColors": {
       "і": "gray",
@@ -162,7 +163,8 @@
       "dfgdgdfgdfg": "yellow",
       "dfgdgdgdg": "orange",
       "dfgdfgdgdgd": "gray",
-      "dfgdgdfgdg": "gray"
+      "dfgdgdfgdg": "gray",
+      "sd": "blue"
     },
     "Chosen": {
       "global": []
@@ -177,7 +179,7 @@
       "і",
       "fdgdgdfgdg"
     ],
-    "Width": 304
+    "Width": 130
   },
   {
     "ColumnId": "1750832611778",
