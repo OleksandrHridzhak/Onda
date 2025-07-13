@@ -24,6 +24,10 @@ const ColumnHeader = ({
   const style = column.Width ? { width: `${column.Width}px` } : {};
 
   const isEmptyHeader = !column.EmojiIcon && (column.NameVisible === false || !column.Name);
+  const handleClose = () => {
+    console.log('Menu closed');
+    setShowMenu(false);
+  };
 
   return (
     <th 
@@ -60,7 +64,7 @@ const ColumnHeader = ({
         {showMenu && (
           <ColumnMenu
             column={column}
-            onClose={() => setShowMenu(false)}
+            onClose={handleClose}
             handleDeleteColumn={onRemove}
             onRename={onRename}
             onChangeIcon={onChangeIcon}

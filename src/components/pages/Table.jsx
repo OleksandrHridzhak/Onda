@@ -3,8 +3,8 @@ import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import ColumnHeader from '../ColumnHeader';
 import { LoadingScreen } from '../LoadingScreen';
-import { useTableLogic, DAYS, COLUMN_WIDTHS, getWidthStyle, calculateSummary, renderCell } from '../utils/TableLogic';
-import { useColumnMenuLogic } from '../utils/ColumnMenuLogic';
+import { useTableLogic, DAYS, COLUMN_WIDTHS, getWidthStyle, calculateSummary, renderCell } from '../../hooks/TableLogic';
+import { useColumnMenuLogic } from '../../hooks/ColumnMenuLogic';
 
 const Table = ({ darkMode, setDarkMode }) => {
   const {

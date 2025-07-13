@@ -21,105 +21,8 @@ import { BubbleBtn } from "./atoms/BubbleBtn";
 import { IconSelector } from "./atoms/IconSelector";
 import { TransparentBtn } from "./atoms/TransparentBtn";
 import { OptionsList } from "./OptionList";
+import { reducer, initialState } from "../reducers/columnMenuReducer";
 
-// Reducer function to manage state
-const initialState = (column) => ({
-  name: column.Name,
-  selectedIcon: column.EmojiIcon || "",
-  description: column.Description || "",
-  showTitle: column.NameVisible !== false,
-  options: column.Options || [],
-  doneTags: column.DoneTags || [],
-  optionColors: column.TagColors || {},
-  checkboxColor: column.CheckboxColor || "green",
-  newOption: "",
-  width: column.Width ? parseInt(column.Width) : "",
-  isIconSectionExpanded: false,
-  isColorMenuOpen: {},
-  isSaving: false,
-});
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "SET_NAME":
-      return { ...state, name: action.payload };
-    case "SET_SELECTED_ICON":
-      return { ...state, selectedIcon: action.payload, isIconSectionExpanded: false };
-    case "SET_DESCRIPTION":
-      return { ...state, description: action.payload };
-    case "SET_SHOW_TITLE":
-      return { ...state, showTitle: action.payload };
-    case "SET_NEW_OPTION":
-      return { ...state, newOption: action.payload };
-    case "SET_WIDTH":
-      return { ...state, width: action.payload };
-    case "TOGGLE_ICON_SECTION":
-      return { ...state, isIconSectionExpanded: !state.isIconSectionExpanded };
-    case "TOGGLE_COLOR_MENU":
-      return {
-        ...state,
-        isColorMenuOpen: { ...state.isColorMenuOpen, [action.payload]: !state.isColorMenuOpen[action.payload] },
-      };
-    case "SET_CHECKBOX_COLOR":
-      return { ...state, checkboxColor: action.payload, isColorMenuOpen: { ...state.isColorMenuOpen, checkbox: false } };
-    case "ADD_OPTION":
-      if (
-        state.newOption.trim() &&
-        !state.options.includes(state.newOption.trim()) &&
-        !state.doneTags.includes(state.newOption.trim())
-      ) {
-        const newOptions = [...state.options, state.newOption.trim()];
-        const newColors = { ...state.optionColors, [state.newOption.trim()]: "blue" };
-        return {
-          ...state,
-          options: newOptions,
-          optionColors: newColors,
-          newOption: "",
-        };
-      }
-      return state;
-    case "REMOVE_OPTION":
-      const isInOptions = state.options.includes(action.payload);
-      const isInDoneTags = state.doneTags.includes(action.payload);
-      if (isInOptions) {
-        const newOptions = state.options.filter((opt) => opt !== action.payload);
-        const newColors = { ...state.optionColors };
-        delete newColors[action.payload];
-        return { ...state, options: newOptions, optionColors: newColors };
-      } else if (isInDoneTags) {
-        const newDoneTags = state.doneTags.filter((tag) => tag !== action.payload);
-        const newColors = { ...state.optionColors };
-        delete newColors[action.payload];
-        return { ...state, doneTags: newDoneTags, optionColors: newColors };
-      }
-      return state;
-    case "EDIT_OPTION":
-      const { oldOption, newOption } = action.payload;
-      const isInOptionsEdit = state.options.includes(oldOption);
-      const isInDoneTagsEdit = state.doneTags.includes(oldOption);
-      if (isInOptionsEdit) {
-        const newOptions = state.options.map((opt) => (opt === oldOption ? newOption : opt));
-        const newColors = { ...state.optionColors, [newOption]: state.optionColors[oldOption] };
-        delete newColors[oldOption];
-        return { ...state, options: newOptions, optionColors: newColors };
-      } else if (isInDoneTagsEdit) {
-        const newDoneTags = state.doneTags.map((tag) => (tag === oldOption ? newOption : tag));
-        const newColors = { ...state.optionColors, [newOption]: state.optionColors[oldOption] };
-        delete newColors[oldOption];
-        return { ...state, doneTags: newDoneTags, optionColors: newColors };
-      }
-      return state;
-    case "CHANGE_OPTION_COLOR":
-      const { option, color } = action.payload;
-      return { ...state, optionColors: { ...state.optionColors, [option]: color } };
-    case "SET_SAVING":
-      return { ...state, isSaving: action.payload };
-    case "RESET":
-      return initialState(action.payload);
-    default:
-      return state;
-  }
-};
 
 // Sub-components (unchanged)
 const TitleVisibilityToggle = ({ showTitle, setShowTitle, darkMode }) => (
@@ -264,38 +167,54 @@ const ColumnMenu = ({
     onChangeOptions(column.ColumnId, state.options, { ...state.optionColors, [option]: color }, state.doneTags);
   };
 
-  const handleSave = async () => {
-    dispatch({ type: "SET_SAVING", payload: true });
-    try {
-      await Promise.all(
-        [
-          state.name !== column.Name && onRename(column.ColumnId, state.name),
-          state.selectedIcon !== column.EmojiIcon &&
-            onChangeIcon(column.ColumnId, state.selectedIcon),
-          state.description !== column.Description &&
-            onChangeDescription(column.ColumnId, state.description),
-          state.showTitle !== (column.NameVisible !== false) &&
-            onToggleTitleVisibility(column.ColumnId, state.showTitle),
-          ["multi-select", "todo", "multicheckbox", "tasktable"].includes(column.Type) &&
-            (state.options !== column.Options ||
-              state.optionColors !== column.TagColors ||
-              state.doneTags !== column.DoneTags) &&
-            onChangeOptions(column.ColumnId, state.options, state.optionColors, state.doneTags),
-          column.Type === "checkbox" &&
-            state.checkboxColor !== column.CheckboxColor &&
-            onChangeCheckboxColor(column.ColumnId, state.checkboxColor),
-          onChangeWidth &&
-            state.width !== column.Width &&
-            onChangeWidth(column.ColumnId, state.width),
-        ].filter(Boolean)
-      );
-      onClose();
-    } catch (err) {
-      console.error("Error saving column changes:", err);
-    } finally {
-      dispatch({ type: "SET_SAVING", payload: false });
+const handleSave = async () => {
+  dispatch({ type: "SET_SAVING", payload: true });
+  try {
+    if (state.name !== column.Name) {
+      await onRename(column.ColumnId, state.name);
     }
-  };
+
+    if (state.selectedIcon !== column.EmojiIcon) {
+      await onChangeIcon(column.ColumnId, state.selectedIcon);
+    }
+
+    if (state.description !== column.Description) {
+      await onChangeDescription(column.ColumnId, state.description);
+    }
+
+    if (state.showTitle !== (column.NameVisible !== false)) {
+      await onToggleTitleVisibility(column.ColumnId, state.showTitle);
+    }
+
+    const isMultiOption = ["multi-select", "todo", "multicheckbox", "tasktable"].includes(column.Type);
+    const optionsChanged =
+      JSON.stringify(state.options) !== JSON.stringify(column.Options) ||
+      JSON.stringify(state.optionColors) !== JSON.stringify(column.TagColors) ||
+      JSON.stringify(state.doneTags) !== JSON.stringify(column.DoneTags);
+
+    if (isMultiOption && optionsChanged) {
+      await onChangeOptions(column.ColumnId, state.options, state.optionColors, state.doneTags);
+    }
+
+    if (column.Type === "checkbox" && state.checkboxColor !== column.CheckboxColor) {
+      await onChangeCheckboxColor(column.ColumnId, state.checkboxColor);
+    }
+
+    if (onChangeWidth && state.width !== column.Width) {
+      await onChangeWidth(column.ColumnId, state.width);
+    }
+
+
+  } catch (err) {
+    console.error("Error saving column changes:", err);
+  } finally {
+    dispatch({ type: "SET_SAVING", payload: false });
+    
+    onClose();
+
+  }
+};
+
 
   const handleWidthChange = (e) => {
     const newWidth = e.target.value;
@@ -445,7 +364,11 @@ const ColumnMenu = ({
               Delete
             </button>
             <BubbleBtn
-              onClick={handleSave}
+              onClick={(e) => {
+              e.stopPropagation();
+              handleSave();
+            }}
+              
               disabled={state.isSaving}
               darkTheme={darkMode}
               light={false}

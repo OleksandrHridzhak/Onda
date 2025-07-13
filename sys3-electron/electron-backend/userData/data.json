@@ -22,7 +22,7 @@
     "ColumnId": "1745672766295",
     "Type": "numberbox",
     "Name": "W-SIDE PROJEвпрCTS",
-    "Description": "~5H\n",
+    "Description": "~5H\nі",
     "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
@@ -39,8 +39,8 @@
   {
     "ColumnId": "1745672769562",
     "Type": "multi-select",
-    "Name": "",
-    "Description": "",
+    "Name": "в2",
+    "Description": "ва",
     "EmojiIcon": "Music",
     "NameVisible": true,
     "Options": [
@@ -59,7 +59,7 @@
       "Saturday": "ап, Hello",
       "Sunday": "10K"
     },
-    "Width": 130,
+    "Width": 125,
     "TagColors": {
       "WORKOUT2": "teal",
       "10K": "blue",
@@ -90,7 +90,7 @@
   {
     "ColumnId": "1746420337324",
     "Type": "checkbox",
-    "Name": "W-SPEECH: 3.5h ",
+    "Name": "W-SPEECH: 3.5h d",
     "Description": "тПРОЛД",
     "EmojiIcon": "Rocket",
     "NameVisible": false,
@@ -111,7 +111,7 @@
     "Type": "checkbox",
     "Name": "3.5H AUTO d",
     "Description": "Checkbox created on backend",
-    "EmojiIcon": "Gift",
+    "EmojiIcon": "Smile",
     "NameVisible": false,
     "Chosen": {
       "Monday": true,
@@ -122,7 +122,7 @@
       "Saturday": true,
       "Sunday": false
     },
-    "Width": 71,
+    "Width": 95,
     "CheckboxColor": "blue"
   },
   {
@@ -245,9 +245,9 @@
   {
     "ColumnId": "1751353777045",
     "Type": "tasktable",
-    "Name": "New Task List",
-    "Description": "Task table created on backend",
-    "EmojiIcon": "Circle",
+    "Name": "003",
+    "Description": "003",
+    "EmojiIcon": "Lock",
     "NameVisible": true,
     "Options": [
       "dssf",
@@ -270,7 +270,7 @@
     "Chosen": {
       "global": []
     },
-    "Width": 154,
+    "Width": 158,
     "DoneTags": [
       "hi"
     ]
