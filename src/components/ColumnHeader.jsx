@@ -17,7 +17,6 @@ const ColumnHeader = ({
   canMoveUp,
   canMoveDown,
   darkMode,
-  columnWidths,
   onChangeWidth
 }) => {
   const [showMenu, setShowMenu] = useState(false);

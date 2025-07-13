@@ -3,7 +3,7 @@ import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import ColumnHeader from '../ColumnHeader';
 import { LoadingScreen } from '../LoadingScreen';
-import { useTableLogic, DAYS, COLUMN_WIDTHS, getWidthStyle, calculateSummary, renderCell } from '../../hooks/TableLogic';
+import { useTableLogic, DAYS,  getWidthStyle, calculateSummary, renderCell } from '../../hooks/TableLogic';
 import { useColumnMenuLogic } from '../../hooks/ColumnMenuLogic';
 
 const Table = ({ darkMode, setDarkMode }) => {
@@ -120,7 +120,6 @@ const Table = ({ darkMode, setDarkMode }) => {
                       canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}
                       canMoveDown={column.ColumnId !== 'days' && columns.indexOf(column) < columns.length - 1}
                       darkMode={darkMode}
-                      columnWidths={COLUMN_WIDTHS}
                       onChangeWidth={handleChangeWidth}
                       onAddTask={handleAddTask}
                       style={getWidthStyle(column)}
