@@ -8,7 +8,7 @@
     "NameVisible": false,
     "Chosen": {
       "Monday": false,
-      "Tuesday": false,
+      "Tuesday": true,
       "Wednesday": true,
       "Thursday": false,
       "Friday": true,
@@ -65,7 +65,7 @@
       "10K": "blue",
       "ап": "purple",
       "Hello": "blue",
-      "hello": "blue"
+      "hello": "lime"
     },
     "DoneTags": []
   },
@@ -95,7 +95,7 @@
     "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
+      "Monday": false,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
@@ -135,7 +135,6 @@
     "Options": [
       "ж",
       "df",
-      "fdg",
       "dfgdf",
       "dfgdfgdgd",
       "dfgdgdg",
@@ -177,9 +176,10 @@
       "dfdf",
       "dfgdfgdgdgd",
       "і",
-      "fdgdgdfgdg"
+      "fdgdgdfgdg",
+      "fdg"
     ],
-    "Width": 130
+    "Width": 150
   },
   {
     "ColumnId": "1750832611778",
