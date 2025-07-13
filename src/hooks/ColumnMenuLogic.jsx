@@ -11,21 +11,26 @@ const handleError = (message, error) => {
 
 // Хук для логіки меню стовпців
 export const useColumnMenuLogic = (columns, setColumns) => {
-  const updateBackend = useCallback(async (columnId, updates) => {
-    const column = columns.find(col => col.ColumnId === columnId);
-    if (!column) return { status: 'Column not found' };
+const updateBackend = useCallback(async (columnId, updates) => {
+  let updatedColumn;
+  setColumns(prev => {
+    const original = prev.find(col => col.ColumnId === columnId);
+    if (!original) return prev;
+    updatedColumn = { ...original, ...updates };
+    return prev.map(col => col.ColumnId === columnId ? updatedColumn : col);
+  });
 
-    const updatedColumn = { ...column, ...updates };
-    try {
-      await electronAPI.changeColumn(updatedColumn);
-      setColumns(prev => prev.map(col => col.ColumnId === columnId ? updatedColumn : col));
-      return { status: 'Success', data: updatedColumn };
-    } catch (err) {
-      handleError('Update failed:', err);
-      setColumns(prev => prev.map(col => col.ColumnId === columnId ? column : col));
-      return { status: 'Error', error: err.message };
-    }
-  }, [columns, setColumns]);
+  try {
+    await electronAPI.changeColumn(updatedColumn);
+    return { status: 'Success', data: updatedColumn };
+  } catch (err) {
+    handleError('Update failed:', err);
+    // Откат
+    setColumns(prev => prev.map(col => col.ColumnId === columnId ? { ...col, ...updates } : col));
+    return { status: 'Error', error: err.message };
+  }
+}, [setColumns]);
+
 
   const handleDeleteColumn = useCallback(async (columnId) => {
     try {
@@ -40,16 +45,16 @@ export const useColumnMenuLogic = (columns, setColumns) => {
     }
   }, [setColumns]);
 
-  const handleRename = useCallback((columnId, newName) => {
-    return updateBackend(columnId, { Name: newName });
-  }, [updateBackend]);
+const handleRename = useCallback(async (columnId, newName) => {
+  return await updateBackend(columnId, { Name: newName });
+}, [updateBackend]);
 
   const handleChangeIcon = useCallback((columnId, newIcon) => {
     return updateBackend(columnId, { EmojiIcon: newIcon });
   }, [updateBackend]);
 
-  const handleChangeDescription = useCallback((columnId, newDescription) => {
-    return updateBackend(columnId, { Description: newDescription });
+  const handleChangeDescription = useCallback(async(columnId, newDescription) => {
+    return await updateBackend(columnId, { Description: newDescription });
   }, [updateBackend]);
 
   const handleToggleTitleVisibility = useCallback((columnId, showTitle) => {
