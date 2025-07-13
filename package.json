@@ -26,7 +26,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run postbuild",
+    "postbuild": "node scripts/copyBuildToElectron.js",
     "test": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx"
@@ -53,6 +54,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "autoprefixer": "^10.4.21",
+    "fs-extra": "^11.3.0",
     "husky": "^9.1.7",
     "jest": "^27.5.1",
     "lint-staged": "^16.1.2",
