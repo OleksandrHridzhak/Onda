@@ -60,8 +60,3 @@ cd ../../
 
 ---
 
-## ❌ Terms of Use
-
-This project is private intellectual property.  
-Any copying, distribution, or use of the code without my explicit permission is strictly prohibited.  
-All rights reserved © Oleksandr Hridzhak, 2025.
