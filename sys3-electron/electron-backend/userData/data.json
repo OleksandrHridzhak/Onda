@@ -123,7 +123,7 @@
       "Sunday": false
     },
     "Width": 95,
-    "CheckboxColor": "blue"
+    "CheckboxColor": "teal"
   },
   {
     "ColumnId": "1750832346226",
@@ -133,8 +133,6 @@
     "EmojiIcon": "Zap",
     "NameVisible": true,
     "Options": [
-      "ж",
-      "df",
       "dfgdf",
       "dfgdfgdgd",
       "dfgdgdg",
@@ -177,7 +175,9 @@
       "dfgdfgdgdgd",
       "і",
       "fdgdgdfgdg",
-      "fdg"
+      "fdg",
+      "df",
+      "ж"
     ],
     "Width": 150
   },

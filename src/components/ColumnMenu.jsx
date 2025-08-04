@@ -49,17 +49,11 @@ const CheckboxColorPicker = ({
     >
       Checkbox Color
     </label>
-    <div className="relative">
-      <button
-        onClick={toggleColorMenu}
-        className={`w-6 h-6 rounded-full ${getColorOptions({ darkMode }).find((c) => c.name === checkboxColor)?.bg} ${getColorOptions({ darkMode }).find((c) => c.name === checkboxColor)?.text} border ${darkMode ? "border-gray-700" : "border-gray-300"} focus:outline-none focus:ring-2 focus:ring-indigo-500`}
-        aria-label="Select checkbox color"
-      />
-      {isColorMenuOpen && (
+    <div className="">
         <div
-          className={`absolute right-0 mt-2 w-48 ${darkMode ? "bg-gray-900 border-gray-800 text-gray-200" : "bg-white border-gray-200 text-gray-800"} border rounded-lg shadow-md p-2 z-10`}
+          className={` mt-2 ${darkMode ? "bg-gray-900 border-gray-800 text-gray-200" : "bg-white border-gray-200 text-gray-800"} border rounded-lg p-2 z-10`}
         >
-          <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+          <div className="flex flex-wrap gap-2 max-h-32 ">
             {getColorOptions({ darkMode }).map((color) => (
               <button
                 key={color.name}
@@ -73,7 +67,6 @@ const CheckboxColorPicker = ({
             ))}
           </div>
         </div>
-      )}
     </div>
   </div>
 );
