@@ -1,8 +1,11 @@
 const fs = require('fs');
 
-const ensureDataFileExists = (filePath) => {
+const ensureDataFileExists = (filePath, getTemplate) => {
   if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, JSON.stringify([], null, 2));
+
+    template = getTemplate ? getTemplate() : [];
+    
+    fs.writeFileSync(filePath, JSON.stringify(template, null, 2));
     console.log(`File ${filePath} created`);
   } else {
     console.log(`File ${filePath} exists`);

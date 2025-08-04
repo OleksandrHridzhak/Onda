@@ -13,14 +13,7 @@ const SETTINGS_FILE = path.join(__dirname, '../userData/settings.json');
 const { updateThemeBasedOnTime } = require('../utils/utils');
 
 
-// Функція для перевірки та створення файлу settings.json, якщо його немає
-const ensureSettingsFileExists = () => {
-  if (!fs.existsSync(SETTINGS_FILE)) {
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(getSettingsTemplates(), null, 2));
-  }
-};
 
-// Функція для отримання даних із data.json
 const getData = async () => {
   try {
     ensureDataFileExists(DATA_FILE);
@@ -71,7 +64,8 @@ const saveCalendarData = async (data) => {
 // Функція для отримання налаштувань
 const getSettings = async () => {
   try {
-    ensureSettingsFileExists();
+    ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
+
     const data = await fs.promises.readFile(SETTINGS_FILE, 'utf8');
     return JSON.parse(data);
   } catch (error) {
@@ -220,7 +214,7 @@ module.exports = {
 
     // Обробник для перемикання теми
     ipcMain.handle('switch-theme', (event, darkMode) => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       let settings;
       try {
         settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
@@ -235,7 +229,7 @@ module.exports = {
 
     // Обробник для отримання поточної теми
     ipcMain.handle('get-theme', () => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       try {
         const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
         return { status: 'Theme fetched', darkMode: settings.theme.darkMode };
@@ -246,7 +240,7 @@ module.exports = {
 
     // Обробник для отримання налаштувань клітинок
     ipcMain.handle('get-cell-settings', () => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       try {
         const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
         return {
@@ -280,7 +274,7 @@ module.exports = {
 
     // Обробник для видалення налаштувань клітинки
     ipcMain.handle('delete-cell-settings', (event, cellId) => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       let settings;
       try {
         settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
@@ -299,21 +293,21 @@ module.exports = {
 
     // Обробник для отримання налаштувань
     ipcMain.handle('get-settings', () => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
       return { status: 'Settings fetched', data: settings };
     });
 
     // Обробник для оновлення налаштувань
     ipcMain.handle('update-settings', (event, settings) => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
       return { status: 'Settings updated' };
     });
 
     // Обробник для оновлення теми
     ipcMain.handle('update-theme', (event, themeSettings) => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
       settings.theme = { ...settings.theme, ...themeSettings };
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
@@ -323,7 +317,7 @@ module.exports = {
 
     // Обробник для оновлення налаштувань таблиці
     ipcMain.handle('update-table-settings', (event, tableSettings) => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
       settings.table = { ...settings.table, ...tableSettings };
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
@@ -332,7 +326,7 @@ module.exports = {
 
     // Обробник для оновлення UI налаштувань
     ipcMain.handle('update-ui-settings', (event, uiSettings) => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
       settings.ui = { ...settings.ui, ...uiSettings };
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
@@ -341,7 +335,7 @@ module.exports = {
 
     // Обробник для оновлення порядку колонок
     ipcMain.handle('update-column-order', (event, columnOrder) => {
-      ensureSettingsFileExists();
+      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
       const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
       settings.table.columnOrder = columnOrder;
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
