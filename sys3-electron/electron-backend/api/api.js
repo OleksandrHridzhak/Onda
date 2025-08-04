@@ -3,6 +3,11 @@ const path = require('path');
 const { app, BrowserWindow, ipcMain, Notification, dialog } = require('electron');
 const { ensureDataFileExists } = require('../utils/dataUtils');
 const DATA_FILE = path.join(__dirname, '../userData/data.json');
+
+const { getColumnTemplates, getSettingsTemplates } = require('../constants/fileTemplates.js');
+
+
+
 const CALENDAR_FILE = path.join(__dirname, '../userData/calendar.json');
 const SETTINGS_FILE = path.join(__dirname, '../userData/settings.json');
 const { updateThemeBasedOnTime } = require('../utils/utils');
@@ -11,44 +16,14 @@ const { updateThemeBasedOnTime } = require('../utils/utils');
 // Функція для перевірки та створення файлу settings.json, якщо його немає
 const ensureSettingsFileExists = () => {
   if (!fs.existsSync(SETTINGS_FILE)) {
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
-      theme: {
-        darkMode: false,
-        accentColor: 'blue',
-        autoThemeSettings: {
-          enabled: false,
-          startTime: '08:00',
-          endTime: '20:00'
-        }
-      },
-      table: {
-        columnOrder: [],
-        showSummaryRow: false,
-        compactMode: false,
-        stickyHeader: true
-      },
-      ui: {
-        animations: true,
-        tooltips: true,
-        confirmDelete: true
-      }
-    }, null, 2));
-  }
-};
-
-// Функція для перевірки та створення файлу calendar.json, якщо його немає
-const ensureCalendarFileExists = () => {
-  if (!fs.existsSync(CALENDAR_FILE)) {
-    fs.writeFileSync(CALENDAR_FILE, JSON.stringify([], null, 2));
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(getSettingsTemplates(), null, 2));
   }
 };
 
 // Функція для отримання даних із data.json
 const getData = async () => {
   try {
-    if (!fs.existsSync(DATA_FILE)) {
-      return [];
-    }
+    ensureDataFileExists(DATA_FILE);
     const data = await fs.promises.readFile(DATA_FILE, 'utf8');
     return JSON.parse(data);
   } catch (error) {
@@ -96,25 +71,7 @@ const saveCalendarData = async (data) => {
 // Функція для отримання налаштувань
 const getSettings = async () => {
   try {
-    if (!fs.existsSync(SETTINGS_FILE)) {
-      return {
-        theme: {
-          darkMode: false,
-          accentColor: 'blue'
-        },
-        table: {
-          columnOrder: [],
-          showSummaryRow: false,
-          compactMode: false,
-          stickyHeader: true
-        },
-        ui: {
-          animations: true,
-          tooltips: true,
-          confirmDelete: true
-        }
-      };
-    }
+    ensureSettingsFileExists();
     const data = await fs.promises.readFile(SETTINGS_FILE, 'utf8');
     return JSON.parse(data);
   } catch (error) {
@@ -193,144 +150,8 @@ module.exports = {
 
     // Обробник для створення компонента
     ipcMain.handle('create-component', (event, type) => {
-      const templates = {
-        todo: {
-          ColumnId: Date.now().toString(),
-          Type: 'todo',
-          Name: 'Todo List',
-          Description: 'Todo list created on backend',
-          EmojiIcon: 'ListTodo',
-          NameVisible: true,
-          Chosen: {
-            global: []
-          },
-          Options: ['Option 1', 'Option 2'],
-          TagColors: {
-            'Option 1': 'blue',
-            'Option 2': 'green'
-          },
-          Width: 150
-        },
-        checkbox: {
-          ColumnId: Date.now().toString(),
-          Type: 'checkbox',
-          Name: 'New Checkbox',
-          Description: 'Checkbox created on backend',
-          EmojiIcon: 'Star',
-          NameVisible: false,
-          Chosen: {
-            Monday: false,
-            Tuesday: false,
-            Wednesday: false,
-            Thursday: false,
-            Friday: false,
-            Saturday: false,
-            Sunday: false
-          },
-          Width: 50,
-          CheckboxColor: 'green'
-        },
-        numberbox: {
-          ColumnId: Date.now().toString(),
-          Type: 'numberbox',
-          Name: 'New Numberbox',
-          Description: 'Numberbox created on backend',
-          EmojiIcon: 'Star',
-          NameVisible: false,
-          Chosen: {
-            Monday: '',
-            Tuesday: '',
-            Wednesday: '',
-            Thursday: '',
-            Friday: '',
-            Saturday: '',
-            Sunday: ''
-          },
-          Width: 60
-        },
-        text: {
-          ColumnId: Date.now().toString(),
-          Type: 'text',
-          Name: 'New Text',
-          Description: 'Text created on backend',
-          EmojiIcon: 'Star',
-          NameVisible: true,
-          Chosen: {
-            Monday: '',
-            Tuesday: '',
-            Wednesday: '',
-            Thursday: '',
-            Friday: '',
-            Saturday: '',
-            Sunday: ''
-          },
-          Width: 130
-        },
-        'multi-select': {
-          ColumnId: Date.now().toString(),
-          Type: 'multi-select',
-          Name: 'New Multi-Select',
-          Description: 'Multi-select created on backend',
-          EmojiIcon: 'Star',
-          NameVisible: true,
-          Options: ['Option 1', 'Option 2'],
-          TagColors: {
-            'Option 1': 'blue',
-            'Option 2': 'green'
-          },
-          Chosen: {
-            Monday: '',
-            Tuesday: '',
-            Wednesday: '',
-            Thursday: '',
-            Friday: '',
-            Saturday: '',
-            Sunday: ''
-          },
-          Width: 90
-        },
-        multicheckbox: {
-          ColumnId: Date.now().toString(),
-          Type: 'multicheckbox',
-          Name: 'New Multi Checkbox',
-          Description: 'Multi-checkbox created on backend',
-          EmojiIcon: 'Circle',
-          NameVisible: false,
-          Options: ['Task 1', 'Task 2'],
-          TagColors: {
-            'Task 1': 'blue',
-            'Task 2': 'green'
-          },
-          Chosen: {
-            Monday: '',
-            Tuesday: '',
-            Wednesday: '',
-            Thursday: '',
-            Friday: '',
-            Saturday: '',
-            Sunday: ''
-          },
-          Width: 50
-        },
-        tasktable: {
-          ColumnId: Date.now().toString(),
-          Type: 'tasktable',
-          Name: 'New Task List',
-          Description: 'Task table created on backend',
-          EmojiIcon: 'ListTodo',
-          NameVisible: true,
-          Options: ['Task 1', 'Task 2'],
-          TagColors: {
-            'Task 1': 'blue',
-            'Task 2': 'green'
-          },
-          Chosen: {
-            global: []
-          },
-          Width: 150
-        }
-      };
 
+      const templates = getColumnTemplates();
       if (!templates[type]) {
         return { status: 'Invalid type', error: `No template for type "${type}"` };
       }
