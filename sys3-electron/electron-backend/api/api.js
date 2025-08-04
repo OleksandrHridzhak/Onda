@@ -14,73 +14,23 @@ const { updateThemeBasedOnTime } = require('../utils/utils');
 
 
 
-const getData = async () => {
+const getData = async (filePath, getDefaultData = null) => {
   try {
-    ensureDataFileExists(DATA_FILE);
-    const data = await fs.promises.readFile(DATA_FILE, 'utf8');
+    ensureDataFileExists(filePath, getDefaultData);
+    const data = await fs.promises.readFile(filePath, 'utf8');
     return JSON.parse(data);
   } catch (error) {
-    console.error('Помилка при читанні даних:', error);
-    return [];
+    console.error(`Помилка при читанні файлу ${filePath}:`, error);
+    return Array.isArray(getDefaultData?.()) ? [] : null;
   }
 };
 
-// Функція для збереження даних у data.json
-const saveData = async (data) => {
+const saveData = async (filePath, data) => {
   try {
-    await fs.promises.writeFile(DATA_FILE, JSON.stringify(data, null, 2));
+    await fs.promises.writeFile(filePath, JSON.stringify(data, null, 2));
     return true;
   } catch (error) {
-    console.error('Помилка при збереженні даних:', error);
-    return false;
-  }
-};
-
-// Функція для отримання даних календаря
-const getCalendarData = async () => {
-  try {
-    if (!fs.existsSync(CALENDAR_FILE)) {
-      return [];
-    }
-    const data = await fs.promises.readFile(CALENDAR_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Помилка при читанні даних календаря:', error);
-    return [];
-  }
-};
-
-// Функція для збереження даних календаря
-const saveCalendarData = async (data) => {
-  try {
-    await fs.promises.writeFile(CALENDAR_FILE, JSON.stringify(data, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Помилка при збереженні даних календаря:', error);
-    return false;
-  }
-};
-
-// Функція для отримання налаштувань
-const getSettings = async () => {
-  try {
-    ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-
-    const data = await fs.promises.readFile(SETTINGS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Помилка при читанні налаштувань:', error);
-    return null;
-  }
-};
-
-// Функція для збереження налаштувань
-const saveSettings = async (settings) => {
-  try {
-    await fs.promises.writeFile(SETTINGS_FILE, JSON.stringify(settings, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Помилка при збереженні налаштувань:', error);
+    console.error(`Помилка при збереженні даних:`, error);
     return false;
   }
 };
@@ -351,9 +301,9 @@ module.exports = {
     ipcMain.handle('export-data', async () => {
       try {
         const [data, calendarData, settings] = await Promise.all([
-          getData(),
-          getCalendarData(),
-          getSettings()
+          getData(DATA_FILE),
+          getData(CALENDAR_FILE),
+          getData(SETTINGS_FILE, getSettingsTemplates)
         ]);
 
         const exportData = {
@@ -398,13 +348,13 @@ module.exports = {
         const importData = JSON.parse(fileContent);
 
         if (importData.data) {
-          await saveData(importData.data);
+          await saveData(DATA_FILE, importData.data);
         }
         if (importData.calendar) {
-          await saveCalendarData(importData.calendar);
+          await saveCalendarData(CALENDAR_FILE,importData.calendar);
         }
         if (importData.settings) {
-          await saveSettings(importData.settings);
+          await saveSettings(SETTINGS_FILE,importData.settings);
         }
 
         return { status: 'Data imported' };
