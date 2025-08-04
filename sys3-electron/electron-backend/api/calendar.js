@@ -1,22 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 const { app, BrowserWindow, ipcMain } = require('electron');
-
+const { ensureDataFileExists } = require('../utils/dataUtils');
 const DATA_FILE = path.join(__dirname, '../userData/calendar.json');
 
 
-const ensureDataFileExists = () => {
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-};
+
 
 module.exports = {
   init(ipcMain, mainWindow) {
     // Get all calendar events
     ipcMain.handle('calendar-get-events', async () => {
       try {
-        ensureDataFileExists();
+        ensureDataFileExists(DATA_FILE);
         const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
         // Ensure backward compatibility
         const normalizedData = data.map(event => ({
@@ -34,7 +30,7 @@ module.exports = {
     // Save or update a single calendar event
     ipcMain.handle('calendar-save-event', async (event, eventData) => {
       try {
-        ensureDataFileExists();
+        ensureDataFileExists(DATA_FILE);
         const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
         let events = JSON.parse(fileContent);
 
@@ -65,7 +61,7 @@ module.exports = {
     // Delete a single calendar event
     ipcMain.handle('calendar-delete-event', async (event, eventId) => {
       try {
-        ensureDataFileExists();
+        ensureDataFileExists(DATA_FILE);
         const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
         let events = JSON.parse(fileContent);
 

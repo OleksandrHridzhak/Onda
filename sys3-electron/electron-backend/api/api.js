@@ -1,18 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { app, BrowserWindow, ipcMain, Notification, dialog } = require('electron');
-
+const { ensureDataFileExists } = require('../utils/dataUtils');
 const DATA_FILE = path.join(__dirname, '../userData/data.json');
 const CALENDAR_FILE = path.join(__dirname, '../userData/calendar.json');
 const SETTINGS_FILE = path.join(__dirname, '../userData/settings.json');
 const { updateThemeBasedOnTime } = require('../utils/utils');
 
-// Функція для перевірки та створення файлу data.json, якщо його немає
-const ensureDataFileExists = () => {
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-};
 
 // Функція для перевірки та створення файлу settings.json, якщо його немає
 const ensureSettingsFileExists = () => {
@@ -144,7 +138,7 @@ module.exports = {
   init(ipcMain, mainWindow) {
     // Обробник для отримання даних із data.json
     ipcMain.handle('get-data', () => {
-      ensureDataFileExists();
+      ensureDataFileExists(DATA_FILE);
       return JSON.parse(fs.readFileSync(DATA_FILE));
     });
 
@@ -156,14 +150,14 @@ module.exports = {
 
     // Обробник для збереження даних у data.json
     ipcMain.handle('save-data', (event, data) => {
-      ensureDataFileExists();
+      ensureDataFileExists(DATA_FILE);
       fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
       return { status: 'Data saved!' };
     });
 
     // Обробник для отримання всіх даних із data.json
     ipcMain.handle('get-all-days', () => {
-      ensureDataFileExists();
+      ensureDataFileExists(DATA_FILE);
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       try {
         const data = JSON.parse(fileContent);
@@ -175,7 +169,7 @@ module.exports = {
 
     // Обробник для оновлення колонки у data.json
     ipcMain.handle('column-change', (event, updatedColumn) => {
-      ensureDataFileExists();
+      ensureDataFileExists(DATA_FILE);
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       let data;
       try {
@@ -343,7 +337,7 @@ module.exports = {
 
       const newComponent = templates[type];
 
-      ensureDataFileExists();
+      ensureDataFileExists(DATA_FILE);
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       let data;
       try {
@@ -359,7 +353,7 @@ module.exports = {
 
     // Обробник для видалення компонента
     ipcMain.handle('delete-component', (event, columnId) => {
-      ensureDataFileExists();
+      ensureDataFileExists(DATA_FILE);
       const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       let data;
       try {
