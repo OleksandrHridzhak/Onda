@@ -1,44 +1,41 @@
 {
   "theme": {
-    "accentColor": "purple",
     "darkMode": false,
+    "accentColor": "blue",
     "autoThemeSettings": {
-      "enabled": true,
-      "startTime": "07:00",
+      "enabled": false,
+      "startTime": "08:00",
       "endTime": "20:00"
     }
   },
   "table": {
     "columnOrder": [
       "days",
-      "1746639791331",
-      "1745780352394",
-      "1750832346226",
+      "1745672754726",
       "1745672766295",
       "1745672769562",
+      "1745780352394",
       "1746420337324",
-      "1745672754726",
+      "1746639791331",
+      "1750832346226",
       "1751353773552",
       "1751353777045",
-      "1751353998281",
       "1751354256127",
       "1751354264387",
-      "1750832611778",
-      "1751354268457"
+      "1754318295685",
+      "1754318299682",
+      "1754318304449",
+      "1754318307718",
+      "1754318310981",
+      "1754318403403"
     ],
-    "showSummaryRow": true,
-    "compactMode": true,
+    "showSummaryRow": false,
+    "compactMode": false,
     "stickyHeader": true
   },
   "ui": {
-    "animations": false,
+    "animations": true,
     "tooltips": true,
     "confirmDelete": true
-  },
-  "header": {
-    "layout": "bothWidgets"
-  },
-  "calendar": {
-    "notifications": true
   }
 }

@@ -182,48 +182,6 @@
     "Width": 150
   },
   {
-    "ColumnId": "1750832611778",
-    "Type": "todo",
-    "Name": "Todo List",
-    "Description": "Todo list created on backend",
-    "EmojiIcon": "Rocket",
-    "NameVisible": true,
-    "Chosen": {
-      "global": [
-        {
-          "text": "df",
-          "completed": false,
-          "category": "Option 2"
-        },
-        {
-          "text": "випарвити чекбокс",
-          "completed": false,
-          "category": ""
-        },
-        {
-          "text": "HELLO",
-          "completed": true,
-          "category": "Option 2"
-        },
-        {
-          "text": "HOW ARE YOU",
-          "completed": true,
-          "category": "Option 2"
-        }
-      ]
-    },
-    "Options": [
-      "Option 1",
-      "Option 2"
-    ],
-    "TagColors": {
-      "Option 1": "gray",
-      "Option 2": "green"
-    },
-    "Width": 201,
-    "DoneTags": []
-  },
-  {
     "ColumnId": "1751353773552",
     "Type": "checkbox",
     "Name": "New Checkbox",
@@ -276,25 +234,6 @@
     ]
   },
   {
-    "ColumnId": "1751353998281",
-    "Type": "checkbox",
-    "Name": "New Checkbox",
-    "Description": "Checkbox created on backend",
-    "EmojiIcon": "Star",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": false,
-      "Tuesday": true,
-      "Wednesday": false,
-      "Thursday": true,
-      "Friday": false,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 50,
-    "CheckboxColor": "green"
-  },
-  {
     "ColumnId": "1751354256127",
     "Type": "numberbox",
     "Name": "New Numberbox",
@@ -340,7 +279,78 @@
     "DoneTags": []
   },
   {
-    "ColumnId": "1751354268457",
+    "ColumnId": "1754318295685",
+    "Type": "checkbox",
+    "Name": "New Checkbox",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": true,
+      "Tuesday": false,
+      "Wednesday": false,
+      "Thursday": false,
+      "Friday": false,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50,
+    "CheckboxColor": "green"
+  },
+  {
+    "ColumnId": "1754318299682",
+    "Type": "multi-select",
+    "Name": "New Multi-Select",
+    "Description": "Multi-select created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": true,
+    "Options": [
+      "Option 1",
+      "Option 2"
+    ],
+    "TagColors": {
+      "Option 1": "blue",
+      "Option 2": "green"
+    },
+    "Chosen": {
+      "Monday": "Option 1",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 90
+  },
+  {
+    "ColumnId": "1754318304449",
+    "Type": "multicheckbox",
+    "Name": "New Multi Checkbox",
+    "Description": "Multi-checkbox created on backend",
+    "EmojiIcon": "Circle",
+    "NameVisible": false,
+    "Options": [
+      "Task 1",
+      "Task 2"
+    ],
+    "TagColors": {
+      "Task 1": "blue",
+      "Task 2": "green"
+    },
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 50
+  },
+  {
+    "ColumnId": "1754318307718",
     "Type": "tasktable",
     "Name": "New Task List",
     "Description": "Task table created on backend",
@@ -348,20 +358,53 @@
     "NameVisible": true,
     "Options": [
       "Task 1",
-      "Task 2",
-      "в",
-      "а"
+      "Task 2"
     ],
     "TagColors": {
       "Task 1": "blue",
-      "Task 2": "green",
-      "в": "blue",
-      "а": "blue"
+      "Task 2": "green"
     },
     "Chosen": {
       "global": []
     },
-    "Width": 150,
-    "DoneTags": []
+    "Width": 150
+  },
+  {
+    "ColumnId": "1754318310981",
+    "Type": "todo",
+    "Name": "Todo List",
+    "Description": "Todo list created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Chosen": {
+      "global": []
+    },
+    "Options": [
+      "Option 1",
+      "Option 2"
+    ],
+    "TagColors": {
+      "Option 1": "blue",
+      "Option 2": "green"
+    },
+    "Width": 150
+  },
+  {
+    "ColumnId": "1754318403403",
+    "Type": "numberbox",
+    "Name": "New Numberbox",
+    "Description": "Numberbox created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "4",
+      "Wednesday": "45",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 60
   }
 ]
