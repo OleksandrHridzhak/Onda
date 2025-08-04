@@ -11,6 +11,7 @@ const { getColumnTemplates, getSettingsTemplates } = require('../constants/fileT
 const CALENDAR_FILE = path.join(__dirname, '../userData/calendar.json');
 const SETTINGS_FILE = path.join(__dirname, '../userData/settings.json');
 const { updateThemeBasedOnTime } = require('../utils/utils');
+const { get } = require('http');
 
 
 // Function to get users data from JSON FILES 
@@ -37,11 +38,6 @@ const saveData = async (filePath, data) => {
 
 module.exports = {
   init(ipcMain, mainWindow) {
-    // Get data from data.json
-    ipcMain.handle('get-data', async () => {
-      ensureDataFileExists(DATA_FILE);
-      return await getData(DATA_FILE);
-    });
     // Save data to data.json
     ipcMain.handle('save-data', (event, data) => {
       ensureDataFileExists(DATA_FILE);
@@ -55,11 +51,10 @@ module.exports = {
     });
 
     // Обробник для отримання всіх даних із data.json
-    ipcMain.handle('get-all-days', () => {
-      ensureDataFileExists(DATA_FILE);
-      const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
+    ipcMain.handle('get-all-days', async() => {
       try {
-        const data = JSON.parse(fileContent);
+        ensureDataFileExists(DATA_FILE);
+        const data = await getData(DATA_FILE);
         return { status: 'Data fetched', data };
       } catch (err) {
         return { status: 'Error parsing data', error: err.message };
@@ -67,15 +62,9 @@ module.exports = {
     });
 
     // Обробник для оновлення колонки у data.json
-    ipcMain.handle('column-change', (event, updatedColumn) => {
+    ipcMain.handle('column-change', async (event, updatedColumn) => {
       ensureDataFileExists(DATA_FILE);
-      const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
-      let data;
-      try {
-        data = JSON.parse(fileContent);
-      } catch (err) {
-        return { status: 'Error parsing data', error: err.message };
-      }
+      const data = await getData(DATA_FILE);
 
       const index = data.findIndex(
         (item) => item.ColumnId === updatedColumn.ColumnId
@@ -86,12 +75,12 @@ module.exports = {
       }
 
       data[index] = updatedColumn;
-      fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      await saveData(DATA_FILE, data);
       return { status: 'Column updated', data: updatedColumn };
     });
 
     // Обробник для створення компонента
-    ipcMain.handle('create-component', (event, type) => {
+    ipcMain.handle('create-component', async(event, type) => {
 
       const templates = getColumnTemplates();
       if (!templates[type]) {
@@ -101,16 +90,14 @@ module.exports = {
       const newComponent = templates[type];
 
       ensureDataFileExists(DATA_FILE);
-      const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
-      let data;
       try {
-        data = JSON.parse(fileContent);
+        data = await getData(DATA_FILE);
       } catch (err) {
         return { status: 'Error parsing file', error: err.message };
       }
 
       data.push(newComponent);
-      fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      await saveData(DATA_FILE, data);
       return { status: 'Success', data: newComponent };
     });
 

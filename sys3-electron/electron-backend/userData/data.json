@@ -10,7 +10,7 @@
       "Monday": false,
       "Tuesday": true,
       "Wednesday": true,
-      "Thursday": false,
+      "Thursday": true,
       "Friday": true,
       "Saturday": true,
       "Sunday": false
@@ -39,7 +39,7 @@
   {
     "ColumnId": "1745672769562",
     "Type": "multi-select",
-    "Name": "в2",
+    "Name": "в2d",
     "Description": "ва",
     "EmojiIcon": "Music",
     "NameVisible": true,
@@ -95,7 +95,7 @@
     "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
+      "Monday": false,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
@@ -114,7 +114,7 @@
     "EmojiIcon": "Smile",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
+      "Monday": false,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
@@ -123,7 +123,7 @@
       "Sunday": false
     },
     "Width": 95,
-    "CheckboxColor": "teal"
+    "CheckboxColor": "gray"
   },
   {
     "ColumnId": "1750832346226",
@@ -221,7 +221,7 @@
       "adsfaf": "blue",
       "asfa": "gray",
       "f": "blue",
-      "dssf": "purple",
+      "dssf": "red",
       "fs": "green"
     },
     "Chosen": {
