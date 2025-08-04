@@ -55,7 +55,7 @@
       "Tuesday": "WORKOUT2, ап",
       "Wednesday": "10K, CARDIO3",
       "Thursday": "CARDIO3",
-      "Friday": "WORKOUT2",
+      "Friday": "",
       "Saturday": "ап, Hello",
       "Sunday": "10K"
     },
@@ -77,7 +77,7 @@
     "EmojiIcon": "Coffee",
     "NameVisible": false,
     "Chosen": {
-      "Monday": "7",
+      "Monday": "3",
       "Tuesday": "7",
       "Wednesday": "7",
       "Thursday": "7",
@@ -95,7 +95,7 @@
     "EmojiIcon": "Rocket",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
+      "Monday": true,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
@@ -134,7 +134,6 @@
     "NameVisible": true,
     "Options": [
       "dfgdf",
-      "dfgdfgdgd",
       "dfgdgdg",
       "dfgdgdgdg",
       "dfgdgdfgdg",
@@ -177,7 +176,8 @@
       "fdgdgdfgdg",
       "fdg",
       "df",
-      "ж"
+      "ж",
+      "dfgdfgdgd"
     ],
     "Width": 150
   },
@@ -203,12 +203,11 @@
   {
     "ColumnId": "1751353777045",
     "Type": "tasktable",
-    "Name": "003",
-    "Description": "003",
+    "Name": "003d",
+    "Description": "003s",
     "EmojiIcon": "Lock",
     "NameVisible": true,
     "Options": [
-      "dssf",
       "fs"
     ],
     "TagColors": {
@@ -230,7 +229,8 @@
     },
     "Width": 158,
     "DoneTags": [
-      "hi"
+      "hi",
+      "dssf"
     ]
   },
   {
@@ -377,7 +377,13 @@
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
     "Chosen": {
-      "global": []
+      "global": [
+        {
+          "text": "d\\",
+          "completed": false,
+          "category": ""
+        }
+      ]
     },
     "Options": [
       "Option 1",
