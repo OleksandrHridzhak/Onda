@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { getColorOptions } from '../utils/colorOptions';
 
-import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
+import { Plus, Edit2, Check,  Trash2, ListTodo } from 'lucide-react';
 
 export const TodoCell = ({ value, column, onChange, darkMode }) => {
   const [todos, setTodos] = useState(value || []);

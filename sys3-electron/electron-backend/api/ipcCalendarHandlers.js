@@ -1,7 +1,5 @@
-const fs = require('fs');
 const path = require('path');
-const { app, ipcMain } = require('electron');
-const { ensureDataFileExists, saveData, getData } = require('../utils/dataUtils');
+const { saveData, getData } = require('../utils/dataUtils');
 const DATA_FILE = path.join(__dirname, '../userData/calendar.json');
 
 module.exports = {

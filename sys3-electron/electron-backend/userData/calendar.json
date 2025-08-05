@@ -9,5 +9,16 @@
     "isRepeating": false,
     "repeatDays": [],
     "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1754424217859",
+    "title": "d",
+    "date": "Tue Aug 05 2025",
+    "startTime": "18:00",
+    "endTime": "19:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
   }
 ]

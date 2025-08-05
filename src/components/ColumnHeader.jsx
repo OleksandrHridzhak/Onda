@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Menu, ArrowUp, ArrowDown } from 'lucide-react';
 import { getIconComponent } from './utils/icons'; // Імпорт функції
 import ColumnMenu from './ColumnMenu';
 

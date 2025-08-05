@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Bell, LayoutGrid, CalendarDays, Monitor, Shield, User, Table, Palette, Eye, Download, Upload } from 'lucide-react';
+import { Settings, LayoutGrid, CalendarDays,  Table, Eye, Download, Upload } from 'lucide-react';
 
 export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
   const [activeSection, setActiveSection] = useState(() => {

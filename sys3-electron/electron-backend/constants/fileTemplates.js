@@ -137,7 +137,7 @@ const getColumnTemplates = () => ({
 });
 
 
-getSettingsTemplates = () => ({
+const getSettingsTemplates = () => ({
       theme: {
         darkMode: false,
         accentColor: 'blue',

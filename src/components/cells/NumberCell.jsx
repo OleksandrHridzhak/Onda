@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useRef } from 'react';
-import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
+
 
 export const NumberCell = ({ value, onChange }) => {
   return (
