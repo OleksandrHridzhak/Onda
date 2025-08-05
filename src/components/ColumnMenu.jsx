@@ -1,19 +1,10 @@
-import React, { useReducer, useEffect, useRef,useState } from "react";
+import React, { useReducer, useEffect, useRef } from "react";
 import {
   X,
-  Plus,
-  Trash2,
   Eye,
   EyeOff,
-  ChevronDown,
-  ChevronUp,
-  ArrowUp,
   ArrowRight,
   ArrowLeft,
-  ArrowDown,
-  Edit2,
-  ChevronRight,
-  ChevronLeft,
 } from "lucide-react";
 import { icons } from "./utils/icons";
 import { getColorOptions } from "./utils/colorOptions";
