@@ -1,3 +1,13 @@
 [
-
+  {
+    "id": "1754421725796",
+    "title": "dd",
+    "date": "Tue Aug 05 2025",
+    "startTime": "21:35",
+    "endTime": "22:35",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  }
 ]

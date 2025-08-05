@@ -96,7 +96,7 @@
     "NameVisible": false,
     "Chosen": {
       "Monday": false,
-      "Tuesday": true,
+      "Tuesday": false,
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
