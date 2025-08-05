@@ -101,13 +101,12 @@ module.exports = {
       return { status: 'Success', data: newComponent };
     });
 
-    // Обробник для видалення компонента
-    ipcMain.handle('delete-component', (event, columnId) => {
+    // Delete a component by ColumnId
+    ipcMain.handle('delete-component', async (event, columnId) => {
       ensureDataFileExists(DATA_FILE);
-      const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
       let data;
       try {
-        data = JSON.parse(fileContent);
+        data = await getData(DATA_FILE);
       } catch (err) {
         return { status: 'Error parsing data', error: err.message };
       }
@@ -118,8 +117,7 @@ module.exports = {
       if (data.length === initialLength) {
         return { status: 'Component not found', columnId };
       }
-
-      fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      await saveData(DATA_FILE, data);
       return { status: 'Component deleted', columnId };
     });
 
