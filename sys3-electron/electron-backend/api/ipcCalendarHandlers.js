@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { app, ipcMain } = require('electron');
-const { ensureDataFileExists } = require('../utils/dataUtils');
+const { ensureDataFileExists, saveData, getData } = require('../utils/dataUtils');
 const DATA_FILE = path.join(__dirname, '../userData/calendar.json');
 
 
@@ -12,8 +12,7 @@ module.exports = {
     // Get all calendar events
     ipcMain.handle('calendar-get-events', async () => {
       try {
-        ensureDataFileExists(DATA_FILE);
-        const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+        const data = await getData(DATA_FILE);
         // Ensure backward compatibility
         const normalizedData = data.map(event => ({
           ...event,
@@ -30,9 +29,8 @@ module.exports = {
     // Save or update a single calendar event
     ipcMain.handle('calendar-save-event', async (event, eventData) => {
       try {
-        ensureDataFileExists(DATA_FILE);
-        const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
-        let events = JSON.parse(fileContent);
+
+        let events = await getData(DATA_FILE);
 
         // Validate repeat settings
         const normalizedEvent = {
@@ -51,7 +49,7 @@ module.exports = {
           events.push({ ...normalizedEvent, id: eventData.id || Date.now().toString() });
         }
 
-        fs.writeFileSync(DATA_FILE, JSON.stringify(events, null, 2));
+        await saveData(DATA_FILE, events);
         return { status: 'success', data: normalizedEvent };
       } catch (error) {
         return { status: 'error', error: error.message };
@@ -61,9 +59,7 @@ module.exports = {
     // Delete a single calendar event
     ipcMain.handle('calendar-delete-event', async (event, eventId) => {
       try {
-        ensureDataFileExists(DATA_FILE);
-        const fileContent = fs.readFileSync(DATA_FILE, 'utf-8');
-        let events = JSON.parse(fileContent);
+        let events = await getData(DATA_FILE);
 
         const initialLength = events.length;
         events = events.filter((e) => e.id !== eventId);
@@ -72,7 +68,7 @@ module.exports = {
           return { status: 'error', message: 'Event not found' };
         }
 
-        fs.writeFileSync(DATA_FILE, JSON.stringify(events, null, 2));
+        await saveData(DATA_FILE, events);
         return { status: 'success', message: 'Event deleted', eventId };
       } catch (error) {
         return { status: 'error', error: error.message };
@@ -83,23 +79,6 @@ module.exports = {
     ipcMain.handle('calendar-get-time', async () => {
       const now = new Date();
       return { status: 'success', time: now.toISOString() };
-    });
-
-    // Window controls
-    ipcMain.handle('calendar-window-close', () => {
-      app.quit();
-    });
-
-    ipcMain.handle('calendar-window-minimize', () => {
-      mainWindow.minimize();
-    });
-
-    ipcMain.handle('calendar-window-maximize', () => {
-      if (mainWindow.isMaximized()) {
-        mainWindow.restore();
-      } else {
-        mainWindow.maximize();
-      }
     });
   },
 };

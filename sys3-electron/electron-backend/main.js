@@ -24,11 +24,12 @@ function createWindow() {
     },
   });
 
-
+  console.log('env:', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
       mainWindow.loadURL('http://localhost:3000');
+      
   } else {
-     mainWindow.loadURL('http://localhost:3000');
+     mainWindow.loadFile(path.join(__dirname, './build/index.html'));
   }
 }
 
@@ -49,8 +50,8 @@ if (!gotTheLock) {
   app.whenReady().then(() => {
     createWindow();
     ipcTableHandlers.init(ipcMain);
-    ipcCalendarHandlers.init(ipcMain, mainWindow);
-    ipcSettingsHandlers.init(ipcMain, mainWindow);
+    ipcCalendarHandlers.init(ipcMain);
+    ipcSettingsHandlers.init(ipcMain);
     ipcWindowHandlers.init(ipcMain, mainWindow);
     initCronJobs();
   });
