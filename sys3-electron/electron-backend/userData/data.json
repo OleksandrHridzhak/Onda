@@ -201,39 +201,6 @@
     "CheckboxColor": "purple"
   },
   {
-    "ColumnId": "1751353777045",
-    "Type": "tasktable",
-    "Name": "003d",
-    "Description": "003s",
-    "EmojiIcon": "Lock",
-    "NameVisible": true,
-    "Options": [
-      "fs"
-    ],
-    "TagColors": {
-      "Task 1": "blue",
-      "hi": "yellow",
-      "Hello": "blue",
-      "I don say that": "blue",
-      "how are y": "blue",
-      "I don't like that": "blue",
-      "daf": "blue",
-      "adsfaf": "blue",
-      "asfa": "gray",
-      "f": "blue",
-      "dssf": "red",
-      "fs": "green"
-    },
-    "Chosen": {
-      "global": []
-    },
-    "Width": 158,
-    "DoneTags": [
-      "hi",
-      "dssf"
-    ]
-  },
-  {
     "ColumnId": "1751354256127",
     "Type": "numberbox",
     "Name": "New Numberbox",
