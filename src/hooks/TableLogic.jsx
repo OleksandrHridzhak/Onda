@@ -22,7 +22,7 @@ export const COLUMN_WIDTHS = {
 };
 
 const electronAPI = window.electronAPI || {
-  getAllDays: async () => ({ status: 'Data fetched', data: [] }),
+  getTableData: async () => ({ status: 'Data fetched', data: [] }),
   getSettings: async () => ({ status: 'Settings fetched', data: {} }),
   updateSettings: async () => {},
   createComponent: async () => ({ status: false }),
@@ -49,7 +49,7 @@ export const useTableLogic = () => {
       try {
         setLoading(true);
         const [daysResult, settingsResult] = await Promise.all([
-          electronAPI.getAllDays(),
+          electronAPI.getTableData(),
           electronAPI.getSettings()
         ]);
 

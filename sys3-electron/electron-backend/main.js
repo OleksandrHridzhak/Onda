@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
 const path = require('path');
 const api = require(path.join(__dirname, './api/api.js'));
 const calendarBackend = require('./api/calendar');
+const windowHandlers = require('./api/windowHandlers');
 const settingsApi = require('./api/settings');
 
 require('dotenv').config();
@@ -50,6 +51,7 @@ if (!gotTheLock) {
     api.init(ipcMain, mainWindow);
     calendarBackend.init(ipcMain, mainWindow);
     settingsApi.init(ipcMain, mainWindow);
+    windowHandlers.init(ipcMain, mainWindow);
     initCronJobs();
   });
 
