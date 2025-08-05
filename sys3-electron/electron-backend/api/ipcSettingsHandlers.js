@@ -1,41 +1,19 @@
 const fs = require('fs');
 const path = require('path');
-const { app, BrowserWindow, ipcMain, Notification, dialog } = require('electron');
-const { ensureDataFileExists } = require('../utils/dataUtils');
+const { app,  ipcMain, Notification, dialog } = require('electron');
+const { ensureDataFileExists } = require('../utils/dataUtils.js');
 const DATA_FILE = path.join(__dirname, '../userData/data.json');
 
-const { getColumnTemplates, getSettingsTemplates } = require('../constants/fileTemplates.js');
-
+const {getSettingsTemplates } = require('../constants/fileTemplates.js');
+const { saveData, getData } = require('../utils/dataUtils.js');
 
 const CALENDAR_FILE = path.join(__dirname, '../userData/calendar.json');
 const SETTINGS_FILE = path.join(__dirname, '../userData/settings.json');
-const { updateThemeBasedOnTime } = require('../utils/utils');
+const { updateThemeBasedOnTime } = require('../utils/utils.js');
 
-
-// Function to get users data from JSON FILES 
-const getData = async (filePath, getDefaultData = null) => {
-  try {
-    ensureDataFileExists(filePath, getDefaultData);
-    const data = await fs.promises.readFile(filePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error(`Помилка при читанні файлу ${filePath}:`, error);
-    return Array.isArray(getDefaultData?.()) ? [] : null;
-  }
-};
-// Function to save users data to JSON FILES 
-const saveData = async (filePath, data) => {
-  try {
-    await fs.promises.writeFile(filePath, JSON.stringify(data, null, 2));
-    return true;
-  } catch (error) {
-    console.error(`Помилка при збереженні даних:`, error);
-    return false;
-  }
-};
 
 module.exports = {
-  init(ipcMain, mainWindow) {
+  init(ipcMain) {
     // Обробник для перемикання теми
     ipcMain.handle('switch-theme', (event, darkMode) => {
       ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
@@ -225,15 +203,15 @@ module.exports = {
           await saveData(DATA_FILE, importData.data);
         }
         if (importData.calendar) {
-          await saveCalendarData(CALENDAR_FILE,importData.calendar);
+          await saveData(CALENDAR_FILE,importData.calendar);
         }
         if (importData.settings) {
-          await saveSettings(SETTINGS_FILE,importData.settings);
+          await saveData(SETTINGS_FILE,importData.settings, getSettingsTemplates);
         }
 
         return { status: 'Data imported' };
       } catch (error) {
-        console.error('Помилка при імпорті даних:', error);
+        console.error('Import Failed:', error);
         return { status: 'Import failed', error: error.message };
       }
     });

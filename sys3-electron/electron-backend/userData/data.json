@@ -7,7 +7,7 @@
     "EmojiIcon": "Map",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
+      "Monday": true,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
@@ -74,7 +74,7 @@
     "Type": "numberbox",
     "Name": "New Numberbox",
     "Description": "Numberbox created on backend",
-    "EmojiIcon": "Coffee",
+    "EmojiIcon": "Book",
     "NameVisible": false,
     "Chosen": {
       "Monday": "3",
@@ -373,6 +373,44 @@
       "Monday": "",
       "Tuesday": "4",
       "Wednesday": "45",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 60
+  },
+  {
+    "ColumnId": "1754419690705",
+    "Type": "todo",
+    "Name": "Todo List",
+    "Description": "Todo list created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Chosen": {
+      "global": []
+    },
+    "Options": [
+      "Option 1",
+      "Option 2"
+    ],
+    "TagColors": {
+      "Option 1": "blue",
+      "Option 2": "green"
+    },
+    "Width": 150
+  },
+  {
+    "ColumnId": "1754419954115",
+    "Type": "numberbox",
+    "Name": "New Numberbox",
+    "Description": "Numberbox created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "",
+      "Wednesday": "",
       "Thursday": "",
       "Friday": "",
       "Saturday": "",

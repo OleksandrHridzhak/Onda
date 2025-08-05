@@ -1,18 +1,11 @@
-const fs = require('fs');
 const path = require('path');
-const { app, BrowserWindow, ipcMain, Notification, dialog } = require('electron');
-const { ensureDataFileExists, getData, saveData } = require('../utils/dataUtils');
+const { getData, saveData } = require('../utils/dataUtils.js');
 const DATA_FILE = path.join(__dirname, '../userData/data.json');
 
 const { getColumnTemplates} = require('../constants/fileTemplates.js');
 
-
-
-
-
-
 module.exports = {
-  init(ipcMain, mainWindow) {
+  init(ipcMain) {
     // Save data to data.json
     ipcMain.handle('save-data', async (event, data) => {
       await saveData(DATA_FILE, data);
@@ -60,9 +53,9 @@ module.exports = {
       }
 
       const newComponent = templates[type];
-
+      let data
       try {
-        const data = await getData(DATA_FILE);
+        data = await getData(DATA_FILE);
       } catch (err) {
         return { status: 'Error parsing file', error: err.message };
       }

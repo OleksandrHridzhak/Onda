@@ -1,9 +1,9 @@
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
 const path = require('path');
-const api = require(path.join(__dirname, './api/api.js'));
-const calendarBackend = require('./api/calendar');
-const windowHandlers = require('./api/windowHandlers');
-const settingsApi = require('./api/settings');
+const ipcTableHandlers = require(path.join(__dirname, './api/ipcTableHandlers.js'));
+const ipcCalendarHandlers = require('./api/ipcCalendarHandlers.js');
+const ipcWindowHandlers = require('./api/ipcWindowHandlers.js');
+const ipcSettingsHandlers = require('./api/ipcSettingsHandlers.js');
 
 require('dotenv').config();
 
@@ -48,10 +48,10 @@ if (!gotTheLock) {
 
   app.whenReady().then(() => {
     createWindow();
-    api.init(ipcMain, mainWindow);
-    calendarBackend.init(ipcMain, mainWindow);
-    settingsApi.init(ipcMain, mainWindow);
-    windowHandlers.init(ipcMain, mainWindow);
+    ipcTableHandlers.init(ipcMain);
+    ipcCalendarHandlers.init(ipcMain, mainWindow);
+    ipcSettingsHandlers.init(ipcMain, mainWindow);
+    ipcWindowHandlers.init(ipcMain, mainWindow);
     initCronJobs();
   });
 
