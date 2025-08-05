@@ -1,13 +1,19 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
+
+
+  getTableData: () => ipcRenderer.invoke('get-table-data'),
+
+
+
   saveData: (data) => ipcRenderer.invoke('save-data', data),
 
   // Додаємо нові методи для експорту та імпорту
   exportData: () => ipcRenderer.invoke('export-data'),
   importData: (data) => ipcRenderer.invoke('import-data', data),
 
-  getAllDays: () => ipcRenderer.invoke('get-all-days'),
+
   changeColumn: (checkbox) => ipcRenderer.invoke('column-change', checkbox),
   createComponent: (type) => ipcRenderer.invoke('create-component', type),
   deleteComponent: (columnId) => ipcRenderer.invoke('delete-component', columnId),
