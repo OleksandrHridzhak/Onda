@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, Filter, Trash2,ChevronDown } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus,Trash2,ChevronDown } from 'lucide-react';
 import { BubbleBtn } from '../atoms/BubbleBtn';
 
 export default function Calendar({ darkTheme, setDarkTheme }) {

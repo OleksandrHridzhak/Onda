@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { app,  ipcMain, Notification, dialog } = require('electron');
+const { app, Notification, dialog } = require('electron');
 const { ensureDataFileExists } = require('../utils/dataUtils.js');
 const DATA_FILE = path.join(__dirname, '../userData/data.json');
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
-import { ChevronDown, Download, Plus, Edit2, X, Check, Calendar, Menu, Eye, EyeOff, Trash2, ListTodo } from 'lucide-react';
 import { getCheckBoxColorOptions } from '../utils/colorOptions';
 
 export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, darkMode }) => {
