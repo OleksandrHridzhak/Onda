@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, ipcMain } = require('electron');
 const { ensureDataFileExists } = require('../utils/dataUtils');
 const DATA_FILE = path.join(__dirname, '../userData/calendar.json');
 
