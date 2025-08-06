@@ -1,65 +1,47 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
+  // Calendar Operations
+  // Methods for managing calendar events and time
+  calendarGetEvents: () => ipcRenderer.invoke('calendar-get-events'),
+  calendarGetTime: () => ipcRenderer.invoke('calendar-get-time'),
+  getTime: () => ipcRenderer.invoke('get-time'),
+  calendarSaveEvent: (eventData) => ipcRenderer.invoke('calendar-save-event', eventData),
+  calendarDeleteEvent: (eventId) => ipcRenderer.invoke('calendar-delete-event', eventId),
 
-
+  // Table Operations
+  // Methods for managing table data, components, and export/import
   getTableData: () => ipcRenderer.invoke('get-table-data'),
-
-
-
   saveData: (data) => ipcRenderer.invoke('save-data', data),
-
-  // Додаємо нові методи для експорту та імпорту
   exportData: () => ipcRenderer.invoke('export-data'),
   importData: (data) => ipcRenderer.invoke('import-data', data),
-
-
   changeColumn: (checkbox) => ipcRenderer.invoke('column-change', checkbox),
   createComponent: (type) => ipcRenderer.invoke('create-component', type),
   deleteComponent: (columnId) => ipcRenderer.invoke('delete-component', columnId),
+  updateColumnOrder: (columnOrder) => ipcRenderer.invoke('update-column-order', columnOrder),
+  updateCellSettings: (cellId, newSettings) => ipcRenderer.invoke('update-cell-settings', cellId, newSettings),
+  deleteCellSettings: (cellId) => ipcRenderer.invoke('delete-cell-settings', cellId),
 
-  //hell
-  // Додані нові функції для роsботи з вікном
+  // Settings Operations
+  // Methods for managing themes, general settings, UI, and cell settings
+  getTheme: () => ipcRenderer.invoke('get-theme'),
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  getCellSettings: () => ipcRenderer.invoke('get-cell-settings'),
+  switchTheme: (darkMode) => ipcRenderer.invoke('switch-theme', darkMode),
+  updateTableSettings: (tableSettings) => ipcRenderer.invoke('update-table-settings', tableSettings),
+  updateTheme: (themeSettings) => ipcRenderer.invoke('update-theme', themeSettings),
+  updateSettings: (settings) => ipcRenderer.invoke('update-settings', settings),
+  updateUISettings: (uiSettings) => ipcRenderer.invoke('update-ui-settings', uiSettings),
+
+  // Window Management
+  // Methods for controlling the application window and navigation (legacy comment: hell)
   minimizeWindow: () => ipcRenderer.invoke('window-minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window-maximize'),
   closeWindow: () => ipcRenderer.invoke('window-close'),
   showNotification: (options) => ipcRenderer.invoke('show-notification', options),
-
-  // Функція для отримання точного часу
-  getTime: () => ipcRenderer.invoke('get-time'),
-
-  calendarGetEvents: () => ipcRenderer.invoke('calendar-get-events'),
-  calendarSaveEvent: (eventData) => ipcRenderer.invoke('calendar-save-event', eventData),
-  calendarDeleteEvent: (eventId) => ipcRenderer.invoke('calendar-delete-event', eventId),
-  calendarGetTime: () => ipcRenderer.invoke('calendar-get-time'),
-
-  // Theme settings
-  switchTheme: (darkMode) => ipcRenderer.invoke('switch-theme', darkMode),
-  getTheme: () => ipcRenderer.invoke('get-theme'),
-  updateTheme: (themeSettings) => ipcRenderer.invoke('update-theme', themeSettings),
-
   sendNextTab: () => ipcRenderer.send('next-tab'),
   onNextTab: (callback) => {
     ipcRenderer.on('next-tab', callback);
     return () => ipcRenderer.removeListener('next-tab', callback);
-  },
-
-  // Table settings
-  getSettings: () => ipcRenderer.invoke('get-settings'),
-  updateSettings: (settings) => ipcRenderer.invoke('update-settings', settings),
-  updateTableSettings: (tableSettings) => ipcRenderer.invoke('update-table-settings', tableSettings),
-  updateColumnOrder: (columnOrder) => ipcRenderer.invoke('update-column-order', columnOrder),
-
-  // UI settings
-  updateUISettings: (uiSettings) => ipcRenderer.invoke('update-ui-settings', uiSettings),
-
-  getCellSettings: () => ipcRenderer.invoke('get-cell-settings'),
-  updateCellSettings: (cellId, newSettings) =>
-    ipcRenderer.invoke('update-cell-settings', cellId, newSettings),
-  deleteCellSettings: (cellId) =>
-    ipcRenderer.invoke('delete-cell-settings', cellId),
-
-
-  onNextTab: (callback) => ipcRenderer.on('next-tab', callback)
-
+  }
 });
