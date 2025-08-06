@@ -161,7 +161,7 @@ module.exports = {
         };
 
         const { filePath } = await dialog.showSaveDialog({
-          title: 'Експорт даних',
+          title: 'Data export',
           defaultPath: path.join(app.getPath('documents'), 'onda-data.json'),
           filters: [{ name: 'JSON Files', extensions: ['json'] }]
         });
@@ -173,7 +173,7 @@ module.exports = {
         await saveData(filePath, exportData);
         return { status: 'Data exported', filePath };
       } catch (error) {
-        console.error('Помилка при експорті даних:', error);
+        console.error('Error exporting data:', error);
         return handleError(error, 'Export failed');
       }
     });
@@ -181,7 +181,7 @@ module.exports = {
     ipcMain.handle('import-data', async () => {
       try {
         const { filePaths } = await dialog.showOpenDialog({
-          title: 'Імпорт даних',
+          title: 'Data import',
           defaultPath: app.getPath('documents'),
           filters: [{ name: 'JSON Files', extensions: ['json'] }],
           properties: ['openFile']
@@ -204,7 +204,7 @@ module.exports = {
 
         return { status: 'Data imported' };
       } catch (error) {
-        console.error('Import Failed:', error);
+        console.error('Error importing data:', error);
         return handleError(error, 'Import failed');
       }
     });
