@@ -1,63 +1,54 @@
-const fs = require('fs');
-const path = require('path');
 const { app, Notification, dialog } = require('electron');
-const { ensureDataFileExists } = require('../utils/dataUtils.js');
+const path = require('path');
 const DATA_FILE = path.join(__dirname, '../userData/data.json');
-
-const {getSettingsTemplates } = require('../constants/fileTemplates.js');
-const { saveData, getData } = require('../utils/dataUtils.js');
-
 const CALENDAR_FILE = path.join(__dirname, '../userData/calendar.json');
 const SETTINGS_FILE = path.join(__dirname, '../userData/settings.json');
+const { getSettingsTemplates } = require('../constants/fileTemplates.js');
+const { saveData, getData } = require('../utils/dataUtils.js');
 const { updateThemeBasedOnTime } = require('../utils/utils.js');
 
+const handleError = (err, message) => ({
+  status: message,
+  error: err.message
+});
 
 module.exports = {
   init(ipcMain) {
-    // Обробник для перемикання теми
-    ipcMain.handle('switch-theme', (event, darkMode) => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-      let settings;
+    ipcMain.handle('switch-theme', async (event, darkMode) => {
       try {
-        settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        settings.theme.darkMode = darkMode;
+        await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
+        return { status: 'Theme switched', darkMode };
       } catch (err) {
-        return { status: 'Error parsing settings', error: err.message };
+        return handleError(err, 'Error parsing settings');
       }
-
-      settings.theme.darkMode = darkMode;
-      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
-      return { status: 'Theme switched', darkMode };
     });
 
-    // Обробник для отримання поточної теми
-    ipcMain.handle('get-theme', () => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
+    ipcMain.handle('get-theme', async () => {
       try {
-        const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
         return { status: 'Theme fetched', darkMode: settings.theme.darkMode };
       } catch (err) {
-        return { status: 'Error parsing settings', error: err.message };
+        return handleError(err, 'Error parsing settings');
       }
     });
 
-    // Обробник для отримання налаштувань клітинок
-    ipcMain.handle('get-cell-settings', () => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
+    ipcMain.handle('get-cell-settings', async () => {
       try {
-        const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
         return {
           status: 'Cell settings fetched',
           cellSettings: settings.theme.cellSettings || {}
         };
       } catch (err) {
-        return { status: 'Error parsing settings', error: err.message };
+        return handleError(err, 'Error parsing settings');
       }
     });
 
-    // Обробник для оновлення налаштувань клітинки
     ipcMain.handle('update-cell-settings', async (event, cellId, newSettings) => {
       try {
-        const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE));
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
         if (!settings.theme.cellSettings) {
           settings.theme.cellSettings = {};
         }
@@ -66,96 +57,101 @@ module.exports = {
           height: newSettings.height,
           order: newSettings.order
         };
-        fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
+        await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
         return { status: 'success' };
       } catch (err) {
         console.error('Error saving cell settings:', err);
-        return { status: 'error', message: err.message };
+        return handleError(err, 'error');
       }
     });
 
-    // Обробник для видалення налаштувань клітинки
-    ipcMain.handle('delete-cell-settings', (event, cellId) => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-      let settings;
+    ipcMain.handle('delete-cell-settings', async (event, cellId) => {
       try {
-        settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        if (settings.theme.cellSettings && settings.theme.cellSettings[cellId]) {
+          delete settings.theme.cellSettings[cellId];
+          await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
+          return { status: 'Cell settings deleted', cellId };
+        }
+        return { status: 'Cell settings not found', cellId };
       } catch (err) {
-        return { status: 'Error parsing settings', error: err.message };
+        return handleError(err, 'Error parsing settings');
       }
+    });
 
-      if (settings.theme.cellSettings && settings.theme.cellSettings[cellId]) {
-        delete settings.theme.cellSettings[cellId];
-        fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
-        return { status: 'Cell settings deleted', cellId };
+    ipcMain.handle('get-settings', async () => {
+      try {
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        return { status: 'Settings fetched', data: settings };
+      } catch (err) {
+        return handleError(err, 'Error parsing settings');
       }
-
-      return { status: 'Cell settings not found', cellId };
     });
 
-    // Обробник для отримання налаштувань
-    ipcMain.handle('get-settings', () => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
-      return { status: 'Settings fetched', data: settings };
+    ipcMain.handle('update-settings', async (event, settings) => {
+      try {
+        await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
+        return { status: 'Settings updated' };
+      } catch (err) {
+        return handleError(err, 'Error updating settings');
+      }
     });
 
-    // Обробник для оновлення налаштувань
-    ipcMain.handle('update-settings', (event, settings) => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
-      return { status: 'Settings updated' };
+    ipcMain.handle('update-theme', async (event, themeSettings) => {
+      try {
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        settings.theme = { ...settings.theme, ...themeSettings };
+        await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
+        updateThemeBasedOnTime();
+        return { status: 'Theme updated' };
+      } catch (err) {
+        return handleError(err, 'Error updating theme');
+      }
     });
 
-    // Обробник для оновлення теми
-    ipcMain.handle('update-theme', (event, themeSettings) => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
-      settings.theme = { ...settings.theme, ...themeSettings };
-      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
-      updateThemeBasedOnTime();
-      return { status: 'Theme updated' };
+    ipcMain.handle('update-table-settings', async (event, tableSettings) => {
+      try {
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        settings.table = { ...settings.table, ...tableSettings };
+        await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
+        return { status: 'Table settings updated' };
+      } catch (err) {
+        return handleError(err, 'Error updating table settings');
+      }
     });
 
-    // Обробник для оновлення налаштувань таблиці
-    ipcMain.handle('update-table-settings', (event, tableSettings) => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
-      settings.table = { ...settings.table, ...tableSettings };
-      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
-      return { status: 'Table settings updated' };
+    ipcMain.handle('update-ui-settings', async (event, uiSettings) => {
+      try {
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        settings.ui = { ...settings.ui, ...uiSettings };
+        await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
+        return { status: 'UI settings updated' };
+      } catch (err) {
+        return handleError(err, 'Error updating UI settings');
+      }
     });
 
-    // Обробник для оновлення UI налаштувань
-    ipcMain.handle('update-ui-settings', (event, uiSettings) => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
-      settings.ui = { ...settings.ui, ...uiSettings };
-      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
-      return { status: 'UI settings updated' };
+    ipcMain.handle('update-column-order', async (event, columnOrder) => {
+      try {
+        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        settings.table.columnOrder = columnOrder;
+        await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
+        return { status: 'Column order updated' };
+      } catch (err) {
+        return handleError(err, 'Error updating column order');
+      }
     });
 
-    // Обробник для оновлення порядку колонок
-    ipcMain.handle('update-column-order', (event, columnOrder) => {
-      ensureDataFileExists(SETTINGS_FILE, () => getSettingsTemplates());
-      const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
-      settings.table.columnOrder = columnOrder;
-      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
-      return { status: 'Column order updated' };
-    });
-
-    // Обробник для показу системного повідомлення
     ipcMain.handle('show-notification', (event, { title, body }) => {
       new Notification({ title, body }).show();
     });
 
-    // Обробник для експорту даних
     ipcMain.handle('export-data', async () => {
       try {
         const [data, calendarData, settings] = await Promise.all([
           getData(DATA_FILE),
           getData(CALENDAR_FILE),
-          getData(SETTINGS_FILE, getSettingsTemplates)
+          getData(SETTINGS_FILE, () => getSettingsTemplates())
         ]);
 
         const exportData = {
@@ -174,15 +170,14 @@ module.exports = {
           return { status: 'Export cancelled' };
         }
 
-        await fs.promises.writeFile(filePath, JSON.stringify(exportData, null, 2));
+        await saveData(filePath, exportData);
         return { status: 'Data exported', filePath };
       } catch (error) {
         console.error('Помилка при експорті даних:', error);
-        return { status: 'Export failed', error: error.message };
+        return handleError(error, 'Export failed');
       }
     });
 
-    // Обробник для імпорту даних
     ipcMain.handle('import-data', async () => {
       try {
         const { filePaths } = await dialog.showOpenDialog({
@@ -196,23 +191,21 @@ module.exports = {
           return { status: 'Import cancelled' };
         }
 
-        const fileContent = await fs.promises.readFile(filePaths[0], 'utf8');
-        const importData = JSON.parse(fileContent);
-
+        const importData = await getData(filePaths[0]);
         if (importData.data) {
           await saveData(DATA_FILE, importData.data);
         }
         if (importData.calendar) {
-          await saveData(CALENDAR_FILE,importData.calendar);
+          await saveData(CALENDAR_FILE, importData.calendar);
         }
         if (importData.settings) {
-          await saveData(SETTINGS_FILE,importData.settings, getSettingsTemplates);
+          await saveData(SETTINGS_FILE, importData.settings, () => getSettingsTemplates());
         }
 
         return { status: 'Data imported' };
       } catch (error) {
         console.error('Import Failed:', error);
-        return { status: 'Import failed', error: error.message };
+        return handleError(error, 'Import failed');
       }
     });
   }
