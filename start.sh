@@ -16,11 +16,11 @@ kill_port 3000
 
 # 🚀 Стартує фронт у новому Git Bash вікні (асинхронно!)
 echo "🟢 Відкриваю фронт..."
-mintty.exe -h always --title="Frontend" /bin/bash -lc "cd '$(pwd)' && npm start" &
+mintty.exe -h always --title="Frontend" /bin/bash -lc "cd '$(pwd)/render' && npm start" &
 
 # 🔧 Стартує бек у новому Git Bash вікні (теж асинхронно)
 echo "🛠️ Відкриваю бекенд..."
-mintty.exe -h always --title="Backend" /bin/bash -lc "cd '$(pwd)/sys3-electron/electron-backend' && npx nodemon electron.js" &
+mintty.exe -h always --title="Backend" /bin/bash -lc "cd '$(pwd)' && npx nodemon electron.js" &
 
 # 🧠 VS Code
 echo "🧠 Відкриваю VS Code..."
