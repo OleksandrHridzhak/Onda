@@ -1,18 +1,40 @@
-import React from "react";
-
-import { useRef,useEffect } from "react";
-import { icons, getIconComponent } from "../utils/icons";
+import React, { useRef, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchTable } from '../store/slices/tableSlice';
+import { icons as allIcons, getIconComponent } from "../utils/icons";
 
 export const IconSelector = ({
   selectedIcon,
   setSelectedIcon,
   isIconSectionExpanded,
   setIsIconSectionExpanded,
-  icons,
+  icons = allIcons,
   darkMode,
 }) => {
   const ref = useRef(null);
 
+  // Redux
+  const dispatch = useDispatch();
+  const columns = useSelector((state) => state.table.columns);
+  const loading = useSelector((state) => state.table.loading);
+  const error = useSelector((state) => state.table.error);
+
+  // Fetch data on mount
+  useEffect(() => {
+    dispatch(fetchTable());
+  }, [dispatch]);
+
+  // Log data when loaded
+  useEffect(() => {
+    if (!loading && columns.length > 0) {
+      console.log('Columns from Redux:', columns);
+    }
+    if (error) {
+      console.error('Error fetching table:', error);
+    }
+  }, [columns, loading, error]);
+
+  // Click outside to collapse
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
@@ -44,19 +66,15 @@ export const IconSelector = ({
         aria-expanded={isIconSectionExpanded}
         aria-label="Select icon"
       >
-        {selectedIcon ? (
-          getIconComponent(selectedIcon, 24)
-        ) : (
-          <span className="text-sm">Select</span>
-        )}
+        {selectedIcon ? getIconComponent(selectedIcon, 24) : <span className="text-sm">Select</span>}
       </button>
 
       {isIconSectionExpanded && (
         <div
           className={`absolute top-full w-96 left-0 mt-1 z-50 overflow-y-auto border rounded-lg shadow-lg
             ${darkMode ? "bg-gray-900 border-gray-700" : "bg-white border-gray-300"}
-            flex flex-wrap gap-1
-          `}
+            flex flex-wrap gap-1`}
+          style={{ maxWidth: containerMaxWidth }}
         >
           {icons.map((icon) => (
             <button
