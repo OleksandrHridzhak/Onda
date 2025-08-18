@@ -9,17 +9,7 @@ import { TaskTableCell } from '../components/cells/TaskTableCell';
 
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-export const COLUMN_WIDTHS = {
-  days: '100px',
-  checkbox: '100px',
-  numberbox: '100px',
-  'multi-select': '100px',
-  text: '100px',
-  tasktable: '100px',
-  multicheckbox: '100px',
-  todo: '1000px',
-  filler: 'auto'
-};
+
 
 const electronAPI = window.electronAPI || {
   getTableData: async () => ({ status: 'Data fetched', data: [] }),
