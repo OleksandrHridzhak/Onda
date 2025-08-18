@@ -126,6 +126,7 @@ const ColumnMenu = ({
       const newColors = { ...state.optionColors };
       delete newColors[option];
       onChangeOptions(column.ColumnId, state.options, newColors, newDoneTags);
+      
     }
   };
 
