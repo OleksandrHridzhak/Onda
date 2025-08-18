@@ -112,7 +112,7 @@
     "EmojiIcon": "Music",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
+      "Monday": false,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": false,
