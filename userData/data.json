@@ -45,9 +45,9 @@
     "NameVisible": true,
     "Options": [
       "Coding",
-      "Meetings",
-      "Planning",
-      "Research"
+      "ssd",
+      "f",
+      "d"
     ],
     "Chosen": {
       "Monday": "Coding, Meetings",
@@ -61,9 +61,9 @@
     "Width": 125,
     "TagColors": {
       "Coding": "blue",
-      "Meetings": "green",
-      "Planning": "purple",
-      "Research": "orange"
+      "ssd": "blue",
+      "f": "blue",
+      "d": "blue"
     },
     "DoneTags": []
   },
@@ -130,17 +130,9 @@
     "Description": "List of tasks for the week",
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
-    "Options": [
-      "Write documentation",
-      "Fix bugs",
-      "Update UI",
-      "Test features"
-    ],
+    "Options": [],
     "TagColors": {
-      "Write documentation": "blue",
-      "Fix bugs": "red",
-      "Update UI": "green",
-      "Test features": "yellow"
+      "Fix bugs": "red"
     },
     "Chosen": {
       "global": [
@@ -149,7 +141,7 @@
       ]
     },
     "DoneTags": [
-      "Write documentation"
+      "Fix bugs"
     ],
     "Width": 150
   },
@@ -410,5 +402,24 @@
     },
     "Width": 50,
     "CheckboxColor": "blue"
+  },
+  {
+    "ColumnId": "1755526928989",
+    "Type": "checkbox",
+    "Name": "New Checkbox",
+    "Description": "Checkbox created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": true,
+      "Tuesday": false,
+      "Wednesday": false,
+      "Thursday": false,
+      "Friday": false,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50,
+    "CheckboxColor": "green"
   }
 ]

@@ -9,6 +9,7 @@ export const initialState = (column) => ({
   optionColors: column.TagColors || {},
   checkboxColor: column.CheckboxColor || "green",
   newOption: "",
+  Chosen: column.Chosen,
   width: column.Width ? parseInt(column.Width) : "",
   isIconSectionExpanded: false,
   isColorMenuOpen: {},
@@ -68,6 +69,7 @@ export const reducer = (state, action) => {
       const isInOptions = state.options.includes(action.payload);
       const isInDoneTags = state.doneTags.includes(action.payload);
       if (isInOptions) {
+        console.log('U USED REMOVE OPTION REDUCER');
         const newOptions = state.options.filter((opt) => opt !== action.payload);
         const newColors = { ...state.optionColors };
         delete newColors[action.payload];
