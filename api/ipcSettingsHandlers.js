@@ -45,40 +45,6 @@ module.exports = {
         return handleError(err, 'Error parsing settings');
       }
     });
-
-    ipcMain.handle('update-cell-settings', async (event, cellId, newSettings) => {
-      try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
-        if (!settings.theme.cellSettings) {
-          settings.theme.cellSettings = {};
-        }
-        settings.theme.cellSettings[cellId] = {
-          width: newSettings.width,
-          height: newSettings.height,
-          order: newSettings.order
-        };
-        await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
-        return { status: 'success' };
-      } catch (err) {
-        console.error('Error saving cell settings:', err);
-        return handleError(err, 'error');
-      }
-    });
-
-    ipcMain.handle('delete-cell-settings', async (event, cellId) => {
-      try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
-        if (settings.theme.cellSettings && settings.theme.cellSettings[cellId]) {
-          delete settings.theme.cellSettings[cellId];
-          await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
-          return { status: 'Cell settings deleted', cellId };
-        }
-        return { status: 'Cell settings not found', cellId };
-      } catch (err) {
-        return handleError(err, 'Error parsing settings');
-      }
-    });
-
     ipcMain.handle('get-settings', async () => {
       try {
         const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
