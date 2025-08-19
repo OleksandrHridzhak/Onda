@@ -42,7 +42,7 @@
     "Name": "Daily Focus",
     "Description": "Key focus areas for the day",
     "EmojiIcon": "Lightbulb",
-    "NameVisible": true,
+    "NameVisible": false,
     "Options": [
       "Coding",
       "ssd",
@@ -58,7 +58,7 @@
       "Saturday": "Research",
       "Sunday": ""
     },
-    "Width": 125,
+    "Width": 128,
     "TagColors": {
       "Coding": "blue",
       "ssd": "blue",
