@@ -14,6 +14,10 @@ import { TransparentBtn } from "./atoms/TransparentBtn";
 import { OptionsList } from "./OptionList";
 import { reducer, initialState } from "../reducers/columnMenuReducer";
 
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTable, updateColumn, deleteColumn } from '../store/table/tableSlice';
+
+
 
 // Sub-components (unchanged)
 const TitleVisibilityToggle = ({ showTitle, setShowTitle, darkMode }) => (
@@ -82,6 +86,15 @@ const ColumnMenu = ({
 }) => {
   const [state, dispatch] = useReducer(reducer, column, initialState);
   const menuRef = useRef(null);
+
+  const dispatchR = useDispatch();
+  const { columns, loading, error } = useSelector(state => state.table);
+
+  useEffect(() => {
+    dispatchR(fetchTable());
+  }, [dispatchR]);
+
+
 
   useEffect(() => {
     dispatch({ type: "RESET", payload: column });
@@ -342,7 +355,8 @@ const handleSave = async () => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleDeleteColumn(column.ColumnId);
+                console.log(column.ColumnId)
+                dispatchR(deleteColumn(column.ColumnId));
               }}
               className={`px-4 py-2 text-sm font-medium rounded-lg ${darkMode ? "text-red-400 hover:text-red-300" : "text-red-600 hover:text-red-700"} transition-colors duration-200`}
               aria-label="Delete column"

@@ -19,73 +19,6 @@
     "CheckboxColor": "blue"
   },
   {
-    "ColumnId": "1755000000002",
-    "Type": "numberbox",
-    "Name": "Project Hours",
-    "Description": "Hours spent on side projects",
-    "EmojiIcon": "Clock",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": "4",
-      "Tuesday": "3.5",
-      "Wednesday": "4",
-      "Thursday": "3",
-      "Friday": "3",
-      "Saturday": "2",
-      "Sunday": "0"
-    },
-    "Width": 75
-  },
-  {
-    "ColumnId": "1755000000003",
-    "Type": "multi-select",
-    "Name": "Daily Focus",
-    "Description": "Key focus areas for the day",
-    "EmojiIcon": "Lightbulb",
-    "NameVisible": false,
-    "Options": [
-      "Coding",
-      "ssd",
-      "f",
-      "d"
-    ],
-    "Chosen": {
-      "Monday": "Coding, Meetings",
-      "Tuesday": "Planning",
-      "Wednesday": "Coding, Research",
-      "Thursday": "Meetings",
-      "Friday": "Coding",
-      "Saturday": "Research",
-      "Sunday": ""
-    },
-    "Width": 128,
-    "TagColors": {
-      "Coding": "blue",
-      "ssd": "blue",
-      "f": "blue",
-      "d": "blue"
-    },
-    "DoneTags": []
-  },
-  {
-    "ColumnId": "1755000000004",
-    "Type": "numberbox",
-    "Name": "Study Hours",
-    "Description": "Time spent on learning",
-    "EmojiIcon": "Book",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": "2",
-      "Tuesday": "2.5",
-      "Wednesday": "3",
-      "Thursday": "2",
-      "Friday": "1.5",
-      "Saturday": "1",
-      "Sunday": "0"
-    },
-    "Width": 70
-  },
-  {
     "ColumnId": "1755000000005",
     "Type": "checkbox",
     "Name": "Daily Standup",
@@ -307,38 +240,6 @@
       "Learn JavaScript"
     ],
     "Width": 150
-  },
-  {
-    "ColumnId": "1755000000015",
-    "Type": "todo",
-    "Name": "Daily Todos",
-    "Description": "Daily todo list",
-    "EmojiIcon": "ListTodo",
-    "NameVisible": true,
-    "Chosen": {
-      "global": [
-        {
-          "text": "Finish report",
-          "completed": false,
-          "category": "Work"
-        },
-        {
-          "text": "Grocery shopping",
-          "completed": true,
-          "category": "Personal"
-        }
-      ]
-    },
-    "Options": [
-      "Work",
-      "Personal"
-    ],
-    "TagColors": {
-      "Work": "blue",
-      "Personal": "green"
-    },
-    "Width": 220,
-    "DoneTags": []
   },
   {
     "ColumnId": "1755000000016",

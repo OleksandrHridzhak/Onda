@@ -22,6 +22,17 @@ export const updateColumn = createAsyncThunk(
     throw new Error('Update failed');
   }
 );
+export const deleteColumn = createAsyncThunk(
+  'table/deleteColumn',
+  async (id) => {
+    const result = await electronAPI.deleteComponent(id); 
+    console.log(result)
+    if (result) {
+      return id; 
+    }
+    throw new Error('Update failed');
+  }
+);
 
 const tableSlice = createSlice({
   name: 'table',
@@ -54,7 +65,12 @@ const tableSlice = createSlice({
       })
       .addCase(updateColumn.rejected, (state, action) => {
         state.error = action.error.message;
+      })
+      .addCase(deleteColumn.fulfilled, (state, action) => {
+        console.log(state.columns);
+        state.columns = state.columns.filter(col => col.ColumnId !== action.payload);
       });
+
   },
 });
 
