@@ -12,15 +12,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Table Operations
   // Methods for managing table data, components, and export/import
   getTableData: () => ipcRenderer.invoke('get-table-data'),
-  saveData: (data) => ipcRenderer.invoke('save-data', data),
   exportData: () => ipcRenderer.invoke('export-data'),
   importData: (data) => ipcRenderer.invoke('import-data', data),
   changeColumn: (checkbox) => ipcRenderer.invoke('column-change', checkbox),
   createComponent: (type) => ipcRenderer.invoke('create-component', type),
   deleteComponent: (columnId) => ipcRenderer.invoke('delete-component', columnId),
   updateColumnOrder: (columnOrder) => ipcRenderer.invoke('update-column-order', columnOrder),
-  updateCellSettings: (cellId, newSettings) => ipcRenderer.invoke('update-cell-settings', cellId, newSettings),
-  deleteCellSettings: (cellId) => ipcRenderer.invoke('delete-cell-settings', cellId),
 
   // Settings Operations
   // Methods for managing themes, general settings, UI, and cell settings
