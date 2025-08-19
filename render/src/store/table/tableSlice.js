@@ -12,6 +12,17 @@ export const fetchTable = createAsyncThunk('table/fetchTable', async () => {
   return [];
 });
 
+export const updateColumn = createAsyncThunk(
+  'table/updateColumn',
+  async ({ id, updatedColumn }) => {
+    const result = await electronAPI.changeColumn(updatedColumn); // відправка на бек
+    if (result.status === 'Success') {
+      return result.data; // повертаємо новий об'єкт колонки
+    }
+    throw new Error('Update failed');
+  }
+);
+
 const tableSlice = createSlice({
   name: 'table',
   initialState: {
@@ -32,6 +43,16 @@ const tableSlice = createSlice({
       })
       .addCase(fetchTable.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateColumn.fulfilled, (state, action) => {
+        const updated = action.payload;
+        const index = state.columns.findIndex(c => c.ColumnId === updated.ColumnId);
+        if (index !== -1) {
+          state.columns[index] = updated; // заміна старої колонки на нову
+        }
+      })
+      .addCase(updateColumn.rejected, (state, action) => {
         state.error = action.error.message;
       });
   },

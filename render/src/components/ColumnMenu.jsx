@@ -63,6 +63,7 @@ const CheckboxColorPicker = ({
 );
 
 const ColumnMenu = ({
+  id,
   column,
   handleDeleteColumn,
   onClose,

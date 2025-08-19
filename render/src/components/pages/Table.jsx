@@ -107,6 +107,7 @@ const Table = ({ darkMode, setDarkMode }) => {
                   ) : (
                     <ColumnHeader
                       key={column.ColumnId}
+                      id={column.ColumnId}
                       column={column}
                       onRename={columnMenuLogic.handleRename}
                       onRemove={columnMenuLogic.handleDeleteColumn}

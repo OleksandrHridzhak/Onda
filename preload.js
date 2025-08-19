@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createComponent: (type) => ipcRenderer.invoke('create-component', type),
   deleteComponent: (columnId) => ipcRenderer.invoke('delete-component', columnId),
   updateColumnOrder: (columnOrder) => ipcRenderer.invoke('update-column-order', columnOrder),
+  getColumnById: (id) => ipcRenderer.invoke('get-column-by-id', id),
 
   // Settings Operations
   // Methods for managing themes, general settings, UI, and cell settings
