@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus,Trash2,ChevronDown } from 'lucide-react';
-import { BubbleBtn } from '../atoms/BubbleBtn';
+import { BubbleBtn } from '../shared/BubbleBtn';
 
 export default function Calendar({ darkTheme, setDarkTheme }) {
   const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));

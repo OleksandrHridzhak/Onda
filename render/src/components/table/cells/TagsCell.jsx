@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
-import { getColorOptions } from '../utils/colorOptions';
+import { getColorOptions } from '../../utils/colorOptions';
 
 export const TagsCell = ({ value, onChange, options, darkMode, tagColors = {} }) => {
   const [isOpen, setIsOpen] = useState(false);

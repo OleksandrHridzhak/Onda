@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { CheckboxCell } from '../components/cells/CheckboxCell';
-import { NumberCell } from '../components/cells/NumberCell';
-import { TagsCell } from '../components/cells/TagsCell';
-import { NotesCell } from '../components/cells/NotesCell';
-import { MultiCheckboxCell } from '../components/cells/MultiCheckboxCell';
-import { TodoCell } from '../components/cells/TodoCell';
-import { TaskTableCell } from '../components/cells/TaskTableCell';
+import { CheckboxCell } from './cells/CheckboxCell';
+import { NumberCell } from './cells/NumberCell';
+import { TagsCell } from './cells/TagsCell';
+import { NotesCell } from './cells/NotesCell';
+import { MultiCheckboxCell } from './cells/MultiCheckboxCell';
+import { TodoCell } from './cells/TodoCell';
+import { TaskTableCell } from './cells/TaskTableCell';
 
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 

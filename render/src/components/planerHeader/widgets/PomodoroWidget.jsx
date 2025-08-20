@@ -10,7 +10,7 @@ import {
   setNotifyEnabled,
   resetTimer,
   updateTime,
-} from '../../store/slices/pomodoroSlice';
+} from '../../../store/slices/pomodoroSlice';
 
 const PomodoroWidget = ({ darkTheme = false }) => {
   const dispatch = useDispatch();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getColorOptions } from '../utils/colorOptions';
+import { getColorOptions } from '../../utils/colorOptions';
 export const TaskTableCell = ({ column, onChangeOptions, darkMode }) => {
   const [incompleteTasks, setIncompleteTasks] = useState(column.Options || []);
   const [completedTasks, setCompletedTasks] = useState(column.DoneTags || []);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { getIconComponent } from './utils/icons';
-import ColumnMenu from './ColumnMenu';
+import { getIconComponent } from '../utils/icons';
+import ColumnMenu from './columnMenu/ColumnMenu';
 
 const ColumnHeader = ({
   column,

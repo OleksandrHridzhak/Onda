@@ -41,7 +41,7 @@
     "Type": "multi-select",
     "Name": "Daily Focus",
     "Description": "Key focus areas for the day",
-    "EmojiIcon": "Lightbulb",
+    "EmojiIcon": "Book",
     "NameVisible": true,
     "Options": [
       "Coding",

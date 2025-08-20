@@ -1,6 +1,6 @@
 import React from 'react';
 import { Check } from 'lucide-react';
-import {getCheckBoxColorOptions} from '../utils/colorOptions';
+import {getCheckBoxColorOptions} from '../../utils/colorOptions';
 
 export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) => {
   

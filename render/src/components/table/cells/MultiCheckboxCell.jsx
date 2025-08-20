@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
-import { getCheckBoxColorOptions } from '../utils/colorOptions';
+import { getCheckBoxColorOptions } from '../../utils/colorOptions';
 
 export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, darkMode }) => {
   const [isOpen, setIsOpen] = useState(false);

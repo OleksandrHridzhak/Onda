@@ -1,10 +1,10 @@
 import React from 'react';
-import PlannerHeader from '../PlannerHeader';
-import ColumnTypeSelector from '../ColumnTypeSelector';
-import ColumnHeader from '../ColumnHeader';
-import { LoadingScreen } from '../LoadingScreen';
-import { useTableLogic, DAYS,  getWidthStyle, calculateSummary, renderCell } from '../../hooks/TableLogic';
-import { useColumnMenuLogic } from '../../hooks/ColumnMenuLogic';
+import PlannerHeader from '../planerHeader/PlannerHeader';
+import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
+import ColumnHeader from './ColumnHeader';
+import { LoadingScreen } from './LoadingScreen';
+import { useTableLogic, DAYS,  getWidthStyle, calculateSummary, renderCell } from './TableLogic';
+import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
 
 const Table = ({ darkMode, setDarkMode }) => {
   const {

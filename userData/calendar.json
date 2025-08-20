@@ -7,7 +7,11 @@
     "endTime": "09:30",
     "color": "#10b981",
     "isRepeating": true,
-    "repeatDays": ["Monday", "Wednesday", "Friday"],
+    "repeatDays": [
+      "Monday",
+      "Wednesday",
+      "Friday"
+    ],
     "repeatFrequency": "weekly"
   },
   {
@@ -51,7 +55,9 @@
     "endTime": "16:30",
     "color": "#3b82f6",
     "isRepeating": true,
-    "repeatDays": ["Thursday"],
+    "repeatDays": [
+      "Thursday"
+    ],
     "repeatFrequency": "weekly"
   },
   {
@@ -62,7 +68,10 @@
     "endTime": "13:00",
     "color": "#22c55e",
     "isRepeating": true,
-    "repeatDays": ["Monday", "Friday"],
+    "repeatDays": [
+      "Monday",
+      "Friday"
+    ],
     "repeatFrequency": "weekly"
   },
   {
@@ -84,7 +93,10 @@
     "endTime": "09:00",
     "color": "#f97316",
     "isRepeating": true,
-    "repeatDays": ["Saturday", "Sunday"],
+    "repeatDays": [
+      "Saturday",
+      "Sunday"
+    ],
     "repeatFrequency": "weekly"
   },
   {
@@ -150,7 +162,9 @@
     "endTime": "11:00",
     "color": "#f43f5e",
     "isRepeating": true,
-    "repeatDays": ["Tuesday"],
+    "repeatDays": [
+      "Tuesday"
+    ],
     "repeatFrequency": "weekly"
   },
   {
@@ -194,7 +208,9 @@
     "endTime": "17:30",
     "color": "#d946ef",
     "isRepeating": true,
-    "repeatDays": ["Wednesday"],
+    "repeatDays": [
+      "Wednesday"
+    ],
     "repeatFrequency": "weekly"
   },
   {
@@ -227,7 +243,9 @@
     "endTime": "10:00",
     "color": "#2dd4bf",
     "isRepeating": true,
-    "repeatDays": ["Friday"],
+    "repeatDays": [
+      "Friday"
+    ],
     "repeatFrequency": "weekly"
   },
   {
@@ -325,6 +343,28 @@
     "startTime": "15:00",
     "endTime": "16:30",
     "color": "#4c51bf",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1755711059052",
+    "title": "v",
+    "date": "Tue Aug 19 2025",
+    "startTime": "18:00",
+    "endTime": "19:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1755711064797",
+    "title": "f",
+    "date": "Wed Aug 20 2025",
+    "startTime": "21:00",
+    "endTime": "22:00",
+    "color": "#2563eb",
     "isRepeating": false,
     "repeatDays": [],
     "repeatFrequency": "weekly"

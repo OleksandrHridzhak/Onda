@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux';
 import { fetchTheme } from './store/slices/themeSlice';
 
 import Sidebar from './components/Sidebar';
-import Table from './components/pages/Table';
+import Table from './components/table/Table';
 import MenuWin from './components/MenuWin';
-import Calendar from './components/pages/Calendar';
-import Settings from './components/pages/Settings';
+import Calendar from './components/calendar/Calendar';
+import Settings from './components/settings/Settings';
 
 const routes = ['/', '/calendar', '/settings'];
 

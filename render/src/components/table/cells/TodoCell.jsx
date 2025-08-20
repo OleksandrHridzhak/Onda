@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
-import { getColorOptions } from '../utils/colorOptions';
+import { getColorOptions } from '../../utils/colorOptions';
 
 import { Plus, Edit2, Check,  Trash2, ListTodo } from 'lucide-react';
 
 export const TodoCell = ({ value, column, onChange, darkMode }) => {
   const [todos, setTodos] = useState(value || []);
   const [newTodo, setNewTodo] = useState('');
-  const [newCategory, setNewCategory] = useState(''); // State for category of new todo
+  const [newCategory, setNewCategory] = useState(''); 
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editText, setEditText] = useState('');

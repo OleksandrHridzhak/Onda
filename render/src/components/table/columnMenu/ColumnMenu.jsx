@@ -6,13 +6,13 @@ import {
   ArrowRight,
   ArrowLeft,
 } from "lucide-react";
-import { icons } from "./utils/icons";
-import { getColorOptions } from "./utils/colorOptions";
-import { BubbleBtn } from "./atoms/BubbleBtn";
-import { IconSelector } from "./atoms/IconSelector";
-import { TransparentBtn } from "./atoms/TransparentBtn";
+import { icons } from "../../utils/icons";
+import { getColorOptions } from "../../utils/colorOptions";
+import { BubbleBtn } from "../../shared/BubbleBtn";
+import { IconSelector } from "./IconSelector";
+import { TransparentBtn } from "../../shared/TransparentBtn";
 import { OptionsList } from "./OptionList";
-import { reducer, initialState } from "../reducers/columnMenuReducer";
+import { reducer, initialState } from "./columnMenuReducer";
 
 
 // Sub-components (unchanged)

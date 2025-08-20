@@ -6,6 +6,7 @@ import { Plus } from 'lucide-react';
 const PlannerHeader = ({ darkTheme, layout = 'withWidget', widgetChoice = 'pomodoro', showColumnSelector, setShowColumnSelector, headerLayout, setHeaderLayout }) => {
   const [time, setTime] = useState('');
 
+  
   useEffect(() => {
     const fetchTime = async () => {
       try {
