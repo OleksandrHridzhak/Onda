@@ -4,9 +4,9 @@ import { Plus } from "lucide-react";
 import { OptionItem } from "./OptionItem";
 export const OptionsList = ({
   columnType,
-  options,
-  doneTags,
-  newOption,
+  options = [],
+  doneTags = [],
+  newOption = [],
   setNewOption,
   handleAddOption,
   handleRemoveOption,

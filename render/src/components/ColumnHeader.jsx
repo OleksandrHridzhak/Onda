@@ -3,6 +3,7 @@ import { getIconComponent } from './utils/icons'; // Імпорт функції
 import ColumnMenu from './ColumnMenu';
 
 const ColumnHeader = ({
+  id,
   column,
   onRemove,
   onRename,
@@ -62,6 +63,7 @@ const ColumnHeader = ({
         {showMenu && (
           <ColumnMenu
             column={column}
+            id={id}
             onClose={handleClose}
             handleDeleteColumn={onRemove}
             onRename={onRename}

@@ -26,10 +26,11 @@ module.exports = {
         return { status: 'Error parsing data', error: err.message };
       }
     });
-    ipcMain.handle('get-column-by-id', async(id) =>{
+    ipcMain.handle('get-column-by-id', async(event, id) =>{
       try {
         const columns = await getData(DATA_FILE);
-        const column = columns.find(col => col.ColumnId === id) || null
+        const column = columns.find(col => col.ColumnId == id) || null
+        console.log(column)
         return { status: 'Column by id was fetched', column };
 
       }catch(err){

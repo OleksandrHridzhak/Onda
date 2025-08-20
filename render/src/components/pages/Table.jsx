@@ -2,6 +2,12 @@ import React from 'react';
 import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import ColumnHeader from '../ColumnHeader';
+import { useEffect } from 'react';
+
+import {useDispatch, useSelector} from 'react-redux';
+import {selectColumnById} from '../../store/table/tableSelectors';
+import {fetchTable, updateColumn, deleteColumn, getColumnById} from '../../store/table/tableSlice';
+
 import { LoadingScreen } from '../LoadingScreen';
 import { useTableLogic, DAYS,  getWidthStyle, calculateSummary, renderCell } from '../../hooks/TableLogic';
 import { useColumnMenuLogic } from '../../hooks/ColumnMenuLogic';
@@ -24,6 +30,10 @@ const Table = ({ darkMode, setDarkMode }) => {
     handleExport
   } = useTableLogic();
 
+  const dispatchR = useDispatch();
+  useEffect(() => {
+    dispatchR(fetchTable());
+  }, [dispatchR]);
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns);
 
   const displayColumns = [

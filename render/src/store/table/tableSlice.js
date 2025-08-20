@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+  
 
 const electronAPI = window.electronAPI || {
   getTableData: async () => ({ status: 'Data fetched', data: [] }),
@@ -29,6 +30,18 @@ export const deleteColumn = createAsyncThunk(
     console.log(result)
     if (result) {
       return id; 
+    }
+    throw new Error('Update failed');
+  }
+);
+export const getColumnById = createAsyncThunk(
+  'table/getColumnById',
+  async (id) => {
+    console.log(id);
+    const result = await electronAPI.getColumnById(id); 
+    console.log(result.column)
+    if (result) {
+      return result.column; 
     }
     throw new Error('Update failed');
   }
@@ -69,6 +82,10 @@ const tableSlice = createSlice({
       .addCase(deleteColumn.fulfilled, (state, action) => {
         console.log(state.columns);
         state.columns = state.columns.filter(col => col.ColumnId !== action.payload);
+      })
+      .addCase(getColumnById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedColumn = action.payload
       });
 
   },

@@ -21,10 +21,10 @@
   {
     "ColumnId": "1755000000005",
     "Type": "checkbox",
-    "Name": "Daily Standup",
+    "Name": "Daily Standupш",
     "Description": "Attend team standup meeting",
-    "EmojiIcon": "User",
-    "NameVisible": false,
+    "EmojiIcon": "Bell",
+    "NameVisible": true,
     "Chosen": {
       "Monday": true,
       "Tuesday": true,
@@ -34,27 +34,8 @@
       "Saturday": false,
       "Sunday": false
     },
-    "Width": 50,
-    "CheckboxColor": "orange"
-  },
-  {
-    "ColumnId": "1755000000006",
-    "Type": "checkbox",
-    "Name": "Code Review",
-    "Description": "Review team code submissions",
-    "EmojiIcon": "Music",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": false,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": false,
-      "Friday": true,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 95,
-    "CheckboxColor": "gray"
+    "Width": 97,
+    "CheckboxColor": "teal"
   },
   {
     "ColumnId": "1755000000007",
@@ -77,25 +58,6 @@
       "Fix bugs"
     ],
     "Width": 150
-  },
-  {
-    "ColumnId": "1755000000008",
-    "Type": "checkbox",
-    "Name": "Email Check",
-    "Description": "Check and respond to emails",
-    "EmojiIcon": "Wand2",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": true,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": true,
-      "Friday": true,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 50,
-    "CheckboxColor": "purple"
   },
   {
     "ColumnId": "1755000000009",
@@ -166,7 +128,7 @@
     "Type": "multi-select",
     "Name": "Project Tasks",
     "Description": "Select tasks for project work",
-    "EmojiIcon": "Briefcase",
+    "EmojiIcon": "Book",
     "NameVisible": true,
     "Options": [
       "Design",
@@ -264,7 +226,7 @@
     "Type": "todo",
     "Name": "Work Todos",
     "Description": "Work-related todo list",
-    "EmojiIcon": "Briefcase",
+    "EmojiIcon": "Book",
     "NameVisible": true,
     "Chosen": {
       "global": [
@@ -322,5 +284,51 @@
     },
     "Width": 50,
     "CheckboxColor": "green"
+  },
+  {
+    "ColumnId": "1755667102346",
+    "Type": "multi-select",
+    "Name": "New Multi-Select",
+    "Description": "Multi-select created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": true,
+    "Options": [
+      "Option 1",
+      "Option 2"
+    ],
+    "TagColors": {
+      "Option 1": "blue",
+      "Option 2": "green"
+    },
+    "Chosen": {
+      "Monday": "Option 1",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 90
+  },
+  {
+    "ColumnId": "1755667121514",
+    "Type": "tasktable",
+    "Name": "New Task List",
+    "Description": "Task table created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Options": [
+      "Task 1",
+      "Task 2"
+    ],
+    "TagColors": {
+      "Task 1": "blue",
+      "Task 2": "green"
+    },
+    "Chosen": {
+      "global": []
+    },
+    "Width": 150
   }
 ]
