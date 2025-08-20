@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchTable } from '../store/slices/tableSlice';
+
+
 import { icons as allIcons, getIconComponent } from "../utils/icons";
+
 
 export const IconSelector = ({
   selectedIcon,
@@ -12,27 +13,6 @@ export const IconSelector = ({
   darkMode,
 }) => {
   const ref = useRef(null);
-
-  // Redux
-  const dispatch = useDispatch();
-  const columns = useSelector((state) => state.table.columns);
-  const loading = useSelector((state) => state.table.loading);
-  const error = useSelector((state) => state.table.error);
-
-  // Fetch data on mount
-  useEffect(() => {
-    dispatch(fetchTable());
-  }, [dispatch]);
-
-  // Log data when loaded
-  useEffect(() => {
-    if (!loading && columns.length > 0) {
-      console.log('Columns from Redux:', columns);
-    }
-    if (error) {
-      console.error('Error fetching table:', error);
-    }
-  }, [columns, loading, error]);
 
   // Click outside to collapse
   useEffect(() => {
