@@ -1,34 +1,35 @@
-import React, { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import PlannerHeader from '../PlannerHeader';
 import ColumnTypeSelector from '../ColumnTypeSelector';
 import ColumnHeader from '../ColumnHeader';
 import { LoadingScreen } from '../LoadingScreen';
-import { DAYS, getWidthStyle, calculateSummary, renderCell } from '../../hooks/TableLogic';
-import { fetchTable, addColumn, moveColumn, updateColumn } from '../../store/table/tableSlice';
-import { useTableLogic } from '../../hooks/TableLogic';
+import { useTableLogic, DAYS,  getWidthStyle, calculateSummary, renderCell } from '../../hooks/TableLogic';
+import { useColumnMenuLogic } from '../../hooks/ColumnMenuLogic';
 
 const Table = ({ darkMode, setDarkMode }) => {
-  const dispatch = useDispatch();
-  const { columns, loading } = useSelector((state) => state.table);
   const {
+    columns,
+    setColumns,
     tableData,
     showColumnSelector,
     setShowColumnSelector,
+    loading,
     showSummaryRow,
     headerLayout,
+    handleAddColumn,
     handleCellChange,
-    handleExport,
+    handleAddTask,
+    handleMoveColumn,
+    handleChangeWidth,
+    handleExport
   } = useTableLogic();
 
-  useEffect(() => {
-    dispatch(fetchTable());
-  }, [dispatch]);
+  const columnMenuLogic = useColumnMenuLogic(columns, setColumns);
 
-  const displayColumns = useMemo(() => [
+  const displayColumns = [
     ...columns,
-    { ColumnId: 'filler', Type: 'filler', Name: '', EmojiIcon: '', NameVisible: false },
-  ], [columns]);
+    { ColumnId: 'filler', Type: 'filler', Name: '', EmojiIcon: '', NameVisible: false }
+  ];
 
   if (loading) {
     return <LoadingScreen darkMode={darkMode} />;
@@ -82,7 +83,7 @@ const Table = ({ darkMode, setDarkMode }) => {
           <div className="absolute right-0 z-50">
             <ColumnTypeSelector
               onSelect={(type) => {
-                dispatch(addColumn(type));
+                handleAddColumn(type);
                 setShowColumnSelector(false);
               }}
               onCancel={() => setShowColumnSelector(false)}
@@ -98,17 +99,30 @@ const Table = ({ darkMode, setDarkMode }) => {
               <tr className={`${darkMode ? 'bg-gray-800 border-gray-600' : 'bg-gray-50 border-gray-200'} border-b`}>
                 {displayColumns.map((column) => (
                   column.Type === 'filler' ? (
-                    <th key={column.ColumnId} className={`${darkMode ? 'border-gray-600' : 'border-gray-200'} border-r border-b`} style={getWidthStyle(column)} />
+                    <th
+                      key={column.ColumnId}
+                      className={`${darkMode ? 'border-gray-600' : 'border-gray-200'} border-r border-b`}
+                      style={getWidthStyle(column)}
+                    />
                   ) : (
                     <ColumnHeader
                       key={column.ColumnId}
-                      id={column.ColumnId}
                       column={column}
-                      onMoveUp={() => dispatch(moveColumn({ columnId: column.ColumnId, direction: 'up' }))}
-                      onMoveDown={() => dispatch(moveColumn({ columnId: column.ColumnId, direction: 'down' }))}
+                      onRename={columnMenuLogic.handleRename}
+                      onRemove={columnMenuLogic.handleDeleteColumn}
+                      onChangeIcon={columnMenuLogic.handleChangeIcon}
+                      onChangeDescription={columnMenuLogic.handleChangeDescription}
+                      onToggleTitleVisibility={columnMenuLogic.handleToggleTitleVisibility}
+                      onChangeOptions={columnMenuLogic.handleChangeOptions}
+                      onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+                      onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
+                      onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
                       canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}
                       canMoveDown={column.ColumnId !== 'days' && columns.indexOf(column) < columns.length - 1}
                       darkMode={darkMode}
+                      onChangeWidth={handleChangeWidth}
+                      onAddTask={handleAddTask}
+                      style={getWidthStyle(column)}
                     />
                   )
                 ))}
@@ -118,9 +132,15 @@ const Table = ({ darkMode, setDarkMode }) => {
               {DAYS.map((day, idx) => (
                 <tr
                   key={day}
-                  className={`${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-150 ${idx !== DAYS.length - 1 ? (darkMode ? 'border-gray-700 border-b' : 'border-gray-200 border-b') : ''}`}
+                  className={`
+                    ${darkMode ? 'bg-gray-800' : 'bg-white'}
+                    transition-colors duration-150
+                    ${idx !== DAYS.length - 1 ? (darkMode ? 'border-gray-700 border-b' : 'border-gray-200 border-b') : ''}
+                  `}
                 >
-                  {displayColumns.map((column, index) => renderCell(day, column, index, idx, tableData, darkMode, handleCellChange, (options, tagColors, doneTags) => dispatch(updateColumn({ ...column, Options: options, TagColors: tagColors, DoneTags: doneTags })))}
+                  {displayColumns.map((column, index) => (
+                    renderCell(day, column, index, idx, tableData, darkMode, handleCellChange, columnMenuLogic.handleChangeOptions)
+                  ))}
                 </tr>
               ))}
             </tbody>
@@ -129,7 +149,13 @@ const Table = ({ darkMode, setDarkMode }) => {
                 <tr className={`${darkMode ? 'bg-gray-800 border-t border-gray-700' : 'bg-white border-t border-gray-200'}`}>
                   {displayColumns.map((column) => {
                     if (column.Type === 'filler') {
-                      return <td key={column.ColumnId} className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`} style={getWidthStyle(column)} />;
+                      return (
+                        <td
+                          key={column.ColumnId}
+                          className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`}
+                          style={getWidthStyle(column)}
+                        />
+                      );
                     }
                     const summary = calculateSummary(column, tableData);
                     return (

@@ -19,12 +19,79 @@
     "CheckboxColor": "blue"
   },
   {
+    "ColumnId": "1755000000002",
+    "Type": "numberbox",
+    "Name": "Project Hours",
+    "Description": "Hours spent on side projects",
+    "EmojiIcon": "Clock",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "4",
+      "Tuesday": "3.5",
+      "Wednesday": "4",
+      "Thursday": "3",
+      "Friday": "3",
+      "Saturday": "2",
+      "Sunday": "0"
+    },
+    "Width": 75
+  },
+  {
+    "ColumnId": "1755000000003",
+    "Type": "multi-select",
+    "Name": "Daily Focus",
+    "Description": "Key focus areas for the day",
+    "EmojiIcon": "Lightbulb",
+    "NameVisible": true,
+    "Options": [
+      "Coding",
+      "ssd",
+      "f",
+      "d"
+    ],
+    "Chosen": {
+      "Monday": "Coding, Meetings",
+      "Tuesday": "Planning",
+      "Wednesday": "Coding, Research",
+      "Thursday": "Meetings",
+      "Friday": "Coding",
+      "Saturday": "Research",
+      "Sunday": ""
+    },
+    "Width": 125,
+    "TagColors": {
+      "Coding": "blue",
+      "ssd": "blue",
+      "f": "blue",
+      "d": "blue"
+    },
+    "DoneTags": []
+  },
+  {
+    "ColumnId": "1755000000004",
+    "Type": "numberbox",
+    "Name": "Study Hours",
+    "Description": "Time spent on learning",
+    "EmojiIcon": "Book",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": "2",
+      "Tuesday": "2.5",
+      "Wednesday": "3",
+      "Thursday": "2",
+      "Friday": "1.5",
+      "Saturday": "1",
+      "Sunday": "0"
+    },
+    "Width": 70
+  },
+  {
     "ColumnId": "1755000000005",
     "Type": "checkbox",
-    "Name": "Daily Standupш",
+    "Name": "Daily Standup",
     "Description": "Attend team standup meeting",
-    "EmojiIcon": "Bell",
-    "NameVisible": true,
+    "EmojiIcon": "User",
+    "NameVisible": false,
     "Chosen": {
       "Monday": true,
       "Tuesday": true,
@@ -34,8 +101,27 @@
       "Saturday": false,
       "Sunday": false
     },
-    "Width": 97,
-    "CheckboxColor": "teal"
+    "Width": 50,
+    "CheckboxColor": "orange"
+  },
+  {
+    "ColumnId": "1755000000006",
+    "Type": "checkbox",
+    "Name": "Code Review",
+    "Description": "Review team code submissions",
+    "EmojiIcon": "Music",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": false,
+      "Tuesday": true,
+      "Wednesday": true,
+      "Thursday": false,
+      "Friday": true,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 95,
+    "CheckboxColor": "gray"
   },
   {
     "ColumnId": "1755000000007",
@@ -44,9 +130,7 @@
     "Description": "List of tasks for the week",
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
-    "Options": [
-      "Fix bugs"
-    ],
+    "Options": [],
     "TagColors": {
       "Fix bugs": "red"
     },
@@ -56,8 +140,29 @@
         "Fix bugs"
       ]
     },
-    "DoneTags": [],
+    "DoneTags": [
+      "Fix bugs"
+    ],
     "Width": 150
+  },
+  {
+    "ColumnId": "1755000000008",
+    "Type": "checkbox",
+    "Name": "Email Check",
+    "Description": "Check and respond to emails",
+    "EmojiIcon": "Wand2",
+    "NameVisible": false,
+    "Chosen": {
+      "Monday": true,
+      "Tuesday": true,
+      "Wednesday": true,
+      "Thursday": true,
+      "Friday": true,
+      "Saturday": false,
+      "Sunday": false
+    },
+    "Width": 50,
+    "CheckboxColor": "purple"
   },
   {
     "ColumnId": "1755000000009",
@@ -128,7 +233,7 @@
     "Type": "multi-select",
     "Name": "Project Tasks",
     "Description": "Select tasks for project work",
-    "EmojiIcon": "Book",
+    "EmojiIcon": "Briefcase",
     "NameVisible": true,
     "Options": [
       "Design",
@@ -149,7 +254,7 @@
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": 124
+    "Width": 90
   },
   {
     "ColumnId": "1755000000013",
@@ -178,6 +283,64 @@
     "Width": 50
   },
   {
+    "ColumnId": "1755000000014",
+    "Type": "tasktable",
+    "Name": "Personal Projects",
+    "Description": "List of personal project tasks",
+    "EmojiIcon": "Rocket",
+    "NameVisible": true,
+    "Options": [
+      "Build app",
+      "Write blog"
+    ],
+    "TagColors": {
+      "Learn JavaScript": "blue",
+      "Build app": "green",
+      "Write blog": "yellow"
+    },
+    "Chosen": {
+      "global": [
+        "Learn JavaScript"
+      ]
+    },
+    "DoneTags": [
+      "Learn JavaScript"
+    ],
+    "Width": 150
+  },
+  {
+    "ColumnId": "1755000000015",
+    "Type": "todo",
+    "Name": "Daily Todos",
+    "Description": "Daily todo list",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Chosen": {
+      "global": [
+        {
+          "text": "Finish report",
+          "completed": false,
+          "category": "Work"
+        },
+        {
+          "text": "Grocery shopping",
+          "completed": true,
+          "category": "Personal"
+        }
+      ]
+    },
+    "Options": [
+      "Work",
+      "Personal"
+    ],
+    "TagColors": {
+      "Work": "blue",
+      "Personal": "green"
+    },
+    "Width": 220,
+    "DoneTags": []
+  },
+  {
     "ColumnId": "1755000000016",
     "Type": "numberbox",
     "Name": "Sleep Hours",
@@ -200,7 +363,7 @@
     "Type": "todo",
     "Name": "Work Todos",
     "Description": "Work-related todo list",
-    "EmojiIcon": "Book",
+    "EmojiIcon": "Briefcase",
     "NameVisible": true,
     "Chosen": {
       "global": [
@@ -258,51 +421,5 @@
     },
     "Width": 50,
     "CheckboxColor": "green"
-  },
-  {
-    "ColumnId": "1755667102346",
-    "Type": "multi-select",
-    "Name": "New Multi-Select",
-    "Description": "Multi-select created on backend",
-    "EmojiIcon": "Star",
-    "NameVisible": true,
-    "Options": [
-      "Option 1",
-      "Option 2"
-    ],
-    "TagColors": {
-      "Option 1": "blue",
-      "Option 2": "green"
-    },
-    "Chosen": {
-      "Monday": "Option 1",
-      "Tuesday": "",
-      "Wednesday": "",
-      "Thursday": "",
-      "Friday": "",
-      "Saturday": "",
-      "Sunday": ""
-    },
-    "Width": 90
-  },
-  {
-    "ColumnId": "1755667121514",
-    "Type": "tasktable",
-    "Name": "New Task List",
-    "Description": "Task table created on backend",
-    "EmojiIcon": "ListTodo",
-    "NameVisible": true,
-    "Options": [
-      "Task 1",
-      "Task 2"
-    ],
-    "TagColors": {
-      "Task 1": "blue",
-      "Task 2": "green"
-    },
-    "Chosen": {
-      "global": []
-    },
-    "Width": 150
   }
 ]

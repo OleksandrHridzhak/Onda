@@ -1,16 +1,34 @@
-// ColumnHeader.js
 import React, { useState } from 'react';
-import { getIconComponent } from './utils/icons';
+import { getIconComponent } from './utils/icons'; // Імпорт функції
 import ColumnMenu from './ColumnMenu';
 
-const ColumnHeader = ({ id, column, onMoveUp, onMoveDown, canMoveUp, canMoveDown, darkMode }) => {
+const ColumnHeader = ({
+  column,
+  onRemove,
+  onRename,
+  onChangeIcon,
+  onChangeDescription,
+  onToggleTitleVisibility,
+  onChangeOptions,
+  onChangeCheckboxColor,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown,
+  darkMode,
+  onChangeWidth
+}) => {
   const [showMenu, setShowMenu] = useState(false);
   const style = column.Width ? { width: `${column.Width}px` } : {};
 
   const isEmptyHeader = !column.EmojiIcon && (column.NameVisible === false || !column.Name);
+  const handleClose = () => {
+    console.log('Menu closed');
+    setShowMenu(false);
+  };
 
   return (
-    <th
+    <th 
       data-column-id={column.ColumnId}
       className={`font-poppins px-3 py-3 text-left text-sm font-medium ${darkMode ? 'bg-gray-800 text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200'} border-b border-r whitespace-nowrap overflow-hidden`}
       style={column.ColumnId === 'days' ? { width: '120px', minWidth: '120px', maxWidth: '120px' } : style}
@@ -21,10 +39,14 @@ const ColumnHeader = ({ id, column, onMoveUp, onMoveDown, canMoveUp, canMoveDown
       >
         <div className={`flex items-center ${column.NameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`} data-tooltip-id={`tooltip-${column.ColumnId}`}>
           {column.EmojiIcon && (
-            <span className={column.NameVisible !== false ? 'mr-1' : ''}>{getIconComponent(column.EmojiIcon, 16)}</span>
+            <span className={column.NameVisible !== false ? "mr-1" : ""}>
+              {getIconComponent(column.EmojiIcon, 16)}
+            </span>
           )}
           {column.NameVisible !== false && column.Name && (
-            <span className={`truncate block ${darkMode ? 'text-gray-200' : 'text-gray-600'} max-w-full`}>{column.Name}</span>
+            <span className={`truncate block ${darkMode ? 'text-gray-200' : 'text-gray-600'} max-w-full`}>
+              {column.Name}
+            </span>
           )}
           {isEmptyHeader && <span className="opacity-0">∅</span>}
         </div>
@@ -39,13 +61,21 @@ const ColumnHeader = ({ id, column, onMoveUp, onMoveDown, canMoveUp, canMoveDown
         )}
         {showMenu && (
           <ColumnMenu
-            id={id}
-            onClose={() => setShowMenu(false)}
+            column={column}
+            onClose={handleClose}
+            handleDeleteColumn={onRemove}
+            onRename={onRename}
+            onChangeIcon={onChangeIcon}
+            onChangeDescription={onChangeDescription}
+            onToggleTitleVisibility={onToggleTitleVisibility}
+            onChangeOptions={onChangeOptions}
+            onChangeCheckboxColor={onChangeCheckboxColor}
+            onMoveUp={onMoveUp}
+            onMoveDown={onMoveDown}
             canMoveUp={canMoveUp}
             canMoveDown={canMoveDown}
             darkMode={darkMode}
-            onMoveUp={onMoveUp}
-            onMoveDown={onMoveDown}
+            onChangeWidth={onChangeWidth}
           />
         )}
       </div>
@@ -53,4 +83,4 @@ const ColumnHeader = ({ id, column, onMoveUp, onMoveDown, canMoveUp, canMoveDown
   );
 };
 
-export default React.memo(ColumnHeader);
+export default ColumnHeader;
