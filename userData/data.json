@@ -44,7 +44,9 @@
     "Description": "List of tasks for the week",
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
-    "Options": [],
+    "Options": [
+      "Fix bugs"
+    ],
     "TagColors": {
       "Fix bugs": "red"
     },
@@ -54,9 +56,7 @@
         "Fix bugs"
       ]
     },
-    "DoneTags": [
-      "Fix bugs"
-    ],
+    "DoneTags": [],
     "Width": 150
   },
   {
@@ -149,7 +149,7 @@
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": 90
+    "Width": 124
   },
   {
     "ColumnId": "1755000000013",
@@ -176,32 +176,6 @@
       "Sunday": ""
     },
     "Width": 50
-  },
-  {
-    "ColumnId": "1755000000014",
-    "Type": "tasktable",
-    "Name": "Personal Projects",
-    "Description": "List of personal project tasks",
-    "EmojiIcon": "Rocket",
-    "NameVisible": true,
-    "Options": [
-      "Build app",
-      "Write blog"
-    ],
-    "TagColors": {
-      "Learn JavaScript": "blue",
-      "Build app": "green",
-      "Write blog": "yellow"
-    },
-    "Chosen": {
-      "global": [
-        "Learn JavaScript"
-      ]
-    },
-    "DoneTags": [
-      "Learn JavaScript"
-    ],
-    "Width": 150
   },
   {
     "ColumnId": "1755000000016",

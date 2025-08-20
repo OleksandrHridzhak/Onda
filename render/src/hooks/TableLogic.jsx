@@ -1,3 +1,4 @@
+// useTableLogic.js
 import { useState, useEffect, useCallback } from 'react';
 import { CheckboxCell } from '../components/cells/CheckboxCell';
 import { NumberCell } from '../components/cells/NumberCell';
@@ -9,15 +10,9 @@ import { TaskTableCell } from '../components/cells/TaskTableCell';
 
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-
-
 const electronAPI = window.electronAPI || {
-  getTableData: async () => ({ status: 'Data fetched', data: [] }),
   getSettings: async () => ({ status: 'Settings fetched', data: {} }),
   updateSettings: async () => {},
-  createComponent: async () => ({ status: false }),
-  updateColumnOrder: async () => {},
-  changeColumn: async () => {}
 };
 
 const handleError = (message, error) => {
@@ -25,79 +20,10 @@ const handleError = (message, error) => {
 };
 
 export const useTableLogic = () => {
-  const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState({});
   const [showColumnSelector, setShowColumnSelector] = useState(false);
-  const [highlightedRow, setHighlightedRow] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [showSummaryRow, setShowSummaryRow] = useState(false);
-  const [columnOrder, setColumnOrder] = useState([]);
   const [headerLayout, setHeaderLayout] = useState('withWidget');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [daysResult, settingsResult] = await Promise.all([
-          electronAPI.getTableData(),
-          electronAPI.getSettings()
-        ]);
-
-        const dayColumn = { ColumnId: 'days', Type: 'days', Name: 'Day', EmojiIcon: '', NameVisible: true };
-        let fetchedColumns = [dayColumn];
-
-        if (daysResult.status === 'Data fetched' && Array.isArray(daysResult.data)) {
-          fetchedColumns = [dayColumn, ...daysResult.data.map(col => ({
-            ...col,
-            Width: col.Width ? parseInt(col.Width) : null
-          }))];
-        }
-
-        if (settingsResult.status === 'Settings fetched' && settingsResult.data.table?.columnOrder?.length > 0) {
-          const orderedColumns = settingsResult.data.table.columnOrder
-            .map(columnId => fetchedColumns.find(col => col.ColumnId === columnId))
-            .filter(Boolean);
-          fetchedColumns.forEach(column => {
-            if (!orderedColumns.some(col => col.ColumnId === column.ColumnId)) {
-              orderedColumns.push(column);
-            }
-          });
-          fetchedColumns = orderedColumns;
-        }
-
-        setColumns(fetchedColumns);
-        setColumnOrder(fetchedColumns.map(col => col.ColumnId));
-
-        if (settingsResult.status === 'Settings fetched') {
-          const newSettings = {
-            ...settingsResult.data,
-            table: { ...settingsResult.data.table, columnOrder: fetchedColumns.map(col => col.ColumnId) }
-          };
-          await electronAPI.updateSettings(newSettings);
-        }
-
-        const initialTableData = DAYS.reduce((acc, day) => {
-          acc[day] = fetchedColumns.reduce((dayData, col) => {
-            if (col.ColumnId !== 'days' && col.Type !== 'tasktable') {
-              dayData[col.ColumnId] = col.Type === 'multi-select' || col.Type === 'multicheckbox'
-                ? (typeof col.Chosen?.[day] === 'string' ? col.Chosen[day] : '')
-                : col.Chosen?.[day] || '';
-            }
-            return dayData;
-          }, {});
-          return acc;
-        }, {});
-        setTableData(initialTableData);
-      } catch (err) {
-        handleError('Error fetching data:', err);
-        setColumns([{ ColumnId: 'days', Type: 'days', Name: 'Day', EmojiIcon: '', NameVisible: true }]);
-        setTableData(DAYS.reduce((acc, day) => ({ ...acc, [day]: {} }), {}));
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     electronAPI.getSettings()
@@ -109,7 +35,7 @@ export const useTableLogic = () => {
           setHeaderLayout(data.header.layout);
         }
       })
-      .catch(err => handleError('Error fetching settings:', err));
+      .catch((err) => handleError('Error fetching settings:', err));
   }, []);
 
   useEffect(() => {
@@ -120,119 +46,23 @@ export const useTableLogic = () => {
     return () => window.removeEventListener('header-settings-changed', onHeaderChange);
   }, []);
 
-  const handleAddColumn = useCallback(async (type) => {
-    try {
-      const result = await electronAPI.createComponent(type);
-      if (result.status) {
-        setColumns(prev => [...prev, result.data]);
-        setTableData(prev => ({
-          ...prev,
-          ...DAYS.reduce((acc, day) => ({
-            ...acc,
-            [day]: { ...prev[day], [result.data.ColumnId]: type !== 'tasktable' ? '' : undefined }
-          }), {})
-        }));
-      }
-    } catch (err) {
-      handleError('Failed to create column:', err);
-    }
-  }, [setColumns, setTableData]);
-
-  const handleCellChange = useCallback(async (day, columnId, value) => {
-    const column = columns.find(col => col.ColumnId === columnId);
-    if (!column || column.Type === 'tasktable') return;
-
-    // Нормалізуємо значення для чекбокса
-    const normalizedValue = column.Type === 'checkbox' ? !!value : value;
-
-    // Тимчасове оновлення для миттєвого відображення
-    setTableData(prev => ({
-      ...prev,
-      [day]: { ...prev[day], [columnId]: normalizedValue }
-    }));
-
-    const updatedColumn = {
-      ...column,
-      Chosen: {
-        ...(column.Chosen || {}),
-        [day]: normalizedValue
-      }
-    };
-
-    try {
-      await electronAPI.changeColumn(updatedColumn);
-      setColumns(prev => prev.map(col => col.ColumnId === columnId ? updatedColumn : col));
-    } catch (err) {
-      handleError('Update failed:', err);
-      // Відкатуємо до попереднього значення
-      setTableData(prev => ({
+  const handleCellChange = useCallback(
+    (day, columnId, value) => {
+      setTableData((prev) => ({
         ...prev,
-        [day]: { ...prev[day], [columnId]: column.Chosen?.[day] || false }
+        [day]: { ...prev[day], [columnId]: value },
       }));
-    }
-  }, [columns, setTableData, setColumns]);
+    },
+    []
+  );
 
-  const handleAddTask = useCallback(async (columnId, taskText) => {
-    const column = columns.find(col => col.ColumnId === columnId);
-    if (!column || column.Type !== 'tasktable') return;
-
-    const updatedOptions = [...(column.Options || []), taskText];
-    const updatedTagColors = { ...column.TagColors, [taskText]: 'blue' };
-    const updatedColumn = { ...column, Options: updatedOptions, TagColors: updatedTagColors };
-    try {
-      await electronAPI.changeColumn(updatedColumn);
-      setColumns(prev => prev.map(col => col.ColumnId === columnId ? updatedColumn : col));
-    } catch (err) {
-      handleError('Update failed:', err);
-    }
-  }, [columns, setColumns]);
-
-  const handleMoveColumn = useCallback(async (columnId, direction) => {
-    const currentIndex = columns.findIndex(col => col.ColumnId === columnId);
-    if ((direction === 'up' && currentIndex <= 1) || (direction === 'down' && currentIndex === columns.length - 1)) return;
-
-    const newColumns = [...columns];
-    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-    [newColumns[currentIndex], newColumns[newIndex]] = [newColumns[newIndex], newColumns[currentIndex]];
-    setColumns(newColumns);
-    const newColumnOrder = newColumns.map(col => col.ColumnId);
-    setColumnOrder(newColumnOrder);
-
-    try {
-      await electronAPI.updateColumnOrder(newColumnOrder);
-    } catch (err) {
-      handleError('Failed to update column order:', err);
-    }
-  }, [columns, setColumns, setColumnOrder]);
-
-  const handleChangeWidth = useCallback(async (columnId, newWidth) => {
-    const width = parseInt(newWidth);
-    if (isNaN(width) || width < 50 || width > 1000) {
-      handleError('Invalid width value', new Error('Width must be between 50 and 1000'));
-      return;
-    }
-    const column = columns.find(col => col.ColumnId === columnId);
-    if (!column) return;
-    const updatedColumn = { ...column, Width: width };
-    try {
-      await electronAPI.changeColumn(updatedColumn);
-      setColumns(prev => prev.map(col => col.ColumnId === columnId ? updatedColumn : col));
-      document.querySelectorAll(`[data-column-id="${columnId}"]`).forEach(element => {
-        element.style.width = `${width}px`;
-      });
-    } catch (err) {
-      handleError('Update failed:', err);
-    }
-  }, [columns, setColumns]);
-
-  const handleExport = useCallback(() => {
-    const exportData = columns.filter(col => col.Type !== 'days').map(col => ({
-      ...col,
-      Chosen: col.Type !== 'tasktable' ? DAYS.reduce((acc, day) => ({
-        ...acc,
-        [day]: tableData[day]?.[col.ColumnId] || ''
-      }), {}) : undefined
-    }));
+  const handleExport = useCallback((columns) => {
+    const exportData = columns
+      .filter((col) => col.Type !== 'days')
+      .map((col) => ({
+        ...col,
+        Chosen: col.Type !== 'tasktable' ? DAYS.reduce((acc, day) => ({ ...acc, [day]: tableData[day]?.[col.ColumnId] || '' }), {}) : undefined,
+      }));
     const json = JSON.stringify(exportData, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -241,34 +71,24 @@ export const useTableLogic = () => {
     link.download = 'planner-export.json';
     link.click();
     URL.revokeObjectURL(url);
-  }, [columns, tableData]);
+  }, [tableData]);
 
   return {
-    columns,
-    setColumns,
     tableData,
     setTableData,
     showColumnSelector,
     setShowColumnSelector,
-    highlightedRow,
-    setHighlightedRow,
-    loading,
     showSummaryRow,
-    columnOrder,
     headerLayout,
-    handleAddColumn,
     handleCellChange,
-    handleAddTask,
-    handleMoveColumn,
-    handleChangeWidth,
-    handleExport
+    handleExport,
   };
 };
 
 export const getWidthStyle = (column) => {
   if (column.Type === 'days') return { width: '120px', minWidth: '120px' };
   if (column.Type === 'filler') return { width: 'auto', minWidth: '0px' };
-  return { width: `${column.Width}px`, minWidth: `${column.Width}px`};
+  return { width: `${column.Width}px`, minWidth: `${column.Width}px` };
 };
 
 export const calculateSummary = (column, tableData) => {
@@ -280,13 +100,13 @@ export const calculateSummary = (column, tableData) => {
     return DAYS.reduce((sum, day) => {
       const tags = tableData[day]?.[column.ColumnId];
       if (typeof tags === 'string' && tags.trim() !== '') {
-        return sum + tags.split(', ').filter(tag => tag.trim() !== '').length;
+        return sum + tags.split(', ').filter((tag) => tag.trim() !== '').length;
       }
       return sum;
     }, 0);
   } else if (column.Type === 'todo') {
     const todos = column.Chosen?.global || [];
-    const completed = todos.filter(todo => todo.completed).length;
+    const completed = todos.filter((todo) => todo.completed).length;
     return `${completed}/${todos.length}`;
   } else if (column.Type === 'tasktable') {
     return `${column.DoneTags?.length || 0}/${(column.Options?.length || 0) + (column.DoneTags?.length || 0)}`;
@@ -294,7 +114,7 @@ export const calculateSummary = (column, tableData) => {
   return column.Type === 'days' ? '' : '-';
 };
 
-export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMode, handleCellChange, handleChangeOptions) => {
+export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMode, handleCellChange, handleOptionsChange) => {
   const style = getWidthStyle(column);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   const cellComponents = {
@@ -304,7 +124,7 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
     text: NotesCell,
     multicheckbox: MultiCheckboxCell,
     todo: TodoCell,
-    tasktable: TaskTableCell
+    tasktable: TaskTableCell,
   };
 
   if (column.Type === 'days') {
@@ -322,14 +142,7 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
   }
 
   if (column.Type === 'filler') {
-    return (
-      <td
-        key={column.ColumnId}
-        data-column-id={column.ColumnId}
-        className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`}
-        style={style}
-      />
-    );
+    return <td key={column.ColumnId} data-column-id={column.ColumnId} className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`} style={style} />;
   }
 
   if ((column.Type === 'todo' || column.Type === 'tasktable') && rowIndex > 0) {
@@ -339,14 +152,22 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
   const Component = cellComponents[column.Type];
   if (!Component) return null;
 
+  const onCellChange = (value) => {
+    const effectiveDay = column.Type === 'todo' ? 'global' : day;
+    handleCellChange(effectiveDay, column.ColumnId, value);
+    const normalizedValue = column.Type === 'checkbox' ? !!value : value;
+    const updatedChosen = { ...column.Chosen || {}, [effectiveDay]: normalizedValue };
+    dispatch(updateColumn({ ...column, Chosen: updatedChosen }));
+  };
+
   const props = {
     value: column.Type === 'todo' ? (column.Chosen?.global || []) : (tableData[day]?.[column.ColumnId] || ''),
     column,
-    onChange: (value) => handleCellChange(column.Type === 'todo' ? 'global' : day, column.ColumnId, value),
+    onChange: onCellChange,
     darkMode,
-    ...(column.Type === 'checkbox' && { checked: !!tableData[day]?.[column.ColumnId], color: column.CheckboxColor || 'green' }), // Гарантуємо булеве значення
+    ...(column.Type === 'checkbox' && { checked: !!tableData[day]?.[column.ColumnId], color: column.CheckboxColor || 'green' }),
     ...(column.Type === 'multi-select' || column.Type === 'multicheckbox' ? { options: column.Options || [], tagColors: column.TagColors || {} } : {}),
-    ...(column.Type === 'tasktable' && { onChangeOptions: handleChangeOptions })
+    ...(column.Type === 'tasktable' && { onChangeOptions: handleOptionsChange }),
   };
 
   return (
@@ -360,4 +181,4 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
       <Component {...props} />
     </td>
   );
-};  
+};

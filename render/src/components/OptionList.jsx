@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Plus } from "lucide-react";
 import { OptionItem } from "./OptionItem";
+
 export const OptionsList = ({
   columnType,
   options = [],
@@ -19,15 +19,17 @@ export const OptionsList = ({
   return (
     <div className="mb-4">
       <label
-        className={`block text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-700"} mb-1`}
+        className={`block text-sm font-medium ${
+          darkMode ? "text-gray-200" : "text-gray-700"
+        } mb-1`}
       >
         {columnType === "tasktable"
           ? "Tasks"
           : columnType === "multi-select"
-            ? "Tags"
-            : columnType === "todo"
-              ? "Categories"
-              : "Checkboxes"}
+          ? "Tags"
+          : columnType === "todo"
+          ? "Categories"
+          : "Checkboxes"}
       </label>
       <div className="space-y-2">
         <div className="flex items-center gap-2 mb-2">
@@ -36,7 +38,9 @@ export const OptionsList = ({
             value={newOption}
             onChange={(e) => setNewOption(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleAddOption()}
-            placeholder={`Add new ${columnType === "multicheckbox" ? "checkbox" : "option"}...`}
+            placeholder={`Add new ${
+              columnType === "multicheckbox" ? "checkbox" : "option"
+            }...`}
             className={`flex-1 px-4 py-2 h-12 border ${
               darkMode
                 ? "border-gray-700 bg-gray-900 text-gray-200 placeholder-gray-500"
@@ -60,18 +64,19 @@ export const OptionsList = ({
         </div>
         <div className="flex flex-wrap gap-2.5">
           {[...options, ...doneTags].map((option) => (
-            <OptionItem
-              key={option}
-              option={option}
-              options={options}
-              doneTags={doneTags}
-              optionColors={optionColors}
-              darkMode={darkMode}
-              handleColorChange={handleColorChange}
-              handleRemoveOption={handleRemoveOption}
-              handleEditOption={handleEditOption}
-              toggleColorMenu={toggleColorMenu}
-            />
+            <div key={option} className="min-h-8"> {/* резервуємо висоту */}
+              <OptionItem
+                option={option}
+                options={options}
+                doneTags={doneTags}
+                optionColors={optionColors}
+                darkMode={darkMode}
+                handleColorChange={handleColorChange}
+                handleRemoveOption={handleRemoveOption}
+                handleEditOption={handleEditOption}
+                toggleColorMenu={toggleColorMenu}
+              />
+            </div>
           ))}
         </div>
       </div>
