@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
+import { useSelector } from "react-redux";
 
-const TimelineWidget = ({ darkTheme = false }) => {
+const TimelineWidget = () => {
   const getCurrentTimeString = () => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   };
+  console.log(useSelector((state) => state.theme));
+
+  const darkTheme = useSelector((state) => state.theme.darkMode);
+
 
   const [events, setEvents] = useState([]);
   const [hoveredEvent, setHoveredEvent] = useState(null);

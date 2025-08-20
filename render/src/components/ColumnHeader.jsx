@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { getIconComponent } from './utils/icons'; // Імпорт функції
+import { useState } from 'react';
+import { getIconComponent } from './utils/icons';
 import ColumnMenu from './ColumnMenu';
 
 const ColumnHeader = ({

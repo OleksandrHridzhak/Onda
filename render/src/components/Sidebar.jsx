@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Settings, Home, Calendar1, Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { switchThemeAPI } from "../store/slices/themeSlice";
 
-const Sidebar = ({darkMode,setDarkMode}) => {
+const Sidebar = ({setDarkMode}) => {
+  const dispatch = useDispatch();
+  const darkMode = useSelector((state) => state.theme.darkMode);
   const location = useLocation();
   const deriveActive = (path) => {
     if (path.startsWith('/calendar')) return 'calendar';
@@ -35,7 +39,7 @@ const Sidebar = ({darkMode,setDarkMode}) => {
     ${active === name ? "text-white" : darkMode ? "text-gray-300" : "text-gray-600"}`;
 
   const toggleTheme = () => {
-    setDarkMode(!darkMode);
+    dispatch(switchThemeAPI(!darkMode))
   };
 
   return (

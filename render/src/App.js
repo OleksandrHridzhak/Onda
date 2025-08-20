@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { fetchTheme } from './store/slices/themeSlice';
+
 import Sidebar from './components/Sidebar';
 import Table from './components/pages/Table';
 import MenuWin from './components/MenuWin';
@@ -28,7 +31,10 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const isProcessing = useRef(false);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchTheme()); // тут отримуємо тему з Electron при старті апки
+  }, [dispatch]);
   // Початкове отримання теми
   useEffect(() => {
     window.electronAPI?.getTheme?.().then((res) => {
