@@ -3,7 +3,7 @@ import PomodoroWidget from './widgets/PomodoroWidget';
 import TimelineWidget from './widgets/TimelineWidget';
 import { Plus } from 'lucide-react';
 
-const PlannerHeader = ({ darkTheme, layout = 'withWidget', widgetChoice = 'pomodoro', onExport, showColumnSelector, setShowColumnSelector, headerLayout, setHeaderLayout }) => {
+const PlannerHeader = ({ darkTheme, layout = 'withWidget', widgetChoice = 'pomodoro', showColumnSelector, setShowColumnSelector, headerLayout, setHeaderLayout }) => {
   const [time, setTime] = useState('');
 
   useEffect(() => {

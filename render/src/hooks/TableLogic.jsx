@@ -10,7 +10,6 @@ import { TaskTableCell } from '../components/cells/TaskTableCell';
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 
-
 const electronAPI = window.electronAPI || {
   getTableData: async () => ({ status: 'Data fetched', data: [] }),
   getSettings: async () => ({ status: 'Settings fetched', data: {} }),
@@ -225,23 +224,6 @@ export const useTableLogic = () => {
     }
   }, [columns, setColumns]);
 
-  const handleExport = useCallback(() => {
-    const exportData = columns.filter(col => col.Type !== 'days').map(col => ({
-      ...col,
-      Chosen: col.Type !== 'tasktable' ? DAYS.reduce((acc, day) => ({
-        ...acc,
-        [day]: tableData[day]?.[col.ColumnId] || ''
-      }), {}) : undefined
-    }));
-    const json = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'planner-export.json';
-    link.click();
-    URL.revokeObjectURL(url);
-  }, [columns, tableData]);
 
   return {
     columns,
@@ -261,7 +243,6 @@ export const useTableLogic = () => {
     handleAddTask,
     handleMoveColumn,
     handleChangeWidth,
-    handleExport
   };
 };
 

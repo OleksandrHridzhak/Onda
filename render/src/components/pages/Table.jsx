@@ -21,7 +21,6 @@ const Table = ({ darkMode, setDarkMode }) => {
     handleAddTask,
     handleMoveColumn,
     handleChangeWidth,
-    handleExport
   } = useTableLogic();
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns);
@@ -75,7 +74,6 @@ const Table = ({ darkMode, setDarkMode }) => {
         <PlannerHeader
           darkTheme={darkMode}
           layout={headerLayout}
-          onExport={handleExport}
           setShowColumnSelector={setShowColumnSelector}
           showColumnSelector={showColumnSelector}
         />
