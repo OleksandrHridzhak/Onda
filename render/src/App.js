@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 //import { fetchTheme } from './store/slices/themeSlice';
 import { fetchTheme } from './store/slices/themeSlice';
 
@@ -14,12 +15,12 @@ const routes = ['/', '/calendar', '/settings'];
 
 function MainContent({ isDarkMode, setIsDarkMode }) {
   const location = useLocation();
-
+  const {theme, mode} = useSelector((state) => state.theme);
   return (
-    <div className={`flex-1 flex flex-col ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+    <div className={`flex-1 flex flex-col ${theme.background}`}>
       <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
       <Routes>
-        <Route path="/" element={<Table darkMode={isDarkMode} setDarkMode={setIsDarkMode} />} />
+        <Route path="/" element={<Table />} />
         <Route path="/calendar" element={<Calendar darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />} />
         <Route path="/settings" element={<Settings darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />} />
       </Routes>
@@ -28,7 +29,7 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
 }
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  
   const navigate = useNavigate();
   const location = useLocation();
   const isProcessing = useRef(false);
@@ -70,10 +71,10 @@ function App() {
   }, [navigate, location.pathname]);
 
   return (
-    <div className={`flex flex-col h-screen ${isDarkMode ? 'dark' : ''}`}>
+    <div className={`flex flex-col h-screen`}>
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar darkMode={isDarkMode} setDarkMode={setIsDarkMode} />
-        <MainContent isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+        <Sidebar  />
+        <MainContent  />
       </div>
     </div>
   );

@@ -3,10 +3,10 @@ import PlannerHeader from '../planerHeader/PlannerHeader';
 import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
 import ColumnHeader from './ColumnHeader';
 import { LoadingScreen } from './LoadingScreen';
-import { useTableLogic, DAYS,  getWidthStyle, calculateSummary, renderCell } from './TableLogic';
+import { useTableLogic, DAYS,  getWidthStyle, calculateSummary, RenderCell } from './TableLogic';
 import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
-
-const Table = ({ darkMode, setDarkMode }) => {
+import { useSelector } from 'react-redux';
+const Table = () => {
   const {
     columns,
     setColumns,
@@ -24,18 +24,20 @@ const Table = ({ darkMode, setDarkMode }) => {
   } = useTableLogic();
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns);
-
+  const {theme, mode} = useSelector((state) => state.theme);
+  const darkMode = false;
+  
   const displayColumns = [
     ...columns,
     { ColumnId: 'filler', Type: 'filler', Name: '', EmojiIcon: '', NameVisible: false }
   ];
 
   if (loading) {
-    return <LoadingScreen darkMode={darkMode} />;
+    return <LoadingScreen darkMode={mode === 'dark' ? true : false} />;
   }
 
   return (
-    <div className={`font-poppins relative w-full max-w-6xl mx-auto ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
+    <div className={`font-poppins relative w-full max-w-6xl mx-auto ${theme.background}`}>
       <style jsx global>{`
         .custom-scroll::-webkit-scrollbar {
           width: 8px;
@@ -72,7 +74,7 @@ const Table = ({ darkMode, setDarkMode }) => {
       `}</style>
       <div className="p-4 relative">
         <PlannerHeader
-          darkTheme={darkMode}
+          darkTheme={mode === 'dark' ? true : false}
           layout={headerLayout}
           setShowColumnSelector={setShowColumnSelector}
           showColumnSelector={showColumnSelector}
@@ -85,21 +87,20 @@ const Table = ({ darkMode, setDarkMode }) => {
                 setShowColumnSelector(false);
               }}
               onCancel={() => setShowColumnSelector(false)}
-              darkMode={darkMode}
+              darkMode={mode === 'dark' ? true : false}
             />
           </div>
         )}
       </div>
-      <div className={`overflow-hidden border ${darkMode ? 'border-gray-700' : 'border-gray-200'} rounded-xl m-2 custom-scroll`}>
+      <div className={`overflow-hidden border ${theme.border} rounded-xl m-2 custom-scroll`}>
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
-              <tr className={`${darkMode ? 'bg-gray-800 border-gray-600' : 'bg-gray-50 border-gray-200'} border-b`}>
+              <tr className={`${theme.tableHeader} border-b`}>
                 {displayColumns.map((column) => (
                   column.Type === 'filler' ? (
                     <th
                       key={column.ColumnId}
-                      className={`${darkMode ? 'border-gray-600' : 'border-gray-200'} border-r border-b`}
                       style={getWidthStyle(column)}
                     />
                   ) : (
@@ -117,7 +118,7 @@ const Table = ({ darkMode, setDarkMode }) => {
                       onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
                       canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}
                       canMoveDown={column.ColumnId !== 'days' && columns.indexOf(column) < columns.length - 1}
-                      darkMode={darkMode}
+                      darkMode={mode === 'dark' ? true : false}
                       onChangeWidth={handleChangeWidth}
                       onAddTask={handleAddTask}
                       style={getWidthStyle(column)}
@@ -131,26 +132,37 @@ const Table = ({ darkMode, setDarkMode }) => {
                 <tr
                   key={day}
                   className={`
-                    ${darkMode ? 'bg-gray-800' : 'bg-white'}
+                    ${theme.tableBodyBg}
                     transition-colors duration-150
-                    ${idx !== DAYS.length - 1 ? (darkMode ? 'border-gray-700 border-b' : 'border-gray-200 border-b') : ''}
+                    ${idx !== DAYS.length - 1 ?  `${theme.border} border-b` : ''}
                   `}
                 >
-                  {displayColumns.map((column, index) => (
-                    renderCell(day, column, index, idx, tableData, darkMode, handleCellChange, columnMenuLogic.handleChangeOptions)
-                  ))}
+                {displayColumns.map((column, index) => (
+                  <RenderCell
+                    key={column.ColumnId}
+                    day={day}
+                    column={column}
+                    columnIndex={index}
+                    rowIndex={idx}
+                    tableData={tableData}
+                    darkMode={darkMode}
+                    handleCellChange={handleCellChange}
+                    handleChangeOptions={columnMenuLogic.handleChangeOptions}
+                  />
+                ))}
+
                 </tr>
               ))}
             </tbody>
             {showSummaryRow && (
               <tfoot>
-                <tr className={`${darkMode ? 'bg-gray-800 border-t border-gray-700' : 'bg-white border-t border-gray-200'}`}>
+                <tr className={`border-t ${theme.tableBodyBg} ${theme.border}`}>
                   {displayColumns.map((column) => {
                     if (column.Type === 'filler') {
                       return (
                         <td
                           key={column.ColumnId}
-                          className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`}
+                          className={`${theme.border} border-r`}
                           style={getWidthStyle(column)}
                         />
                       );
@@ -159,7 +171,7 @@ const Table = ({ darkMode, setDarkMode }) => {
                     return (
                       <td
                         key={column.ColumnId}
-                        className={`px-4 py-2 text-center text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-700 border-gray-200'} border-r`}
+                        className={`px-4 py-2 text-center text-sm font-medium ${theme.tableSummaryText} ${theme.border} border-r`}
                         style={getWidthStyle(column)}
                       >
                         {summary}

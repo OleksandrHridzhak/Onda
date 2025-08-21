@@ -11,7 +11,7 @@
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
-      "Friday": true,
+      "Friday": false,
       "Saturday": false,
       "Sunday": false
     },
@@ -35,37 +35,6 @@
       "Sunday": "0"
     },
     "Width": 75
-  },
-  {
-    "ColumnId": "1755000000003",
-    "Type": "multi-select",
-    "Name": "Daily Focus",
-    "Description": "Key focus areas for the day",
-    "EmojiIcon": "Book",
-    "NameVisible": true,
-    "Options": [
-      "Coding",
-      "ssd",
-      "f",
-      "d"
-    ],
-    "Chosen": {
-      "Monday": "Coding, Meetings",
-      "Tuesday": "Planning",
-      "Wednesday": "Coding, Research",
-      "Thursday": "Meetings",
-      "Friday": "Coding",
-      "Saturday": "Research",
-      "Sunday": ""
-    },
-    "Width": 125,
-    "TagColors": {
-      "Coding": "blue",
-      "ssd": "blue",
-      "f": "blue",
-      "d": "blue"
-    },
-    "DoneTags": []
   },
   {
     "ColumnId": "1755000000004",
@@ -93,8 +62,8 @@
     "EmojiIcon": "User",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
-      "Tuesday": true,
+      "Monday": false,
+      "Tuesday": false,
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
@@ -112,57 +81,16 @@
     "EmojiIcon": "Music",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": false,
-      "Friday": true,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 95,
-    "CheckboxColor": "gray"
-  },
-  {
-    "ColumnId": "1755000000007",
-    "Type": "tasktable",
-    "Name": "Weekly Tasks",
-    "Description": "List of tasks for the week",
-    "EmojiIcon": "ListTodo",
-    "NameVisible": true,
-    "Options": [],
-    "TagColors": {
-      "Fix bugs": "red"
-    },
-    "Chosen": {
-      "global": [
-        "Write documentation",
-        "Fix bugs"
-      ]
-    },
-    "DoneTags": [
-      "Fix bugs"
-    ],
-    "Width": 150
-  },
-  {
-    "ColumnId": "1755000000008",
-    "Type": "checkbox",
-    "Name": "Email Check",
-    "Description": "Check and respond to emails",
-    "EmojiIcon": "Wand2",
-    "NameVisible": false,
-    "Chosen": {
       "Monday": true,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
-      "Saturday": false,
-      "Sunday": false
+      "Saturday": true,
+      "Sunday": true
     },
-    "Width": 50,
-    "CheckboxColor": "purple"
+    "Width": 95,
+    "CheckboxColor": "gray"
   },
   {
     "ColumnId": "1755000000009",
@@ -217,7 +145,7 @@
     "EmojiIcon": "Brain",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
+      "Monday": false,
       "Tuesday": false,
       "Wednesday": false,
       "Thursday": false,
@@ -227,34 +155,6 @@
     },
     "Width": 50,
     "CheckboxColor": "green"
-  },
-  {
-    "ColumnId": "1755000000012",
-    "Type": "multi-select",
-    "Name": "Project Tasks",
-    "Description": "Select tasks for project work",
-    "EmojiIcon": "Briefcase",
-    "NameVisible": true,
-    "Options": [
-      "Design",
-      "Development",
-      "Testing"
-    ],
-    "TagColors": {
-      "Design": "purple",
-      "Development": "blue",
-      "Testing": "green"
-    },
-    "Chosen": {
-      "Monday": "Development",
-      "Tuesday": "Design",
-      "Wednesday": "Testing",
-      "Thursday": "",
-      "Friday": "Development",
-      "Saturday": "",
-      "Sunday": ""
-    },
-    "Width": 90
   },
   {
     "ColumnId": "1755000000013",
@@ -281,32 +181,6 @@
       "Sunday": ""
     },
     "Width": 50
-  },
-  {
-    "ColumnId": "1755000000014",
-    "Type": "tasktable",
-    "Name": "Personal Projects",
-    "Description": "List of personal project tasks",
-    "EmojiIcon": "Rocket",
-    "NameVisible": true,
-    "Options": [
-      "Build app",
-      "Write blog"
-    ],
-    "TagColors": {
-      "Learn JavaScript": "blue",
-      "Build app": "green",
-      "Write blog": "yellow"
-    },
-    "Chosen": {
-      "global": [
-        "Learn JavaScript"
-      ]
-    },
-    "DoneTags": [
-      "Learn JavaScript"
-    ],
-    "Width": 150
   },
   {
     "ColumnId": "1755000000015",
@@ -339,69 +213,6 @@
     },
     "Width": 220,
     "DoneTags": []
-  },
-  {
-    "ColumnId": "1755000000016",
-    "Type": "numberbox",
-    "Name": "Sleep Hours",
-    "Description": "Track nightly sleep hours",
-    "EmojiIcon": "Moon",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": "7",
-      "Tuesday": "6.5",
-      "Wednesday": "7.5",
-      "Thursday": "7",
-      "Friday": "6",
-      "Saturday": "8",
-      "Sunday": "8"
-    },
-    "Width": 60
-  },
-  {
-    "ColumnId": "1755000000017",
-    "Type": "todo",
-    "Name": "Work Todos",
-    "Description": "Work-related todo list",
-    "EmojiIcon": "Briefcase",
-    "NameVisible": true,
-    "Chosen": {
-      "global": [
-        {
-          "text": "Prepare presentation",
-          "completed": false,
-          "category": "Work"
-        }
-      ]
-    },
-    "Options": [
-      "Work",
-      "Urgent"
-    ],
-    "TagColors": {
-      "Work": "blue",
-      "Urgent": "red"
-    },
-    "Width": 150
-  },
-  {
-    "ColumnId": "1755000000018",
-    "Type": "checkbox",
-    "Name": "Weekly Review",
-    "Description": "Review weekly progress",
-    "EmojiIcon": "Clipboard",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": false,
-      "Tuesday": false,
-      "Wednesday": false,
-      "Thursday": false,
-      "Friday": true,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 50,
-    "CheckboxColor": "blue"
   },
   {
     "ColumnId": "1755526928989",

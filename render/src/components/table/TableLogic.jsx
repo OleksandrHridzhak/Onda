@@ -6,6 +6,7 @@ import { NotesCell } from './cells/NotesCell';
 import { MultiCheckboxCell } from './cells/MultiCheckboxCell';
 import { TodoCell } from './cells/TodoCell';
 import { TaskTableCell } from './cells/TaskTableCell';
+import { useSelector } from 'react-redux';
 
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -275,7 +276,8 @@ export const calculateSummary = (column, tableData) => {
   return column.Type === 'days' ? '' : '-';
 };
 
-export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMode, handleCellChange, handleChangeOptions) => {
+export const RenderCell = ({day, column, columnIndex, rowIndex, tableData, darkMode, handleCellChange, handleChangeOptions}) => {
+  const {theme, mode} = useSelector((state) => state.theme);
   const style = getWidthStyle(column);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   const cellComponents = {
@@ -293,7 +295,7 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
       <td
         key={column.ColumnId}
         data-column-id={column.ColumnId}
-        className={`px-4 py-3 text-sm font-medium ${darkMode ? 'text-gray-200 border-gray-700' : 'text-gray-600 border-gray-200'} border-r whitespace-nowrap`}
+        className={`px-4 py-3 text-sm font-medium ${theme.textTableValues} ${theme.border} border-r whitespace-nowrap`}
         style={style}
       >
         {day}
@@ -307,7 +309,6 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
       <td
         key={column.ColumnId}
         data-column-id={column.ColumnId}
-        className={`${darkMode ? 'border-gray-700' : 'border-gray-200'} border-r`}
         style={style}
       />
     );
@@ -334,7 +335,7 @@ export const renderCell = (day, column, columnIndex, rowIndex, tableData, darkMo
     <td
       key={column.ColumnId}
       data-column-id={column.ColumnId}
-      className={`px-2 py-3 text-sm ${darkMode ? 'text-gray-300 border-gray-700' : 'text-gray-500 border-gray-200'} border-r ${column.Type === 'todo' || column.Type === 'tasktable' ? 'todo-cell' : ''}`}
+      className={`px-2 py-3 text-sm ${theme.border} ${theme.textTableRealValues} border-r ${column.Type === 'todo' || column.Type === 'tasktable' ? 'todo-cell' : ''}`}
       style={{ ...style, ...(column.Type === 'todo' || column.Type === 'tasktable' ? { verticalAlign: 'top' } : {}) }}
       {...(column.Type === 'todo' || column.Type === 'tasktable' ? { rowSpan: DAYS.length } : {})}
     >

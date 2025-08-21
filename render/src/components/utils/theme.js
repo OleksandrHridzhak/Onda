@@ -35,6 +35,8 @@ const themes = {
     light: {
       background: "bg-white",
       border: "border-gray-200",
+      textTableValues: 'text-gray-600',
+      textTableRealValues: 'text-gray-500',
       text: "text-blue-700",
       textAccent: "text-blue-600",
       linkActive: "bg-blue-600 scale-110 shadow-md text-white",
@@ -43,6 +45,10 @@ const themes = {
       iconInactive: "text-gray-600",
       toggleIcon: "text-blue-500",
       sidebarToggleHover: "hover:bg-blue-50",
+       
+      tableHeader: "bg-gray-50 border-gray-200",
+      tableBodyBg:"bg-white",
+      tableSummaryText: "text-gray-700",
       scrollbarTrack: "rgba(241, 241, 241, 0.2)",
       scrollbarThumb: "rgba(156, 163, 175, 0.5)",
       scrollbarThumbHover: "rgba(107, 114, 128, 0.7)",
@@ -50,6 +56,8 @@ const themes = {
     dark: {
       background: "bg-gray-900",
       border: "border-gray-700",
+      textTableValues: 'text-gray-200',
+      textTableRealValues: 'text-gray-300',
       text: "text-blue-200",
       textAccent: "text-blue-400",
       linkActive: "bg-blue-500 scale-110 shadow-md text-white",
@@ -57,6 +65,9 @@ const themes = {
       iconActive: "text-white",
       iconInactive: "text-gray-300",
       toggleIcon: "text-blue-400",
+      tableBodyBg:"bg-gray-800",
+      tableSummaryText: "text-gray-200",
+      tableHeader: "bg-gray-800 border-gray-600",
       sidebarToggleHover: "hover:bg-gray-700",
       scrollbarTrack: "rgba(55, 65, 81, 0.5)",
       scrollbarThumb: "rgba(156, 163, 175, 0.7)",
