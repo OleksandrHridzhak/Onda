@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 //import { fetchTheme } from './store/slices/themeSlice';
-import { fetchTheme } from './store/slices/newThemeSlice';
+import { fetchTheme } from './store/slices/themeSlice';
 
 import Sidebar from './components/Sidebar';
 import Table from './components/table/Table';
@@ -28,7 +28,7 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
 }
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState();
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const isProcessing = useRef(false);
@@ -37,20 +37,6 @@ function App() {
     dispatch(fetchTheme()); // тут отримуємо тему з Electron при старті апки
   }, [dispatch]);
   // Початкове отримання теми
-  useEffect(() => {
-    window.electronAPI?.getTheme?.().then((res) => {
-      if (res?.darkMode !== undefined) {
-        setIsDarkMode(res.darkMode);
-      }
-    });
-  }, []);
-
-  // Зміна теми
-  useEffect(() => {
-    if (isDarkMode !== undefined) {
-      window.electronAPI?.switchTheme?.(isDarkMode);
-    }
-  }, [isDarkMode]);
 
   // Гаряча клавіша для перемикання вкладок
   useEffect(() => {

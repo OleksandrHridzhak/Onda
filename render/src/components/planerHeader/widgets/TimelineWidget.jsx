@@ -9,9 +9,8 @@ const TimelineWidget = () => {
   const minutes = now.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   };
-  console.log(useSelector((state) => state.theme));
 
-  const darkTheme = useSelector((state) => state.theme.darkMode);
+  const darkTheme = true;
 
 
   const [events, setEvents] = useState([]);

@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { toggleMode } from '../store/slices/newThemeSlice';
+import { toggleMode } from '../store/slices/themeSlice';
 import { sideBarItems } from "./utils/constants";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const {theme, mode} = useSelector((state) => state.newTheme);
+  const {theme, mode} = useSelector((state) => state.theme);
 
   const deriveActive = (path) => {
   if (path.startsWith('/calendar')) return 'calendar';
