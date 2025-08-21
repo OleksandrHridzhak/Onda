@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Settings, Home, Calendar1, Sun, Moon } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMode } from '../store/slices/newThemeSlice';
+import { sideBarItems } from "./utils/constants";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -21,8 +22,7 @@ const Sidebar = () => {
     setActive(deriveActive(location.pathname));
   }, [location.pathname]);
 
-  const linkClass = (name) =>
-    `transition-all duration-300 ease-in-out transform p-2 rounded-xl 
+  const linkClass = (name) => `transition-all duration-300 ease-in-out transform p-2 rounded-xl 
     ${active === name
       ? theme.linkActive
       : theme.linkInactive}`;
@@ -36,25 +36,23 @@ const Sidebar = () => {
   return (
     <div className={`w-1/8 h-screen ${theme.background} ${theme.border} flex flex-col items-center justify-between p-4 border-r`}>
       <div>
+        {/* Logo */}
         <p className={`font-poppins font-medium text-md mt-6 ${theme.textAccent}`}>
           ONDA
         </p>
         <ul className="flex flex-col gap-10 justify-center items-center mt-36">
-          <Link to="/">
-            <li className={linkClass("home")} onClick={() => setActive("home")}>
-              <Home className={iconClass("home")} strokeWidth={1.5} />
-            </li>
-          </Link>
-          <Link to="/calendar">
-            <li className={linkClass("calendar")} onClick={() => setActive("calendar")}>
-              <Calendar1 className={iconClass("calendar")} strokeWidth={1.5} />
-            </li>
-          </Link>
-          <Link to="/settings">
-            <li className={linkClass("settings")} onClick={() => setActive("settings")}>
-              <Settings className={iconClass("settings")} strokeWidth={1.5} />
-            </li>
-          </Link>
+          {/* List of navigation links */}
+          {sideBarItems.map(item => {
+            const Icon = item.icon;
+            return (
+              <Link key={item.name} to={item.path}>
+                <li className={linkClass(item.name)} onClick={() => setActive(item.name)}>
+                  <Icon className={iconClass(item.name)} strokeWidth={1.5} />
+                </li>
+              </Link>
+            );
+          })}
+          {/* Mode toggle btn */}
           <li
             className={`p-2 rounded-xl ${theme.sidebarToggleHover} transition-all duration-300 cursor-pointer`}
             onClick={toggleTheme}
