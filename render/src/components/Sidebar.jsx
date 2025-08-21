@@ -22,13 +22,6 @@ const Sidebar = () => {
     setActive(deriveActive(location.pathname));
   }, [location.pathname]);
 
-  const linkClass = (name) => `transition-all duration-300 ease-in-out transform p-2 rounded-xl 
-    ${active === name
-      ? theme.linkActive
-      : theme.linkInactive}`;
-
-  const iconClass = (name) => `w-6 h-6 transition-colors duration-300 ${active === name ? theme.iconActive : theme.iconInactive}`;
-
   const toggleTheme = () => {
     dispatch(toggleMode())
   };
@@ -46,8 +39,8 @@ const Sidebar = () => {
             const Icon = item.icon;
             return (
               <Link key={item.name} to={item.path}>
-                <li className={linkClass(item.name)} onClick={() => setActive(item.name)}>
-                  <Icon className={iconClass(item.name)} strokeWidth={1.5} />
+                <li className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${active === item.name ? theme.linkActive : theme.linkInactive}`} onClick={() => setActive(item.name)}>
+                  <Icon className={`w-6 h-6 transition-colors duration-300 ${active === item.name ? theme.iconActive : theme.iconInactive} `} strokeWidth={1.5} />
                 </li>
               </Link>
             );
