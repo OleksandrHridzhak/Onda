@@ -1,24 +1,21 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Settings, Home, Calendar1, Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { switchThemeAPI } from "../store/slices/themeSlice";
+import { toggleMode } from '../store/slices/newThemeSlice';
 
-const Sidebar = ({setDarkMode}) => {
+const Sidebar = () => {
   const dispatch = useDispatch();
-  const darkMode = useSelector((state) => state.theme.darkMode);
   const location = useLocation();
+
+  const {theme, mode} = useSelector((state) => state.newTheme);
+
   const deriveActive = (path) => {
-    if (path.startsWith('/calendar')) return 'calendar';
-    if (path.startsWith('/settings')) return 'settings';
-    return 'home';
+  if (path.startsWith('/calendar')) return 'calendar';
+  if (path.startsWith('/settings')) return 'settings';
+  return 'home';
   };
   const [active, setActive] = useState(deriveActive(location.pathname));
-
-  // Зберігаємо вибір теми в localStorage
-  useEffect(() => {
-    localStorage.setItem('darkMode', darkMode);
-  }, [darkMode]);
 
   useEffect(() => {
     setActive(deriveActive(location.pathname));
@@ -27,42 +24,19 @@ const Sidebar = ({setDarkMode}) => {
   const linkClass = (name) =>
     `transition-all duration-300 ease-in-out transform p-2 rounded-xl 
     ${active === name
-      ? darkMode
-        ? "bg-blue-500 scale-110 shadow-md text-white"
-        : "bg-blue-600 scale-110 shadow-md text-white"
-      : darkMode
-        ? "text-gray-300 hover:scale-105 hover:bg-gray-700"
-        : "text-gray-600 hover:scale-105 hover:bg-blue-50"}`;
+      ? theme.linkActive
+      : theme.linkInactive}`;
 
-  const iconClass = (name) =>
-    `w-6 h-6 transition-colors duration-300 
-    ${active === name ? "text-white" : darkMode ? "text-gray-300" : "text-gray-600"}`;
+  const iconClass = (name) => `w-6 h-6 transition-colors duration-300 ${active === name ? theme.iconActive : theme.iconInactive}`;
 
   const toggleTheme = () => {
-    dispatch(switchThemeAPI(!darkMode))
+    dispatch(toggleMode())
   };
 
   return (
-    <div className={`w-1/8 h-screen ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} flex flex-col items-center justify-between p-4 border-r`}>
-      <style jsx global>{`
-        .custom-scroll::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-          background: ${darkMode ? 'rgba(55, 65, 81, 0.5)' : 'rgba(241, 241, 241, 0.2)'};
-          border-radius: 4px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-          background: ${darkMode ? 'rgba(156, 163, 175, 0.7)' : 'rgba(156, 163, 175, 0.5)'};
-          border-radius: 4px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-          background: ${darkMode ? 'rgba(107, 114, 128, 0.9)' : 'rgba(107, 114, 128, 0.7)'};
-        }
-      `}</style>
+    <div className={`w-1/8 h-screen ${theme.background} ${theme.border} flex flex-col items-center justify-between p-4 border-r`}>
       <div>
-        <p className={`font-poppins font-medium text-md mt-6 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+        <p className={`font-poppins font-medium text-md mt-6 ${theme.textAccent}`}>
           ONDA
         </p>
         <ul className="flex flex-col gap-10 justify-center items-center mt-36">
@@ -82,13 +56,13 @@ const Sidebar = ({setDarkMode}) => {
             </li>
           </Link>
           <li
-            className={`p-2 rounded-xl ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-blue-50'} transition-all duration-300 cursor-pointer`}
+            className={`p-2 rounded-xl ${theme.sidebarToggleHover} transition-all duration-300 cursor-pointer`}
             onClick={toggleTheme}
           >
-            {darkMode ? (
-              <Moon className="w-6 h-6 text-blue-400 transition-all duration-300 transform rotate-0 hover:rotate-[360deg]" strokeWidth={1.5} />
+            {mode === 'dark' ? (
+              <Moon className={`w-6 h-6 ${theme.toggleIcon} transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`} strokeWidth={1.5} />
             ) : (
-              <Sun className="w-6 h-6 text-blue-500 transition-all duration-300 transform rotate-0 hover:rotate-180" strokeWidth={1.5} />
+              <Sun className={`w-6 h-6 ${theme.toggleIcon} transition-all duration-300 transform rotate-0 hover:rotate-180`} strokeWidth={1.5} />
             )}
           </li>
         </ul>

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { fetchTheme } from './store/slices/themeSlice';
+//import { fetchTheme } from './store/slices/themeSlice';
+import { fetchTheme } from './store/slices/newThemeSlice';
 
 import Sidebar from './components/Sidebar';
 import Table from './components/table/Table';
