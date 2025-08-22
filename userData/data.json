@@ -7,8 +7,8 @@
     "EmojiIcon": "BicepsFlexed",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
-      "Tuesday": false,
+      "Monday": true,
+      "Tuesday": true,
       "Wednesday": false,
       "Thursday": false,
       "Friday": false,
@@ -237,5 +237,52 @@
     },
     "Width": 50,
     "CheckboxColor": "green"
+  },
+  {
+    "ColumnId": "1755845811606",
+    "Type": "todo",
+    "Name": "Todo List",
+    "Description": "Todo list created on backend",
+    "EmojiIcon": "ListTodo",
+    "NameVisible": true,
+    "Chosen": {
+      "global": []
+    },
+    "Options": [
+      "Option 1",
+      "Option 2"
+    ],
+    "TagColors": {
+      "Option 1": "blue",
+      "Option 2": "green"
+    },
+    "Width": 150
+  },
+  {
+    "ColumnId": "1755845814807",
+    "Type": "multi-select",
+    "Name": "New Multi-Select",
+    "Description": "Multi-select created on backend",
+    "EmojiIcon": "Star",
+    "NameVisible": true,
+    "Options": [
+      "Option 1",
+      "Option 2"
+    ],
+    "TagColors": {
+      "Option 1": "blue",
+      "Option 2": "green"
+    },
+    "Chosen": {
+      "Monday": "",
+      "Tuesday": "",
+      "Wednesday": "",
+      "Thursday": "",
+      "Friday": "",
+      "Saturday": "",
+      "Sunday": ""
+    },
+    "Width": 200,
+    "DoneTags": []
   }
 ]

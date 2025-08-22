@@ -94,7 +94,7 @@ const Table = () => {
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
-              <tr className={`${theme.tableHeader} border-b`}>
+              <tr className={`${theme.border} ${theme.tableHeader} border-b`}>
                 {displayColumns.map((column) => (
                   column.Type === 'filler' ? (
                     <th
@@ -160,7 +160,7 @@ const Table = () => {
                       return (
                         <td
                           key={column.ColumnId}
-                          className={`${theme.border} border-r`}
+                          className={`${theme.border} `}
                           style={getWidthStyle(column)}
                         />
                       );

@@ -29,7 +29,6 @@ const PomodoroWidget = () => {
     const interval = setInterval(() => dispatch(updateTime()), 1000);
     return () => clearInterval(interval);
   }, [dispatch]);
-
   useEffect(() => {
     if (isEnded && notifyEnabled && alarmAudio.current) {
       try {

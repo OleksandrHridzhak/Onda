@@ -8,6 +8,8 @@ const ipcSettingsHandlers = require('./api/ipcSettingsHandlers.js');
 require('dotenv').config();
 
 const { initCronJobs } = require('./services/cronServices.js');
+//TODO create commits rules
+//TODO find on the internet how to improve solo dev system
 
 let mainWindow;
 

@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
 
-export const AddNewColumnBtn = (setShowColumnSelector,showColumnSelector) => {
+export const AddNewColumnBtn = ({setShowColumnSelector,showColumnSelector}) => {
   const theme = useSelector((state) => state.theme.theme);
   return (
   <button
