@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { BubbleBtn } from '../shared/BubbleBtn';
 import EventModal from './EventModal';
 import CalendarHeader from './CalendarHeader';
 import CalendarTimeline from './CalendarTimeline';
@@ -24,12 +23,12 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
     repeatFrequency: 'weekly',
   });
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [filterColor, setFilterColor] = useState(null);
+  const [filterColor] = useState(null);
 
   const gridRef = useRef(null);
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const slotHeight = 80;
-  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   // Save viewMode to localStorage whenever it changes
   useEffect(() => {
