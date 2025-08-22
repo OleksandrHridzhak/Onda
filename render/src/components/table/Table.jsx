@@ -15,7 +15,6 @@ const Table = () => {
     setShowColumnSelector,
     loading,
     showSummaryRow,
-    headerLayout,
     handleAddColumn,
     handleCellChange,
     handleAddTask,
@@ -64,12 +63,6 @@ const Table = () => {
         }
         table {
           table-layout: fixed;
-        }
-        .add-column-tab {
-          transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-        }
-        .add-column-tab:hover {
-          transform: translateY(-2px);
         }
       `}</style>
       <div className="p-4 relative">
@@ -131,7 +124,6 @@ const Table = () => {
                   key={day}
                   className={`
                     ${theme.tableBodyBg}
-                    transition-colors duration-150
                     ${idx !== DAYS.length - 1 ?  `${theme.border} border-b` : ''}
                   `}
                 >

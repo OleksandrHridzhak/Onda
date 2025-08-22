@@ -114,8 +114,8 @@ const TimelineWidget = () => {
       className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border ${theme.tableBodyBg} ${theme.border} ${theme.textTableValues}`}
     >
       <div className="flex items-center justify-between w-full">
-        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-opacity-10 bg-gray-500">
-          <Calendar className="h-4 w-4" />
+        <div className="flex items-center justify-center w-6 h-6 rounded-full ">
+          <Calendar className="h-5 w-5" />
         </div>
         <div className="relative flex-1 ml-2">
           <div className={`relative h-5 rounded-full border overflow-hidden ${theme.background} ${theme.border}`}>

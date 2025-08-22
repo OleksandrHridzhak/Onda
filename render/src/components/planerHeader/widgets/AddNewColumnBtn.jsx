@@ -9,8 +9,6 @@ export const AddNewColumnBtn = ({setShowColumnSelector,showColumnSelector}) => {
   <button
     onClick={() => setShowColumnSelector(!showColumnSelector)}
     className={`
-      
-      add-column-tab
       relative w-12 h-12 ml-2 flex items-center justify-center
       rounded-lg  z-10
       ${theme.tableBodyBg}

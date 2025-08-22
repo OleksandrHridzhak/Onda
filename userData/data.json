@@ -76,21 +76,21 @@
   {
     "ColumnId": "1755000000006",
     "Type": "checkbox",
-    "Name": "Code Review",
+    "Name": "Code Reviewд",
     "Description": "Review team code submissions",
     "EmojiIcon": "Music",
     "NameVisible": false,
     "Chosen": {
       "Monday": true,
-      "Tuesday": false,
+      "Tuesday": true,
       "Wednesday": false,
       "Thursday": false,
       "Friday": false,
       "Saturday": false,
       "Sunday": false
     },
-    "Width": 95,
-    "CheckboxColor": "gray"
+    "Width": 117,
+    "CheckboxColor": "lime"
   },
   {
     "ColumnId": "1755000000009",
@@ -114,9 +114,9 @@
     "ColumnId": "1755000000010",
     "Type": "multicheckbox",
     "Name": "Daily Habits",
-    "Description": "Track daily habits",
+    "Description": "Hello",
     "EmojiIcon": "Heart",
-    "NameVisible": false,
+    "NameVisible": true,
     "Options": [
       "Meditation",
       "Journaling"
@@ -134,7 +134,7 @@
       "Saturday": "",
       "Sunday": ""
     },
-    "Width": 50,
+    "Width": 200,
     "DoneTags": []
   },
   {
