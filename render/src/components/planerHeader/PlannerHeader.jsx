@@ -1,140 +1,53 @@
-import React, { useState, useEffect } from 'react';
 import PomodoroWidget from './widgets/PomodoroWidget';
 import TimelineWidget from './widgets/TimelineWidget';
-import { Plus } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { TimeWidget } from './widgets/TimeWidget';
+import { AddNewColumnBtn } from './widgets/AddNewColumnBtn';
 
-const PlannerHeader = ({ darkTheme, layout = 'withWidget', widgetChoice = 'pomodoro', showColumnSelector, setShowColumnSelector, headerLayout, setHeaderLayout }) => {
-  const [time, setTime] = useState('');
 
+
+const PlannerHeader = ({ 
+  darkTheme=false, 
+  layout = [ 'TimelineWidget','PomodoroWidget'], 
+  showColumnSelector, 
+  setShowColumnSelector 
+  }) => {
+  const theme = useSelector((state) => state.theme.theme);
   
-  useEffect(() => {
-    const fetchTime = async () => {
-      try {
-        const { time: isoTime } = await window.electronAPI.getTime();
-        const date = new Date(isoTime);
-        const formattedTime = date.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-        setTime(formattedTime);
-      } catch (error) {
-        console.error('Error fetching time:', error);
-      }
-    };
-
-    fetchTime();
-    const intervalId = setInterval(fetchTime, 60000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const renderWidgets = () => {
-    switch (widgetChoice) {
-      case 'pomodoro':
-        return <PomodoroWidget darkTheme={darkTheme} />;
-      case 'timeline':
-        return <TimelineWidget darkTheme={darkTheme} />;
-      case 'both':
-      default:
-        return (
-          <>
-            <TimelineWidget darkTheme={darkTheme} />
-            <PomodoroWidget darkTheme={darkTheme} />
-          </>
-        );
-    }
+  const widgetComponents = {
+    PomodoroWidget,
+    TimelineWidget,
   };
 
-  const renderLayout = () => {
-    switch (layout) {
-      case 'default':
-        return (
+  const renderWidgets = (names = []) =>
+    names.map((name) => {
+      const Widget = widgetComponents[name];
+      return Widget ? <Widget key={name} darkTheme={darkTheme} /> : null;
+    });
+
+    return (
+      <div className={`${theme.background}`}>
+        {layout?.length > 0 ? (
+          <div className="flex justify-between items-center px-2 pt-10 pb-9">
+            <TimeWidget />
+            <div className="flex items-center">
+              {renderWidgets(layout)}
+              <div className="flex justify-center">
+                <AddNewColumnBtn
+                  setShowColumnSelector={setShowColumnSelector}
+                  showColumnSelector={showColumnSelector}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="flex justify-center items-center px-2 pt-10 pb-9">
-            <h1 className={`font-poppins text-5xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
-              {time}
-            </h1>
+            <TimeWidget />
           </div>
-        );
-      case 'withWidget':
-        return (
-          <div className="flex justify-between items-center px-2 pt-10 pb-9">
-            <h1 className={`font-poppins text-5xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
-              {time}
-            </h1>
-            <div className="flex items-center">
-              {renderWidgets()}
-              <div className=" flex justify-center">
-                <button
-                  onClick={() => setShowColumnSelector(!showColumnSelector)}
-                  className={`
-                    
-                    add-column-tab
-                    relative w-12 h-12 ml-2 flex items-center justify-center
-                    rounded-lg  z-10
-                    ${darkTheme
-                      ? 'bg-gray-800 text-blue-400 hover:bg-gray-700 hover:text-blue-300 border-gray-700' 
-                      : 'bg-white text-blue-500 hover:bg-gray-100 hover:text-blue-600 border-gray-200'}
-                    border-t border-l border-r border-b
-                  `}
-                  title="Add Column"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      case 'bothWidgets':
-        return (
-          <div className="flex justify-between items-center px-2 pt-10 pb-9">
-            <h1 className={`font-poppins text-5xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
-              {time}
-            </h1>
-            <div className="flex items-center">
-              <TimelineWidget darkTheme={darkTheme} />
-              <PomodoroWidget darkTheme={darkTheme} />
-              <div className=" flex justify-center">
-                <button
-                  onClick={() => setShowColumnSelector(!showColumnSelector)}
-                  className={`
-                    
-                    add-column-tab
-                    relative w-12 h-12 ml-2 flex items-center justify-center
-                    rounded-lg  z-10
-                    ${darkTheme
-                      ? 'bg-gray-800 text-blue-400 hover:bg-gray-700 hover:text-blue-300 border-gray-700' 
-                      : 'bg-white text-blue-500 hover:bg-gray-100 hover:text-blue-600 border-gray-200'}
-                    border-t border-l border-r border-b
-                  `}
-                  title="Add Column"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      case 'spacious':
-        return (
-          <div className="flex justify-between items-center px-10 pt-20 pb-20">
-            <h1 className={`font-poppins text-6xl ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
-              {time}
-            </h1>
-            <div className="flex items-center">
-              {renderWidgets()}
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
+        )}
+      </div>
+    );
 
-  return (
-    <div className={`${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
-      {renderLayout()}
-    </div>
-  );
 };
 
 export default PlannerHeader;

@@ -74,8 +74,6 @@ const Table = () => {
       `}</style>
       <div className="p-4 relative">
         <PlannerHeader
-          darkTheme={mode === 'dark' ? true : false}
-          layout={headerLayout}
           setShowColumnSelector={setShowColumnSelector}
           showColumnSelector={showColumnSelector}
         />

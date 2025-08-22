@@ -7,10 +7,10 @@
     "EmojiIcon": "BicepsFlexed",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": true,
+      "Monday": false,
+      "Tuesday": false,
+      "Wednesday": false,
+      "Thursday": false,
       "Friday": false,
       "Saturday": false,
       "Sunday": false
@@ -62,11 +62,11 @@
     "EmojiIcon": "User",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
+      "Monday": true,
       "Tuesday": false,
-      "Wednesday": true,
-      "Thursday": true,
-      "Friday": true,
+      "Wednesday": false,
+      "Thursday": false,
+      "Friday": false,
       "Saturday": false,
       "Sunday": false
     },
@@ -82,12 +82,12 @@
     "NameVisible": false,
     "Chosen": {
       "Monday": true,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": true,
-      "Friday": true,
-      "Saturday": true,
-      "Sunday": true
+      "Tuesday": false,
+      "Wednesday": false,
+      "Thursday": false,
+      "Friday": false,
+      "Saturday": false,
+      "Sunday": false
     },
     "Width": 95,
     "CheckboxColor": "gray"
@@ -200,6 +200,11 @@
           "text": "Grocery shopping",
           "completed": true,
           "category": "Personal"
+        },
+        {
+          "text": "add new tasks fast in vscode",
+          "completed": false,
+          "category": ""
         }
       ]
     },
