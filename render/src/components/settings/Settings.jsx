@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Settings, LayoutGrid, CalendarDays,  Table, Eye, Download, Upload } from 'lucide-react';
+import { Settings, LayoutGrid, CalendarDays, Table, Eye, Download } from 'lucide-react';
+import TableSection from './sections/TableSection';
+import UISection from './sections/UiSection';
+import DataSection from './sections/DataSection';
+import HeaderSection from './sections/HeaderSection';
+import CalendarSection from './sections/CalendarSection';
 
 export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
   const [activeSection, setActiveSection] = useState(() => {
@@ -12,35 +17,35 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
       autoThemeSettings: {
         enabled: false,
         startTime: '',
-        endTime: ''
-      }
+        endTime: '',
+      },
     },
     table: {
       columnOrder: [],
       showSummaryRow: false,
       compactMode: false,
-      stickyHeader: true
+      stickyHeader: true,
     },
     ui: {
       animations: true,
       tooltips: true,
-      confirmDelete: true
+      confirmDelete: true,
     },
     header: {
-      layout: 'withWidget'
+      layout: 'withWidget',
     },
-    calendar: { 
-      notifications: true
-    }
+    calendar: {
+      notifications: true,
+    },
   });
 
   useEffect(() => {
     window.electronAPI.getSettings().then(({ data }) => {
-      setSettings(prev => ({
+      setSettings((prev) => ({
         ...prev,
         ...data,
         header: data.header ?? prev.header,
-        calendar: data.calendar ?? prev.calendar
+        calendar: data.calendar ?? prev.calendar,
       }));
     }).catch(console.error);
   }, []);
@@ -60,7 +65,7 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
   const handleAutoThemeChange = (newAutoThemeSettings) => {
     const updatedTheme = {
       ...settings.theme,
-      autoThemeSettings: { ...settings.theme.autoThemeSettings, ...newAutoThemeSettings }
+      autoThemeSettings: { ...settings.theme.autoThemeSettings, ...newAutoThemeSettings },
     };
     handleThemeChange(updatedTheme);
   };
@@ -103,13 +108,7 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
   const renderSection = () => {
     switch (activeSection) {
       case 'table':
-        return (
-          <TableSection
-            settings={settings.table}
-            onTableChange={handleTableChange}
-            darkTheme={darkTheme}
-          />
-        );
+        return <TableSection settings={settings.table} onTableChange={handleTableChange} darkTheme={darkTheme} />;
       case 'ui':
         return (
           <UISection
@@ -123,34 +122,9 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
           />
         );
       case 'data':
-        return (
-          <DataSection
-            darkTheme={darkTheme}
-          />
-        );
+        return <DataSection darkTheme={darkTheme} />;
       case 'header':
-        return (
-          <div className="space-y-6">
-            <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
-              <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Header Layout</h3>
-              <div className="mt-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Layout</span>
-                  <select
-                    value={settings.header.layout}
-                    onChange={(e) => handleHeaderChange({ layout: e.target.value })}
-                    className={`block w-40 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-200' : 'border-gray-200 bg-white text-gray-600'}`}
-                  >
-                    <option value="default">Default</option>
-                    <option value="withWidget">With Widget</option>
-                    <option value="bothWidgets">Both widgets</option>
-                    <option value="spacious">Spacious</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+        return <HeaderSection settings={settings} onHeaderChange={handleHeaderChange} darkTheme={darkTheme} />;
       case 'calendar':
         return (
           <CalendarSection
@@ -164,207 +138,8 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
     }
   };
 
-  const TableSection = ({ settings, onTableChange, darkTheme }) => (
-    <div className="space-y-6">
-      <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
-        <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Table Settings</h3>
-        <div className="mt-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Show Summary Row</span>
-            <ToggleSwitch 
-              checked={settings.showSummaryRow} 
-              onChange={(checked) => onTableChange({ showSummaryRow: checked })} 
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const UISection = ({ settings, onUIChange, darkTheme, onThemeChange, setDarkTheme, autoThemeSettings, onAutoThemeChange }) => (
-    <div className="space-y-6">
-      <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
-        <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Interface Settings</h3>
-        <div className="mt-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Dark Theme</span>
-            <ToggleSwitch 
-              checked={settings.theme.darkMode} 
-              onChange={(checked) => {
-                onThemeChange({ darkMode: checked });
-                setDarkTheme(checked);
-              }} 
-            />
-          </div>
-
-          <div className="flex items-center justify-between mt-4">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Auto Theme Switcher</span>
-            <ToggleSwitch
-              checked={autoThemeSettings.enabled}
-              onChange={(checked) => onAutoThemeChange({ enabled: checked })}
-            />
-          </div>
-
-          {autoThemeSettings.enabled && (
-            <div className="mt-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <label className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Start of Day</label>
-                <input
-                  type="time"
-                  value={autoThemeSettings.startTime}
-                  onChange={(e) => onAutoThemeChange({ startTime: e.target.value })}
-                  className={`w-32 rounded-md text-m px-2 py-1 ${darkTheme ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-600 border border-gray-300'}`}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <label className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>End of Day</label>
-                <input
-                  type="time"
-                  value={autoThemeSettings.endTime}
-                  onChange={(e) => onAutoThemeChange({ endTime: e.target.value })}
-                  className={`w-32 rounded-md text-m px-2 py-1 ${darkTheme ? 'bg-gray-800 text-gray-200 border border-gray-700' : 'bg-white text-gray-600 border border-gray-300'}`}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-
-  const CalendarSection = ({ settings, onCalendarChange, darkTheme }) => (
-    <div className="space-y-6">
-      <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
-        <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Calendar Settings</h3>
-        <div className="mt-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Event Notifications</span>
-            <ToggleSwitch 
-              checked={settings.calendar.notifications} 
-              onChange={(checked) => onCalendarChange({ notifications: checked })} 
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const DataSection = ({ darkTheme }) => {
-    const handleExportData = async () => {
-      try {
-        const data = await window.electronAPI.exportData();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `onda-backup-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      } catch (error) {
-        console.error('Error exporting data:', error);
-      }
-    };
-
-    const handleImportData = async (event) => {
-      try {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const data = JSON.parse(e.target.result);
-            await window.electronAPI.importData(data);
-            window.location.reload();
-          } catch (error) {
-            console.error('Error parsing imported data:', error);
-          }
-        };
-        reader.readAsText(file);
-      } catch (error) {
-        console.error('Error importing data:', error);
-      }
-    };
-
-    return (
-      <div className="space-y-6">
-        <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
-          <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>Data Management</h3>
-          <div className="mt-4 space-y-4">
-            <div className="flex flex-col gap-2">
-              <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Export Data</span>
-              <button
-                onClick={handleExportData}
-                className={`px-4 py-2 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors flex items-center gap-2 w-fit`}
-              >
-                <Download className="w-4 h-4" />
-                Export All Data
-              </button>
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Import Data</span>
-              <label className={`px-4 py-2 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors flex items-center gap-2 w-fit cursor-pointer`}>
-                <Upload className="w-4 h-4" />
-                Import Data
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleImportData}
-                  className="hidden"
-                />
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const ToggleSwitch = ({ checked, onChange }) => (
-    <label className="relative inline-flex items-center cursor-pointer">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="sr-only peer" />
-      <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-blue-500 transition-colors duration-300 ease-in-out" />
-      <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-300 ease-in-out peer-checked:translate-x-5" />
-    </label>
-  );
-
   return (
     <div className={`font-poppins flex flex-col h-full custom-scroll ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
-      <style jsx global>{`
-        .custom-scroll::-webkit-scrollbar {
-          width: 10px;
-          height: 10px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-          background: ${darkTheme ? 'rgba(55, 65, 81, 0.3)' : 'rgba(241, 241, 241, 0.3)'};
-          border-radius: 500px;
-          margin: 4px 0;
-          transition: background 0.2s ease;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-          background: ${darkTheme ? 'rgba(156, 163, 175, 0.8)' : 'rgba(156, 163, 175, 0.6)'};
-          border-radius: 100px;
-          border: 2px solid ${darkTheme ? 'rgba(55, 65, 81, 0.3)' : 'rgba(241, 241, 241, 0.3)'};
-          transition: background 0.2s ease, border 0.2s ease;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-          background: ${darkTheme ? 'rgba(107, 114, 128, 1)' : 'rgba(107, 114, 128, 0.8)'};
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:active {
-          background: ${darkTheme ? 'rgba(75, 85, 99, 1)' : 'rgba(75, 85, 99, 0.9)'};
-        }
-        .custom-scroll {
-          scrollbar-color: ${
-            darkTheme
-              ? 'rgba(156, 163, 175, 0.8) rgba(55, 65, 81, 0.3)'
-              : 'rgba(156, 163, 175, 0.6) rgba(241, 241, 241, 0.3)'
-          };
-          scrollbar-width: thin;
-        }
-      `}</style>
-
       <div className={`sticky top-0 z-10 ${darkTheme ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-8 py-6`}>
         <h1 className={`text-xl font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'} flex items-center`}>
           <Settings className="w-5 h-5 mr-2" />
@@ -396,9 +171,7 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
           </nav>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
-          {renderSection()}
-        </div>
+        <div className="flex-1 overflow-y-auto p-6">{renderSection()}</div>
       </div>
     </div>
   );

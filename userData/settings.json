@@ -1,6 +1,6 @@
 {
   "theme": {
-    "darkMode": false,
+    "darkMode": true,
     "accentColor": "blue",
     "autoThemeSettings": {
       "enabled": false,
