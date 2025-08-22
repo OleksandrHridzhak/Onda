@@ -379,5 +379,16 @@
     "isRepeating": false,
     "repeatDays": [],
     "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1755850433554",
+    "title": "d",
+    "date": "Sun Aug 24 2025",
+    "startTime": "00:00",
+    "endTime": "01:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
   }
 ]

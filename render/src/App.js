@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-
+import './App.css'
 import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 //import { fetchTheme } from './store/slices/themeSlice';

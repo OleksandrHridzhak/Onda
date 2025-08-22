@@ -317,36 +317,7 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
   return (
     <div className={`font-poppins min-h-screen ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
       <style jsx global>{`
-        .custom-scroll::-webkit-scrollbar {
-          width: 10px;
-          height: 10px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-          background: ${darkTheme ? 'rgba(55, 65, 81, 0.3)' : 'rgba(241, 241, 241, 0.3)'};
-          border-radius: 5px;
-          margin: 4px 0;
-          transition: background 0.2s ease;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-          background: ${darkTheme ? 'rgba(156, 163, 175, 0.8)' : 'rgba(156, 163, 175, 0.6)'};
-          border-radius: 5px;
-          border: 2px solid ${darkTheme ? 'rgba(55, 65, 81, 0.3)' : 'rgba(241, 241, 241, 0.3)'};
-          transition: background 0.2s ease, border 0.2s ease;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-          background: ${darkTheme ? 'rgba(107, 114, 128, 1)' : 'rgba(107, 114, 128, 0.8)'};
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:active {
-          background: ${darkTheme ? 'rgba(75, 85, 99, 1)' : 'rgba(75, 85, 99, 0.9)'};
-        }
-        .custom-scroll {
-          scrollbar-color: ${
-            darkTheme
-              ? 'rgba(156, 163, 175, 0.8) rgba(55, 65, 81, 0.3)'
-              : 'rgba(156, 163, 175, 0.6) rgba(241, 241, 241, 0.3)'
-          };
-          scrollbar-width: thin;
-        }
+
         .custom-checkbox {
           position: relative;
           width: 18px;
@@ -433,7 +404,7 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                 <select
                   value={viewMode}
                   onChange={(e) => setViewMode(e.target.value)}
-                  className={`appearance-none w-32   px-3 pr-10 py-1.5 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 border`}
+                  className={`appearance-none w-37   px-3 pr-10 py-1.5 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 border`}
                 >
                   <option value="week">Week View</option>
                   <option value="day">Day View</option>
@@ -443,24 +414,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
                   <ChevronDown size={16} />
                 </div>
               </div>
-            <div className="relative">
-              <select
-                value={filterColor || ''}
-                onChange={(e) => setFilterColor(e.target.value || null)}
-                className={`appearance-none w-32  px-3 pr-10 py-1.5 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 border`}
-              >
-                <option value="">All Events</option>
-                {Object.entries(colorMap).map(([hex, name]) => (
-                  <option key={hex} value={hex}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-
-              <div className="pointer-events-none absolute right-3  top-1/2 -translate-y-1/2 text-gray-400">
-                <ChevronDown size={16} />
-              </div>
-            </div>
             <button
               onClick={() => {
                 setNewEvent({ title: '', startTime: '09:00', endTime: '10:00', color: '#2563eb', isRepeating: false, repeatDays: [], repeatFrequency: 'weekly' });
@@ -477,9 +430,9 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
       </div>
 
       {/* Timeline */}
-      <div className="max-w-7xl mx-auto p-2 sm:px-3 pb-8 sm:pb-12">
-        <div className={`rounded-2xl overflow-auto ${darkTheme ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border custom-scroll`}>
-          <div className="relative overflow-y-auto max-h-[620px]" ref={gridRef}>
+      <div className=" w-full mx-auto">
+        <div  style={{ height: 'calc(100vh - 100px)' }} className={` flex flex-col  ${darkTheme ? 'bg-gray-800' : 'bg-white'}`}>
+          <div className="flex-1 relative overflow-y-auto custom-scroll-y-light" ref={gridRef}>
             <div className="flex">
               {/* Hour labels */}
               <div className={`w-20 flex-shrink-0 sticky left-0 ${darkTheme ? 'bg-gray-800' : 'bg-white'} z-10`}>
