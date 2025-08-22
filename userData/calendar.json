@@ -368,5 +368,16 @@
     "isRepeating": false,
     "repeatDays": [],
     "repeatFrequency": "weekly"
+  },
+  {
+    "id": "1755843391207",
+    "title": "d",
+    "date": "Fri Aug 22 2025",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "color": "#2563eb",
+    "isRepeating": false,
+    "repeatDays": [],
+    "repeatFrequency": "weekly"
   }
 ]

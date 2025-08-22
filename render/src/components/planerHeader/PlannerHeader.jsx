@@ -4,8 +4,6 @@ import { useSelector } from 'react-redux';
 import { TimeWidget } from './widgets/TimeWidget';
 import { AddNewColumnBtn } from './widgets/AddNewColumnBtn';
 
-
-
 const PlannerHeader = ({ 
   darkTheme=false, 
   layout = [ 'TimelineWidget','PomodoroWidget'], 

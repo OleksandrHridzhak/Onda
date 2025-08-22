@@ -1,35 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
-import { useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
 
 const TimelineWidget = () => {
+  const theme = useSelector((state) => state.theme.theme); // повний об’єкт з усіма класами
+
   const getCurrentTimeString = () => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
-  const minutes = now.getMinutes().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   };
 
-  const darkTheme = true;
-
-
   const [events, setEvents] = useState([]);
   const [hoveredEvent, setHoveredEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(getCurrentTimeString());
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(getCurrentTimeString());
-    }, 60 * 1000); // Оновлюємо кожну хвилину
-
+    const interval = setInterval(() => setCurrentTime(getCurrentTimeString()), 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     const loadTodayEvents = async () => {
       try {
-        setLoading(true);
         const response = await window.electronAPI.calendarGetEvents();
         if (response.status === 'success') {
           const now = new Date();
@@ -46,33 +40,27 @@ const TimelineWidget = () => {
               Array.isArray(event.repeatDays) &&
               event.repeatDays.includes(todayDay);
 
-            if (isRepeatingToday) {
-              return true;
-            } else {
-              const eventDate = new Date(event.date);
-              return isSameDate(eventDate, now);
-            }
+            if (isRepeatingToday) return true;
+
+            const eventDate = new Date(event.date);
+            return isSameDate(eventDate, now);
           });
 
           filteredEvents.sort((a, b) => {
-            const timeA = a.startTime.split(':').map(Number);
-            const timeB = b.startTime.split(':').map(Number);
-            return (timeA[0] * 60 + timeA[1]) - (timeB[0] * 60 + timeB[1]);
+            const [hA, mA] = a.startTime.split(':').map(Number);
+            const [hB, mB] = b.startTime.split(':').map(Number);
+            return hA * 60 + mA - (hB * 60 + mB);
           });
 
           setEvents(filteredEvents);
         }
-      } catch (error) {
-        console.error('Error loading events:', error);
-      } finally {
-        setLoading(false);
+      } catch (err) {
+        console.error('Error loading events:', err);
       }
     };
 
     loadTodayEvents();
-
     const interval = setInterval(loadTodayEvents, 60 * 1000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -89,85 +77,61 @@ const TimelineWidget = () => {
 
   const timeToPercent = (time) => {
     const now = new Date();
-    const startTime = new Date(now);
-    startTime.setHours(0, 0, 0, 0); // Початок дня
-    const endTime = new Date(now);
-    endTime.setHours(23, 59, 59, 999); // Кінець дня
-
     const [h, m] = time.split(':').map(Number);
     const eventDate = new Date(now);
     eventDate.setHours(h, m, 0, 0);
 
-    const totalMinutes = 24 * 60; // 24 години
-    const minutesFromStart = (eventDate - startTime) / (1000 * 60);
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
 
-    return (minutesFromStart / totalMinutes) * 100;
+    return ((eventDate - start) / (24 * 60 * 60 * 1000)) * 100;
   };
 
   const durationToPercent = (startTime, endTime) => {
-    const now = new Date();
-    const startOfTimeline = new Date(now);
-    startOfTimeline.setHours(0, 0, 0, 0);
-    const endOfTimeline = new Date(now);
-    endOfTimeline.setHours(23, 59, 59, 999);
+    const [sh, sm] = startTime.split(':').map(Number);
+    const [eh, em] = endTime.split(':').map(Number);
 
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const [endHour, endMinute] = endTime.split(':').map(Number);
+    const startDate = new Date();
+    startDate.setHours(sh, sm, 0, 0);
 
-    const startDateTime = new Date(now);
-    startDateTime.setHours(startHour, startMinute, 0, 0);
+    let endDate = new Date();
+    endDate.setHours(eh, em, 0, 0);
 
-    let endDateTime = new Date(now);
-    endDateTime.setHours(endHour, endMinute, 0, 0);
+    if (endDate < startDate) endDate = new Date(endDate.getTime() + 24 * 60 * 60 * 1000);
 
-    if (endHour < startHour || (endHour === 0 && startHour > 0)) {
-      endDateTime = new Date(endDateTime.getTime() + 24 * 60 * 60 * 1000);
-    }
-
-    const totalMinutes = 24 * 60;
-    const durationMinutes = (endDateTime - startDateTime) / (1000 * 60);
-
-    return (durationMinutes / totalMinutes) * 100;
+    return ((endDate - startDate) / (24 * 60 * 60 * 1000)) * 100;
   };
 
   const getTimeLabel = (offsetHours) => {
     const now = new Date();
-    const time = new Date(now);
-    time.setHours(offsetHours, 0, 0, 0);
-    return `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
+    const t = new Date(now);
+    t.setHours(offsetHours, 0, 0, 0);
+    return `${t.getHours().toString().padStart(2, '0')}:${t.getMinutes().toString().padStart(2, '0')}`;
   };
 
   return (
-    <div className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border ${
-      darkTheme ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-200 text-gray-800'
-    }`}>
+    <div
+      className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border ${theme.tableBodyBg} ${theme.border} ${theme.textTableValues}`}
+    >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center justify-center w-6 h-6 rounded-full bg-opacity-10 bg-gray-500">
           <Calendar className="h-4 w-4" />
         </div>
         <div className="relative flex-1 ml-2">
-          <div className={`relative h-5 rounded-full border overflow-hidden ${
-            darkTheme ? 'bg-gray-900 border-gray-600' : 'bg-gray-100 border-gray-300'
-          } `}>
+          <div className={`relative h-5 rounded-full border overflow-hidden ${theme.background} ${theme.border}`}>
             <div className="absolute top-0 left-1 h-full w-60">
               <div
                 className="absolute top-0 h-full w-0.5 bg-red-500"
-                style={{ left: `${timeToPercent(currentTime)}%` }} // Динамічний поточний час
+                style={{ left: `${timeToPercent(currentTime)}%` }}
               />
-              {events.map((event) => {
-                const markerWidth = durationToPercent(event.startTime, event.endTime);
-                const markerPosition = timeToPercent(event.startTime);
-                const minWidthPercent = 1;
-                const adjustedWidth = Math.max(minWidthPercent, markerWidth);
-
+              {events.map(event => {
+                const width = Math.max(1, durationToPercent(event.startTime, event.endTime));
+                const left = timeToPercent(event.startTime);
                 return (
                   <div
                     key={event.id}
                     className={`absolute top-1/2 transform -translate-y-1/2 h-3 rounded-full ${getColorClass(event.color)} cursor-pointer hover:scale-y-125 transition-transform duration-200 shadow-sm`}
-                    style={{
-                      left: `${markerPosition}%`,
-                      width: `${adjustedWidth}%`,
-                    }}
+                    style={{ left: `${left}%`, width: `${width}%` }}
                     onMouseEnter={() => setHoveredEvent(event)}
                     onMouseLeave={() => setHoveredEvent(null)}
                   />
@@ -180,13 +144,14 @@ const TimelineWidget = () => {
               <span>{getTimeLabel(23)}</span>
             </div>
           </div>
+
           {hoveredEvent && (
             <div
-              className={`absolute z-50 px-2 py-1 rounded-md text-[10px] shadow-lg whitespace-nowrap transform -translate-x-1/2 -translate-y-full -mt-6 ${
-                darkTheme ? 'bg-gray-800 text-gray-100 border-gray-600' : 'bg-white text-gray-800 border-gray-200'
-              } border`}
+              className={`absolute z-50 px-2 py-1 rounded-md text-[10px] shadow-lg whitespace-nowrap transform -translate-x-1/2 -translate-y-full -mt-6 ${theme.background} ${theme.text}`}
               style={{
-                left: `calc(${timeToPercent(hoveredEvent.startTime)}% + ${durationToPercent(hoveredEvent.startTime, hoveredEvent.endTime) / 2}%)`,
+                left: `calc(${timeToPercent(hoveredEvent.startTime)}% + ${
+                  durationToPercent(hoveredEvent.startTime, hoveredEvent.endTime) / 2
+                }%)`,
               }}
             >
               <div className="font-medium">{hoveredEvent.title}</div>
