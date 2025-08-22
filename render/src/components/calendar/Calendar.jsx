@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus,Trash2,ChevronDown } from 'lucide-react';
 import { BubbleBtn } from '../shared/BubbleBtn';
 import EventModal from './EventModal';
+import CalendarHeader from './CalendarHeader';
+import CalendarTimeline from './CalendarTimeline';
 
 export default function Calendar({ darkTheme, setDarkTheme }) {
   const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
@@ -29,15 +30,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const slotHeight = 80;
   const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-  // Color mapping object
-  const colorMap = {
-    '#2563eb': 'Blue',
-    '#059669': 'Green',
-    '#7c3aed': 'Purple',
-    '#dc2626': 'Red',
-    '#d97706': 'Orange',
-  };
 
   // Save viewMode to localStorage whenever it changes
   useEffect(() => {
@@ -117,13 +109,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
   useEffect(() => {
     setWeekDays(getWeekDays(currentWeekStart));
   }, [currentWeekStart]);
-
-  // Auto-scroll to current time
-  useEffect(() => {
-    const minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    const scrollPosition = (minutes / 60) * slotHeight - gridRef.current.clientHeight / 2 + slotHeight / 2;
-    gridRef.current.scrollTo({ top: Math.max(0, scrollPosition) });
-  }, []);
 
   // Navigation
   const goToPrevious = () => {
@@ -299,15 +284,9 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
     setNewEvent({ ...newEvent, startTime: shift(newEvent.startTime), endTime: shift(newEvent.endTime) });
   };
 
-  // Get days to display based on view mode
-  const getDisplayDays = () => {
-    return viewMode === 'day' ? [selectedDate] : weekDays;
-  };
-
   return (
     <div className={`font-poppins min-h-screen ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
       <style jsx global>{`
-
         .custom-checkbox {
           position: relative;
           width: 18px;
@@ -349,175 +328,53 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
         }
       `}</style>
 
-      {/* Header */}
-      <div className={`sticky top-0 z-20 ${darkTheme ? 'bg-gray-800/95 backdrop-blur-sm border-gray-700' : 'bg-white/95 backdrop-blur-sm border-gray-200'} border-b`}>
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className={`p-3 rounded-2xl ${darkTheme ? 'bg-gray-700/50' : 'bg-blue-50'}`}>
-              <CalendarIcon size={22} className={darkTheme ? 'text-blue-400' : 'text-blue-600'} />
-            </div>
-            <div className="flex flex-col">
-              <h2 className={`text-xl font-semibold tracking-tight ${darkTheme ? 'text-gray-200' : 'text-gray-800'}`}>
-                {viewMode === 'day'
-                  ? selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-                  : weekDays[0]?.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-              </h2>
-              <p className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
-                {viewMode === 'day' ? dayNames[selectedDate.getDay()] : `Week ${getWeekNumber(currentWeekStart)}`}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className={`flex items-center gap-1 p-1 ${darkTheme ? 'bg-gray-700/50' : 'bg-gray-100'} rounded-xl`}>
-              <button
-                onClick={goToPrevious}
-                className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-600' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-200'} rounded-lg transition-colors`}
-                aria-label={viewMode === 'day' ? 'Previous day' : 'Previous week'}
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={goToCurrent}
-                className={`px-3 py-1.5 text-sm ${darkTheme ? 'text-gray-300 bg-gray-600/50 hover:bg-gray-500' : 'text-gray-700 bg-white hover:bg-gray-50'} rounded-lg transition-colors`}
-              >
-                Today
-              </button>
-              <button
-                onClick={goToNext}
-                className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-600' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-200'} rounded-lg transition-colors`}
-                aria-label={viewMode === 'day' ? 'Next day' : 'Next week'}
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-              <div className="relative ">
-                <select
-                  value={viewMode}
-                  onChange={(e) => setViewMode(e.target.value)}
-                  className={`appearance-none w-37   px-3 pr-10 py-1.5 text-sm ${darkTheme ? 'border-gray-700 bg-gray-800 text-gray-300' : 'border-gray-200 bg-white text-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 border`}
-                >
-                  <option value="week">Week View</option>
-                  <option value="day">Day View</option>
-                </select>
+      <CalendarHeader
+        darkTheme={darkTheme}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        selectedDate={selectedDate}
+        weekDays={weekDays}
+        currentWeekStart={currentWeekStart}
+        getWeekNumber={getWeekNumber}
+        goToPrevious={goToPrevious}
+        goToCurrent={goToCurrent}
+        goToNext={goToNext}
+        setNewEvent={setNewEvent}
+        setEditingEventId={setEditingEventId}
+        setShowEventModal={setShowEventModal}
+      />
 
-                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <ChevronDown size={16} />
-                </div>
-              </div>
-            <button
-              onClick={() => {
-                setNewEvent({ title: '', startTime: '09:00', endTime: '10:00', color: '#2563eb', isRepeating: false, repeatDays: [], repeatFrequency: 'weekly' });
-                setEditingEventId(null);
-                setShowEventModal(true);
-              }}
-              className={`px-4 py-1.5 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl flex items-center gap-2 transition-colors shadow-sm hover:shadow-md`}
-            >
-              <Plus size={16} />
-              New Event
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Timeline */}
-      <div className=" w-full mx-auto">
-        <div  style={{ height: 'calc(100vh - 100px)' }} className={` flex flex-col  ${darkTheme ? 'bg-gray-800' : 'bg-white'}`}>
-          <div className="flex-1 relative overflow-y-auto custom-scroll-y-light" ref={gridRef}>
-            <div className="flex">
-              {/* Hour labels */}
-              <div className={`w-20 flex-shrink-0 sticky left-0 ${darkTheme ? 'bg-gray-800' : 'bg-white'} z-10`}>
-                <div className="h-16" />
-                {hours.map((hour) => (
-                  <div
-                    key={hour}
-                    className={`h-[80px] flex items-start justify-end pr-3 text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'} -translate-y-2.5`}
-                  >
-                    {formatTime(hour)}
-                  </div>
-                ))}
-              </div>
-
-              {/* Days and events */}
-              <div className="flex-1 flex min-w-[120px]">
-                {getDisplayDays().map((day, dayIndex) => (
-                  <div key={day.toDateString()} className={`flex-1 ${darkTheme ? 'border-gray-700' : 'border-gray-200'} border-l relative`}>
-                    <div className={`sticky top-0 ${darkTheme ? 'bg-gray-800' : 'bg-white'} z-40 py-3 text-center ${darkTheme ? 'border-gray-700' : 'border-gray-200'} border-b`}>
-                      <div className={`text-xs ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>{dayNames[day.getDay()]}</div>
-                      <div
-                        className={`mt-1 text-sm font-medium ${
-                          day.toDateString() === new Date().toDateString()
-                            ? 'bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center mx-auto'
-                            : darkTheme
-                            ? 'text-gray-300'
-                            : 'text-gray-700'
-                        } rounded-full w-6 h-6 flex items-center justify-center mx-auto`}
-                      >
-                        {day.getDate()}
-                      </div>
-                    </div>
-                    <div className="relative" style={{ height: `${slotHeight * 24}px` }}>
-                      {hours.map((hour) => (
-                        <div
-                          key={hour}
-                          className={`absolute w-full ${darkTheme ? 'border-gray-700' : 'border-gray-200'} border-t ${darkTheme ? 'hover:bg-gray-700' : 'hover:bg-blue-50'} cursor-pointer z-10`}
-                          style={{ top: `${hour * slotHeight}px`, height: `${slotHeight}px` }}
-                          onClick={() => handleTimeSlotClick(dayIndex, hour)}
-                        />
-                      ))}
-                      {getEventsForDay(day).map((event) => {
-                        const startMinutes = timeToMinutes(event.startTime);
-                        let endMinutes = timeToMinutes(event.endTime);
-                        if (endMinutes <= startMinutes) {
-                          endMinutes += 24 * 60;
-                        }
-                        const duration = endMinutes - startMinutes;
-                        const isShortEvent = duration <= 30;
-                        return (
-                          <div
-                            key={`${event.id}-${event.date}`}
-                            className={`absolute z-30 left-2 right-2 rounded-xl p-2 text-white text-xs shadow-md cursor-pointer ${isShortEvent ? 'short-event' : ''} ${darkTheme ? 'shadow-gray-900' : ''}`}
-                            style={getEventStyle(event)}
-                            onClick={() => handleEditEvent(event)}
-                            title={`${event.title} (${event.startTime} - ${event.endTime})`}
-                          >
-                            <div className="flex text-ellipsis overflow-hidden justify-between items-start">
-                              <div>
-                                <div className="event-title font-medium ">{event.title}</div>
-                                <div className="event-time truncate">{event.startTime} - {event.endTime}</div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                      {day.toDateString() === currentTime.toDateString() && (
-                        <div
-                          className="absolute left-0 right-0 h-[2px] bg-red-500 z-30"
-                          style={{ top: `${getCurrentTimePosition()}px` }}
-                        >
-                          <div className="w-3 h-3 bg-red-500 rounded-full -translate-y-1" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CalendarTimeline
+        darkTheme={darkTheme}
+        viewMode={viewMode}
+        selectedDate={selectedDate}
+        weekDays={weekDays}
+        currentTime={currentTime}
+        hours={hours}
+        slotHeight={slotHeight}
+        dayNames={dayNames}
+        gridRef={gridRef}
+        formatTime={formatTime}
+        timeToMinutes={timeToMinutes}
+        getEventsForDay={getEventsForDay}
+        getEventStyle={getEventStyle}
+        getCurrentTimePosition={getCurrentTimePosition}
+        handleTimeSlotClick={handleTimeSlotClick}
+        handleEditEvent={handleEditEvent}
+      />
 
       <EventModal
-              darkTheme={darkTheme}
-              showEventModal={showEventModal}
-              setShowEventModal={setShowEventModal}
-              newEvent={newEvent}
-              setNewEvent={setNewEvent}
-              editingEventId={editingEventId}
-              handleSaveEvent={handleSaveEvent}
-              handleDeleteEvent={handleDeleteEvent}
-              validateTime={validateTime}
-              adjustEventTimes={adjustEventTimes}
-            />
+        darkTheme={darkTheme}
+        showEventModal={showEventModal}
+        setShowEventModal={setShowEventModal}
+        newEvent={newEvent}
+        setNewEvent={setNewEvent}
+        editingEventId={editingEventId}
+        handleSaveEvent={handleSaveEvent}
+        handleDeleteEvent={handleDeleteEvent}
+        validateTime={validateTime}
+        adjustEventTimes={adjustEventTimes}
+      />
     </div>
   );
 }
