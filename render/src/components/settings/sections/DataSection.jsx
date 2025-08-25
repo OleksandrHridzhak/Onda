@@ -1,6 +1,10 @@
 import { Download, Upload } from 'lucide-react';
+import SettingsTemplate from '../SettingsTemplate';
+import { useSelector } from 'react-redux';
+import { BubbleBtn } from '../../shared/BubbleBtn';
 
-export default function DataSection({ darkTheme }) {
+export default function DataSection() {
+  const {theme} = useSelector((state) => state.theme);
   const handleExportData = async () => {
     try {
       const data = await window.electronAPI.exportData();
@@ -40,43 +44,22 @@ export default function DataSection({ darkTheme }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
-        <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
-          Data Management
-        </h3>
-        <div className="mt-4 space-y-4">
+      <SettingsTemplate title="Data Management">
           <div className="flex flex-col gap-2">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
-              Export Data
+            <span className={`text-sm ${theme.textTableValues}`}>
+              Export Data / Import Data
             </span>
-            <button
-              onClick={handleExportData}
-              className={`px-4 py-2 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors flex items-center gap-2 w-fit`}
-            >
-              <Download className="w-4 h-4" />
+            <div className="flex flex-row  gap-2">
+            <BubbleBtn onClick={handleExportData}>
+              <Upload className="w-4 h-4  mr-3" />
               Export All Data
-            </button>
-          </div>
-          <div className="flex flex-col gap-2">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
+            </BubbleBtn>
+            <BubbleBtn onClick={handleImportData}>
+              <Download className="w-4 h-4  mr-3" />
               Import Data
-            </span>
-            <label
-              className={`px-4 py-2 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors flex items-center gap-2 w-fit cursor-pointer`}
-            >
-              <Upload className="w-4 h-4" />
-              Import Data
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleImportData}
-                className="hidden"
-              />
-            </label>
+            </BubbleBtn>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </SettingsTemplate>
   );
 }

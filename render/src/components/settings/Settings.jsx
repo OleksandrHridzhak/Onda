@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Settings, LayoutGrid, CalendarDays, Table, Eye, Download } from 'lucide-react';
 import TableSection from './sections/TableSection';
 import UISection from './sections/UiSection';
@@ -6,7 +7,10 @@ import DataSection from './sections/DataSection';
 import HeaderSection from './sections/HeaderSection';
 import CalendarSection from './sections/CalendarSection';
 
-export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
+
+
+export default function SettingsDashboard() {
+  const {theme} = useSelector((state) => state.theme);
   const [activeSection, setActiveSection] = useState(() => {
     return localStorage.getItem('activeSection') || 'table';
   });
@@ -108,29 +112,26 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
   const renderSection = () => {
     switch (activeSection) {
       case 'table':
-        return <TableSection settings={settings.table} onTableChange={handleTableChange} darkTheme={darkTheme} />;
+        return <TableSection settings={settings.table} onTableChange={handleTableChange}/>;
       case 'ui':
         return (
           <UISection
             settings={settings}
             onUIChange={handleUIChange}
-            darkTheme={darkTheme}
             onThemeChange={handleThemeChange}
-            setDarkTheme={setDarkTheme}
             autoThemeSettings={settings.theme.autoThemeSettings}
             onAutoThemeChange={handleAutoThemeChange}
           />
         );
       case 'data':
-        return <DataSection darkTheme={darkTheme} />;
+        return <DataSection  />;
       case 'header':
-        return <HeaderSection settings={settings} onHeaderChange={handleHeaderChange} darkTheme={darkTheme} />;
+        return <HeaderSection settings={settings} onHeaderChange={handleHeaderChange} />;
       case 'calendar':
         return (
           <CalendarSection
             settings={settings}
             onCalendarChange={handleCalendarChange}
-            darkTheme={darkTheme}
           />
         );
       default:
@@ -139,16 +140,16 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
   };
 
   return (
-    <div className={`font-poppins flex flex-col h-full custom-scroll ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
-      <div className={`sticky top-0 z-10 ${darkTheme ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-8 py-6`}>
-        <h1 className={`text-xl font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'} flex items-center`}>
+    <div className={`font-poppins flex flex-col h-full custom-scroll ${theme.background}`}>
+      <div className={`sticky top-0 z-10 ${theme.background} ${theme.border} border-b px-8 py-6`}>
+        <h1 className={`text-xl font-medium ${theme.textTableValues} flex items-center`}>
           <Settings className="w-5 h-5 mr-2" />
           Settings
         </h1>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className={`w-64 border-r ${darkTheme ? 'border-gray-700' : 'border-gray-200'} p-4`}>
+        <div className={`w-64 border-r ${theme.border} p-4`}>
           <nav className="space-y-1">
             {sections.map((section) => (
               <button
@@ -156,12 +157,8 @@ export default function SettingsDashboard({ darkTheme, setDarkTheme }) {
                 onClick={() => setActiveSection(section.id)}
                 className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                   activeSection === section.id
-                    ? darkTheme
-                      ? 'bg-gray-700 text-white'
-                      : 'bg-blue-50 text-blue-600'
-                    : darkTheme
-                    ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? `${theme.settingsSectionSelectorBg} ${theme.text}`
+                    : `${theme.textTableValues}`
                 }`}
               >
                 {section.icon}
