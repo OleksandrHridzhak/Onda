@@ -76,7 +76,7 @@
   {
     "ColumnId": "1755000000009",
     "Type": "numberbox",
-    "Name": "Client Calls",
+    "Name": "Client Callsd",
     "Description": "Hours spent on client calls",
     "EmojiIcon": "Zap",
     "NameVisible": false,

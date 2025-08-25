@@ -1,59 +1,23 @@
 import React, { useReducer, useEffect, useRef } from 'react';
-import { X, Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
+import { X, ArrowRight, ArrowLeft } from 'lucide-react';
 import { icons } from '../../utils/icons';
-import { getColorOptions } from '../../utils/colorOptions';
 import { BubbleBtn } from '../../shared/BubbleBtn';
 import { IconSelector } from './IconSelector';
 import { TransparentBtn } from '../../shared/TransparentBtn';
 import { OptionsList } from './OptionList';
+import { TitleVisibilityToggle } from './TitleVisibilityToggle';
 import { reducer, initialState } from './columnMenuReducer';
+import {
+  handleAddOption,
+  handleRemoveOption,
+  handleEditOption,
+  handleColorChange,
+  handleSave,
+  handleWidthChange,
+} from './columnMenuHandlers';
+import { CheckboxColorPicker } from './CheckBoxColorPicker';
 
-// Sub-components (unchanged)
-const TitleVisibilityToggle = ({ showTitle, setShowTitle, darkMode }) => (
-  <div className="flex items-center h-12 w-12 justify-center absolute right-0 top-0">
-    <button
-      onClick={() => setShowTitle(!showTitle)}
-      className={`flex items-center space-x-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'} transition-colors duration-200`}
-      aria-label={showTitle ? 'Hide column title' : 'Show column title'}
-    >
-      {showTitle ? <Eye size={18} /> : <EyeOff size={18} />}
-    </button>
-  </div>
-);
-const CheckboxColorPicker = ({
-  checkboxColor,
-  setCheckboxColor,
-  darkMode,
-  isColorMenuOpen,
-  toggleColorMenu,
-}) => (
-  <div className="mb-4">
-    <label
-      className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}
-    >
-      Checkbox Color
-    </label>
-    <div className="">
-      <div
-        className={` mt-2 ${darkMode ? 'bg-gray-900 border-gray-800 text-gray-200' : 'bg-white border-gray-200 text-gray-800'} border rounded-lg p-2 z-10`}
-      >
-        <div className="flex flex-wrap gap-2 max-h-32 ">
-          {getColorOptions({ darkMode }).map((color) => (
-            <button
-              key={color.name}
-              onClick={() => {
-                setCheckboxColor(color.name);
-                toggleColorMenu();
-              }}
-              className={`w-6 h-6 rounded-full ${color.bg} ${color.text || (darkMode ? 'text-gray-200' : 'text-gray-800')} border ${checkboxColor === color.name ? 'ring-2 ring-offset-2 ring-indigo-500' : 'border-transparent'} hover:ring-1 hover:ring-gray-400 transition-all duration-200`}
-              aria-label={`Select ${color.name} color`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
-);
+
 
 const ColumnMenu = ({
   column,
@@ -88,143 +52,6 @@ const ColumnMenu = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [onClose]);
-
-  const handleAddOption = () => {
-    dispatch({ type: 'ADD_OPTION' });
-    if (
-      state.newOption.trim() &&
-      !state.options.includes(state.newOption.trim()) &&
-      !state.doneTags.includes(state.newOption.trim())
-    ) {
-      onChangeOptions(
-        column.ColumnId,
-        [...state.options, state.newOption.trim()],
-        { ...state.optionColors, [state.newOption.trim()]: 'blue' },
-        state.doneTags
-      );
-    }
-  };
-
-  const handleRemoveOption = (option) => {
-    dispatch({ type: 'REMOVE_OPTION', payload: option });
-    const isInOptions = state.options.includes(option);
-    const isInDoneTags = state.doneTags.includes(option);
-    if (isInOptions) {
-      const newOptions = state.options.filter((opt) => opt !== option);
-      const newColors = { ...state.optionColors };
-      delete newColors[option];
-      onChangeOptions(column.ColumnId, newOptions, newColors, state.doneTags);
-    } else if (isInDoneTags) {
-      const newDoneTags = state.doneTags.filter((tag) => tag !== option);
-      const newColors = { ...state.optionColors };
-      delete newColors[option];
-      onChangeOptions(column.ColumnId, state.options, newColors, newDoneTags);
-    }
-  };
-
-  const handleEditOption = (oldOption, newOption) => {
-    dispatch({ type: 'EDIT_OPTION', payload: { oldOption, newOption } });
-    const isInOptions = state.options.includes(oldOption);
-    const isInDoneTags = state.doneTags.includes(oldOption);
-    if (isInOptions) {
-      const newOptions = state.options.map((opt) =>
-        opt === oldOption ? newOption : opt
-      );
-      const newColors = {
-        ...state.optionColors,
-        [newOption]: state.optionColors[oldOption],
-      };
-      delete newColors[oldOption];
-      onChangeOptions(column.ColumnId, newOptions, newColors, state.doneTags);
-    } else if (isInDoneTags) {
-      const newDoneTags = state.doneTags.map((tag) =>
-        tag === oldOption ? newOption : tag
-      );
-      const newColors = {
-        ...state.optionColors,
-        [newOption]: state.optionColors[oldOption],
-      };
-      delete newColors[oldOption];
-      onChangeOptions(column.ColumnId, state.options, newColors, newDoneTags);
-    }
-  };
-
-  const handleColorChange = (option, color) => {
-    dispatch({ type: 'CHANGE_OPTION_COLOR', payload: { option, color } });
-    onChangeOptions(
-      column.ColumnId,
-      state.options,
-      { ...state.optionColors, [option]: color },
-      state.doneTags
-    );
-  };
-
-  const handleSave = async () => {
-    dispatch({ type: 'SET_SAVING', payload: true });
-    try {
-      if (state.name !== column.Name) {
-        await onRename(column.ColumnId, state.name);
-      }
-
-      if (state.selectedIcon !== column.EmojiIcon) {
-        await onChangeIcon(column.ColumnId, state.selectedIcon);
-      }
-
-      if (state.description !== column.Description) {
-        await onChangeDescription(column.ColumnId, state.description);
-      }
-
-      if (state.showTitle !== (column.NameVisible !== false)) {
-        await onToggleTitleVisibility(column.ColumnId, state.showTitle);
-      }
-
-      const isMultiOption = [
-        'multi-select',
-        'todo',
-        'multicheckbox',
-        'tasktable',
-      ].includes(column.Type);
-      const optionsChanged =
-        JSON.stringify(state.options) !== JSON.stringify(column.Options) ||
-        JSON.stringify(state.optionColors) !==
-          JSON.stringify(column.TagColors) ||
-        JSON.stringify(state.doneTags) !== JSON.stringify(column.DoneTags);
-
-      if (isMultiOption && optionsChanged) {
-        await onChangeOptions(
-          column.ColumnId,
-          state.options,
-          state.optionColors,
-          state.doneTags
-        );
-      }
-
-      if (
-        column.Type === 'checkbox' &&
-        state.checkboxColor !== column.CheckboxColor
-      ) {
-        await onChangeCheckboxColor(column.ColumnId, state.checkboxColor);
-      }
-
-      if (onChangeWidth && state.width !== column.Width) {
-        await onChangeWidth(column.ColumnId, state.width);
-      }
-    } catch (err) {
-      console.error('Error saving column changes:', err);
-    } finally {
-      dispatch({ type: 'SET_SAVING', payload: false });
-
-      onClose();
-    }
-  };
-
-  const handleWidthChange = (e) => {
-    const newWidth = e.target.value;
-    dispatch({ type: 'SET_WIDTH', payload: newWidth });
-    if (onChangeWidth) {
-      onChangeWidth(column.ColumnId, newWidth);
-    }
-  };
 
   return (
     <div
@@ -310,7 +137,7 @@ const ColumnMenu = ({
                 <input
                   type="number"
                   value={state.width}
-                  onChange={handleWidthChange}
+                  onChange={(e) => handleWidthChange(dispatch, onChangeWidth, column, e)}
                   min="0"
                   max="1000"
                   className={`w-full px-3 py-2.5 flex items-center text-sm border ${
@@ -349,10 +176,16 @@ const ColumnMenu = ({
               setNewOption={(value) =>
                 dispatch({ type: 'SET_NEW_OPTION', payload: value })
               }
-              handleAddOption={handleAddOption}
-              handleRemoveOption={handleRemoveOption}
-              handleEditOption={handleEditOption}
-              handleColorChange={handleColorChange}
+              handleAddOption={() => handleAddOption(state, dispatch, column, onChangeOptions)}
+              handleRemoveOption={(option) =>
+                handleRemoveOption(state, dispatch, column, onChangeOptions, option)
+              }
+              handleEditOption={(oldOption, newOption) =>
+                handleEditOption(state, dispatch, column, onChangeOptions, oldOption, newOption)
+              }
+              handleColorChange={(option, color) =>
+                handleColorChange(state, dispatch, column, onChangeOptions, option, color)
+              }
               optionColors={state.optionColors}
               darkMode={darkMode}
               isColorMenuOpen={state.isColorMenuOpen}
@@ -376,30 +209,42 @@ const ColumnMenu = ({
           )}
           <div className="flex justify-between gap-2 mt-6">
             <div className='flex gap-2'>
-            <BubbleBtn
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteColumn(column.ColumnId);
-              }}
-              disabled={state.isSaving}
-              variant='delete'
-            >
-              Delete
-            </BubbleBtn>
-            <BubbleBtn
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              disabled={state.isSaving}
-              variant='clear'
-            >
-              Clear column
-            </BubbleBtn>
+              <BubbleBtn
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteColumn(column.ColumnId);
+                }}
+                disabled={state.isSaving}
+                variant='delete'
+              >
+                Delete
+              </BubbleBtn>
+              <BubbleBtn
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                disabled={state.isSaving}
+                variant='clear'
+              >
+                Clear column
+              </BubbleBtn>
             </div>
             <BubbleBtn
               onClick={(e) => {
                 e.stopPropagation();
-                handleSave();
+                handleSave(
+                  state,
+                  dispatch,
+                  column,
+                  onRename,
+                  onChangeIcon,
+                  onChangeDescription,
+                  onToggleTitleVisibility,
+                  onChangeOptions,
+                  onChangeCheckboxColor,
+                  onChangeWidth,
+                  onClose
+                );
               }}
               disabled={state.isSaving}
               variant='standard'
