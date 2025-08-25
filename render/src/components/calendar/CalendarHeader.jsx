@@ -5,7 +5,7 @@ import {
   Plus,
   ChevronDown,
 } from 'lucide-react';
-
+import { BubbleBtn } from '../shared/BubbleBtn';
 export default function CalendarHeader({
   darkTheme,
   viewMode,
@@ -99,7 +99,7 @@ export default function CalendarHeader({
               <ChevronDown size={16} />
             </div>
           </div>
-          <button
+          <BubbleBtn
             onClick={() => {
               setNewEvent({
                 title: '',
@@ -115,9 +115,9 @@ export default function CalendarHeader({
             }}
             className={`px-4 py-1.5 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl flex items-center gap-2 transition-colors shadow-sm hover:shadow-md`}
           >
-            <Plus size={16} />
+            <Plus size={16} className='mr-2' />
             New Event
-          </button>
+          </BubbleBtn>
         </div>
       </div>
     </div>

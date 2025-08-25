@@ -62,7 +62,7 @@
     "EmojiIcon": "User",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
+      "Monday": true,
       "Tuesday": true,
       "Wednesday": true,
       "Thursday": true,
@@ -72,25 +72,6 @@
     },
     "Width": 50,
     "CheckboxColor": "orange"
-  },
-  {
-    "ColumnId": "1755000000006",
-    "Type": "checkbox",
-    "Name": "Code Reviewд",
-    "Description": "Review team code submissions",
-    "EmojiIcon": "Music",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": true,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": true,
-      "Friday": true,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 117,
-    "CheckboxColor": "lime"
   },
   {
     "ColumnId": "1755000000009",
@@ -109,54 +90,6 @@
       "Sunday": "0"
     },
     "Width": 60
-  },
-  {
-    "ColumnId": "1755000000010",
-    "Type": "multicheckbox",
-    "Name": "Daily Habits",
-    "Description": "Hello",
-    "EmojiIcon": "Heart",
-    "NameVisible": true,
-    "Options": [
-      "Meditation",
-      "Journaling",
-      "ружж"
-    ],
-    "TagColors": {
-      "Meditation": "teal",
-      "Journaling": "purple",
-      "ружж": "blue"
-    },
-    "Chosen": {
-      "Monday": "Meditation, Journaling, ружж",
-      "Tuesday": "Meditation",
-      "Wednesday": "Journaling",
-      "Thursday": "",
-      "Friday": "Meditation",
-      "Saturday": "",
-      "Sunday": ""
-    },
-    "Width": 200,
-    "DoneTags": []
-  },
-  {
-    "ColumnId": "1755000000011",
-    "Type": "checkbox",
-    "Name": "Team Sync",
-    "Description": "Weekly team sync meeting",
-    "EmojiIcon": "Brain",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": false,
-      "Tuesday": false,
-      "Wednesday": false,
-      "Thursday": false,
-      "Friday": false,
-      "Saturday": false,
-      "Sunday": false
-    },
-    "Width": 50,
-    "CheckboxColor": "green"
   },
   {
     "ColumnId": "1755000000013",
@@ -194,19 +127,19 @@
     "Chosen": {
       "global": [
         {
-          "text": "Finish report",
+          "text": "add new tasks fast in vscode",
           "completed": false,
+          "category": ""
+        },
+        {
+          "text": "Finish report",
+          "completed": true,
           "category": "Work"
         },
         {
           "text": "Grocery shopping",
           "completed": true,
           "category": "Personal"
-        },
-        {
-          "text": "add new tasks fast in vscode",
-          "completed": false,
-          "category": ""
         }
       ]
     },

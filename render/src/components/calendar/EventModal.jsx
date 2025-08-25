@@ -210,23 +210,22 @@ export default function EventModal({
             </div>
             <div className="mt-6 flex justify-end gap-3">
               {editingEventId && (
-                <button
+                <BubbleBtn
                   onClick={() => handleDeleteEvent(editingEventId)}
-                  className={`px-4 py-2 text-sm ${darkTheme ? 'text-red-400 bg-gray-700 hover:bg-gray-600' : 'text-red-600 bg-gray-100 hover:bg-gray-200'} rounded-xl transition-colors flex items-center gap-1`}
+                  variant='delete'
                 >
                   <Trash2 size={16} />
                   Delete
-                </button>
+                </BubbleBtn>
               )}
-              <button
+              <BubbleBtn
+                variant='clear'
                 onClick={() => setShowEventModal(false)}
-                className={`px-4 py-2 text-sm ${darkTheme ? 'text-gray-300 bg-gray-700 hover:bg-gray-600' : 'text-gray-600 bg-gray-100 hover:bg-gray-200'} rounded-xl transition-colors`}
               >
                 Cancel
-              </button>
+              </BubbleBtn>
               <BubbleBtn
                 onClick={handleSaveEvent}
-                darkTheme={darkTheme}
                 disabled={
                   !validateTime(newEvent.startTime) ||
                   !validateTime(newEvent.endTime)

@@ -1,18 +1,15 @@
-import React from 'react';
+import { useSelector } from 'react-redux';
 
-export const BubbleBtn = ({
-  children,
-  onClick,
-  darkTheme = false,
-  disablet = false,
-  light = false,
-}) => {
+
+export const BubbleBtn = ({ children, onClick, disablet = false, variant = 'standard' }) => {
+  const { theme } = useSelector((state) => state.theme);
+
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disablet}
-      className={`items-center flex px-3 py-2 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors`}
+      className={`items-center flex px-4 py-2.5 text-sm ${theme.bubbleBtn[variant]} rounded-xl transition-colors`}
     >
       {children}
     </button>

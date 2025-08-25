@@ -23,6 +23,12 @@ const themes = {
       scrollbarThumb: 'rgba(156, 163, 175, 0.5)',
       scrollbarThumbHover: 'rgba(107, 114, 128, 0.7)',
       settingsSectionSelectorBg: 'bg-blue-50',
+
+      bubbleBtn: {
+        standard: 'bg-blue-600 hover:bg-blue-700 text-white',
+        delete: 'bg-red-500 hover:bg-red-600 text-white',
+        clear: 'bg-gray-100 hover:bg-gray-200 text-gray-600',
+      },
     },
     dark: {
       background: 'bg-gray-900',
@@ -46,6 +52,11 @@ const themes = {
       scrollbarThumb: 'rgba(156, 163, 175, 0.7)',
       scrollbarThumbHover: 'rgba(107, 114, 128, 0.9)',
       settingsSectionSelectorBg: 'bg-gray-700',
+      bubbleBtn: {
+        standard: 'bg-blue-500 hover:bg-blue-600 text-white',
+        delete: 'bg-red-400 hover:bg-red-500 text-white',
+        clear: 'bg-gray-700 hover:bg-gray-600 text-gray-300',
+      },
     },
   },
   nature: {
