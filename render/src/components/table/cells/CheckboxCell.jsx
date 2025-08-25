@@ -1,9 +1,11 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import {getCheckBoxColorOptions} from '../../utils/colorOptions';
+import { useSelector } from 'react-redux';
 
-export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) => {
-  
+export const CheckboxCell = ({ checked, onChange, color = 'green' }) => {
+  const { mode } = useSelector((state) => state.theme);
+  const darkMode = mode === 'dark';
   const colorOptions = getCheckBoxColorOptions({ darkMode });
 
   const selectedColor = colorOptions[color] || colorOptions.green;
@@ -12,7 +14,7 @@ export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) =
     onChange(!checked); 
   };
 
-       return (
+  return (
     <div className="flex justify-center items-center w-full h-full">
       <label className="relative flex items-center justify-center w-6 h-6 cursor-pointer">
         <input
@@ -34,8 +36,6 @@ export const CheckboxCell = ({ checked, onChange, color = 'green', darkMode }) =
             strokeWidth={3}
           />
         </div>
-
-
       </label>
     </div>
   );
