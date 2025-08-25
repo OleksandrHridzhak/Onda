@@ -80,6 +80,8 @@ export default function SettingsDashboard() {
         await window.electronAPI.updateUISettings(newSettings);
         break;
       case 'header':
+        await window.electronAPI.updateHeaderSettings(newSettings);
+        break;
       case 'calendar':
         await window.electronAPI.updateSettings(updatedSettings);
         break;
