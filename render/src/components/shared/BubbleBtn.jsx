@@ -6,7 +6,7 @@ export const BubbleBtn = ({children, onClick, darkTheme = false, disablet = fals
         type="button"
         onClick={onClick}
         disabled={disablet}
-        className={`px-3 py-1.5 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors`}
+        className={`items-center flex px-3 py-2 text-sm text-white ${darkTheme ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} rounded-xl transition-colors`}
     >
         {children}
     </button>

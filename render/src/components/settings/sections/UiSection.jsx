@@ -1,23 +1,21 @@
 import ToggleSwitch from '../ToggleSwitch';
+import SettingsTemplate from '../SettingsTemplate';
+import { useSelector } from 'react-redux';
+
 
 export default function UISection({
   settings,
   onUIChange,
-  darkTheme,
-  onThemeChange,
-  setDarkTheme,
   autoThemeSettings,
   onAutoThemeChange,
 }) {
+
+  const {theme, mode} = useSelector((state) => state.theme);
+  const darkTheme = mode === 'dark';
   return (
-    <div className="space-y-6">
-      <div className={`border-b ${darkTheme ? 'border-gray-700' : 'border-gray-200'} pb-4`}>
-        <h3 className={`text-base font-medium ${darkTheme ? 'text-gray-200' : 'text-gray-600'}`}>
-          Interface Settings
-        </h3>
-        <div className="mt-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
+    <SettingsTemplate title="UI Settings">
+{/*           <div className="flex items-center justify-between">
+            <span className={`text-sm ${theme.textTableValues}`}>
               Dark Theme
             </span>
             <ToggleSwitch
@@ -27,10 +25,10 @@ export default function UISection({
                 setDarkTheme(checked);
               }}
             />
-          </div>
+          </div> */}
 
           <div className="flex items-center justify-between mt-4">
-            <span className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
+            <span className={`text-sm ${theme.textTableValues}`}>
               Auto Theme Switcher
             </span>
             <ToggleSwitch
@@ -42,7 +40,7 @@ export default function UISection({
           {autoThemeSettings.enabled && (
             <div className="mt-4 space-y-3">
               <div className="flex items-center justify-between">
-                <label className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
+                <label className={`text-sm ${theme.textTableValues}`}>
                   Start of Day
                 </label>
                 <input
@@ -53,7 +51,7 @@ export default function UISection({
                 />
               </div>
               <div className="flex items-center justify-between">
-                <label className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
+                <label className={`text-sm ${theme.textTableValues}`}>
                   End of Day
                 </label>
                 <input
@@ -65,8 +63,6 @@ export default function UISection({
               </div>
             </div>
           )}
-        </div>
-      </div>
-    </div>
+        </SettingsTemplate>
   );
 }
