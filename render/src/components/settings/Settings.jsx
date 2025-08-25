@@ -7,10 +7,8 @@ import DataSection from './sections/DataSection';
 import HeaderSection from './sections/HeaderSection';
 import CalendarSection from './sections/CalendarSection';
 
-
-
 export default function SettingsDashboard() {
-  const {theme} = useSelector((state) => state.theme);
+  const { theme } = useSelector((state) => state.theme);
   const [activeSection, setActiveSection] = useState(() => {
     return localStorage.getItem('activeSection') || 'table';
   });
@@ -58,86 +56,47 @@ export default function SettingsDashboard() {
     localStorage.setItem('activeSection', activeSection);
   }, [activeSection]);
 
+  const handleSettingsChange = async (section, newSettings) => {
+    const updatedSettings = {
+      ...settings,
+      [section]: section === 'theme' && newSettings.autoThemeSettings
+        ? { ...settings.theme, ...newSettings, autoThemeSettings: { ...settings.theme.autoThemeSettings, ...newSettings.autoThemeSettings } }
+        : { ...settings[section], ...newSettings },
+    };
+
+    setSettings(updatedSettings);
+
+    switch (section) {
+      case 'theme':
+        await window.electronAPI.updateTheme(newSettings);
+        if (newSettings.autoThemeSettings?.enabled === true) {
+          window.location.reload();
+        }
+        break;
+      case 'table':
+        await window.electronAPI.updateTableSettings(newSettings);
+        break;
+      case 'ui':
+        await window.electronAPI.updateUISettings(newSettings);
+        break;
+      case 'header':
+      case 'calendar':
+        await window.electronAPI.updateSettings(updatedSettings);
+        break;
+      default:
+        break;
+    }
+  };
+
   const sections = [
-    { id: 'table', name: 'Table', icon: <Table className="w-4 h-4" /> },
-    { id: 'ui', name: 'Interface', icon: <Eye className="w-4 h-4" /> },
-    { id: 'data', name: 'Data', icon: <Download className="w-4 h-4" /> },
-    { id: 'header', name: 'Header', icon: <LayoutGrid className="w-4 h-4" /> },
-    { id: 'calendar', name: 'Calendar', icon: <CalendarDays className="w-4 h-4" /> },
+    { id: 'table', name: 'Table', icon: <Table className="w-4 h-4" />, component: <TableSection settings={settings.table} onTableChange={(newTable) => handleSettingsChange('table', newTable)} /> },
+    { id: 'ui', name: 'Interface', icon: <Eye className="w-4 h-4" />, component: <UISection settings={settings} onUIChange={(newUI) => handleSettingsChange('ui', newUI)} onThemeChange={(newTheme) => handleSettingsChange('theme', newTheme)} onAutoThemeChange={(newAutoThemeSettings) => handleSettingsChange('theme', { autoThemeSettings: newAutoThemeSettings })} /> },
+    { id: 'data', name: 'Data', icon: <Download className="w-4 h-4" />, component: <DataSection /> },
+    { id: 'header', name: 'Header', icon: <LayoutGrid className="w-4 h-4" />, component: <HeaderSection settings={settings} onHeaderChange={(newHeader) => handleSettingsChange('header', newHeader)} /> },
+    { id: 'calendar', name: 'Calendar', icon: <CalendarDays className="w-4 h-4" />, component: <CalendarSection settings={settings} onCalendarChange={(newCalendar) => handleSettingsChange('calendar', newCalendar)} /> },
   ];
 
-  const handleAutoThemeChange = (newAutoThemeSettings) => {
-    const updatedTheme = {
-      ...settings.theme,
-      autoThemeSettings: { ...settings.theme.autoThemeSettings, ...newAutoThemeSettings },
-    };
-    handleThemeChange(updatedTheme);
-  };
-
-  const handleThemeChange = async (newTheme) => {
-    const updatedSettings = { ...settings, theme: { ...settings.theme, ...newTheme } };
-    setSettings(updatedSettings);
-    await window.electronAPI.updateTheme(newTheme);
-    if (newTheme.autoThemeSettings?.enabled === true) {
-      window.location.reload();
-    }
-  };
-
-  const handleTableChange = async (newTable) => {
-    const updatedSettings = { ...settings, table: { ...settings.table, ...newTable } };
-    setSettings(updatedSettings);
-    await window.electronAPI.updateTableSettings(newTable);
-    window.dispatchEvent(new CustomEvent('table-settings-changed', { detail: newTable }));
-  };
-
-  const handleUIChange = async (newUI) => {
-    const updatedSettings = { ...settings, ui: { ...settings.ui, ...newUI } };
-    setSettings(updatedSettings);
-    await window.electronAPI.updateUISettings(newUI);
-  };
-
-  const handleHeaderChange = async (newHeader) => {
-    const updatedSettings = { ...settings, header: { ...settings.header, ...newHeader } };
-    setSettings(updatedSettings);
-    await window.electronAPI.updateSettings(updatedSettings);
-    window.dispatchEvent(new CustomEvent('header-settings-changed', { detail: newHeader }));
-  };
-
-  const handleCalendarChange = async (newCalendar) => {
-    const updatedSettings = { ...settings, calendar: { ...settings.calendar, ...newCalendar } };
-    setSettings(updatedSettings);
-    await window.electronAPI.updateSettings(updatedSettings);
-  };
-
-  const renderSection = () => {
-    switch (activeSection) {
-      case 'table':
-        return <TableSection settings={settings.table} onTableChange={handleTableChange}/>;
-      case 'ui':
-        return (
-          <UISection
-            settings={settings}
-            onUIChange={handleUIChange}
-            onThemeChange={handleThemeChange}
-            autoThemeSettings={settings.theme.autoThemeSettings}
-            onAutoThemeChange={handleAutoThemeChange}
-          />
-        );
-      case 'data':
-        return <DataSection  />;
-      case 'header':
-        return <HeaderSection settings={settings} onHeaderChange={handleHeaderChange} />;
-      case 'calendar':
-        return (
-          <CalendarSection
-            settings={settings}
-            onCalendarChange={handleCalendarChange}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  const renderSection = () => sections.find((s) => s.id === activeSection)?.component || null;
 
   return (
     <div className={`font-poppins flex flex-col h-full custom-scroll ${theme.background}`}>

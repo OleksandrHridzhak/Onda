@@ -1,5 +1,4 @@
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, ChevronDown } from 'lucide-react';
-import { BubbleBtn } from '../shared/BubbleBtn';
 
 export default function CalendarHeader({
   darkTheme,
