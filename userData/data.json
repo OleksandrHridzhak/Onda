@@ -78,7 +78,7 @@
     "Type": "numberbox",
     "Name": "Client Calls",
     "Description": "Hours spent on client calls",
-    "EmojiIcon": "Phone",
+    "EmojiIcon": "Zap",
     "NameVisible": false,
     "Chosen": {
       "Monday": "1",

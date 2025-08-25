@@ -1,4 +1,5 @@
 import { Trash2 } from 'lucide-react';
+import { InputText } from '../shared/InputText';
 import { BubbleBtn } from '../shared/BubbleBtn';
 
 export default function EventModal({
@@ -40,13 +41,11 @@ export default function EventModal({
                 >
                   Title
                 </label>
-                <input
-                  type="text"
+                <InputText
                   value={newEvent.title}
                   onChange={(e) =>
                     setNewEvent({ ...newEvent, title: e.target.value })
                   }
-                  className={`w-full border ${darkTheme ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-200 bg-white text-gray-600'} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300`}
                   placeholder="Event title"
                 />
               </div>
@@ -58,13 +57,11 @@ export default function EventModal({
                     Start
                   </label>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="text"
+                    <InputText
                       value={newEvent.startTime}
                       onChange={(e) =>
                         setNewEvent({ ...newEvent, startTime: e.target.value })
                       }
-                      className={`w-full border ${darkTheme ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-200 bg-white text-gray-600'} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 ${!validateTime(newEvent.startTime) && newEvent.startTime ? 'border-red-500' : ''}`}
                       placeholder="HH:mm"
                     />
                   </div>
@@ -76,13 +73,11 @@ export default function EventModal({
                     End
                   </label>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="text"
+                    <InputText
                       value={newEvent.endTime}
                       onChange={(e) =>
                         setNewEvent({ ...newEvent, endTime: e.target.value })
                       }
-                      className={`w-full border ${darkTheme ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-200 bg-white text-gray-600'} rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 ${!validateTime(newEvent.endTime) && newEvent.endTime ? 'border-red-500' : ''}`}
                       placeholder="HH:mm"
                     />
                   </div>
@@ -91,13 +86,11 @@ export default function EventModal({
               <div className="flex justify-center gap-2 mb-4">
                 <BubbleBtn
                   onClick={() => adjustEventTimes(-5)}
-                  darkTheme={darkTheme}
                 >
                   -5m
                 </BubbleBtn>
                 <BubbleBtn
                   onClick={() => adjustEventTimes(5)}
-                  darkTheme={darkTheme}
                 >
                   +5m
                 </BubbleBtn>
