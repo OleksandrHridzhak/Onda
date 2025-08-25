@@ -2,8 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import EventModal from './EventModal';
 import CalendarHeader from './CalendarHeader';
 import CalendarTimeline from './CalendarTimeline';
+import { useSelector } from 'react-redux';
 
-export default function Calendar({ darkTheme, setDarkTheme }) {
+export default function Calendar() {
+  const { mode } = useSelector((state) => state.theme);
+  const darkTheme = mode === 'dark';
   const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewMode, setViewMode] = useState(() => {
@@ -284,7 +287,7 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
   };
 
   return (
-    <div className={`font-poppins min-h-screen ${darkTheme ? 'bg-gray-900' : 'bg-white'}`}>
+    <div className={`font-poppins min-h-screen`}>
       <style jsx global>{`
         .custom-checkbox {
           position: relative;
@@ -328,7 +331,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
       `}</style>
 
       <CalendarHeader
-        darkTheme={darkTheme}
         viewMode={viewMode}
         setViewMode={setViewMode}
         selectedDate={selectedDate}
@@ -344,7 +346,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
       />
 
       <CalendarTimeline
-        darkTheme={darkTheme}
         viewMode={viewMode}
         selectedDate={selectedDate}
         weekDays={weekDays}
@@ -363,7 +364,6 @@ export default function Calendar({ darkTheme, setDarkTheme }) {
       />
 
       <EventModal
-        darkTheme={darkTheme}
         showEventModal={showEventModal}
         setShowEventModal={setShowEventModal}
         newEvent={newEvent}
