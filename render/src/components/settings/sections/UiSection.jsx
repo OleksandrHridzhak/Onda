@@ -25,7 +25,7 @@ export default function UISection({
             />
           </div> */}
 
-      <div className="flex items-center justify-between mt-4">
+{/*       <div className="flex items-center justify-between mt-4">
         <span className={`text-sm ${theme.textTableValues}`}>
           Auto Theme Switcher
         </span>
@@ -33,9 +33,9 @@ export default function UISection({
           checked={autoThemeSettings.enabled}
           onChange={(checked) => onAutoThemeChange({ enabled: checked })}
         />
-      </div>
+      </div> */}
 
-      {autoThemeSettings.enabled && (
+{/*       {autoThemeSettings.enabled && (
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between">
             <label className={`text-sm ${theme.textTableValues}`}>
@@ -60,7 +60,7 @@ export default function UISection({
             />
           </div>
         </div>
-      )}
+      )} */}
     </SettingsTemplate>
   );
 }

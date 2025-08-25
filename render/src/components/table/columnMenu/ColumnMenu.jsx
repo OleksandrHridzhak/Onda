@@ -374,25 +374,35 @@ const ColumnMenu = ({
               }
             />
           )}
-          <div className="flex justify-between mt-6">
-            <button
+          <div className="flex justify-between gap-2 mt-6">
+            <div className='flex gap-2'>
+            <BubbleBtn
               onClick={(e) => {
                 e.stopPropagation();
                 handleDeleteColumn(column.ColumnId);
               }}
-              className={`px-4 py-2 text-sm font-medium rounded-lg ${darkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-700'} transition-colors duration-200`}
-              aria-label="Delete column"
+              disabled={state.isSaving}
+              variant='delete'
             >
               Delete
-            </button>
+            </BubbleBtn>
+            <BubbleBtn
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              disabled={state.isSaving}
+              variant='clear'
+            >
+              Clear column
+            </BubbleBtn>
+            </div>
             <BubbleBtn
               onClick={(e) => {
                 e.stopPropagation();
                 handleSave();
               }}
               disabled={state.isSaving}
-              darkTheme={darkMode}
-              light={false}
+              variant='standard'
             >
               Save Changes
             </BubbleBtn>
