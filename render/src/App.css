@@ -1,4 +1,3 @@
-
 /* white */
 .custom-scroll-y-light::-webkit-scrollbar {
   width: 7px;
@@ -37,4 +36,3 @@
 .custom-scroll-y-dark::-webkit-scrollbar-thumb:hover {
   background: rgba(107, 114, 128, 0.9);
 }
-

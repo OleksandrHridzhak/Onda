@@ -2,15 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { getColorOptions } from '../../utils/colorOptions';
 
-export const TagsCell = ({ value, onChange, options, darkMode, tagColors = {} }) => {
+export const TagsCell = ({
+  value,
+  onChange,
+  options,
+  darkMode,
+  tagColors = {},
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState(
-    typeof value === 'string' && value.trim() !== '' ? value.split(', ').filter(tag => tag.trim() !== '') : []
+    typeof value === 'string' && value.trim() !== ''
+      ? value.split(', ').filter((tag) => tag.trim() !== '')
+      : []
   );
   const dropdownRef = useRef(null);
 
-
-  const colorOptions = getColorOptions({darkMode});
+  const colorOptions = getColorOptions({ darkMode });
 
   const handleTagChange = (tag) => {
     setSelectedTags((prevTags) => {
@@ -45,10 +52,12 @@ export const TagsCell = ({ value, onChange, options, darkMode, tagColors = {} })
           <div className="flex flex-wrap gap-1">
             {selectedTags.map((tag) => {
               const color = tagColors[tag] || 'blue';
-              const colorOption = colorOptions.find(opt => opt.name === color);
+              const colorOption = colorOptions.find(
+                (opt) => opt.name === color
+              );
               return (
-                <span 
-                  key={tag} 
+                <span
+                  key={tag}
                   className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text}`}
                 >
                   {tag}
@@ -60,12 +69,14 @@ export const TagsCell = ({ value, onChange, options, darkMode, tagColors = {} })
           <div className="h-full w-full min-h-[2rem]"></div>
         )}
       </div>
-      
+
       {isOpen && (
-        <div className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}>
+        <div
+          className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}
+        >
           {(options || []).map((option) => {
             const color = tagColors[option] || 'blue';
-            const colorOption = colorOptions.find(opt => opt.name === color);
+            const colorOption = colorOptions.find((opt) => opt.name === color);
             return (
               <div
                 key={option}
@@ -76,7 +87,9 @@ export const TagsCell = ({ value, onChange, options, darkMode, tagColors = {} })
                 }}
               >
                 <div className="flex items-center">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text} mr-2`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text} mr-2`}
+                  >
                     {option}
                   </span>
                 </div>

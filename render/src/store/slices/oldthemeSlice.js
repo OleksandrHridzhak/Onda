@@ -1,17 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-
 export const fetchTheme = createAsyncThunk('theme/fetchTheme', async () => {
   const res = await window.electronAPI?.getTheme?.();
   return res?.darkMode ?? true;
 });
 
-
-export const switchThemeAPI = createAsyncThunk('theme/switchTheme', async (darkMode) => {
-  await window.electronAPI?.switchTheme?.(darkMode);
-  localStorage.setItem('darkMode', darkMode); 
-  return darkMode;
-});
+export const switchThemeAPI = createAsyncThunk(
+  'theme/switchTheme',
+  async (darkMode) => {
+    await window.electronAPI?.switchTheme?.(darkMode);
+    localStorage.setItem('darkMode', darkMode);
+    return darkMode;
+  }
+);
 
 const initialDarkMode = localStorage.getItem('darkMode') === 'true';
 

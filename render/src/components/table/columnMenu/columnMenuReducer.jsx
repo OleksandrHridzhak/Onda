@@ -1,16 +1,16 @@
 // columnMenuReducer.js
 export const initialState = (column) => ({
   name: column.Name,
-  selectedIcon: column.EmojiIcon || "",
-  description: column.Description || "",
+  selectedIcon: column.EmojiIcon || '',
+  description: column.Description || '',
   showTitle: column.NameVisible !== false,
   options: column.Options || [],
   doneTags: column.DoneTags || [],
   optionColors: column.TagColors || {},
-  checkboxColor: column.CheckboxColor || "green",
-  newOption: "",
+  checkboxColor: column.CheckboxColor || 'green',
+  newOption: '',
   Chosen: column.Chosen,
-  width: column.Width ? parseInt(column.Width) : "",
+  width: column.Width ? parseInt(column.Width) : '',
   isIconSectionExpanded: false,
   isColorMenuOpen: {},
   isSaving: false,
@@ -18,21 +18,25 @@ export const initialState = (column) => ({
 
 export const reducer = (state, action) => {
   switch (action.type) {
-    case "SET_NAME":
+    case 'SET_NAME':
       return { ...state, name: action.payload };
-    case "SET_SELECTED_ICON":
-      return { ...state, selectedIcon: action.payload, isIconSectionExpanded: false };
-    case "SET_DESCRIPTION":
+    case 'SET_SELECTED_ICON':
+      return {
+        ...state,
+        selectedIcon: action.payload,
+        isIconSectionExpanded: false,
+      };
+    case 'SET_DESCRIPTION':
       return { ...state, description: action.payload };
-    case "SET_SHOW_TITLE":
+    case 'SET_SHOW_TITLE':
       return { ...state, showTitle: action.payload };
-    case "SET_NEW_OPTION":
+    case 'SET_NEW_OPTION':
       return { ...state, newOption: action.payload };
-    case "SET_WIDTH":
+    case 'SET_WIDTH':
       return { ...state, width: action.payload };
-    case "TOGGLE_ICON_SECTION":
+    case 'TOGGLE_ICON_SECTION':
       return { ...state, isIconSectionExpanded: !state.isIconSectionExpanded };
-    case "TOGGLE_COLOR_MENU":
+    case 'TOGGLE_COLOR_MENU':
       return {
         ...state,
         isColorMenuOpen: {
@@ -40,13 +44,13 @@ export const reducer = (state, action) => {
           [action.payload]: !state.isColorMenuOpen[action.payload],
         },
       };
-    case "SET_CHECKBOX_COLOR":
+    case 'SET_CHECKBOX_COLOR':
       return {
         ...state,
         checkboxColor: action.payload,
         isColorMenuOpen: { ...state.isColorMenuOpen, checkbox: false },
       };
-    case "ADD_OPTION":
+    case 'ADD_OPTION':
       if (
         state.newOption.trim() &&
         !state.options.includes(state.newOption.trim()) &&
@@ -55,33 +59,37 @@ export const reducer = (state, action) => {
         const newOptions = [...state.options, state.newOption.trim()];
         const newColors = {
           ...state.optionColors,
-          [state.newOption.trim()]: "blue",
+          [state.newOption.trim()]: 'blue',
         };
         return {
           ...state,
           options: newOptions,
           optionColors: newColors,
-          newOption: "",
+          newOption: '',
         };
       }
       return state;
-    case "REMOVE_OPTION":
+    case 'REMOVE_OPTION':
       const isInOptions = state.options.includes(action.payload);
       const isInDoneTags = state.doneTags.includes(action.payload);
       if (isInOptions) {
         console.log('U USED REMOVE OPTION REDUCER');
-        const newOptions = state.options.filter((opt) => opt !== action.payload);
+        const newOptions = state.options.filter(
+          (opt) => opt !== action.payload
+        );
         const newColors = { ...state.optionColors };
         delete newColors[action.payload];
         return { ...state, options: newOptions, optionColors: newColors };
       } else if (isInDoneTags) {
-        const newDoneTags = state.doneTags.filter((tag) => tag !== action.payload);
+        const newDoneTags = state.doneTags.filter(
+          (tag) => tag !== action.payload
+        );
         const newColors = { ...state.optionColors };
         delete newColors[action.payload];
         return { ...state, doneTags: newDoneTags, optionColors: newColors };
       }
       return state;
-    case "EDIT_OPTION":
+    case 'EDIT_OPTION':
       const { oldOption, newOption } = action.payload;
       const isInOptionsEdit = state.options.includes(oldOption);
       const isInDoneTagsEdit = state.doneTags.includes(oldOption);
@@ -107,15 +115,15 @@ export const reducer = (state, action) => {
         return { ...state, doneTags: newDoneTags, optionColors: newColors };
       }
       return state;
-    case "CHANGE_OPTION_COLOR":
+    case 'CHANGE_OPTION_COLOR':
       const { option, color } = action.payload;
       return {
         ...state,
         optionColors: { ...state.optionColors, [option]: color },
       };
-    case "SET_SAVING":
+    case 'SET_SAVING':
       return { ...state, isSaving: action.payload };
-    case "RESET":
+    case 'RESET':
       return initialState(action.payload);
     default:
       return state;

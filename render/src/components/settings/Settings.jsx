@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Settings, LayoutGrid, CalendarDays, Table, Eye, Download } from 'lucide-react';
+import {
+  Settings,
+  LayoutGrid,
+  CalendarDays,
+  Table,
+  Eye,
+  Download,
+} from 'lucide-react';
 import TableSection from './sections/TableSection';
 import UISection from './sections/UiSection';
 import DataSection from './sections/DataSection';
@@ -42,14 +49,17 @@ export default function SettingsDashboard() {
   });
 
   useEffect(() => {
-    window.electronAPI.getSettings().then(({ data }) => {
-      setSettings((prev) => ({
-        ...prev,
-        ...data,
-        header: data.header ?? prev.header,
-        calendar: data.calendar ?? prev.calendar,
-      }));
-    }).catch(console.error);
+    window.electronAPI
+      .getSettings()
+      .then(({ data }) => {
+        setSettings((prev) => ({
+          ...prev,
+          ...data,
+          header: data.header ?? prev.header,
+          calendar: data.calendar ?? prev.calendar,
+        }));
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -59,9 +69,17 @@ export default function SettingsDashboard() {
   const handleSettingsChange = async (section, newSettings) => {
     const updatedSettings = {
       ...settings,
-      [section]: section === 'theme' && newSettings.autoThemeSettings
-        ? { ...settings.theme, ...newSettings, autoThemeSettings: { ...settings.theme.autoThemeSettings, ...newSettings.autoThemeSettings } }
-        : { ...settings[section], ...newSettings },
+      [section]:
+        section === 'theme' && newSettings.autoThemeSettings
+          ? {
+              ...settings.theme,
+              ...newSettings,
+              autoThemeSettings: {
+                ...settings.theme.autoThemeSettings,
+                ...newSettings.autoThemeSettings,
+              },
+            }
+          : { ...settings[section], ...newSettings },
     };
 
     setSettings(updatedSettings);
@@ -91,19 +109,81 @@ export default function SettingsDashboard() {
   };
 
   const sections = [
-    { id: 'table', name: 'Table', icon: <Table className="w-4 h-4" />, component: <TableSection settings={settings.table} onTableChange={(newTable) => handleSettingsChange('table', newTable)} /> },
-    { id: 'ui', name: 'Interface', icon: <Eye className="w-4 h-4" />, component: <UISection settings={settings} onUIChange={(newUI) => handleSettingsChange('ui', newUI)} onThemeChange={(newTheme) => handleSettingsChange('theme', newTheme)} onAutoThemeChange={(newAutoThemeSettings) => handleSettingsChange('theme', { autoThemeSettings: newAutoThemeSettings })} /> },
-    { id: 'data', name: 'Data', icon: <Download className="w-4 h-4" />, component: <DataSection /> },
-    { id: 'header', name: 'Header', icon: <LayoutGrid className="w-4 h-4" />, component: <HeaderSection settings={settings} onHeaderChange={(newHeader) => handleSettingsChange('header', newHeader)} /> },
-    { id: 'calendar', name: 'Calendar', icon: <CalendarDays className="w-4 h-4" />, component: <CalendarSection settings={settings} onCalendarChange={(newCalendar) => handleSettingsChange('calendar', newCalendar)} /> },
+    {
+      id: 'table',
+      name: 'Table',
+      icon: <Table className="w-4 h-4" />,
+      component: (
+        <TableSection
+          settings={settings.table}
+          onTableChange={(newTable) => handleSettingsChange('table', newTable)}
+        />
+      ),
+    },
+    {
+      id: 'ui',
+      name: 'Interface',
+      icon: <Eye className="w-4 h-4" />,
+      component: (
+        <UISection
+          settings={settings}
+          onUIChange={(newUI) => handleSettingsChange('ui', newUI)}
+          onThemeChange={(newTheme) => handleSettingsChange('theme', newTheme)}
+          onAutoThemeChange={(newAutoThemeSettings) =>
+            handleSettingsChange('theme', {
+              autoThemeSettings: newAutoThemeSettings,
+            })
+          }
+        />
+      ),
+    },
+    {
+      id: 'data',
+      name: 'Data',
+      icon: <Download className="w-4 h-4" />,
+      component: <DataSection />,
+    },
+    {
+      id: 'header',
+      name: 'Header',
+      icon: <LayoutGrid className="w-4 h-4" />,
+      component: (
+        <HeaderSection
+          settings={settings}
+          onHeaderChange={(newHeader) =>
+            handleSettingsChange('header', newHeader)
+          }
+        />
+      ),
+    },
+    {
+      id: 'calendar',
+      name: 'Calendar',
+      icon: <CalendarDays className="w-4 h-4" />,
+      component: (
+        <CalendarSection
+          settings={settings}
+          onCalendarChange={(newCalendar) =>
+            handleSettingsChange('calendar', newCalendar)
+          }
+        />
+      ),
+    },
   ];
 
-  const renderSection = () => sections.find((s) => s.id === activeSection)?.component || null;
+  const renderSection = () =>
+    sections.find((s) => s.id === activeSection)?.component || null;
 
   return (
-    <div className={`font-poppins flex flex-col h-full custom-scroll ${theme.background}`}>
-      <div className={`sticky top-0 z-10 ${theme.background} ${theme.border} border-b px-8 py-6`}>
-        <h1 className={`text-xl font-medium ${theme.textTableValues} flex items-center`}>
+    <div
+      className={`font-poppins flex flex-col h-full custom-scroll ${theme.background}`}
+    >
+      <div
+        className={`sticky top-0 z-10 ${theme.background} ${theme.border} border-b px-8 py-6`}
+      >
+        <h1
+          className={`text-xl font-medium ${theme.textTableValues} flex items-center`}
+        >
           <Settings className="w-5 h-5 mr-2" />
           Settings
         </h1>

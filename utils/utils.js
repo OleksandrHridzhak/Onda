@@ -1,4 +1,4 @@
-const fs = require('fs'); 
+const fs = require('fs');
 const path = require('path');
 
 const SETTINGS_FILE = path.join(__dirname, '../userData/settings.json');
@@ -17,7 +17,7 @@ function updateThemeBasedOnTime() {
     const endHour = parseInt(endTime.split(':')[0], 10);
 
     const isDarkMode = currentHour <= startHour && currentHour > endHour;
-     
+
     if (settings.theme.darkMode !== isDarkMode) {
       settings.theme.darkMode = isDarkMode;
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
@@ -25,6 +25,5 @@ function updateThemeBasedOnTime() {
     }
   }
 }
-
 
 module.exports = { updateThemeBasedOnTime };

@@ -4,7 +4,7 @@ export const TaskTableCell = ({ column, onChangeOptions, darkMode }) => {
   const [incompleteTasks, setIncompleteTasks] = useState(column.Options || []);
   const [completedTasks, setCompletedTasks] = useState(column.DoneTags || []);
 
-  const colorOptions = getColorOptions({darkMode});
+  const colorOptions = getColorOptions({ darkMode });
   useEffect(() => {
     setIncompleteTasks(column.Options || []);
     setCompletedTasks(column.DoneTags || []);
@@ -16,33 +16,43 @@ export const TaskTableCell = ({ column, onChangeOptions, darkMode }) => {
 
     if (isCompleted) {
       // Move from DoneTags to Options (mark as incomplete)
-      updatedCompleted = updatedCompleted.filter(t => t !== task);
+      updatedCompleted = updatedCompleted.filter((t) => t !== task);
       updatedIncomplete = [...updatedIncomplete, task];
     } else {
       // Move from Options to DoneTags (mark as completed)
-      updatedIncomplete = updatedIncomplete.filter(t => t !== task);
+      updatedIncomplete = updatedIncomplete.filter((t) => t !== task);
       updatedCompleted = [...updatedCompleted, task];
     }
 
     setIncompleteTasks(updatedIncomplete);
     setCompletedTasks(updatedCompleted);
-    onChangeOptions(column.ColumnId, updatedIncomplete, column.TagColors, updatedCompleted);
+    onChangeOptions(
+      column.ColumnId,
+      updatedIncomplete,
+      column.TagColors,
+      updatedCompleted
+    );
   };
 
   return (
     <div className="h-full flex flex-col">
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[380px]
+      <div
+        className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[380px]
         [&::-webkit-scrollbar]:w-1/2
         [&::-webkit-scrollbar-track]:bg-transparent
         [&::-webkit-scrollbar-thumb]:rounded-full
         [&::-webkit-scrollbar-thumb]:transition-colors
         [&::-webkit-scrollbar-thumb]:duration-200
-        ${darkMode 
-          ? '[&::-webkit-scrollbar-thumb]:bg-gray-600 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500'
-          : '[&::-webkit-scrollbar-thumb]:bg-gray-200 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300'
-        }`}>
+        ${
+          darkMode
+            ? '[&::-webkit-scrollbar-thumb]:bg-gray-600 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500'
+            : '[&::-webkit-scrollbar-thumb]:bg-gray-200 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300'
+        }`}
+      >
         <div className="mb-4">
-          <h3 className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          <h3
+            className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+          >
             To Do
           </h3>
           <div className="flex flex-wrap gap-1">
@@ -60,13 +70,17 @@ export const TaskTableCell = ({ column, onChangeOptions, darkMode }) => {
           </div>
         </div>
         <div>
-          <h3 className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          <h3
+            className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+          >
             Completed
           </h3>
           <div className="flex flex-wrap gap-1">
             {completedTasks.map((task, index) => {
               const color = column.TagColors[task] || 'blue';
-              const colorOption = colorOptions.find(opt => opt.name === color) || colorOptions[1];
+              const colorOption =
+                colorOptions.find((opt) => opt.name === color) ||
+                colorOptions[1];
               return (
                 <div
                   key={index}

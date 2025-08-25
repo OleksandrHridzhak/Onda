@@ -2,16 +2,15 @@ const fs = require('fs');
 
 const ensureDataFileExists = (filePath, getTemplate) => {
   if (!fs.existsSync(filePath)) {
-
     const template = getTemplate ? getTemplate() : [];
-    
+
     fs.writeFileSync(filePath, JSON.stringify(template, null, 2));
     console.log(`File ${filePath} created`);
   } else {
     console.log(`File ${filePath} exists`);
   }
 };
-// Function to get users data from JSON FILES 
+// Function to get users data from JSON FILES
 const getData = async (filePath, getDefaultData = () => []) => {
   try {
     ensureDataFileExists(filePath, getDefaultData);
@@ -22,7 +21,7 @@ const getData = async (filePath, getDefaultData = () => []) => {
     return Array.isArray(getDefaultData?.()) ? [] : null;
   }
 };
-// Function to save users data to JSON FILES 
+// Function to save users data to JSON FILES
 const saveData = async (filePath, data, getDefaultData = () => []) => {
   try {
     ensureDataFileExists(filePath, getDefaultData);

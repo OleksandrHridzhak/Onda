@@ -7,7 +7,9 @@ import { useSelector } from 'react-redux';
 export default function Calendar() {
   const { mode } = useSelector((state) => state.theme);
   const darkTheme = mode === 'dark';
-  const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
+  const [currentWeekStart, setCurrentWeekStart] = useState(
+    getMonday(new Date())
+  );
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewMode, setViewMode] = useState(() => {
     return localStorage.getItem('calendarViewMode') || 'week';
@@ -70,7 +72,7 @@ export default function Calendar() {
   const getWeekNumber = (date) => {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+    d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
     const week1 = new Date(d.getFullYear(), 0, 4);
     return Math.round(((d - week1) / 86400000 + 1) / 7);
   };
@@ -168,7 +170,12 @@ export default function Calendar() {
 
   // Create or update event
   const handleSaveEvent = async () => {
-    if (!newEvent.title.trim() || !validateTime(newEvent.startTime) || !validateTime(newEvent.endTime)) return;
+    if (
+      !newEvent.title.trim() ||
+      !validateTime(newEvent.startTime) ||
+      !validateTime(newEvent.endTime)
+    )
+      return;
     try {
       const eventData = {
         id: editingEventId || Date.now().toString(),
@@ -182,7 +189,15 @@ export default function Calendar() {
             : [...prev, eventData]
         );
         setShowEventModal(false);
-        setNewEvent({ title: '', startTime: '09:00', endTime: '10:00', color: '#2563eb', isRepeating: false, repeatDays: [], repeatFrequency: 'weekly' });
+        setNewEvent({
+          title: '',
+          startTime: '09:00',
+          endTime: '10:00',
+          color: '#2563eb',
+          isRepeating: false,
+          repeatDays: [],
+          repeatFrequency: 'weekly',
+        });
         setEditingEventId(null);
       } else {
         console.error('Error saving event:', response.error);
@@ -194,7 +209,11 @@ export default function Calendar() {
 
   // Edit event
   const handleEditEvent = (event) => {
-    setNewEvent({ ...event, repeatDays: event.repeatDays || [], repeatFrequency: event.repeatFrequency || 'weekly' });
+    setNewEvent({
+      ...event,
+      repeatDays: event.repeatDays || [],
+      repeatFrequency: event.repeatFrequency || 'weekly',
+    });
     setEditingEventId(event.id);
     setShowEventModal(true);
   };
@@ -206,7 +225,15 @@ export default function Calendar() {
       if (response.status === 'success') {
         setEvents((prev) => prev.filter((e) => e.id !== eventId));
         setShowEventModal(false);
-        setNewEvent({ title: '', startTime: '09:00', endTime: '10:00', color: '#2563eb', isRepeating: false, repeatDays: [], repeatFrequency: 'weekly' });
+        setNewEvent({
+          title: '',
+          startTime: '09:00',
+          endTime: '10:00',
+          color: '#2563eb',
+          isRepeating: false,
+          repeatDays: [],
+          repeatFrequency: 'weekly',
+        });
         setEditingEventId(null);
       } else {
         console.error('Error deleting event:', response.message);
@@ -258,7 +285,7 @@ export default function Calendar() {
         const isCorrectWeek =
           event.repeatFrequency === 'weekly' ||
           (event.repeatFrequency === 'biweekly' &&
-            (currentWeekNumber % 2 === eventWeekNumber(event) % 2));
+            currentWeekNumber % 2 === eventWeekNumber(event) % 2);
 
         if (isCorrectDay && isCorrectWeek) {
           dayEvents.push({
@@ -269,7 +296,9 @@ export default function Calendar() {
       }
     });
 
-    return dayEvents.filter((event) => !filterColor || event.color === filterColor);
+    return dayEvents.filter(
+      (event) => !filterColor || event.color === filterColor
+    );
   };
 
   // Helper to shift both start and end times by delta minutes
@@ -279,11 +308,17 @@ export default function Calendar() {
       let total = h * 60 + m + delta;
       if (total < 0) total += 24 * 60;
       if (total >= 24 * 60) total -= 24 * 60;
-      const nh = Math.floor(total / 60).toString().padStart(2, '0');
+      const nh = Math.floor(total / 60)
+        .toString()
+        .padStart(2, '0');
       const nm = (total % 60).toString().padStart(2, '0');
       return nh + ':' + nm;
     };
-    setNewEvent({ ...newEvent, startTime: shift(newEvent.startTime), endTime: shift(newEvent.endTime) });
+    setNewEvent({
+      ...newEvent,
+      startTime: shift(newEvent.startTime),
+      endTime: shift(newEvent.endTime),
+    });
   };
 
   return (
@@ -294,15 +329,24 @@ export default function Calendar() {
           width: 18px;
           height: 18px;
           appearance: none;
-          background: ${darkTheme ? 'rgba(55, 65, 81, 1)' : 'rgba(255, 255, 255, 1)'};
-          border: 2px solid ${darkTheme ? 'rgba(156, 163, 175, 0.8)' : 'rgba(156, 163, 175, 0.6)'};
+          background: ${darkTheme
+            ? 'rgba(55, 65, 81, 1)'
+            : 'rgba(255, 255, 255, 1)'};
+          border: 2px solid
+            ${darkTheme
+              ? 'rgba(156, 163, 175, 0.8)'
+              : 'rgba(156, 163, 175, 0.6)'};
           border-radius: 4px;
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .custom-checkbox:checked {
-          background: ${darkTheme ? 'rgba(59, 130, 246, 1)' : 'rgba(37, 99, 235, 1)'};
-          border-color: ${darkTheme ? 'rgba(59, 130, 246, 1)' : 'rgba(37, 99, 235, 1)'};
+          background: ${darkTheme
+            ? 'rgba(59, 130, 246, 1)'
+            : 'rgba(37, 99, 235, 1)'};
+          border-color: ${darkTheme
+            ? 'rgba(59, 130, 246, 1)'
+            : 'rgba(37, 99, 235, 1)'};
         }
         .custom-checkbox:checked::after {
           content: '✔';
@@ -310,15 +354,20 @@ export default function Calendar() {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          color: ${darkTheme ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 1)'};
+          color: ${darkTheme
+            ? 'rgba(255, 255, 255, 0.9)'
+            : 'rgba(255, 255, 255, 1)'};
           font-size: 12px;
         }
         .custom-checkbox:hover {
-          border-color: ${darkTheme ? 'rgba(107, 114, 128, 1)' : 'rgba(107, 114, 128, 0.8)'};
+          border-color: ${darkTheme
+            ? 'rgba(107, 114, 128, 1)'
+            : 'rgba(107, 114, 128, 0.8)'};
         }
         .custom-checkbox:focus {
           outline: none;
-          box-shadow: 0 0 0 3px ${darkTheme ? 'rgba(59, 130, 246, 0.3)' : 'rgba(37, 99, 235, 0.3)'};
+          box-shadow: 0 0 0 3px
+            ${darkTheme ? 'rgba(59, 130, 246, 0.3)' : 'rgba(37, 99, 235, 0.3)'};
         }
         .short-event .event-time {
           display: none;

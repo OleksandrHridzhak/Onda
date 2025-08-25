@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const ipcTableHandlers = require(path.join(__dirname, './api/ipcTableHandlers.js'));
+const ipcTableHandlers = require(
+  path.join(__dirname, './api/ipcTableHandlers.js')
+);
 const ipcCalendarHandlers = require('./api/ipcCalendarHandlers.js');
 const ipcWindowHandlers = require('./api/ipcWindowHandlers.js');
 const ipcSettingsHandlers = require('./api/ipcSettingsHandlers.js');
@@ -26,13 +28,11 @@ function createWindow() {
     },
   });
 
-
   console.log('env:', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
-      mainWindow.loadURL('http://localhost:3000');
+    mainWindow.loadURL('http://localhost:3000');
   } else {
-
-     mainWindow.loadFile(path.join(__dirname, './render/build/index.html'));
+    mainWindow.loadFile(path.join(__dirname, './render/build/index.html'));
   }
 }
 
@@ -75,9 +75,6 @@ if (!gotTheLock) {
     }
   });
 }
-
-
-
 
 // const { app, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } = require('electron');
 // const path = require('path');

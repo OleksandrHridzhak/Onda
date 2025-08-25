@@ -1,4 +1,3 @@
-
 module.exports = {
   init(ipcMain, mainWindow) {
     // Window close handler
@@ -24,6 +23,5 @@ module.exports = {
     ipcMain.on('next-tab', () => {
       mainWindow.webContents.send('next-tab');
     });
-
-  }
+  },
 };

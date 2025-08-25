@@ -17,7 +17,10 @@ const TimelineWidget = () => {
   const [currentTime, setCurrentTime] = useState(getCurrentTimeString());
 
   useEffect(() => {
-    const interval = setInterval(() => setCurrentTime(getCurrentTimeString()), 60 * 1000);
+    const interval = setInterval(
+      () => setCurrentTime(getCurrentTimeString()),
+      60 * 1000
+    );
     return () => clearInterval(interval);
   }, []);
 
@@ -34,7 +37,7 @@ const TimelineWidget = () => {
             d1.getMonth() === d2.getMonth() &&
             d1.getDate() === d2.getDate();
 
-          const filteredEvents = response.data.filter(event => {
+          const filteredEvents = response.data.filter((event) => {
             const isRepeatingToday =
               event.isRepeating &&
               Array.isArray(event.repeatDays) &&
@@ -97,7 +100,8 @@ const TimelineWidget = () => {
     let endDate = new Date();
     endDate.setHours(eh, em, 0, 0);
 
-    if (endDate < startDate) endDate = new Date(endDate.getTime() + 24 * 60 * 60 * 1000);
+    if (endDate < startDate)
+      endDate = new Date(endDate.getTime() + 24 * 60 * 60 * 1000);
 
     return ((endDate - startDate) / (24 * 60 * 60 * 1000)) * 100;
   };
@@ -118,14 +122,19 @@ const TimelineWidget = () => {
           <Calendar className="h-5 w-5" />
         </div>
         <div className="relative flex-1 ml-2">
-          <div className={`relative h-5 rounded-full border overflow-hidden ${theme.background} ${theme.border}`}>
+          <div
+            className={`relative h-5 rounded-full border overflow-hidden ${theme.background} ${theme.border}`}
+          >
             <div className="absolute top-0 left-1 h-full w-60">
               <div
                 className="absolute top-0 h-full w-0.5 bg-red-500"
                 style={{ left: `${timeToPercent(currentTime)}%` }}
               />
-              {events.map(event => {
-                const width = Math.max(1, durationToPercent(event.startTime, event.endTime));
+              {events.map((event) => {
+                const width = Math.max(
+                  1,
+                  durationToPercent(event.startTime, event.endTime)
+                );
                 const left = timeToPercent(event.startTime);
                 return (
                   <div
@@ -150,7 +159,10 @@ const TimelineWidget = () => {
               className={`absolute z-50 px-2 py-1 rounded-md text-[10px] shadow-lg whitespace-nowrap transform -translate-x-1/2 -translate-y-full -mt-6 ${theme.background} ${theme.text}`}
               style={{
                 left: `calc(${timeToPercent(hoveredEvent.startTime)}% + ${
-                  durationToPercent(hoveredEvent.startTime, hoveredEvent.endTime) / 2
+                  durationToPercent(
+                    hoveredEvent.startTime,
+                    hoveredEvent.endTime
+                  ) / 2
                 }%)`,
               }}
             >

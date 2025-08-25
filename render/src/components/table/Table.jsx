@@ -3,7 +3,13 @@ import PlannerHeader from '../planerHeader/PlannerHeader';
 import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
 import ColumnHeader from './ColumnHeader';
 import { LoadingScreen } from './LoadingScreen';
-import { useTableLogic, DAYS,  getWidthStyle, calculateSummary, RenderCell } from './TableLogic';
+import {
+  useTableLogic,
+  DAYS,
+  getWidthStyle,
+  calculateSummary,
+  RenderCell,
+} from './TableLogic';
 import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
 import { useSelector } from 'react-redux';
 const Table = () => {
@@ -23,12 +29,18 @@ const Table = () => {
   } = useTableLogic();
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns);
-  const {theme, mode} = useSelector((state) => state.theme);
+  const { theme, mode } = useSelector((state) => state.theme);
   const darkMode = false;
-  
+
   const displayColumns = [
     ...columns,
-    { ColumnId: 'filler', Type: 'filler', Name: '', EmojiIcon: '', NameVisible: false }
+    {
+      ColumnId: 'filler',
+      Type: 'filler',
+      Name: '',
+      EmojiIcon: '',
+      NameVisible: false,
+    },
   ];
 
   if (loading) {
@@ -36,24 +48,32 @@ const Table = () => {
   }
   //TODO custom-scroll IN SEPARATE CSS
   return (
-    <div className={`font-poppins relative w-full max-w-6xl mx-auto ${theme.background}`}>
+    <div
+      className={`font-poppins relative w-full max-w-6xl mx-auto ${theme.background}`}
+    >
       <style jsx global>{`
         .custom-scroll::-webkit-scrollbar {
           width: 5px;
           height: 4px;
         }
         .custom-scroll::-webkit-scrollbar-track {
-          background: ${darkMode ? 'rgba(55, 65, 81, 0.5)' : 'rgba(241, 241, 241, 0.2)'};
+          background: ${darkMode
+            ? 'rgba(55, 65, 81, 0.5)'
+            : 'rgba(241, 241, 241, 0.2)'};
           border-radius: 4px;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-          background: ${darkMode ? 'rgba(51, 85, 144, 0.64)' : 'rgba(156, 163, 175, 0.5)'};
+          background: ${darkMode
+            ? 'rgba(51, 85, 144, 0.64)'
+            : 'rgba(156, 163, 175, 0.5)'};
           border-radius: 4px;
           height: 1px;
           width: 1px;
         }
         .custom-scroll::-webkit-scrollbar-thumb:hover {
-          background: ${darkMode ? 'rgba(107, 114, 128, 0.9)' : 'rgba(107, 114, 128, 0.7)'};
+          background: ${darkMode
+            ? 'rgba(107, 114, 128, 0.9)'
+            : 'rgba(107, 114, 128, 0.7)'};
         }
         .todo-cell {
           position: relative;
@@ -85,17 +105,16 @@ const Table = () => {
           </div>
         )}
       </div>
-      <div className={`overflow-hidden border ${theme.border} rounded-xl m-2 custom-scroll`}>
+      <div
+        className={`overflow-hidden border ${theme.border} rounded-xl m-2 custom-scroll`}
+      >
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
               <tr className={`${theme.border} ${theme.tableHeader} border-b`}>
-                {displayColumns.map((column) => (
+                {displayColumns.map((column) =>
                   column.Type === 'filler' ? (
-                    <th
-                      key={column.ColumnId}
-                      style={getWidthStyle(column)}
-                    />
+                    <th key={column.ColumnId} style={getWidthStyle(column)} />
                   ) : (
                     <ColumnHeader
                       key={column.ColumnId}
@@ -103,21 +122,35 @@ const Table = () => {
                       onRename={columnMenuLogic.handleRename}
                       onRemove={columnMenuLogic.handleDeleteColumn}
                       onChangeIcon={columnMenuLogic.handleChangeIcon}
-                      onChangeDescription={columnMenuLogic.handleChangeDescription}
-                      onToggleTitleVisibility={columnMenuLogic.handleToggleTitleVisibility}
+                      onChangeDescription={
+                        columnMenuLogic.handleChangeDescription
+                      }
+                      onToggleTitleVisibility={
+                        columnMenuLogic.handleToggleTitleVisibility
+                      }
                       onChangeOptions={columnMenuLogic.handleChangeOptions}
-                      onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+                      onChangeCheckboxColor={
+                        columnMenuLogic.handleChangeCheckboxColor
+                      }
                       onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
-                      onMoveDown={() => handleMoveColumn(column.ColumnId, 'down')}
-                      canMoveUp={column.ColumnId !== 'days' && columns.indexOf(column) > 1}
-                      canMoveDown={column.ColumnId !== 'days' && columns.indexOf(column) < columns.length - 1}
+                      onMoveDown={() =>
+                        handleMoveColumn(column.ColumnId, 'down')
+                      }
+                      canMoveUp={
+                        column.ColumnId !== 'days' &&
+                        columns.indexOf(column) > 1
+                      }
+                      canMoveDown={
+                        column.ColumnId !== 'days' &&
+                        columns.indexOf(column) < columns.length - 1
+                      }
                       darkMode={mode === 'dark' ? true : false}
                       onChangeWidth={handleChangeWidth}
                       onAddTask={handleAddTask}
                       style={getWidthStyle(column)}
                     />
                   )
-                ))}
+                )}
               </tr>
             </thead>
             <tbody>
@@ -126,23 +159,22 @@ const Table = () => {
                   key={day}
                   className={`
                     ${theme.tableBodyBg}
-                    ${idx !== DAYS.length - 1 ?  `${theme.border} border-b` : ''}
+                    ${idx !== DAYS.length - 1 ? `${theme.border} border-b` : ''}
                   `}
                 >
-                {displayColumns.map((column, index) => (
-                  <RenderCell
-                    key={column.ColumnId}
-                    day={day}
-                    column={column}
-                    columnIndex={index}
-                    rowIndex={idx}
-                    tableData={tableData}
-                    darkMode={darkMode}
-                    handleCellChange={handleCellChange}
-                    handleChangeOptions={columnMenuLogic.handleChangeOptions}
-                  />
-                ))}
-
+                  {displayColumns.map((column, index) => (
+                    <RenderCell
+                      key={column.ColumnId}
+                      day={day}
+                      column={column}
+                      columnIndex={index}
+                      rowIndex={idx}
+                      tableData={tableData}
+                      darkMode={darkMode}
+                      handleCellChange={handleCellChange}
+                      handleChangeOptions={columnMenuLogic.handleChangeOptions}
+                    />
+                  ))}
                 </tr>
               ))}
             </tbody>

@@ -9,14 +9,16 @@ const { updateThemeBasedOnTime } = require('../utils/utils.js');
 
 const handleError = (err, message) => ({
   status: message,
-  error: err.message
+  error: err.message,
 });
 
 module.exports = {
   init(ipcMain) {
     ipcMain.handle('switch-theme', async (event, darkMode) => {
       try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        const settings = await getData(SETTINGS_FILE, () =>
+          getSettingsTemplates()
+        );
         settings.theme.darkMode = darkMode;
         await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
         return { status: 'Theme switched', darkMode };
@@ -27,7 +29,9 @@ module.exports = {
 
     ipcMain.handle('get-theme', async () => {
       try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        const settings = await getData(SETTINGS_FILE, () =>
+          getSettingsTemplates()
+        );
         return { status: 'Theme fetched', darkMode: settings.theme.darkMode };
       } catch (err) {
         return handleError(err, 'Error parsing settings');
@@ -36,10 +40,12 @@ module.exports = {
 
     ipcMain.handle('get-cell-settings', async () => {
       try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        const settings = await getData(SETTINGS_FILE, () =>
+          getSettingsTemplates()
+        );
         return {
           status: 'Cell settings fetched',
-          cellSettings: settings.theme.cellSettings || {}
+          cellSettings: settings.theme.cellSettings || {},
         };
       } catch (err) {
         return handleError(err, 'Error parsing settings');
@@ -47,7 +53,9 @@ module.exports = {
     });
     ipcMain.handle('get-settings', async () => {
       try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        const settings = await getData(SETTINGS_FILE, () =>
+          getSettingsTemplates()
+        );
         return { status: 'Settings fetched', data: settings };
       } catch (err) {
         return handleError(err, 'Error parsing settings');
@@ -65,7 +73,9 @@ module.exports = {
 
     ipcMain.handle('update-theme', async (event, themeSettings) => {
       try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        const settings = await getData(SETTINGS_FILE, () =>
+          getSettingsTemplates()
+        );
         settings.theme = { ...settings.theme, ...themeSettings };
         await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
         updateThemeBasedOnTime();
@@ -77,7 +87,9 @@ module.exports = {
 
     ipcMain.handle('update-table-settings', async (event, tableSettings) => {
       try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        const settings = await getData(SETTINGS_FILE, () =>
+          getSettingsTemplates()
+        );
         settings.table = { ...settings.table, ...tableSettings };
         await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
         return { status: 'Table settings updated' };
@@ -88,7 +100,9 @@ module.exports = {
 
     ipcMain.handle('update-ui-settings', async (event, uiSettings) => {
       try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        const settings = await getData(SETTINGS_FILE, () =>
+          getSettingsTemplates()
+        );
         settings.ui = { ...settings.ui, ...uiSettings };
         await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
         return { status: 'UI settings updated' };
@@ -99,7 +113,9 @@ module.exports = {
 
     ipcMain.handle('update-column-order', async (event, columnOrder) => {
       try {
-        const settings = await getData(SETTINGS_FILE, () => getSettingsTemplates());
+        const settings = await getData(SETTINGS_FILE, () =>
+          getSettingsTemplates()
+        );
         settings.table.columnOrder = columnOrder;
         await saveData(SETTINGS_FILE, settings, () => getSettingsTemplates());
         return { status: 'Column order updated' };
@@ -117,19 +133,19 @@ module.exports = {
         const [data, calendarData, settings] = await Promise.all([
           getData(DATA_FILE),
           getData(CALENDAR_FILE),
-          getData(SETTINGS_FILE, () => getSettingsTemplates())
+          getData(SETTINGS_FILE, () => getSettingsTemplates()),
         ]);
 
         const exportData = {
           data,
           calendar: calendarData,
-          settings
+          settings,
         };
 
         const { filePath } = await dialog.showSaveDialog({
           title: 'Data export',
           defaultPath: path.join(app.getPath('documents'), 'onda-data.json'),
-          filters: [{ name: 'JSON Files', extensions: ['json'] }]
+          filters: [{ name: 'JSON Files', extensions: ['json'] }],
         });
 
         if (!filePath) {
@@ -150,7 +166,7 @@ module.exports = {
           title: 'Data import',
           defaultPath: app.getPath('documents'),
           filters: [{ name: 'JSON Files', extensions: ['json'] }],
-          properties: ['openFile']
+          properties: ['openFile'],
         });
 
         if (!filePaths || filePaths.length === 0) {
@@ -165,7 +181,9 @@ module.exports = {
           await saveData(CALENDAR_FILE, importData.calendar);
         }
         if (importData.settings) {
-          await saveData(SETTINGS_FILE, importData.settings, () => getSettingsTemplates());
+          await saveData(SETTINGS_FILE, importData.settings, () =>
+            getSettingsTemplates()
+          );
         }
 
         return { status: 'Data imported' };
@@ -174,5 +192,5 @@ module.exports = {
         return handleError(error, 'Import failed');
       }
     });
-  }
+  },
 };

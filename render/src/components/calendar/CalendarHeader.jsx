@@ -1,4 +1,10 @@
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, ChevronDown } from 'lucide-react';
+import {
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  ChevronDown,
+} from 'lucide-react';
 
 export default function CalendarHeader({
   darkTheme,
@@ -16,25 +22,49 @@ export default function CalendarHeader({
   setShowEventModal,
 }) {
   return (
-    <div className={`sticky top-0 z-20 ${darkTheme ? 'bg-gray-800/95 backdrop-blur-sm border-gray-700' : 'bg-white/95 backdrop-blur-sm border-gray-200'} border-b`}>
+    <div
+      className={`sticky top-0 z-20 ${darkTheme ? 'bg-gray-800/95 backdrop-blur-sm border-gray-700' : 'bg-white/95 backdrop-blur-sm border-gray-200'} border-b`}
+    >
       <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-2xl ${darkTheme ? 'bg-gray-700/50' : 'bg-blue-50'}`}>
-            <CalendarIcon size={22} className={darkTheme ? 'text-blue-400' : 'text-blue-600'} />
+          <div
+            className={`p-3 rounded-2xl ${darkTheme ? 'bg-gray-700/50' : 'bg-blue-50'}`}
+          >
+            <CalendarIcon
+              size={22}
+              className={darkTheme ? 'text-blue-400' : 'text-blue-600'}
+            />
           </div>
           <div className="flex flex-col">
-            <h2 className={`text-xl font-semibold tracking-tight ${darkTheme ? 'text-gray-200' : 'text-gray-800'}`}>
+            <h2
+              className={`text-xl font-semibold tracking-tight ${darkTheme ? 'text-gray-200' : 'text-gray-800'}`}
+            >
               {viewMode === 'day'
-                ? selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-                : weekDays[0]?.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                ? selectedDate.toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : weekDays[0]?.toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric',
+                  })}
             </h2>
-            <p className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
-              {viewMode === 'day' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][selectedDate.getDay()] : `Week ${getWeekNumber(currentWeekStart)}`}
+            <p
+              className={`text-sm ${darkTheme ? 'text-gray-400' : 'text-gray-500'}`}
+            >
+              {viewMode === 'day'
+                ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][
+                    selectedDate.getDay()
+                  ]
+                : `Week ${getWeekNumber(currentWeekStart)}`}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <div className={`flex items-center gap-1 p-1 ${darkTheme ? 'bg-gray-700/50' : 'bg-gray-100'} rounded-xl`}>
+          <div
+            className={`flex items-center gap-1 p-1 ${darkTheme ? 'bg-gray-700/50' : 'bg-gray-100'} rounded-xl`}
+          >
             <button
               onClick={goToPrevious}
               className={`p-2 ${darkTheme ? 'text-blue-400 hover:text-blue-300 hover:bg-gray-600' : 'text-blue-600 hover:text-blue-800 hover:bg-gray-200'} rounded-lg transition-colors`}
@@ -71,7 +101,15 @@ export default function CalendarHeader({
           </div>
           <button
             onClick={() => {
-              setNewEvent({ title: '', startTime: '09:00', endTime: '10:00', color: '#2563eb', isRepeating: false, repeatDays: [], repeatFrequency: 'weekly' });
+              setNewEvent({
+                title: '',
+                startTime: '09:00',
+                endTime: '10:00',
+                color: '#2563eb',
+                isRepeating: false,
+                repeatDays: [],
+                repeatFrequency: 'weekly',
+              });
               setEditingEventId(null);
               setShowEventModal(true);
             }}

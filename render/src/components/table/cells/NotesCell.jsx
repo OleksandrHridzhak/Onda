@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 
-
 export const NotesCell = ({ value, onChange }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);

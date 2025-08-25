@@ -1,5 +1,3 @@
-
-
 export const NumberCell = ({ value, onChange }) => {
   return (
     <input
@@ -11,7 +9,7 @@ export const NumberCell = ({ value, onChange }) => {
                  [&::-webkit-outer-spin-button]:appearance-none
                  [&::-webkit-inner-spin-button]:appearance-none"
       style={{
-        MozAppearance: "textfield", // Для Firefox
+        MozAppearance: 'textfield', // Для Firefox
       }}
     />
   );
