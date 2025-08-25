@@ -44,7 +44,7 @@ const pomodoroSlice = createSlice({
         if (elapsedSeconds > 0) {
           state.time = Math.max(0, state.time - elapsedSeconds);
           state.lastUpdateTime = now;
-          
+
           if (state.time === 0) {
             state.isEnded = true;
             state.isRunning = false;
@@ -66,4 +66,4 @@ export const {
   updateTime,
 } = pomodoroSlice.actions;
 
-export default pomodoroSlice.reducer; 
+export default pomodoroSlice.reducer;

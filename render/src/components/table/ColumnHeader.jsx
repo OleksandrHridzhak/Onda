@@ -16,35 +16,45 @@ const ColumnHeader = ({
   onMoveDown,
   canMoveUp,
   canMoveDown,
-  onChangeWidth
+  onChangeWidth,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const style = column.Width ? { width: `${column.Width}px` } : {};
-  const {theme} = useSelector((state) => state.theme);
-  const isEmptyHeader = !column.EmojiIcon && (column.NameVisible === false || !column.Name);
+  const { theme } = useSelector((state) => state.theme);
+  const isEmptyHeader =
+    !column.EmojiIcon && (column.NameVisible === false || !column.Name);
   const handleClose = () => {
     console.log('Menu closed');
     setShowMenu(false);
   };
 
   return (
-    <th 
+    <th
       data-column-id={column.ColumnId}
       className={`font-poppins px-3 py-3 text-left text-sm font-medium ${theme.tableHeader} ${theme.border} ${theme.textTableValues} border-b border-r whitespace-nowrap overflow-hidden`}
-      style={column.ColumnId === 'days' ? { width: '120px', minWidth: '120px', maxWidth: '120px' } : style}
+      style={
+        column.ColumnId === 'days'
+          ? { width: '120px', minWidth: '120px', maxWidth: '120px' }
+          : style
+      }
     >
       <div
         className={`flex items-center justify-between group cursor-pointer ${column.NameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
         onClick={() => column.ColumnId !== 'days' && setShowMenu(true)}
       >
-        <div className={`flex items-center ${column.NameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`} data-tooltip-id={`tooltip-${column.ColumnId}`}>
+        <div
+          className={`flex items-center ${column.NameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
+          data-tooltip-id={`tooltip-${column.ColumnId}`}
+        >
           {column.EmojiIcon && (
-            <span className={column.NameVisible !== false ? "mr-1" : ""}>
+            <span className={column.NameVisible !== false ? 'mr-1' : ''}>
               {getIconComponent(column.EmojiIcon, 16)}
             </span>
           )}
           {column.NameVisible !== false && column.Name && (
-            <span className={`truncate block ${theme.textTableValues} max-w-full`}>
+            <span
+              className={`truncate block ${theme.textTableValues} max-w-full`}
+            >
               {column.Name}
             </span>
           )}

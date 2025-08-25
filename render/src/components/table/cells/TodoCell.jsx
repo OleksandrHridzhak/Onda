@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { getColorOptions } from '../../utils/colorOptions';
 
-import { Plus, Edit2, Check,  Trash2, ListTodo } from 'lucide-react';
+import { Plus, Edit2, Check, Trash2, ListTodo } from 'lucide-react';
 
 export const TodoCell = ({ value, column, onChange, darkMode }) => {
   const [todos, setTodos] = useState(value || []);
   const [newTodo, setNewTodo] = useState('');
-  const [newCategory, setNewCategory] = useState(''); 
+  const [newCategory, setNewCategory] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editText, setEditText] = useState('');
@@ -17,7 +17,7 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
   const categoryMenuRef = useRef(null);
 
   // Color options from ColumnMenu
-  const colorOptions = getColorOptions({darkMode});
+  const colorOptions = getColorOptions({ darkMode });
 
   useEffect(() => {
     const sortedTodos = [...(value || [])].sort((a, b) => {
@@ -30,7 +30,10 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
   // Close category menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (categoryMenuRef.current && !categoryMenuRef.current.contains(event.target)) {
+      if (
+        categoryMenuRef.current &&
+        !categoryMenuRef.current.contains(event.target)
+      ) {
         setIsCategoryMenuOpen(false);
       }
     };
@@ -44,7 +47,7 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
     if (newTodo.trim()) {
       const updatedTodos = [
         ...todos,
-        { text: newTodo.trim(), completed: false, category: newCategory || '' }
+        { text: newTodo.trim(), completed: false, category: newCategory || '' },
       ];
       setTodos(updatedTodos);
       onChange(updatedTodos);
@@ -85,7 +88,9 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
   const handleSaveEdit = () => {
     if (editText.trim()) {
       const updatedTodos = todos.map((todo, i) =>
-        i === editingIndex ? { ...todo, text: editText.trim(), category: editCategory } : todo
+        i === editingIndex
+          ? { ...todo, text: editText.trim(), category: editCategory }
+          : todo
       );
       setTodos(updatedTodos);
       onChange(updatedTodos);
@@ -98,7 +103,7 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
 
   // Filter todos based on selected category
   const filteredTodos = selectedFilterCategory
-    ? todos.filter(todo => todo.category === selectedFilterCategory)
+    ? todos.filter((todo) => todo.category === selectedFilterCategory)
     : todos;
 
   return (
@@ -112,18 +117,22 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
             onKeyPress={(e) => e.key === 'Enter' && handleAddTodo()}
             placeholder="Add new todo..."
             className={`w-full px-3 py-2 pr-10 text-sm rounded-md transition-all duration-200
-              ${darkMode 
-                ? 'bg-gray-700 text-gray-200 placeholder-gray-400 border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500' 
-                : 'bg-white text-gray-700 placeholder-gray-400 border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+              ${
+                darkMode
+                  ? 'bg-gray-700 text-gray-200 placeholder-gray-400 border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                  : 'bg-white text-gray-700 placeholder-gray-400 border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
               } border outline-none`}
           />
           {column?.Options?.length > 0 && (
-            <div ref={categoryMenuRef} className="absolute z-50 right-10 top-1/2 -translate-y-1/2">
+            <div
+              ref={categoryMenuRef}
+              className="absolute z-50 right-10 top-1/2 -translate-y-1/2"
+            >
               <button
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
                 className={`p-1 rounded-md ${
                   newCategory
-                    ? `${colorOptions.find(c => c.name === column.TagColors[newCategory])?.bg} ${colorOptions.find(c => c.name === column.TagColors[newCategory])?.text}`
+                    ? `${colorOptions.find((c) => c.name === column.TagColors[newCategory])?.bg} ${colorOptions.find((c) => c.name === column.TagColors[newCategory])?.text}`
                     : darkMode
                       ? 'bg-gray-600 text-gray-200'
                       : 'bg-gray-200 text-gray-700'
@@ -132,7 +141,9 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
                 <ListTodo size={16} />
               </button>
               {isCategoryMenuOpen && (
-                <div className={`absolute z-50 mt-2 right-0 w-40 ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}>
+                <div
+                  className={`absolute z-50 mt-2 right-0 w-40 ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}
+                >
                   {column.Options.map((category) => (
                     <button
                       key={category}
@@ -142,7 +153,7 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
                       }}
                       className={`w-full text-left px-3 py-2 text-xs font-medium ${
                         newCategory === category
-                          ? `${colorOptions.find(c => c.name === column.TagColors[category])?.bg} ${colorOptions.find(c => c.name === column.TagColors[category])?.text}`
+                          ? `${colorOptions.find((c) => c.name === column.TagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.TagColors[category])?.text}`
                           : darkMode
                             ? 'hover:bg-gray-700 text-gray-200'
                             : 'hover:bg-gray-100 text-gray-700'
@@ -205,7 +216,7 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
                 onClick={() => setSelectedFilterCategory(category)}
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                   selectedFilterCategory === category
-                    ? `${colorOptions.find(c => c.name === column.TagColors[category])?.bg} ${colorOptions.find(c => c.name === column.TagColors[category])?.text}`
+                    ? `${colorOptions.find((c) => c.name === column.TagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.TagColors[category])?.text}`
                     : darkMode
                       ? 'bg-gray-600 text-gray-200'
                       : 'bg-gray-200 text-gray-700'
@@ -217,16 +228,19 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
           </div>
         )}
       </div>
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[310px] mt-0
+      <div
+        className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[310px] mt-0
         [&::-webkit-scrollbar]:w-1/2
         [&::-webkit-scrollbar-track]:bg-transparent
         [&::-webkit-scrollbar-thumb]:rounded-full
         [&::-webkit-scrollbar-thumb]:transition-colors
         [&::-webkit-scrollbar-thumb]:duration-200
-        ${darkMode 
-          ? '[&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:hover:bg-gray-500'
-          : '[&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:hover:bg-gray-300'
-        }`}>
+        ${
+          darkMode
+            ? '[&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:hover:bg-gray-500'
+            : '[&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:hover:bg-gray-300'
+        }`}
+      >
         {filteredTodos.map((todo, index) => (
           <div
             key={index}
@@ -236,7 +250,9 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
           >
             <div className="flex items-center flex-1 min-w-0 w-full">
               <button
-                onClick={() => handleToggleTodo(todos.findIndex(t => t === todo))}
+                onClick={() =>
+                  handleToggleTodo(todos.findIndex((t) => t === todo))
+                }
                 className={`mr-2 p-1 rounded-full z-20 ${
                   todo.completed
                     ? darkMode
@@ -249,7 +265,8 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
               >
                 <Check size={14} />
               </button>
-              {isEditing && editingIndex === todos.findIndex(t => t === todo) ? (
+              {isEditing &&
+              editingIndex === todos.findIndex((t) => t === todo) ? (
                 <div className="flex flex-col gap-2 flex-1">
                   <input
                     type="text"
@@ -271,13 +288,14 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
                     className={`
                       flex-1 min-w-0 w-full
                       text-sm
-                      ${todo.completed
-                        ? darkMode
-                          ? 'text-gray-500 line-through'
-                          : 'text-gray-400 line-through'
-                        : darkMode
-                          ? 'text-gray-200'
-                          : 'text-gray-700'
+                      ${
+                        todo.completed
+                          ? darkMode
+                            ? 'text-gray-500 line-through'
+                            : 'text-gray-400 line-through'
+                          : darkMode
+                            ? 'text-gray-200'
+                            : 'text-gray-700'
                       }
                       transition-opacity
                       duration-150
@@ -295,8 +313,10 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
                   {todo.category && column?.TagColors?.[todo.category] && (
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        colorOptions.find(c => c.name === column.TagColors[todo.category])?.bg
-                      } ${colorOptions.find(c => c.name === column.TagColors[todo.category])?.text}`}
+                        colorOptions.find(
+                          (c) => c.name === column.TagColors[todo.category]
+                        )?.bg
+                      } ${colorOptions.find((c) => c.name === column.TagColors[todo.category])?.text}`}
                     >
                       {todo.category}
                     </span>
@@ -305,40 +325,37 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
               )}
             </div>
             {!isEditing && (
-              <div
-              className="flex space-x-1 absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-full justify-center z-10"
-            >
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleEditTodo(todos.findIndex(t => t === todo));
-                }}
-                className={`p-2 rounded-md flex items-center justify-center ${
-                  darkMode
-                    ? 'bg-gray-800 text-gray-400 hover:text-gray-200'
-                    : 'bg-gray-100 text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                <Edit2 size={14} />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleDeleteTodo(todos.findIndex(t => t === todo));
-                }}
-                className={`p-2  rounded-md flex items-center justify-center ${
-                  darkMode
-                    ? 'bg-gray-800 text-red-400 hover:text-red-300'
-                    : 'bg-gray-100 text-red-500 hover:text-red-700'
-                }`}
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
+              <div className="flex space-x-1 absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-full justify-center z-10">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleEditTodo(todos.findIndex((t) => t === todo));
+                  }}
+                  className={`p-2 rounded-md flex items-center justify-center ${
+                    darkMode
+                      ? 'bg-gray-800 text-gray-400 hover:text-gray-200'
+                      : 'bg-gray-100 text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <Edit2 size={14} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteTodo(todos.findIndex((t) => t === todo));
+                  }}
+                  className={`p-2  rounded-md flex items-center justify-center ${
+                    darkMode
+                      ? 'bg-gray-800 text-red-400 hover:text-red-300'
+                      : 'bg-gray-100 text-red-500 hover:text-red-700'
+                  }`}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             )}
-            
           </div>
         ))}
       </div>

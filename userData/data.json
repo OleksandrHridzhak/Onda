@@ -7,7 +7,7 @@
     "EmojiIcon": "BicepsFlexed",
     "NameVisible": false,
     "Chosen": {
-      "Monday": false,
+      "Monday": true,
       "Tuesday": false,
       "Wednesday": false,
       "Thursday": false,
@@ -119,14 +119,16 @@
     "NameVisible": true,
     "Options": [
       "Meditation",
-      "Journaling"
+      "Journaling",
+      "ружж"
     ],
     "TagColors": {
       "Meditation": "teal",
-      "Journaling": "purple"
+      "Journaling": "purple",
+      "ружж": "blue"
     },
     "Chosen": {
-      "Monday": "Meditation, Journaling",
+      "Monday": "Meditation, Journaling, ружж",
       "Tuesday": "Meditation",
       "Wednesday": "Journaling",
       "Thursday": "",

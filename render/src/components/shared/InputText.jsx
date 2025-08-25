@@ -1,14 +1,26 @@
-import React from "react";
-import { useCallback } from "react";
+import React from 'react';
+import { useCallback } from 'react';
 import { debounce } from 'lodash';
 
-export const InputText = ({onChange,setValue,value,darkMode,label='Text'}) => {
-  const debouncedSet = useCallback(debounce((value) => setValue(value), 300), [setValue]);
-
+export const InputText = ({
+  onChange,
+  setValue,
+  value,
+  darkMode,
+  label = 'Text',
+}) => {
+  const debouncedSet = useCallback(
+    debounce((value) => setValue(value), 300),
+    [setValue]
+  );
 
   return (
     <div className="mb-4">
-      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}>Column Name</label>
+      <label
+        className={`block text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'} mb-1`}
+      >
+        Column Name
+      </label>
       <input
         type="text"
         value={value}
@@ -19,4 +31,4 @@ export const InputText = ({onChange,setValue,value,darkMode,label='Text'}) => {
       />
     </div>
   );
-}
+};

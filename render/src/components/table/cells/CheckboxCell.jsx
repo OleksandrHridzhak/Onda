@@ -1,6 +1,6 @@
 import React from 'react';
 import { Check } from 'lucide-react';
-import {getCheckBoxColorOptions} from '../../utils/colorOptions';
+import { getCheckBoxColorOptions } from '../../utils/colorOptions';
 import { useSelector } from 'react-redux';
 
 export const CheckboxCell = ({ checked, onChange, color = 'green' }) => {
@@ -11,7 +11,7 @@ export const CheckboxCell = ({ checked, onChange, color = 'green' }) => {
   const selectedColor = colorOptions[color] || colorOptions.green;
 
   const handleToggle = () => {
-    onChange(!checked); 
+    onChange(!checked);
   };
 
   return (
@@ -19,15 +19,17 @@ export const CheckboxCell = ({ checked, onChange, color = 'green' }) => {
       <label className="relative flex items-center justify-center w-6 h-6 cursor-pointer">
         <input
           type="checkbox"
-                  checked={checked}
-          onChange={handleToggle} 
+          checked={checked}
+          onChange={handleToggle}
           className="sr-only peer"
         />
-                <div className={`w-6 h-6 rounded-full border flex items-center justify-center 
+        <div
+          className={`w-6 h-6 rounded-full border flex items-center justify-center 
                         transition-all duration-150 ease-in-out
                         border-transparent
                         ${checked ? selectedColor.bg : ''}
-                        ${checked ? selectedColor.hover : 'hover:border-gray-500'}`}>
+                        ${checked ? selectedColor.hover : 'hover:border-gray-500'}`}
+        >
           <Check
             size={16}
             className={`absolute text-white transition-opacity duration-150 ${

@@ -15,7 +15,8 @@ import {
 const PomodoroWidget = () => {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme.theme);
-  const { time, isRunning, isEnded, isPaused, initialMinutes, notifyEnabled } = useSelector((state) => state.pomodoro);
+  const { time, isRunning, isEnded, isPaused, initialMinutes, notifyEnabled } =
+    useSelector((state) => state.pomodoro);
 
   const alarmAudio = useRef(null);
 
@@ -38,7 +39,7 @@ const PomodoroWidget = () => {
       }
       window.electronAPI.showNotification({
         title: 'Pomodoro Timer',
-        body: `Your ${initialMinutes}-minute timer has ended!`
+        body: `Your ${initialMinutes}-minute timer has ended!`,
       });
     }
   }, [isEnded, notifyEnabled, initialMinutes]);
@@ -81,7 +82,9 @@ const PomodoroWidget = () => {
   };
 
   return (
-    <div className={`w-[150px] h-[50px] ml-2 justify-center px-2 rounded-xl flex flex-col items-center space-y-2 border ${theme.tableBodyBg} ${theme.border} ${theme.textTableValues}`}>
+    <div
+      className={`w-[150px] h-[50px] ml-2 justify-center px-2 rounded-xl flex flex-col items-center space-y-2 border ${theme.tableBodyBg} ${theme.border} ${theme.textTableValues}`}
+    >
       {isEnded ? (
         <div className="flex flex-row items-center space-x-2">
           <div className="font-medium">{initialMinutes} ended!</div>
@@ -92,15 +95,21 @@ const PomodoroWidget = () => {
             <X className="h-5 w-5" />
           </button>
         </div>
-      ) : (isRunning || isPaused) ? (
+      ) : isRunning || isPaused ? (
         <div className="flex flex-row items-center justify-between w-full">
-          <div className={`text-lg pl-1 font-poppins ${theme.textTableValues}`}>{formatTime(time)}</div>
+          <div className={`text-lg pl-1 font-poppins ${theme.textTableValues}`}>
+            {formatTime(time)}
+          </div>
           <div className="flex space-x-2">
             <button
               className={`h-8 w-8 flex items-center justify-center rounded-full ${theme.hover} ${theme.textTableValues}`}
               onClick={isRunning ? handlePause : handleResume}
             >
-              {isRunning ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+              {isRunning ? (
+                <Pause className="h-5 w-5" />
+              ) : (
+                <Play className="h-5 w-5" />
+              )}
             </button>
             <button
               className={`h-8 w-8 flex items-center justify-center rounded-full ${theme.hover} ${theme.textTableValues}`}

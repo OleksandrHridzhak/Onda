@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 export const TimeWidget = () => {
   const theme = useSelector((state) => state.theme.theme);
-  const [time,setTime] = useState('');
-  
+  const [time, setTime] = useState('');
+
   useEffect(() => {
     const fetchTime = async () => {
       try {
@@ -27,9 +27,6 @@ export const TimeWidget = () => {
   }, []);
 
   return (
-    <h1 className={`font-poppins text-5xl ${theme.textTableValues}`}>
-      {time}
-    </h1>
-  )
-
-}
+    <h1 className={`font-poppins text-5xl ${theme.textTableValues}`}>{time}</h1>
+  );
+};

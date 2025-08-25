@@ -12,7 +12,6 @@ export const fetchTheme = createAsyncThunk('theme/fetchTheme', async () => {
   return storedTheme;
 });
 
-
 export const toggleDarkMode = createAsyncThunk(
   'theme/toggleDarkMode',
   async (_, { getState }) => {
@@ -28,9 +27,11 @@ export const toggleDarkMode = createAsyncThunk(
   }
 );
 
-
-const [initialColor, initialMode] = (localStorage.getItem('theme') || 'peach.light').split('.');
-const initialTheme = themes[initialColor]?.[initialMode] || themes['peach'].light;
+const [initialColor, initialMode] = (
+  localStorage.getItem('theme') || 'peach.light'
+).split('.');
+const initialTheme =
+  themes[initialColor]?.[initialMode] || themes['peach'].light;
 
 const initialState = {
   color: initialColor || 'peach',
@@ -65,19 +66,20 @@ const themeSlice = createSlice({
       }
     },
   },
-extraReducers: (builder) => {
-  builder
-    .addCase(fetchTheme.fulfilled, (state, action) => {
-      const [color, mode] = action.payload.split('.');
-      state.color = color || 'peach';
-      state.mode = mode || 'light';
-      state.theme = themes[state.color]?.[state.mode] || themes['peach'].light;
-    })
-    .addCase(toggleDarkMode.fulfilled, (state, action) => {
-      state.mode = action.payload.mode;
-      state.theme = action.payload.theme;
-    });
-},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTheme.fulfilled, (state, action) => {
+        const [color, mode] = action.payload.split('.');
+        state.color = color || 'peach';
+        state.mode = mode || 'light';
+        state.theme =
+          themes[state.color]?.[state.mode] || themes['peach'].light;
+      })
+      .addCase(toggleDarkMode.fulfilled, (state, action) => {
+        state.mode = action.payload.mode;
+        state.theme = action.payload.theme;
+      });
+  },
 });
 
 export const { switchColor, switchMode, toggleMode } = themeSlice.actions;

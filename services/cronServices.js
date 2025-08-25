@@ -14,8 +14,12 @@ function initCronJobs() {
   const data = fs.readFileSync(SETTINGS_FILE, 'utf8');
   const settings = JSON.parse(data);
   if (settings.theme?.autoThemeSettings?.enabled) {
-    const [startHour, startMinute] = settings.theme.autoThemeSettings.startTime.split(':').map(Number);
-    const [endHour, endMinute] = settings.theme.autoThemeSettings.endTime.split(':').map(Number);
+    const [startHour, startMinute] = settings.theme.autoThemeSettings.startTime
+      .split(':')
+      .map(Number);
+    const [endHour, endMinute] = settings.theme.autoThemeSettings.endTime
+      .split(':')
+      .map(Number);
 
     cron.schedule(`${startMinute} ${startHour} * * *`, () => {
       updateThemeBasedOnTime();
@@ -27,7 +31,8 @@ function initCronJobs() {
   }
 
   // Нова логіка для сповіщень про події
-  cron.schedule('* * * * *', () => { // Кожну хвилину
+  cron.schedule('* * * * *', () => {
+    // Кожну хвилину
     try {
       const calendarData = fs.readFileSync(CALENDAR_FILE, 'utf8');
       const events = JSON.parse(calendarData);
@@ -40,7 +45,7 @@ function initCronJobs() {
         return; // Якщо сповіщення вимкнені, виходимо з функції
       }
 
-      events.forEach(event => {
+      events.forEach((event) => {
         let eventDate;
 
         // Якщо подія повторюється
@@ -58,7 +63,8 @@ function initCronJobs() {
         }
 
         const timeDiff = (eventDate - now) / (1000 * 60); // Різниця в хвилинах
-        if (timeDiff > 9 && timeDiff <= 10) { // Якщо залишилося 10 хвилин або менше
+        if (timeDiff > 9 && timeDiff <= 10) {
+          // Якщо залишилося 10 хвилин або менше
           const notification = new Notification({
             title: 'Нагадування про подію',
             body: `Подія "${event.title}" розпочнеться о ${event.startTime} (${event.date || 'сьогодні'})`,

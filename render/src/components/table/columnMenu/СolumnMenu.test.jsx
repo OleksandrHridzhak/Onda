@@ -34,12 +34,14 @@ const defaultProps = {
 describe('ColumnMenu', () => {
   test('renders with column name and close button', () => {
     render(<ColumnMenu {...defaultProps} />);
-    
+
     // перевірка заголовку
     expect(screen.getByText('Column Settings')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Test Column')).toBeInTheDocument();
 
     // перевірка кнопки закриття
-    expect(screen.getByRole('button', { name: /close column settings/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /close column settings/i })
+    ).toBeInTheDocument();
   });
 });

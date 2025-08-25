@@ -1,14 +1,47 @@
 import {
-  Heart, Star, Zap, Sun, Moon,
-  Coffee, Rocket, Shield, Flag, Bell,
-  Book, Music, Pizza, Gamepad,
-  Camera, Clock, Globe, Lock, Map,
-  Mic, Pen, Phone, Search, User, BicepsFlexed,
-  Smile, Flame, Brain, Bug, Wand2,
-  Cloud, Eye, Gift, Hammer, Home,
-  IceCream, Leaf, Lightbulb, Trophy, Wallet,Circle, ListTodo
+  Heart,
+  Star,
+  Zap,
+  Sun,
+  Moon,
+  Coffee,
+  Rocket,
+  Shield,
+  Flag,
+  Bell,
+  Book,
+  Music,
+  Pizza,
+  Gamepad,
+  Camera,
+  Clock,
+  Globe,
+  Lock,
+  Map,
+  Mic,
+  Pen,
+  Phone,
+  Search,
+  User,
+  BicepsFlexed,
+  Smile,
+  Flame,
+  Brain,
+  Bug,
+  Wand2,
+  Cloud,
+  Eye,
+  Gift,
+  Hammer,
+  Home,
+  IceCream,
+  Leaf,
+  Lightbulb,
+  Trophy,
+  Wallet,
+  Circle,
+  ListTodo,
 } from 'lucide-react';
-
 
 export const icons = [
   { name: 'Heart', component: Heart },
@@ -52,12 +85,12 @@ export const icons = [
   { name: 'Trophy', component: Trophy },
   { name: 'Wallet', component: Wallet },
   { name: 'Circle', component: Circle },
-  { name: 'ListTodo', component: ListTodo }
+  { name: 'ListTodo', component: ListTodo },
 ];
 
 // Функція для рендерингу іконки з потрібним розміром
 export const getIconComponent = (iconName, size = 16) => {
-  const icon = icons.find(i => i.name === iconName);
+  const icon = icons.find((i) => i.name === iconName);
   if (!icon) return null;
   const IconComponent = icon.component;
   return <IconComponent size={size} />;

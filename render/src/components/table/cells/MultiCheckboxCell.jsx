@@ -2,10 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { getCheckBoxColorOptions } from '../../utils/colorOptions';
 
-export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, darkMode }) => {
+export const MultiCheckboxCell = ({
+  value,
+  onChange,
+  options,
+  tagColors = {},
+  darkMode,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(
-    typeof value === 'string' && value.trim() !== '' ? value.split(', ').filter(opt => opt.trim() !== '') : []
+    typeof value === 'string' && value.trim() !== ''
+      ? value.split(', ').filter((opt) => opt.trim() !== '')
+      : []
   );
   const dropdownRef = useRef(null);
   const canvasRef = useRef(null);
@@ -36,7 +44,7 @@ export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, da
 
     const centerX = size / 2;
     const centerY = size / 2;
-    const radius = (size / 2) - 4;
+    const radius = size / 2 - 4;
     const lineWidth = 4.5;
     const totalOptions = options.length || 1;
     const progress = selectedOptions.length / totalOptions;
@@ -53,13 +61,13 @@ export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, da
     ctx.strokeStyle = darkMode ? '#374151' : '#e5e7eb';
     ctx.stroke();
 
-
     // Draw selected segments
     const totalAngle = 2 * Math.PI * progress;
     const segmentCount = selectedOptions.length;
-    const anglePerSegment = segmentCount > 1 
-      ? (totalAngle - gapRadians * (segmentCount - 1)) / segmentCount 
-      : totalAngle;
+    const anglePerSegment =
+      segmentCount > 1
+        ? (totalAngle - gapRadians * (segmentCount - 1)) / segmentCount
+        : totalAngle;
 
     selectedOptions.forEach((option, index) => {
       const startAngle = index * (anglePerSegment + gapRadians) - Math.PI / 2;
@@ -103,7 +111,10 @@ export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, da
   };
 
   return (
-    <div className="relative flex justify-center items-center" ref={dropdownRef}>
+    <div
+      className="relative flex justify-center items-center"
+      ref={dropdownRef}
+    >
       {/* Clean circular indicator */}
       <div
         onClick={() => setIsOpen(!isOpen)}
@@ -120,8 +131,8 @@ export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, da
       {isOpen && (
         <div
           className={`absolute z-10 mt-2 w-48 ${
-            darkMode 
-              ? 'bg-gray-800 text-gray-200 border border-gray-700' 
+            darkMode
+              ? 'bg-gray-800 text-gray-200 border border-gray-700'
               : 'bg-white text-gray-800 border border-gray-200'
           } rounded-lg max-h-64 overflow-auto`}
           style={{ top: '100%' }}
@@ -139,13 +150,25 @@ export const MultiCheckboxCell = ({ value, onChange, options, tagColors = {}, da
                 } cursor-pointer text-sm flex items-center`}
                 onClick={() => handleOptionChange(option)}
               >
-                <div className={`w-3 h-3 rounded-full mr-3 ${colorOption.bg} ${
-                  isSelected ? 'opacity-100' : 'opacity-30'
-                }`} />
+                <div
+                  className={`w-3 h-3 rounded-full mr-3 ${colorOption.bg} ${
+                    isSelected ? 'opacity-100' : 'opacity-30'
+                  }`}
+                />
                 <span className="flex-1">{option}</span>
                 {isSelected && (
-                  <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-4 h-4 ml-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 )}
               </div>

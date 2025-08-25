@@ -2,7 +2,7 @@ const path = require('path');
 const { getData, saveData } = require('../utils/dataUtils.js');
 const DATA_FILE = path.join(__dirname, '../userData/data.json');
 
-const { getColumnTemplates} = require('../constants/fileTemplates.js');
+const { getColumnTemplates } = require('../constants/fileTemplates.js');
 
 module.exports = {
   init(ipcMain) {
@@ -18,7 +18,7 @@ module.exports = {
     });
 
     // Get all data from data.json
-    ipcMain.handle('get-table-data', async() => {
+    ipcMain.handle('get-table-data', async () => {
       try {
         const data = await getData(DATA_FILE);
         return { status: 'Data fetched', data };
@@ -45,15 +45,17 @@ module.exports = {
     });
 
     // Create a new component in data.json
-    ipcMain.handle('create-component', async(event, type) => {
-
+    ipcMain.handle('create-component', async (event, type) => {
       const templates = getColumnTemplates();
       if (!templates[type]) {
-        return { status: 'Invalid type', error: `No template for type "${type}"` };
+        return {
+          status: 'Invalid type',
+          error: `No template for type "${type}"`,
+        };
       }
 
       const newComponent = templates[type];
-      let data
+      let data;
       try {
         data = await getData(DATA_FILE);
       } catch (err) {
@@ -83,6 +85,5 @@ module.exports = {
       await saveData(DATA_FILE, data);
       return { status: 'Component deleted', columnId };
     });
-
-  }
+  },
 };

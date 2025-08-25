@@ -9,11 +9,11 @@ module.exports = {
       try {
         const data = await getData(DATA_FILE);
         // Ensure backward compatibility
-        const normalizedData = data.map(event => ({
+        const normalizedData = data.map((event) => ({
           ...event,
           isRepeating: event.isRepeating ?? false,
           repeatDays: event.repeatDays ?? [],
-          repeatFrequency: event.repeatFrequency ?? 'weekly'
+          repeatFrequency: event.repeatFrequency ?? 'weekly',
         }));
         return { status: 'success', data: normalizedData };
       } catch (error) {
@@ -24,15 +24,20 @@ module.exports = {
     // Save or update a single calendar event
     ipcMain.handle('calendar-save-event', async (event, eventData) => {
       try {
-
         let events = await getData(DATA_FILE);
 
         // Validate repeat settings
         const normalizedEvent = {
           ...eventData,
           isRepeating: eventData.isRepeating ?? false,
-          repeatDays: eventData.isRepeating ? (Array.isArray(eventData.repeatDays) ? eventData.repeatDays : []) : [],
-          repeatFrequency: eventData.isRepeating ? (eventData.repeatFrequency || 'weekly') : 'weekly'
+          repeatDays: eventData.isRepeating
+            ? Array.isArray(eventData.repeatDays)
+              ? eventData.repeatDays
+              : []
+            : [],
+          repeatFrequency: eventData.isRepeating
+            ? eventData.repeatFrequency || 'weekly'
+            : 'weekly',
         };
 
         const index = events.findIndex((e) => e.id === eventData.id);
@@ -41,7 +46,10 @@ module.exports = {
           events[index] = normalizedEvent;
         } else {
           // Add new event
-          events.push({ ...normalizedEvent, id: eventData.id || Date.now().toString() });
+          events.push({
+            ...normalizedEvent,
+            id: eventData.id || Date.now().toString(),
+          });
         }
 
         await saveData(DATA_FILE, events);
