@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { getColorOptions } from '../../utils/colorOptions';
-
+import { useSelector } from 'react-redux';
 import { Plus, Edit2, Check, Trash2, ListTodo } from 'lucide-react';
 
-export const TodoCell = ({ value, column, onChange, darkMode }) => {
+export const TodoCell = ({ value, column, onChange }) => {
   const [todos, setTodos] = useState(value || []);
   const [newTodo, setNewTodo] = useState('');
   const [newCategory, setNewCategory] = useState('');
@@ -17,6 +17,8 @@ export const TodoCell = ({ value, column, onChange, darkMode }) => {
   const categoryMenuRef = useRef(null);
 
   // Color options from ColumnMenu
+  const { mode } = useSelector((state) => state.theme);
+  const darkMode = mode === 'dark' ? true : false;
   const colorOptions = getColorOptions({ darkMode });
 
   useEffect(() => {

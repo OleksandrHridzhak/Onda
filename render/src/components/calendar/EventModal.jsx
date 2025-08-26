@@ -1,9 +1,8 @@
 import { Trash2 } from 'lucide-react';
 import { InputText } from '../shared/InputText';
 import { BubbleBtn } from '../shared/BubbleBtn';
-
+import { useSelector } from 'react-redux';
 export default function EventModal({
-  darkTheme,
   showEventModal,
   setShowEventModal,
   newEvent,
@@ -21,7 +20,8 @@ export default function EventModal({
     '#dc2626': 'Red',
     '#d97706': 'Orange',
   };
-
+  const { mode } = useSelector((state) => state.theme);
+  const darkTheme = mode === 'dark' ? true : false;
   return (
     <>
       {showEventModal && (

@@ -6,8 +6,8 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { BubbleBtn } from '../shared/BubbleBtn';
+import { useSelector } from 'react-redux';
 export default function CalendarHeader({
-  darkTheme,
   viewMode,
   setViewMode,
   selectedDate,
@@ -21,6 +21,8 @@ export default function CalendarHeader({
   setEditingEventId,
   setShowEventModal,
 }) {
+  const { mode } = useSelector((state) => state.theme);
+  const darkTheme = mode === 'dark' ? true : false;
   return (
     <div
       className={`sticky top-0 z-20 ${darkTheme ? 'bg-gray-800/95 backdrop-blur-sm border-gray-700' : 'bg-white/95 backdrop-blur-sm border-gray-200'} border-b`}

@@ -16,6 +16,7 @@ import {
   handleWidthChange,
 } from './columnMenuHandlers';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
+import { useSelector } from 'react-redux';
 
 
 
@@ -32,13 +33,13 @@ const ColumnMenu = ({
   onMoveDown,
   canMoveUp,
   canMoveDown,
-  darkMode,
   onChangeWidth,
   onChangeCheckboxColor = () => {},
 }) => {
   const [state, dispatch] = useReducer(reducer, column, initialState);
   const menuRef = useRef(null);
-
+  const { mode } = useSelector((state) => state.theme);
+  const darkMode = mode === 'dark' ? true : false;
   useEffect(() => {
     dispatch({ type: 'RESET', payload: column });
   }, [column]);

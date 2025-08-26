@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
-
+import { useSelector } from 'react-redux';
 export default function CalendarTimeline({
-  darkTheme,
   viewMode,
   selectedDate,
   weekDays,
@@ -18,6 +17,8 @@ export default function CalendarTimeline({
   handleTimeSlotClick,
   handleEditEvent,
 }) {
+    const { mode } = useSelector((state) => state.theme);
+  const darkTheme = mode === 'dark';
   const getDisplayDays = () => {
     return viewMode === 'day' ? [selectedDate] : weekDays;
   };

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { getCheckBoxColorOptions } from '../../utils/colorOptions';
+import { useSelector } from 'react-redux';
 
 export const MultiCheckboxCell = ({
   value,
   onChange,
   options,
   tagColors = {},
-  darkMode,
 }) => {
+  const { mode } = useSelector((state) => state.theme);
+  const darkMode = mode === 'dark' ? true : false;
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(
     typeof value === 'string' && value.trim() !== ''

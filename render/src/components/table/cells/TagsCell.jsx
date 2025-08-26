@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { getColorOptions } from '../../utils/colorOptions';
+import { useSelector } from 'react-redux';
 
 export const TagsCell = ({
   value,
   onChange,
   options,
-  darkMode,
   tagColors = {},
 }) => {
+  const { mode } = useSelector((state) => state.theme);
+  const darkMode = mode === 'dark' ? true : false;
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState(
     typeof value === 'string' && value.trim() !== ''
