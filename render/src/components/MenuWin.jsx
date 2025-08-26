@@ -1,7 +1,9 @@
 import React from 'react';
 import { Minus, Square, X } from 'lucide-react';
-
-const MenuWin = ({ darkTheme, currentPage = '/' }) => {
+import {useSelector} from 'react-redux';
+const MenuWin = ({ currentPage = '/' }) => {
+  const { theme, mode } = useSelector((state) => state.theme);
+  const darkTheme = mode === 'dark';
   console.log('MenuWin props:', { darkTheme, currentPage });
 
   const getContainerClass = () => {
