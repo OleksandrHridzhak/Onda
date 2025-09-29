@@ -9,7 +9,7 @@
     "Chosen": {
       "Monday": true,
       "Tuesday": true,
-      "Wednesday": false,
+      "Wednesday": true,
       "Thursday": false,
       "Friday": false,
       "Saturday": true,
@@ -63,7 +63,7 @@
     "NameVisible": false,
     "Chosen": {
       "Monday": true,
-      "Tuesday": true,
+      "Tuesday": false,
       "Wednesday": true,
       "Thursday": true,
       "Friday": true,
@@ -140,6 +140,11 @@
           "text": "Grocery shopping",
           "completed": true,
           "category": "Personal"
+        },
+        {
+          "text": "d",
+          "completed": false,
+          "category": ""
         }
       ]
     },
@@ -181,7 +186,13 @@
     "EmojiIcon": "ListTodo",
     "NameVisible": true,
     "Chosen": {
-      "global": []
+      "global": [
+        {
+          "text": "d",
+          "completed": false,
+          "category": ""
+        }
+      ]
     },
     "Options": [
       "Option 1",
@@ -197,7 +208,7 @@
     "ColumnId": "1755845814807",
     "Type": "multi-select",
     "Name": "New Multi-Select",
-    "Description": "Multi-select created on backend",
+    "Description": "Multi-select created on badckend",
     "EmojiIcon": "Star",
     "NameVisible": true,
     "Options": [
@@ -210,7 +221,7 @@
     },
     "Chosen": {
       "Monday": "Option 1",
-      "Tuesday": "",
+      "Tuesday": "Option 2, Option 1",
       "Wednesday": "",
       "Thursday": "",
       "Friday": "",

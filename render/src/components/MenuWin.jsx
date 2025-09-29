@@ -1,6 +1,8 @@
 import React from 'react';
+import { useEffect, useRef } from 'react';
 import { Minus, Square, X } from 'lucide-react';
 import {useSelector} from 'react-redux';
+import { initWeek, addNewColumn } from '../services/indexedDB';
 const MenuWin = ({ currentPage = '/' }) => {
   const { theme, mode } = useSelector((state) => state.theme);
   const darkTheme = mode === 'dark';
@@ -24,8 +26,17 @@ const MenuWin = ({ currentPage = '/' }) => {
       : `${base} text-gray-400 hover:bg-gray-200`;
   };
 
+
+
   return (
     <div className={getContainerClass()}>
+      <button
+        onClick={() => addNewColumn()}
+        className={getButtonClass()}
+        aria-label="Minimize window"
+      >
+        <Minus size={16} />
+      </button>
       <button
         onClick={() => window.electronAPI?.minimizeWindow()}
         className={getButtonClass()}
