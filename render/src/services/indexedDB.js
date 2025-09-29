@@ -189,34 +189,61 @@ export async function addNewColumn(columnType) {
 
     const week = await store.get(1);
     if (!week) {
-      console.log('Тиждень не знайдено');
       await tx.done;
-      return false;
+      return { status: false, message: 'Тиждень не знайдено' };
     }
-    let newBlock = getColumnTemplates()[columnType];
 
+    let newBlock = getColumnTemplates()[columnType];
     if (!newBlock) {
-      console.warn('Невідомий тип колонки:', columnType);
       await tx.done;
-      return false;
+      return { status: false, message: 'Невідомий тип колонки' };
     }
+
     newBlock.ColumnId = Date.now().toString();
     newBlock.Name = `New column`;
     newBlock.Description = `Column created on ${new Date().toLocaleDateString()}`;
     newBlock.Type = columnType;
-    
-    console.log('Додавання нового блоку:', newBlock);
 
     week.body.push(newBlock);
     week.lastUpdated = new Date();
 
-
     await store.put(week);
     await tx.done;
-    console.log('Новий блок додано:', newBlock);
-    return true;
+
+    return { status: true, data: newBlock };
   } catch (error) {
     console.error('Помилка при додаванні блоку:', error);
-    throw error;
+    return { status: false, message: error.message };
+  }
+}
+
+export async function deleteColumn(columnId) {
+  try {
+    const db = await dbPromise;
+    const tx = db.transaction('weeks', 'readwrite');
+    const store = tx.objectStore('weeks');
+
+    const week = await store.get(1);
+    if (!week) {
+      await tx.done;
+      return { status: 'Week not found', columnId };
+    }
+
+    const initialLength = week.body.length;
+    week.body = week.body.filter((item) => item.ColumnId !== columnId);
+
+    if (week.body.length === initialLength) {
+      await tx.done;
+      return { status: 'Component not found', columnId };
+    }
+
+    week.lastUpdated = new Date();
+    await store.put(week);
+    await tx.done;
+
+    return { status: 'Component deleted', columnId };
+  } catch (error) {
+    console.error('Помилка при видаленні блоку:', error);
+    return { status: 'Error', message: error.message, columnId };
   }
 }

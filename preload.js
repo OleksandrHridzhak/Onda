@@ -13,14 +13,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Table Operations
   // Methods for managing table data, components, and export/import
-  getTableData: () => ipcRenderer.invoke('get-table-data'),
-  saveData: (data) => ipcRenderer.invoke('save-data', data),
+  //saveData: (data) => ipcRenderer.invoke('save-data', data),
   exportData: () => ipcRenderer.invoke('export-data'),
   importData: (data) => ipcRenderer.invoke('import-data', data),
-  changeColumn: (checkbox) => ipcRenderer.invoke('column-change', checkbox),
-  createComponent: (type) => ipcRenderer.invoke('create-component', type),
-  deleteComponent: (columnId) =>
-    ipcRenderer.invoke('delete-component', columnId),
+  //changeColumn: (checkbox) => ipcRenderer.invoke('column-change', checkbox),
+  //createComponent: (type) => ipcRenderer.invoke('create-component', type),
+  //deleteComponent: (columnId) =>
+  //  ipcRenderer.invoke('delete-component', columnId),
   updateColumnOrder: (columnOrder) =>
     ipcRenderer.invoke('update-column-order', columnOrder),
   updateCellSettings: (cellId, newSettings) =>
@@ -42,13 +41,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateUISettings: (uiSettings) =>
     ipcRenderer.invoke('update-ui-settings', uiSettings),
 
+
+
   // Window Management
-  // Methods for controlling the application window and navigation (legacy comment: hell)
   minimizeWindow: () => ipcRenderer.invoke('window-minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window-maximize'),
   closeWindow: () => ipcRenderer.invoke('window-close'),
-  showNotification: (options) =>
-    ipcRenderer.invoke('show-notification', options),
+  showNotification: (options) => ipcRenderer.invoke('show-notification', options),
   sendNextTab: () => ipcRenderer.send('next-tab'),
   onNextTab: (callback) => {
     ipcRenderer.on('next-tab', callback);

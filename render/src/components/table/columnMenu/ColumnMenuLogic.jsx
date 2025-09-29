@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { deleteColumn, updateColumn } from '../../../services/indexedDB';
 
 const electronAPI = window.electronAPI || {
   changeColumn: async () => {},
@@ -24,7 +25,7 @@ export const useColumnMenuLogic = (columns, setColumns) => {
       });
 
       try {
-        await electronAPI.changeColumn(updatedColumn);
+        await updateColumn(updatedColumn);
         return { status: 'Success', data: updatedColumn };
       } catch (err) {
         handleError('Update failed:', err);
@@ -43,7 +44,7 @@ export const useColumnMenuLogic = (columns, setColumns) => {
   const handleDeleteColumn = useCallback(
     async (columnId) => {
       try {
-        const result = await electronAPI.deleteComponent(columnId);
+        const result = await deleteColumn(columnId);
         if (result.status) {
           setColumns((prev) => prev.filter((col) => col.ColumnId !== columnId));
         }

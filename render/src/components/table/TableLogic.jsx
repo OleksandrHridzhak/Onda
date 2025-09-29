@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getWeek, updateColumn } from '../../services/indexedDB';
+import { addNewColumn, getWeek, updateColumn } from '../../services/indexedDB';
 import { CheckboxCell } from './cells/CheckboxCell';
 import { NumberCell } from './cells/NumberCell';
 import { TagsCell } from './cells/TagsCell';
@@ -20,7 +20,6 @@ export const DAYS = [
 ];
 
 const electronAPI = window.electronAPI || {
-  getTableData: async () => ({ status: 'Data fetched', data: [] }),
   getSettings: async () => ({ status: 'Settings fetched', data: {} }),
   updateSettings: async () => {},
   createComponent: async () => ({ status: false }),
@@ -166,7 +165,7 @@ export const useTableLogic = () => {
   const handleAddColumn = useCallback(
     async (type) => {
       try {
-        const result = await electronAPI.createComponent(type);
+        const result = await addNewColumn(type);
         if (result.status) {
           setColumns((prev) => [...prev, result.data]);
           setTableData((prev) => ({
