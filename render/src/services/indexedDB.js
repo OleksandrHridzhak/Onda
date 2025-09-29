@@ -1,6 +1,6 @@
 import { openDB } from 'idb';
 import { getColumnTemplates } from '../components/utils/fileTemplates';
-// Початковий масив body для тижня
+
 const initialWeekBody = [
   {
     "ColumnId": "1755000000005",
@@ -114,28 +114,38 @@ export async function initWeek() {
 export async function getWeek() {
   try {
     const db = await dbPromise;
-    const tx = db.transaction('weeks', 'readonly');
-    const store = tx.objectStore('weeks');
+    const store = db.transaction('weeks', 'readonly').objectStore('weeks');
 
-    const week = await store.get(1); // Отримуємо єдиний тиждень із id: 1
-    await tx.done;
+    const week = await store.get(1);
+    // Транзакція readonly автоматично завершується після get, tx.done можна не чекати
 
     if (week) {
-      console.log('Тиждень:', week);
-      return week;
+      console.log('Тиждень:', week.body);
+      return {
+        status: 'Data fetched',
+        data: week.body,
+      };
     } else {
       console.log('Тиждень не знайдено');
-      return null;
+      return {
+        status: 'Data fetched',
+        data: [], // пустий масив замість null
+      };
     }
   } catch (error) {
     console.error('Помилка при отриманні тижня:', error);
-    throw error;
+    return {
+      status: 'Error',
+      data: [],
+    };
   }
 }
 
+
 // Функція для редагування об’єкта в body за ColumnId
-export async function updateBlockInWeek(columnId, updatedBlock) {
+export async function updateColumn(updatedColumn) {
   try {
+    const columnId = updatedColumn.ColumnId;
     const db = await dbPromise;
     const tx = db.transaction('weeks', 'readwrite');
     const store = tx.objectStore('weeks');
@@ -156,7 +166,7 @@ export async function updateBlockInWeek(columnId, updatedBlock) {
     }
 
     // Оновлюємо блок
-    week.body[blockIndex] = { ...week.body[blockIndex], ...updatedBlock };
+    week.body[blockIndex] = { ...week.body[blockIndex], ...updatedColumn };
     week.lastUpdated = new Date();
 
     // Зберігаємо оновлений тиждень
@@ -170,7 +180,7 @@ export async function updateBlockInWeek(columnId, updatedBlock) {
   }
 }
 
-
+// New column creating func
 export async function addNewColumn(columnType) {
   try {
     const db = await dbPromise;

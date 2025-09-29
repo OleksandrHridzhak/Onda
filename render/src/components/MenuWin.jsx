@@ -31,7 +31,7 @@ const MenuWin = ({ currentPage = '/' }) => {
   return (
     <div className={getContainerClass()}>
       <button
-        onClick={() => addNewColumn()}
+        onClick={() => initWeek()}
         className={getButtonClass()}
         aria-label="Minimize window"
       >

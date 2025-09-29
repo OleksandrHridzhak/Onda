@@ -62,7 +62,7 @@
     "EmojiIcon": "User",
     "NameVisible": false,
     "Chosen": {
-      "Monday": true,
+      "Monday": false,
       "Tuesday": false,
       "Wednesday": true,
       "Thursday": true,

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { getWeek, updateColumn } from '../../services/indexedDB';
 import { CheckboxCell } from './cells/CheckboxCell';
 import { NumberCell } from './cells/NumberCell';
 import { TagsCell } from './cells/TagsCell';
@@ -46,7 +47,7 @@ export const useTableLogic = () => {
       try {
         setLoading(true);
         const [daysResult, settingsResult] = await Promise.all([
-          electronAPI.getTableData(),
+          getWeek(),
           electronAPI.getSettings(),
         ]);
 
@@ -212,7 +213,7 @@ export const useTableLogic = () => {
       };
 
       try {
-        await electronAPI.changeColumn(updatedColumn);
+        await updateColumn(updatedColumn);
         setColumns((prev) =>
           prev.map((col) => (col.ColumnId === columnId ? updatedColumn : col))
         );
@@ -241,7 +242,7 @@ export const useTableLogic = () => {
         TagColors: updatedTagColors,
       };
       try {
-        await electronAPI.changeColumn(updatedColumn);
+        await updateColumn(updatedColumn);
         setColumns((prev) =>
           prev.map((col) => (col.ColumnId === columnId ? updatedColumn : col))
         );
@@ -296,7 +297,7 @@ export const useTableLogic = () => {
       if (!column) return;
       const updatedColumn = { ...column, Width: width };
       try {
-        await electronAPI.changeColumn(updatedColumn);
+        await updateColumn(updatedColumn);
         setColumns((prev) =>
           prev.map((col) => (col.ColumnId === columnId ? updatedColumn : col))
         );
