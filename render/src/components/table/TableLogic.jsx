@@ -8,6 +8,7 @@ import { MultiCheckboxCell } from './cells/MultiCheckboxCell';
 import { TodoCell } from './cells/TodoCell';
 import { TaskTableCell } from './cells/TaskTableCell';
 import { useSelector } from 'react-redux';
+import { settingsService } from '../../services/settingsDB';
 
 export const DAYS = [
   'Monday',
@@ -47,7 +48,7 @@ export const useTableLogic = () => {
         setLoading(true);
         const [daysResult, settingsResult] = await Promise.all([
           getWeek(),
-          electronAPI.getSettings(),
+          settingsService.getSettings(),
         ]);
 
         const dayColumn = {
@@ -102,7 +103,7 @@ export const useTableLogic = () => {
               columnOrder: fetchedColumns.map((col) => col.ColumnId),
             },
           };
-          await electronAPI.updateSettings(newSettings);
+          await settingsService.updateSettings(newSettings);
         }
 
         const initialTableData = DAYS.reduce((acc, day) => {
@@ -140,8 +141,7 @@ export const useTableLogic = () => {
   }, []);
 
   useEffect(() => {
-    electronAPI
-      .getSettings()
+    settingsService.getSettings()
       .then(({ data }) => {
         if (typeof data?.table?.showSummaryRow === 'boolean') {
           setShowSummaryRow(data.table.showSummaryRow);
@@ -274,7 +274,7 @@ export const useTableLogic = () => {
       setColumnOrder(newColumnOrder);
 
       try {
-        await electronAPI.updateColumnOrder(newColumnOrder);
+        await settingsService.updateColumnOrder(newColumnOrder);
       } catch (err) {
         handleError('Failed to update column order:', err);
       }

@@ -1,6 +1,6 @@
 import { dbPromise } from './indexedDB.js';
-import { getSettingsTemplates } from '../constants/fileTemplates.js';
-import { updateThemeBasedOnTime } from '../utils/utils.js';
+import { getSettingsTemplate } from '../components/utils/fileTemplates.js';
+
 
 const handleError = (err, message) => ({
   status: message,
@@ -15,7 +15,7 @@ export const settingsService = {
 
     const existing = await store.get(1);
     if (!existing) {
-      await store.put({ id: 1, ...getSettingsTemplates() });
+      await store.put({ id: 1, ...getSettingsTemplate() });
     }
 
     await tx.done;
@@ -27,7 +27,9 @@ export const settingsService = {
       const store = db.transaction('settings', 'readonly').objectStore('settings');
       const settings = await store.get(1);
 
-      if (!settings) return { status: 'Settings not found', data: getSettingsTemplates() };
+      if (!settings) {
+        this.initSettings();
+      };
       return { status: 'Settings fetched', data: settings };
     } catch (err) {
       return handleError(err, 'Error fetching settings');
@@ -40,7 +42,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplates();
+      const settings = await store.get(1) || getSettingsTemplate();
       const updated = { ...settings, ...newSettings };
 
       await store.put({ id: 1, ...updated });
@@ -58,7 +60,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplates();
+      const settings = await store.get(1) || getSettingsTemplate();
       settings.theme = { ...settings.theme, darkMode };
 
       await store.put({ id: 1, ...settings });
@@ -69,6 +71,18 @@ export const settingsService = {
       return handleError(err, 'Error switching theme');
     }
   },
+    async getTheme() {
+    try {
+      const db = await dbPromise;
+      const store = db.transaction('settings', 'readonly').objectStore('settings');
+      const settings = await store.get(1);
+
+      if (!settings) return { status: 'Theme fetched', darkMode: getSettingsTemplate().theme.darkMode };
+      return { status: 'Theme fetched', darkMode: settings.theme.darkMode };
+    } catch (err) {
+      return handleError(err, 'Error fetching theme');
+    }
+  },
 
   async updateTheme(themeSettings) {
     try {
@@ -76,13 +90,32 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplates();
+      const settings = await store.get(1) || getSettingsTemplate();
       settings.theme = { ...settings.theme, ...themeSettings };
 
       await store.put({ id: 1, ...settings });
       await tx.done;
 
-      updateThemeBasedOnTime();
+      //updateThemeBasedOnTime();
+      return { status: 'Theme updated' };
+    } catch (err) {
+      return handleError(err, 'Error updating theme');
+    }
+  },
+
+  async updateSettingsSection(newObject, section) {
+    try {
+      const db = await dbPromise;
+      const tx = db.transaction('settings', 'readwrite');
+      const store = tx.objectStore('settings');
+
+      const settings = await store.get(1) || getSettingsTemplate();
+      settings[section] = { ...settings[section], ...newObject };
+
+      await store.put({ id: 1, ...settings });
+      await tx.done;
+
+      //updateThemeBasedOnTime();
       return { status: 'Theme updated' };
     } catch (err) {
       return handleError(err, 'Error updating theme');
@@ -95,7 +128,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplates();
+      const settings = await store.get(1) || getSettingsTemplate();
       settings.table = { ...settings.table, ...tableSettings };
 
       await store.put({ id: 1, ...settings });
@@ -113,7 +146,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplates();
+      const settings = await store.get(1) || getSettingsTemplate();
       settings.ui = { ...settings.ui, ...uiSettings };
 
       await store.put({ id: 1, ...settings });
@@ -131,7 +164,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplates();
+      const settings = await store.get(1) || getSettingsTemplate();
       settings.table.columnOrder = columnOrder;
 
       await store.put({ id: 1, ...settings });

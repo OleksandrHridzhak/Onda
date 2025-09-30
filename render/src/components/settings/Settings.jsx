@@ -13,6 +13,7 @@ import UISection from './sections/UiSection';
 import DataSection from './sections/DataSection';
 import HeaderSection from './sections/HeaderSection';
 import CalendarSection from './sections/CalendarSection';
+import { settingsService } from '../../services/settingsDB';
 
 export default function SettingsDashboard() {
   const { theme } = useSelector((state) => state.theme);
@@ -49,8 +50,7 @@ export default function SettingsDashboard() {
   });
 
   useEffect(() => {
-    window.electronAPI
-      .getSettings()
+    settingsService.getSettings()
       .then(({ data }) => {
         setSettings((prev) => ({
           ...prev,
@@ -86,22 +86,22 @@ export default function SettingsDashboard() {
 
     switch (section) {
       case 'theme':
-        await window.electronAPI.updateTheme(newSettings);
+        await settingsService.updateTheme(newSettings);
         if (newSettings.autoThemeSettings?.enabled === true) {
           window.location.reload();
         }
         break;
       case 'table':
-        await window.electronAPI.updateTableSettings(newSettings);
+        await settingsService.updateSettingsSection(newSettings, 'table');
         break;
       case 'ui':
-        await window.electronAPI.updateUISettings(newSettings);
+        await settingsService.updateSettingsSection(newSettings, 'ui');
         break;
       case 'header':
-        await window.electronAPI.updateHeaderSettings(newSettings);
+        await settingsService.updateSettingsSection(newSettings, 'header');
         break;
       case 'calendar':
-        await window.electronAPI.updateSettings(updatedSettings);
+        await settingsService.updateSettings(updatedSettings);
         break;
       default:
         break;

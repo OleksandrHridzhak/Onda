@@ -76,8 +76,8 @@ export const dbPromise = openDB('ondaDB', 1, {
     if (!db.objectStoreNames.contains('weeks')) {
       db.createObjectStore('weeks', { keyPath: 'id', autoIncrement: true });
     }
-    if (!db.objectStoreNames.contains('calendarData')) {
-      db.createObjectStore('calendarData', { keyPath: 'id', autoIncrement: true });
+    if (!db.objectStoreNames.contains('calendar')) {
+      db.createObjectStore('calendar', { keyPath: 'id', autoIncrement: true });
     }
   },
 });
@@ -126,7 +126,7 @@ export async function getWeek() {
         data: week.body,
       };
     } else {
-      console.log('Тиждень не знайдено');
+      initWeek(); // Ініціалізуємо тиждень, якщо його немає
       return {
         status: 'Data fetched',
         data: [], // пустий масив замість null
@@ -136,7 +136,7 @@ export async function getWeek() {
     console.error('Помилка при отриманні тижня:', error);
     return {
       status: 'Error',
-      data: [],
+      data: initialWeekBody,
     };
   }
 }

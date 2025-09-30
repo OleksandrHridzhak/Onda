@@ -20,26 +20,26 @@ contextBridge.exposeInMainWorld('electronAPI', {
   //createComponent: (type) => ipcRenderer.invoke('create-component', type),
   //deleteComponent: (columnId) =>
   //  ipcRenderer.invoke('delete-component', columnId),
-  updateColumnOrder: (columnOrder) =>
-    ipcRenderer.invoke('update-column-order', columnOrder),
-  updateCellSettings: (cellId, newSettings) =>
-    ipcRenderer.invoke('update-cell-settings', cellId, newSettings),
-  deleteCellSettings: (cellId) =>
-    ipcRenderer.invoke('delete-cell-settings', cellId),
+  //updateColumnOrder: (columnOrder) =>
+  //  ipcRenderer.invoke('update-column-order', columnOrder),
+  //updateCellSettings: (cellId, newSettings) =>
+    //ipcRenderer.invoke('update-cell-settings', cellId, newSettings),
+  //deleteCellSettings: (cellId) =>
+  //  ipcRenderer.invoke('delete-cell-settings', cellId),
 
   // Settings Operations
   // Methods for managing themes, general settings, UI, and cell settings
-  getTheme: () => ipcRenderer.invoke('get-theme'),
-  getSettings: () => ipcRenderer.invoke('get-settings'),
-  getCellSettings: () => ipcRenderer.invoke('get-cell-settings'),
-  switchTheme: (darkMode) => ipcRenderer.invoke('switch-theme', darkMode),
-  updateTableSettings: (tableSettings) =>
-    ipcRenderer.invoke('update-table-settings', tableSettings),
-  updateTheme: (themeSettings) =>
-    ipcRenderer.invoke('update-theme', themeSettings),
-  updateSettings: (settings) => ipcRenderer.invoke('update-settings', settings),
-  updateUISettings: (uiSettings) =>
-    ipcRenderer.invoke('update-ui-settings', uiSettings),
+  //getTheme: () => ipcRenderer.invoke('get-theme'),
+  //getSettings: () => ipcRenderer.invoke('get-settings'),
+  //getCellSettings: () => ipcRenderer.invoke('get-cell-settings'),
+  //switchTheme: (darkMode) => ipcRenderer.invoke('switch-theme', darkMode),
+  //updateTableSettings: (tableSettings) =>
+  //  ipcRenderer.invoke('update-table-settings', tableSettings),
+  //updateTheme: (themeSettings) =>
+  //  ipcRenderer.invoke('update-theme', themeSettings),
+  //updateSettings: (settings) => ipcRenderer.invoke('update-settings', settings),
+  //updateUISettings: (uiSettings) =>
+  //  ipcRenderer.invoke('update-ui-settings', uiSettings),
 
 
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
 import { useSelector } from 'react-redux';
+import { calendarService } from '../../../services/calendarDB';
 
 const TimelineWidget = () => {
   const theme = useSelector((state) => state.theme.theme); // повний об’єкт з усіма класами
@@ -27,7 +28,7 @@ const TimelineWidget = () => {
   useEffect(() => {
     const loadTodayEvents = async () => {
       try {
-        const response = await window.electronAPI.calendarGetEvents();
+        const response = await calendarService.getCalendar();
         if (response.status === 'success') {
           const now = new Date();
           const todayDay = now.getDay();

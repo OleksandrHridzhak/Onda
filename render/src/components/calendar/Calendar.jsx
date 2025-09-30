@@ -3,6 +3,8 @@ import EventModal from './EventModal';
 import CalendarHeader from './CalendarHeader';
 import CalendarTimeline from './CalendarTimeline';
 import { useSelector } from 'react-redux';
+import { settingsService } from '../../services/settingsDB';
+import { calendarService } from '../../services/calendarDB';
 
 export default function Calendar() {
   const { mode } = useSelector((state) => state.theme);
@@ -81,7 +83,7 @@ export default function Calendar() {
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const response = await window.electronAPI.calendarGetEvents();
+        const response = await calendarService.getCalendar();
         if (response.status === 'success') {
           setEvents(response.data);
         } else {
@@ -181,7 +183,7 @@ export default function Calendar() {
         id: editingEventId || Date.now().toString(),
         ...newEvent,
       };
-      const response = await window.electronAPI.calendarSaveEvent(eventData);
+      const response = await calendarService.updateCalendarEvent(eventData);
       if (response.status === 'success') {
         setEvents((prev) =>
           editingEventId
@@ -221,7 +223,7 @@ export default function Calendar() {
   // Delete event
   const handleDeleteEvent = async (eventId) => {
     try {
-      const response = await window.electronAPI.calendarDeleteEvent(eventId);
+      const response = await calendarService.deleteCalendarEvent(eventId);
       if (response.status === 'success') {
         setEvents((prev) => prev.filter((e) => e.id !== eventId));
         setShowEventModal(false);

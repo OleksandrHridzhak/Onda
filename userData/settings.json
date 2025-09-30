@@ -1,6 +1,7 @@
 {
+  "id": 1,
   "theme": {
-    "darkMode": true,
+    "darkMode": false,
     "accentColor": "blue",
     "autoThemeSettings": {
       "enabled": false,
@@ -15,7 +16,7 @@
       "1755000000013",
       "1759167006886"
     ],
-    "showSummaryRow": true,
+    "showSummaryRow": false,
     "compactMode": false,
     "stickyHeader": true
   },
@@ -23,11 +24,5 @@
     "animations": true,
     "tooltips": true,
     "confirmDelete": true
-  },
-  "header": {
-    "layout": "bothWidgets"
-  },
-  "calendar": {
-    "notifications": true
   }
 }

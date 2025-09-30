@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
+import { settingsService } from '../../services/settingsDB';
+//TODO Delete this slice
 export const fetchTheme = createAsyncThunk('theme/fetchTheme', async () => {
-  const res = await window.electronAPI?.getTheme?.();
+  const res = await settingsService?.getSettings?.();
   return res?.darkMode ?? true;
 });
 
