@@ -3,19 +3,19 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
   // Calendar Operations
   // Methods for managing calendar events and time
-  calendarGetEvents: () => ipcRenderer.invoke('calendar-get-events'),
-  calendarGetTime: () => ipcRenderer.invoke('calendar-get-time'),
-  getTime: () => ipcRenderer.invoke('get-time'),
-  calendarSaveEvent: (eventData) =>
-    ipcRenderer.invoke('calendar-save-event', eventData),
-  calendarDeleteEvent: (eventId) =>
-    ipcRenderer.invoke('calendar-delete-event', eventId),
+  //calendarGetEvents: () => ipcRenderer.invoke('calendar-get-events'),
+  //calendarGetTime: () => ipcRenderer.invoke('calendar-get-time'),
+  //getTime: () => ipcRenderer.invoke('get-time'),
+  //calendarSaveEvent: (eventData) =>
+  //  ipcRenderer.invoke('calendar-save-event', eventData),
+  //calendarDeleteEvent: (eventId) =>
+    //ipcRenderer.invoke('calendar-delete-event', eventId),
 
   // Table Operations
   // Methods for managing table data, components, and export/import
   //saveData: (data) => ipcRenderer.invoke('save-data', data),
-  exportData: () => ipcRenderer.invoke('export-data'),
-  importData: (data) => ipcRenderer.invoke('import-data', data),
+  //exportData: () => ipcRenderer.invoke('export-data'),
+  //importData: (data) => ipcRenderer.invoke('import-data', data),
   //changeColumn: (checkbox) => ipcRenderer.invoke('column-change', checkbox),
   //createComponent: (type) => ipcRenderer.invoke('create-component', type),
   //deleteComponent: (columnId) =>

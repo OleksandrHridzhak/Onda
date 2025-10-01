@@ -98,18 +98,12 @@ export default function Calendar() {
 
   // Update current time
   useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const response = await window.electronAPI.calendarGetTime();
-        if (response.status === 'success') {
-          setCurrentTime(new Date(response.time));
-        }
-      } catch (error) {
-        console.error('Error fetching time:', error);
-      }
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+
 
   // Update week days
   useEffect(() => {

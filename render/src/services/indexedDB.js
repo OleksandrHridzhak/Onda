@@ -247,3 +247,64 @@ export async function deleteColumn(columnId) {
     return { status: 'Error', message: error.message, columnId };
   }
 }
+export async function exportData() {
+  try {
+    const db = await dbPromise;
+    const tx = db.transaction(['weeks', 'calendar', 'settings'], 'readonly');
+
+    const weeks = await tx.objectStore('weeks').getAll();
+    const calendar = await tx.objectStore('calendar').getAll();
+    const settings = await tx.objectStore('settings').getAll();
+
+    const exportData = { weeks, calendar, settings };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `onda-data-${new Date().toISOString()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    return { status: 'Data exported' };
+  } catch (error) {
+    console.error('Export failed:', error);
+    return { status: 'Error', message: error.message };
+  }
+}
+export async function importData(file) {
+  try {
+    const text = await file.text();
+    const importData = JSON.parse(text);
+    const db = await dbPromise;
+
+    const tx = db.transaction(['weeks', 'calendar', 'settings'], 'readwrite');
+
+    if (importData.weeks) {
+      const weeksStore = tx.objectStore('weeks');
+      for (const week of importData.weeks) {
+        await weeksStore.put(week);
+      }
+    }
+
+    if (importData.calendar) {
+      const calendarStore = tx.objectStore('calendar');
+      for (const cal of importData.calendar) {
+        await calendarStore.put(cal);
+      }
+    }
+
+    if (importData.settings) {
+      const settingsStore = tx.objectStore('settings');
+      for (const s of importData.settings) {
+        await settingsStore.put(s);
+      }
+    }
+
+    await tx.done;
+    return { status: 'Data imported' };
+  } catch (error) {
+    console.error('Import failed:', error);
+    return { status: 'Error', message: error.message };
+  }
+}

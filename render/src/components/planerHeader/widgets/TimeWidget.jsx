@@ -6,25 +6,22 @@ export const TimeWidget = () => {
   const [time, setTime] = useState('');
 
   useEffect(() => {
-    const fetchTime = async () => {
-      try {
-        const { time: isoTime } = await window.electronAPI.getTime();
-        const date = new Date(isoTime);
-        const formattedTime = date.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-        setTime(formattedTime);
-      } catch (error) {
-        console.error('Error fetching time:', error);
-      }
-    };
+    const intervalId = setInterval(() => {
+      const date = new Date();
+      const formattedTime = date.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      setTime(formattedTime);
+    }, 30000); // оновлюємо кожні 30 секунд
 
-    fetchTime();
-    const intervalId = setInterval(fetchTime, 30000);
+    // перший рендер
+    const date = new Date();
+    setTime(date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
 
     return () => clearInterval(intervalId);
   }, []);
+
 
   return (
     <h1 className={`font-poppins text-5xl ${theme.textTableValues}`}>{time}</h1>

@@ -81,7 +81,7 @@ export const calendarService = {
       await store.put(calendar);
       await tx.done;
 
-      return { status: 'Calendar event updated', data: normalizedEvent };
+      return { status: 'success', data: normalizedEvent };
     } catch (err) {
       return handleError(err, 'Error updating calendar event');
     }

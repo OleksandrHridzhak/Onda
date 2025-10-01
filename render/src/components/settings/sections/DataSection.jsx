@@ -2,12 +2,14 @@ import { Download, Upload } from 'lucide-react';
 import SettingsTemplate from '../SettingsTemplate';
 import { useSelector } from 'react-redux';
 import { BubbleBtn } from '../../shared/BubbleBtn';
+import { settingsService } from '../../../services/settingsDB';
+import { exportData, importData } from '../../../services/indexedDB';
 
 export default function DataSection() {
   const { theme } = useSelector((state) => state.theme);
   const handleExportData = async () => {
     try {
-      const data = await window.electronAPI.exportData();
+      const data = await exportData();
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: 'application/json',
       });
@@ -33,7 +35,7 @@ export default function DataSection() {
       reader.onload = async (e) => {
         try {
           const data = JSON.parse(e.target.result);
-          await window.electronAPI.importData(data);
+          await importData(data);
           window.location.reload();
         } catch (error) {
           console.error('Error parsing imported data:', error);
