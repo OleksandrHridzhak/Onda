@@ -31,13 +31,6 @@ const MenuWin = ({ currentPage = '/' }) => {
   return (
     <div className={getContainerClass()}>
       <button
-        onClick={() => initWeek()}
-        className={getButtonClass()}
-        aria-label="Minimize window"
-      >
-        <Minus size={16} />
-      </button>
-      <button
         onClick={() => window.electronAPI?.minimizeWindow()}
         className={getButtonClass()}
         aria-label="Minimize window"

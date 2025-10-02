@@ -8,7 +8,7 @@ export const fetchTheme = createAsyncThunk('theme/fetchTheme', async () => {
   // const electronTheme = await window.electronAPI?.getTheme();
   // storedTheme = electronTheme || storedTheme;
 
-  if (!storedTheme) storedTheme = 'peach.light';
+  if (!storedTheme) storedTheme = 'nature.light';
   return storedTheme;
 });
 
@@ -28,13 +28,13 @@ export const toggleDarkMode = createAsyncThunk(
 );
 
 const [initialColor, initialMode] = (
-  localStorage.getItem('theme') || 'peach.light'
+  localStorage.getItem('theme') || 'nature.light'
 ).split('.');
 const initialTheme =
-  themes[initialColor]?.[initialMode] || themes['peach'].light;
+  themes[initialColor]?.[initialMode] || themes['nature'].light;
 
 const initialState = {
-  color: initialColor || 'peach',
+  color: initialColor || 'nature',
   mode: initialMode || 'light',
   theme: initialTheme,
 };
@@ -70,10 +70,10 @@ const themeSlice = createSlice({
     builder
       .addCase(fetchTheme.fulfilled, (state, action) => {
         const [color, mode] = action.payload.split('.');
-        state.color = color || 'peach';
+        state.color = color || 'nature';
         state.mode = mode || 'light';
         state.theme =
-          themes[state.color]?.[state.mode] || themes['peach'].light;
+          themes[state.color]?.[state.mode] || themes['nature'].light;
       })
       .addCase(toggleDarkMode.fulfilled, (state, action) => {
         state.mode = action.payload.mode;

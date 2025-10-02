@@ -26,9 +26,9 @@ const PlannerHeader = ({
   return (
     <div className={`${theme.background}`}>
       {layout?.length > 0 ? (
-        <div className="flex justify-between items-center px-2 pt-10 pb-9">
+        <div className="flex flex-wrap justify-between items-center  px-2 pt-10 pb-9">
           <TimeWidget />
-          <div className="flex items-center">
+          <div className="flex  flex-wrap items-center">
             {renderWidgets(layout)}
             <div className="flex justify-center">
               <AddNewColumnBtn

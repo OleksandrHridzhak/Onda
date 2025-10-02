@@ -106,7 +106,7 @@ const Table = () => {
         )}
       </div>
       <div
-        className={`overflow-hidden border ${theme.border} rounded-xl m-2 custom-scroll`}
+        className={`overflow-x-auto border ${theme.border} rounded-xl m-2 custom-scroll`}
       >
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
