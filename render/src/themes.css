@@ -1,0 +1,42 @@
+/* src/styles/themes.css */
+
+/* Light */
+:root[data-theme='light'] {
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --text: #0f172a;
+  --text-accent: #334155;
+
+  --icon-active: #111827;
+  --icon-inactive: #6b7280;
+
+  --link-active-bg: #e5e7eb;
+  --link-inactive-bg: transparent;
+
+  --toggle-icon: #111827;
+  --toggle-hover-bg: #f1f5f9;
+
+  --primary: #2563eb;
+  --accent: #10b981;
+}
+
+/* Dark */
+:root[data-theme='dark'] {
+  --surface: #0b1220;
+  --border: #1f2937;
+  --text: #e5e7eb;
+  --text-accent: #93c5fd;
+
+  --icon-active: #ffffff;
+  --icon-inactive: #9ca3af;
+
+  --link-active-bg: #1f2937;
+  --link-inactive-bg: transparent;
+
+  --toggle-icon: #e5e7eb;
+  --toggle-hover-bg: #111827;
+
+  --primary: #60a5fa;
+  --accent: #34d399;
+}
+

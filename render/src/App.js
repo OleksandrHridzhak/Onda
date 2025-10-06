@@ -21,10 +21,15 @@ const routes = ['/', '/calendar', '/settings'];
 
 function MainContent({ isDarkMode, setIsDarkMode }) {
   const location = useLocation();
+  document.documentElement.setAttribute('data-theme', 'standard-dark'); // або 'light' чи інший пресет
   const { theme, mode } = useSelector((state) => state.theme);
+  const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
+
   return (
     <div className={`flex-1 flex flex-col ${theme.background}`}>
-      <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
+      {isElectron && (
+        <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
+      )}
       <Routes>
         <Route path="/" element={<Table />} />
         <Route
