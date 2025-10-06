@@ -55,7 +55,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   //Metric colection
-  collectMetrics: (event, data) => ipcRenderer.invoke('collect-metrics', event, data),
+  collectMetrics: (event, data) => ipcRenderer.invoke('collect-metric', event, data),
   // preload.js
 
 });

@@ -15,6 +15,7 @@
     "electron": "^35.1.4",
     "electron-builder": "^26.0.12",
     "electron-packager": "^17.1.2",
+    "playwright": "^1.55.1",
     "prettier": "^3.6.2"
   },
   "build": {
