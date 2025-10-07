@@ -1,42 +1,128 @@
-/* src/styles/themes.css */
-
-/* Light */
-:root[data-theme='light'] {
-  --surface: #ffffff;
+:root[data-theme-mode='light'][data-color-scheme='standard'] {
+  --background: #ffffff;
   --border: #e5e7eb;
-  --text: #0f172a;
-  --text-accent: #334155;
-
-  --icon-active: #111827;
-  --icon-inactive: #6b7280;
-
-  --link-active-bg: #e5e7eb;
-  --link-inactive-bg: transparent;
-
-  --toggle-icon: #111827;
-  --toggle-hover-bg: #f1f5f9;
-
-  --primary: #2563eb;
-  --accent: #10b981;
+  --text: #1d4ed8;
+  --text-accent: #2563eb;
+  --text-table-values: #4b5563;
+  --text-table-real-values: #6b7280;
+  --link-active-bg: #2563eb;
+  --link-inactive-text: #4b5563;
+  --link-inactive-hover-bg: #eff6ff;
+  --icon-active: #ffffff;
+  --icon-inactive: #4b5563;
+  --toggle-icon: #3b82f6;
+  --hover-bg: #dbeafe;
+  --sidebar-toggle-hover-bg: #eff6ff;
+  --table-header: #f9fafb;
+  --table-header-text: #374151;
+  --table-body-bg: #ffffff;
+  --table-summary-text: #374151;
+  --settings-section-selector-bg: #eff6ff;
+  --bubble-btn-standard: #2563eb;
+  --bubble-btn-standard-hover: #1d4ed8;
+  --bubble-btn-delete: #ef4444;
+  --bubble-btn-delete-hover: #dc2626;
+  --bubble-btn-clear: #f3f4f6;
+  --bubble-btn-clear-hover: #e5e7eb;
+  --bubble-btn-clear-text: #4b5563;
+  --scrollbar-track: rgba(241, 241, 241, 0.2);
+  --scrollbar-thumb: rgba(156, 163, 175, 0.5);
+  --scrollbar-thumb-hover: rgba(107, 114, 128, 0.7);
 }
 
-/* Dark */
-:root[data-theme='dark'] {
-  --surface: #0b1220;
-  --border: #1f2937;
-  --text: #e5e7eb;
-  --text-accent: #93c5fd;
-
+:root[data-theme-mode='dark'][data-color-scheme='standard'] {
+  --background: #111827;
+  --border: #374151;
+  --text: #bfdbfe;
+  --text-accent: #60a5fa;
+  --text-table-values: #e5e7eb;
+  --text-table-real-values: #d1d5db;
+  --link-active-bg: #3b82f6;
+  --link-inactive-text: #d1d5db;
+  --link-inactive-hover-bg: #374151;
   --icon-active: #ffffff;
-  --icon-inactive: #9ca3af;
+  --icon-inactive: #d1d5db;
+  --toggle-icon: #60a5fa;
+  --hover-bg: #1e40af;
+  --sidebar-toggle-hover-bg: #374151;
+  --table-header: #1f2937;
+  --table-header-text: #d1d5db;
+  --table-body-bg: #1f2937;
+  --table-summary-text: #e5e7eb;
+  --settings-section-selector-bg: #374151;
+  --bubble-btn-standard: #3b82f6;
+  --bubble-btn-standard-hover: #2563eb;
+  --bubble-btn-delete:#ef4444;
+  --bubble-btn-delete-hover: #bd2c2c;
+  --bubble-btn-clear: #374151;
+  --bubble-btn-clear-hover: #4b5563;
+  --bubble-btn-clear-text: #d1d5db;
+  --scrollbar-track: rgba(55, 65, 81, 0.5);
+  --scrollbar-thumb: rgba(156, 163, 175, 0.7);
+  --scrollbar-thumb-hover: rgba(107, 114, 128, 0.9);
+}
 
-  --link-active-bg: #1f2937;
-  --link-inactive-bg: transparent;
+:root[data-theme-mode='light'][data-color-scheme='nature'] {
+  --background: #f0fdf4;
+  --border: #bbf7d0;
+  --text: #166534;
+  --text-accent: #15803d;
+  --text-table-values: #374151;
+  --text-table-real-values: #4b5563;
+  --link-active-bg: #16a34a;
+  --link-inactive-text: #15803d;
+  --link-inactive-hover-bg: #dcfce7;
+  --icon-active: #ffffff;
+  --icon-inactive: #15803d;
+  --toggle-icon: #16a34a;
+  --hover-bg: #dcfce7;
+  --sidebar-toggle-hover-bg: #dcfce7;
+  --table-header: #dcfce7;
+  --table-header-text: #374151;
+  --table-body-bg: #ffffff;
+  --table-summary-text: #166534;
+  --settings-section-selector-bg: #dcfce7;
+  --bubble-btn-standard: #16a34a;
+  --bubble-btn-standard-hover: #15803d;
+  --bubble-btn-delete: #ef4444;
+  --bubble-btn-delete-hover: #dc2626;
+  --bubble-btn-clear: #f3f4f6;
+  --bubble-btn-clear-hover: #e5e7eb;
+  --bubble-btn-clear-text: #4b5563;
+  --scrollbar-track: rgba(220, 252, 231, 0.2);
+  --scrollbar-thumb: rgba(134, 239, 172, 0.5);
+  --scrollbar-thumb-hover: rgba(34, 197, 94, 0.7);
+}
 
-  --toggle-icon: #e5e7eb;
-  --toggle-hover-bg: #111827;
-
-  --primary: #60a5fa;
-  --accent: #34d399;
+:root[data-theme-mode='dark'][data-color-scheme='nature'] {
+  --background: #14532d;
+  --border: #15803d;
+  --text: #bbf7d0;
+  --text-accent: #86efac;
+  --text-table-values: #d1d5db;
+  --text-table-real-values: #9ca3af;
+  --link-active-bg: #15803d;
+  --link-inactive-text: #86efac;
+  --link-inactive-hover-bg: #166534;
+  --icon-active: #ffffff;
+  --icon-inactive: #86efac;
+  --toggle-icon: #4ade80;
+  --hover-bg: #166534;
+  --sidebar-toggle-hover-bg: #166534;
+  --table-header: #166534;
+  --table-header-text: #d1d5db;
+  --table-body-bg: #14532d;
+  --table-summary-text: #bbf7d0;
+  --settings-section-selector-bg: #166534;
+  --bubble-btn-standard: #22c55e;
+  --bubble-btn-standard-hover: #16a34a;
+  --bubble-btn-delete: #f87171;
+  --bubble-btn-delete-hover: #ef4444;
+  --bubble-btn-clear: #374151;
+  --bubble-btn-clear-hover: #4b5563;
+  --bubble-btn-clear-text: #d1d5db;
+  --scrollbar-track: rgba(22, 101, 52, 0.5);
+  --scrollbar-thumb: rgba(134, 239, 172, 0.7);
+  --scrollbar-thumb-hover: rgba(34, 197, 94, 0.9);
 }
 

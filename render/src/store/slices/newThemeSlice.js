@@ -13,12 +13,12 @@ const newThemeSlice = createSlice({
             const nextMode = state.themeMode === "light" ? "dark" : "light";
             state.themeMode = nextMode;
             localStorage.setItem("themeMode", nextMode);
-            document.documentElement.setAttribute('theme-mode', nextMode);
+            document.documentElement.setAttribute('data-theme-mode', nextMode);
         },
         setColorScheme: (state, action) => {
             state.colorScheme = action.payload;
             localStorage.setItem("colorScheme", action.payload);
-            document.documentElement.setAttribute('color-scheme', action.payload);
+            document.documentElement.setAttribute('data-color-scheme', action.payload);
         },
     },
 });

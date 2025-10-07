@@ -7,18 +7,45 @@ module.exports = {
         poppins: ['Poppins', 'sans-serif'],
       },
       colors: {
-        surface: 'var(--surface)',
+        // Основні кольори
+        background: 'var(--background)',
         border: 'var(--border)',
         text: 'var(--text)',
         textAccent: 'var(--text-accent)',
+        textTableValues: 'var(--text-table-values)',
+        textTableRealValues: 'var(--text-table-real-values)',
+        
+        // Лінки
+        linkActiveBg: 'var(--link-active-bg)',
+        linkInactiveText: 'var(--link-inactive-text)',
+        linkInactiveHoverBg: 'var(--link-inactive-hover-bg)',
+        
+        // Іконки
         iconActive: 'var(--icon-active)',
         iconInactive: 'var(--icon-inactive)',
-        linkActiveBg: 'var(--link-active-bg)',
-        linkInactiveBg: 'var(--link-inactive-bg)',
         toggleIcon: 'var(--toggle-icon)',
-        toggleHoverBg: 'var(--toggle-hover-bg)',
-        primary: 'var(--primary)',
-        accent: 'var(--accent)',
+        
+        // Ховер стани
+        hoverBg: 'var(--hover-bg)',
+        sidebarToggleHoverBg: 'var(--sidebar-toggle-hover-bg)',
+        
+        // Таблиці
+        tableHeader: 'var(--table-header)',
+        tableHeaderText: 'var(--table-header-text)',
+        tableBodyBg: 'var(--table-body-bg)',
+        tableSummaryText: 'var(--table-summary-text)',
+        
+        // Налаштування
+        settingsSectionSelectorBg: 'var(--settings-section-selector-bg)',
+        
+        // Кнопки
+        bubbleBtnStandard: 'var(--bubble-btn-standard)',
+        bubbleBtnStandardHover: 'var(--bubble-btn-standard-hover)',
+        bubbleBtnDelete: 'var(--bubble-btn-delete)',
+        bubbleBtnDeleteHover: 'var(--bubble-btn-delete-hover)',
+        bubbleBtnClear: 'var(--bubble-btn-clear)',
+        bubbleBtnClearHover: 'var(--bubble-btn-clear-hover)',
+        bubbleBtnClearText: 'var(--bubble-btn-clear-text)',
       },
     },
   },

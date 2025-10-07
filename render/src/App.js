@@ -21,7 +21,23 @@ const routes = ['/', '/calendar', '/settings'];
 
 function MainContent({ isDarkMode, setIsDarkMode }) {
   const location = useLocation();
-  document.documentElement.setAttribute('data-theme', 'standard-light'); // або 'light' чи інший пресет
+    useEffect(() => {
+    // themeMode
+    let themeMode = localStorage.getItem("themeMode");
+    if (!themeMode) {
+      themeMode = "light"; // дефолтна тема
+      localStorage.setItem("themeMode", themeMode);
+    }
+    document.documentElement.setAttribute("data-theme-mode", themeMode);
+
+    // colorScheme
+    let colorScheme = localStorage.getItem("colorScheme");
+    if (!colorScheme) {
+      colorScheme = "standard"; // дефолтна схема
+      localStorage.setItem("colorScheme", colorScheme);
+    }
+    document.documentElement.setAttribute("data-color-scheme", colorScheme);
+  }, []);
   const { theme, mode } = useSelector((state) => state.theme);
   const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
 
