@@ -3,6 +3,7 @@ import { Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleMode } from '../store/slices/themeSlice';
+import {toggleThemeMode} from '../store/slices/newThemeSlice';
 import { sideBarItems } from './utils/constants';
 
 const Sidebar = () => {
@@ -10,7 +11,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const { theme, mode } = useSelector((state) => state.theme);
-
+  const themeMode = useSelector(state => state.newTheme.themeMode);
   const deriveActive = (path) => {
     if (path.startsWith('/calendar')) return 'calendar';
     if (path.startsWith('/settings')) return 'settings';
@@ -23,7 +24,7 @@ const Sidebar = () => {
   }, [location.pathname]);
 
   const toggleTheme = () => {
-    dispatch(toggleMode());
+    dispatch(toggleThemeMode());
   };
 
   return (
@@ -60,7 +61,7 @@ const Sidebar = () => {
             className={`p-2 rounded-xl ${theme.sidebarToggleHover} transition-all duration-300 cursor-pointer`}
             onClick={toggleTheme}
           >
-            {mode === 'dark' ? (
+            {themeMode === 'dark' ? (
               <Moon
                 className={`w-6 h-6 ${theme.toggleIcon} transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
                 strokeWidth={1.5}

@@ -21,7 +21,7 @@ const routes = ['/', '/calendar', '/settings'];
 
 function MainContent({ isDarkMode, setIsDarkMode }) {
   const location = useLocation();
-  document.documentElement.setAttribute('data-theme', 'standard-dark'); // або 'light' чи інший пресет
+  document.documentElement.setAttribute('data-theme', 'standard-light'); // або 'light' чи інший пресет
   const { theme, mode } = useSelector((state) => state.theme);
   const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
 
