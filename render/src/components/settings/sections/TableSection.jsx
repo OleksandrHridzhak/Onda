@@ -7,7 +7,7 @@ export default function TableSection({ settings, onTableChange }) {
   return (
     <SettingsTemplate title="Table Settings">
       <div className="flex items-center justify-between">
-        <span className={`text-sm ${theme.textTableValues}`}>
+        <span className={`text-sm text-textTableValues`}>
           Show Summary Row
         </span>
         <ToggleSwitch

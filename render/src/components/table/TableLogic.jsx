@@ -399,7 +399,7 @@ export const RenderCell = ({
       <td
         key={column.ColumnId}
         data-column-id={column.ColumnId}
-        className={`px-4 py-3 text-sm font-medium ${theme.textTableValues} ${theme.border} border-r whitespace-nowrap`}
+        className={`px-4 py-3 text-sm font-medium text-textTableValues border-border border-r whitespace-nowrap`}
         style={style}
       >
         {day}
@@ -456,7 +456,7 @@ export const RenderCell = ({
     <td
       key={column.ColumnId}
       data-column-id={column.ColumnId}
-      className={`px-2 py-3 text-sm ${theme.border} ${theme.textTableRealValues} border-r ${column.Type === 'todo' || column.Type === 'tasktable' ? 'todo-cell' : ''}`}
+      className={`px-2 py-3 text-sm border-border text-textTableRealValues border-r ${column.Type === 'todo' || column.Type === 'tasktable' ? 'todo-cell' : ''}`}
       style={{
         ...style,
         ...(column.Type === 'todo' || column.Type === 'tasktable'

@@ -12,9 +12,9 @@ export const AddNewColumnBtn = ({
       className={`
       relative w-12 h-12 ml-2 flex items-center justify-center
       rounded-lg  z-10
-      ${theme.tableBodyBg}
-      ${theme.toggleIcon}
-      ${theme.border}
+      bg-tableBodyBg
+      text-toggleIcon
+      border-border
       border-t border-l border-r border-b
     `}
       title="Add Column"

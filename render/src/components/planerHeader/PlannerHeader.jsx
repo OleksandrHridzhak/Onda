@@ -24,7 +24,7 @@ const PlannerHeader = ({
     });
 
   return (
-    <div className={`${theme.background}`}>
+    <div className={`bg-background`}>
       {layout?.length > 0 ? (
         <div className="flex flex-wrap justify-between items-center  px-2 pt-10 pb-9">
           <TimeWidget />

@@ -7,7 +7,7 @@ module.exports = {
         poppins: ['Poppins', 'sans-serif'],
       },
       colors: {
-        // Основні кольори
+
         background: 'var(--background)',
         border: 'var(--border)',
         text: 'var(--text)',

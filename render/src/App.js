@@ -42,7 +42,7 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
   const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
 
   return (
-    <div className={`flex-1 flex flex-col ${theme.background}`}>
+    <div className={`flex-1 flex flex-col bg-background`}>
       {isElectron && (
         <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
       )}

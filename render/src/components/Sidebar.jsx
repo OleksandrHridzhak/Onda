@@ -29,12 +29,12 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`w-1/8 h-screen ${theme.background} ${theme.border} flex flex-col items-center justify-between p-4 border-r`}
+      className={`w-1/8 h-screen bg-background border-border flex flex-col items-center justify-between p-4 border-r`}
     >
       <div>
         {/* Logo */}
         <p
-          className={`font-poppins font-medium text-md mt-6 ${theme.textAccent}`}
+          className={`font-poppins font-medium text-md mt-6 text-textAccent`}
         >
           ONDA
         </p>
@@ -63,12 +63,12 @@ const Sidebar = () => {
           >
             {themeMode === 'dark' ? (
               <Moon
-                className={`w-6 h-6 ${theme.toggleIcon} transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
+                className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
                 strokeWidth={1.5}
               />
             ) : (
               <Sun
-                className={`w-6 h-6 ${theme.toggleIcon} transition-all duration-300 transform rotate-0 hover:rotate-180`}
+                className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-180`}
                 strokeWidth={1.5}
               />
             )}

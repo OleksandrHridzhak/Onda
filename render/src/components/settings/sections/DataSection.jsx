@@ -50,7 +50,7 @@ export default function DataSection() {
   return (
     <SettingsTemplate title="Data Management">
       <div className="flex flex-col gap-2">
-        <span className={`text-sm ${theme.textTableValues}`}>
+        <span className={`text-sm text-textTableValues`}>
           Export Data / Import Data
         </span>
         <div className="flex flex-row  gap-2">

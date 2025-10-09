@@ -31,7 +31,7 @@ const ColumnHeader = ({
   return (
     <th
       data-column-id={column.ColumnId}
-      className={`font-poppins px-3 py-3 text-left text-sm font-medium ${theme.tableHeader} ${theme.border} ${theme.textTableValues} border-b border-r whitespace-nowrap overflow-hidden`}
+      className={`font-poppins px-3 py-3 text-left text-sm font-medium bg-tableHeader border-border text-textTableValues border-b border-r whitespace-nowrap overflow-hidden`}
       style={
         column.ColumnId === 'days'
           ? { width: '120px', minWidth: '120px', maxWidth: '120px' }
@@ -53,7 +53,7 @@ const ColumnHeader = ({
           )}
           {column.NameVisible !== false && column.Name && (
             <span
-              className={`truncate block ${theme.textTableValues} max-w-full`}
+              className={`truncate block text-textTableValues max-w-full`}
             >
               {column.Name}
             </span>

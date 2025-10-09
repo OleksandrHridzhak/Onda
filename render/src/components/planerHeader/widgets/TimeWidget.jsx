@@ -24,6 +24,6 @@ export const TimeWidget = () => {
 
 
   return (
-    <h1 className={`font-poppins text-5xl ${theme.textTableValues}`}>{time}</h1>
+    <h1 className={`font-poppins text-5xl text-textTableValues`}>{time}</h1>
   );
 };

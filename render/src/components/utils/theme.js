@@ -6,8 +6,10 @@ const themes = {
       textAccent: 'text-blue-600',
       textTableValues: 'text-gray-600',
       textTableRealValues: 'text-gray-500',
-      linkActive: 'bg-blue-600 scale-110 shadow-md text-white',
+      //
+      linkActive: 'bg-blue-600 text-white',
       linkInactive: 'text-gray-600 hover:scale-105 hover:bg-blue-50',
+      //
       iconActive: 'text-white',
       iconInactive: 'text-gray-600',
       toggleIcon: 'text-blue-500',
@@ -95,7 +97,7 @@ const themes = {
       textAccent: 'text-green-300',
       textTableValues: 'text-gray-300',
       textTableRealValues: 'text-gray-400',
-      linkActive: 'bg-green-700 scale-110 shadow-md text-white',
+      linkActive: 'bg-green-700 text-white',
       linkInactive: 'text-green-300 hover:scale-105 hover:bg-green-800',
       iconActive: 'text-white',
       iconInactive: 'text-green-300',

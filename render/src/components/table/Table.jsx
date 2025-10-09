@@ -49,7 +49,7 @@ const Table = () => {
   //TODO custom-scroll IN SEPARATE CSS
   return (
     <div
-      className={`font-poppins relative w-full max-w-6xl mx-auto ${theme.background}`}
+      className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
     >
       <style jsx global>{`
         .custom-scroll::-webkit-scrollbar {
@@ -106,12 +106,12 @@ const Table = () => {
         )}
       </div>
       <div
-        className={`overflow-x-auto border ${theme.border} rounded-xl m-2 custom-scroll`}
+        className={`overflow-x-auto border border-border rounded-xl m-2 custom-scroll`}
       >
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
-              <tr className={`${theme.border} ${theme.tableHeader} border-b`}>
+              <tr className={`border-border bg-tableHeader border-b`}>
                 {displayColumns.map((column) =>
                   column.Type === 'filler' ? (
                     <th key={column.ColumnId} style={getWidthStyle(column)} />
@@ -158,8 +158,8 @@ const Table = () => {
                 <tr
                   key={day}
                   className={`
-                    ${theme.tableBodyBg}
-                    ${idx !== DAYS.length - 1 ? `${theme.border} border-b` : ''}
+                    bg-tableBodyBg
+                    ${idx !== DAYS.length - 1 ? `border-border border-b` : ''}
                   `}
                 >
                   {displayColumns.map((column, index) => (
@@ -180,13 +180,13 @@ const Table = () => {
             </tbody>
             {showSummaryRow && (
               <tfoot>
-                <tr className={`border-t ${theme.tableBodyBg} ${theme.border}`}>
+                <tr className={`border-t bg-tableBodyBg border-border`}>
                   {displayColumns.map((column) => {
                     if (column.Type === 'filler') {
                       return (
                         <td
                           key={column.ColumnId}
-                          className={`${theme.border} `}
+                          className={`border-border `}
                           style={getWidthStyle(column)}
                         />
                       );
@@ -195,7 +195,7 @@ const Table = () => {
                     return (
                       <td
                         key={column.ColumnId}
-                        className={`px-4 py-2 text-center text-sm font-medium ${theme.tableSummaryText} ${theme.border} border-r`}
+                        className={`px-4 py-2 text-center text-sm font-medium text-tableSummaryText border-border border-r`}
                         style={getWidthStyle(column)}
                       >
                         {summary}

@@ -13,7 +13,7 @@ export default function UISection({
   return (
     <SettingsTemplate title="UI Settings">
       {/*           <div className="flex items-center justify-between">
-            <span className={`text-sm ${theme.textTableValues}`}>
+            <span className={`text-sm text-textTableValues`}>
               Dark Theme
             </span>
             <ToggleSwitch
@@ -26,7 +26,7 @@ export default function UISection({
           </div> */}
 
 {/*       <div className="flex items-center justify-between mt-4">
-        <span className={`text-sm ${theme.textTableValues}`}>
+        <span className={`text-sm text-textTableValues`}>
           Auto Theme Switcher
         </span>
         <ToggleSwitch
@@ -38,7 +38,7 @@ export default function UISection({
 {/*       {autoThemeSettings.enabled && (
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between">
-            <label className={`text-sm ${theme.textTableValues}`}>
+            <label className={`text-sm text-textTableValues`}>
               Start of Day
             </label>
             <input
@@ -49,7 +49,7 @@ export default function UISection({
             />
           </div>
           <div className="flex items-center justify-between">
-            <label className={`text-sm ${theme.textTableValues}`}>
+            <label className={`text-sm text-textTableValues`}>
               End of Day
             </label>
             <input

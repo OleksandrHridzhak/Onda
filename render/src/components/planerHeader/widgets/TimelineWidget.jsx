@@ -116,7 +116,7 @@ const TimelineWidget = () => {
 
   return (
     <div
-      className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border ${theme.tableBodyBg} ${theme.border} ${theme.textTableValues}`}
+      className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border bg-tableBodyBg border-border text-textTableValues`}
     >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center justify-center w-6 h-6 rounded-full ">
@@ -124,7 +124,7 @@ const TimelineWidget = () => {
         </div>
         <div className="relative flex-1 ml-2">
           <div
-            className={`relative h-5 rounded-full border overflow-hidden ${theme.background} ${theme.border}`}
+            className={`relative h-5 rounded-full border overflow-hidden bg-background border-border`}
           >
             <div className="absolute top-0 left-1 h-full w-60">
               <div
@@ -157,7 +157,7 @@ const TimelineWidget = () => {
 
           {hoveredEvent && (
             <div
-              className={`absolute z-50 px-2 py-1 rounded-md text-[10px] shadow-lg whitespace-nowrap transform -translate-x-1/2 -translate-y-full -mt-6 ${theme.background} ${theme.text}`}
+              className={`absolute z-50 px-2 py-1 rounded-md text-[10px] shadow-lg whitespace-nowrap transform -translate-x-1/2 -translate-y-full -mt-6 bg-background text-text`}
               style={{
                 left: `calc(${timeToPercent(hoveredEvent.startTime)}% + ${
                   durationToPercent(
