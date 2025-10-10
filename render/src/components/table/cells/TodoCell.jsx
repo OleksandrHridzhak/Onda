@@ -18,8 +18,8 @@ export const TodoCell = ({ value, column, onChange }) => {
   const categoryMenuRef = useRef(null);
 
   // Color options from ColumnMenu
-  const { mode } = useSelector((state) => state.theme);
-  const darkMode = mode === 'dark' ? true : false;
+  const { themeMode } = useSelector((state) => state.newTheme);
+  const darkMode = themeMode === 'dark' ? true : false;
   const colorOptions = getColorOptions({ darkMode });
 
   useEffect(() => {

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getColorOptions } from '../../utils/colorOptions';
 export const TaskTableCell = ({ column, onChangeOptions }) => {
-  const { mode } = useSelector((state) => state.theme);
-  const darkMode = mode === 'dark' ? true : false;
+  const { themeMode } = useSelector((state) => state.newTheme);
+  const darkMode = themeMode === 'dark' ? true : false;
   const [incompleteTasks, setIncompleteTasks] = useState(column.Options || []);
   const [completedTasks, setCompletedTasks] = useState(column.DoneTags || []);
 

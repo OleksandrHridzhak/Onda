@@ -43,7 +43,7 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
 
   return (
     <div className={`flex-1 flex flex-col bg-background`}>
-      {isElectron && (
+      {isElectron && (  
         <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
       )}
       <Routes>

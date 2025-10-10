@@ -9,8 +9,8 @@ export const MultiCheckboxCell = ({
   options,
   tagColors = {},
 }) => {
-  const { mode } = useSelector((state) => state.theme);
-  const darkMode = mode === 'dark' ? true : false;
+  const { themeMode } = useSelector((state) => state.newTheme);
+  const darkMode = themeMode === 'dark' ? true : false;
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(
     typeof value === 'string' && value.trim() !== ''

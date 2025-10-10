@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleMode } from '../store/slices/themeSlice';
 import {toggleThemeMode} from '../store/slices/newThemeSlice';
 import { sideBarItems } from './utils/constants';
 
@@ -10,7 +9,6 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const { theme, mode } = useSelector((state) => state.theme);
   const themeMode = useSelector(state => state.newTheme.themeMode);
   const deriveActive = (path) => {
     if (path.startsWith('/calendar')) return 'calendar';
@@ -34,7 +32,7 @@ const Sidebar = () => {
       <div>
         {/* Logo */}
         <p
-          className={`font-poppins font-medium text-md mt-6 text-textAccent`}
+          className={`font-poppins font-medium text-md mt-6 text-primaryColor`}
         >
           ONDA
         </p>
@@ -45,11 +43,11 @@ const Sidebar = () => {
             return (
               <Link key={item.name} to={item.path}>
                 <li
-                  className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${active === item.name ? theme.linkActive : theme.linkInactive}`}
+                  className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${active === item.name ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText' : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'}`}
                   onClick={() => setActive(item.name)}
                 >
                   <Icon
-                    className={`w-6 h-6 transition-colors duration-300 ${active === item.name ? theme.iconActive : theme.iconInactive} `}
+                    className={`w-6 h-6 transition-colors duration-300 ${active === item.name ? 'text-iconActive' : 'text-iconInactive'} `}
                     strokeWidth={1.5}
                   />
                 </li>
@@ -58,7 +56,7 @@ const Sidebar = () => {
           })}
           {/* Mode toggle btn */}
           <li
-            className={`p-2 rounded-xl ${theme.sidebarToggleHover} transition-all duration-300 cursor-pointer`}
+            className={`p-2 rounded-xl transition-all duration-300 cursor-pointer`}
             onClick={toggleTheme}
           >
             {themeMode === 'dark' ? (

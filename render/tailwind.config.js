@@ -7,6 +7,7 @@ module.exports = {
         poppins: ['Poppins', 'sans-serif'],
       },
       colors: {
+        primaryColor: 'var(--primary-color)',
 
         background: 'var(--background)',
         border: 'var(--border)',
@@ -15,17 +16,12 @@ module.exports = {
         textTableValues: 'var(--text-table-values)',
         textTableRealValues: 'var(--text-table-real-values)',
         
-        // Лінки
-        linkActiveBg: 'var(--link-active-bg)',
+        // Sidebar
         linkInactiveText: 'var(--link-inactive-text)',
         linkInactiveHoverBg: 'var(--link-inactive-hover-bg)',
-        
-        // Іконки
         iconActive: 'var(--icon-active)',
         iconInactive: 'var(--icon-inactive)',
         toggleIcon: 'var(--toggle-icon)',
-        
-        // Ховер стани
         hoverBg: 'var(--hover-bg)',
         sidebarToggleHoverBg: 'var(--sidebar-toggle-hover-bg)',
         

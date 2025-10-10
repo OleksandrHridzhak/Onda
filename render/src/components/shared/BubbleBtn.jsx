@@ -5,9 +5,9 @@ export const BubbleBtn = ({
   variant = 'standard',
 }) => {
   const variantClass = {
-    standard: 'bg-bubbleBtnStandard hover:bg-bubbleBtnStandardHover text-white',
-    delete: 'bg-bubbleBtnDelete hover:bg-bubbleBtnDeleteHover text-white',
-    clear: 'bg-bubbleBtnClear hover:bg-bubbleBtnClearHover text-bubbleBtnClearText',
+    standard: 'bg-primaryColor text-white',
+    delete: 'bg-bubbleBtnDelete text-white',
+    clear: 'bg-bubbleBtnClear text-bubbleBtnClearText',
   };
 
   return (
@@ -15,7 +15,7 @@ export const BubbleBtn = ({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`items-center flex px-4 py-2.5 text-sm rounded-xl transition-colors ${variantClass[variant]}`}
+      className={`items-center flex px-4 py-2.5 text-sm rounded-xl transition ${variantClass[variant]}`}
     >
       {children}
     </button>

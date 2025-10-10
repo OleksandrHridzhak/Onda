@@ -318,7 +318,7 @@ export default function Calendar() {
   };
 
   return (
-    <div className={`font-poppins min-h-screen`}>
+    <div className={`font-poppins min-h-screen bg-tableHeader`}>
       <style jsx global>{`
         .custom-checkbox {
           position: relative;
