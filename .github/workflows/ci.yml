@@ -54,3 +54,12 @@ jobs:
         with:
           name: windows-electron-build
           path: dist\*.exe
+
+      - name: Extract EXE, list files and total size
+        run: |
+          mkdir extracted
+          "C:\Program Files\7-Zip\7z.exe" x dist\*.exe -oextracted -y
+          Write-Output "=== Files ==="
+          Get-ChildItem extracted -Recurse | ForEach-Object { "$($_.FullName) $($_.Length) bytes" }
+          $total = (Get-ChildItem extracted -Recurse | Measure-Object Length -Sum).Sum
+          Write-Output "=== Total size: $($total) bytes ==="
