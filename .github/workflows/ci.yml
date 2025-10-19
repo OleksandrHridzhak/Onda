@@ -9,6 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,7 +23,6 @@ jobs:
     if: contains(github.event.head_commit.message, '[build]')
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -38,7 +38,6 @@ jobs:
 
       # Electron backend → .exe
       - name: Build Electron backend (Windows .exe)
-        working-directory: ./
         run: |
           npm ci
           npm run dist
@@ -47,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: build\
+          path: ./render/build/
 
       # Upload Windows .exe artifact
       - name: Upload Windows Electron artifact

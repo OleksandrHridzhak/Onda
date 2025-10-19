@@ -4,3 +4,7 @@
 4. memory leaks 
 5. Debounce/throttle подій і batch-обробка (ресайз колонки)
 6. Code splitting і lazy loading рідких екранів/модулів
+
+1. Bundle optimization
+   - delete framer-motion
+   - 
