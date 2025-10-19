@@ -22,6 +22,7 @@
     "asar": false,
     "appId": "com.onda.onda",
     "productName": "Onda",
+    "publish": "never",
     "directories": {
       "buildResources": "assets",
       "output": "dist"
