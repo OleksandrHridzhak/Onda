@@ -79,20 +79,19 @@ jobs:
       - name: Measure Electron + React bundle size
         shell: powershell
         run: |
-          $appArchive = "extracted\$PLUGINSDIR\app-64.7z"
+          $appArchive = 'extracted\$PLUGINSDIR\app-64.7z'
 
           if (-not (Test-Path $appArchive)) {
               Write-Error "app-64.7z not found!"
               exit 1
           }
 
-          # Розмір стисненого архіву
           $compressedSize = (Get-Item $appArchive).Length
           Write-Output "Compressed bundle size: $([math]::Round($compressedSize / 1MB, 2)) MB"
 
-          # Розпакувати тимчасово, щоб порахувати реальний розмір
           mkdir extracted\app
           & "C:\Program Files\7-Zip\7z.exe" x $appArchive -oextracted\app -y
 
           $unpackedSize = (Get-ChildItem extracted\app -Recurse | Measure-Object Length -Sum).Sum
           Write-Output "Unpacked bundle size: $([math]::Round($unpackedSize / 1MB, 2)) MB"
+
