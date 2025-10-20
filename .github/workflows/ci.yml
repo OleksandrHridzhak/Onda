@@ -57,10 +57,21 @@ jobs:
 
       # Analyze the built .exe
       - name: Extract EXE, list files and total size
+        shell: powershell
         run: |
           mkdir extracted
-          & "C:\Program Files\7-Zip\7z.exe" x dist*.exe -oextracted -y
+
+          $exeFile = Get-ChildItem -Path dist -Filter '*.exe' | Select-Object -First 1
+
+          if (-not $exeFile) {
+              Write-Error "No .exe found in dist folder!"
+              exit 1
+          }
+
+          & "C:\Program Files\7-Zip\7z.exe" x $exeFile.FullName -oextracted -y
+
           Write-Output "=== Files ==="
           Get-ChildItem extracted -Recurse | ForEach-Object { "$($_.FullName) $($_.Length) bytes" }
+
           $total = (Get-ChildItem extracted -Recurse | Measure-Object Length -Sum).Sum
           Write-Output "=== Total size: $($total) bytes ==="
