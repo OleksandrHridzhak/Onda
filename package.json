@@ -38,7 +38,6 @@
   },
   "dependencies": {
     "dotenv": "^17.2.0",
-    "framer-motion": "^12.23.12",
     "node-cron": "^4.0.5"
   },
   "lint-staged": {
