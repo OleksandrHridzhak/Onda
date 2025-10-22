@@ -22,6 +22,7 @@
     "asar": false,
     "appId": "com.onda.onda",
     "productName": "Onda",
+    "electronLanguages": ["en-US", "uk"],
     "publish": null,
     "directories": {
       "buildResources": "assets",
@@ -43,10 +44,7 @@
       "services/**",
       "constants/**",
       "assets/**",
-      "api/**",
-      "!**/locales/*",
-      "**/locales/en-US.pak",
-      "**/locales/uk.pak"
+      "api/**"
     ]
   },
   "dependencies": {
