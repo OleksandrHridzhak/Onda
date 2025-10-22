@@ -43,14 +43,10 @@
       "services/**",
       "constants/**",
       "assets/**",
-      "api/**"
-    ],
-    "extraResources": [
-    {
-      "from": "node_modules/electron/dist/locales",
-      "filter": ["en.pak", "uk.pak"],
-      "to": "locales"
-    }
+      "api/**",
+      "!**/locales/*",
+      "**/locales/en-US.pak",
+      "**/locales/uk.pak"
     ]
   },
   "dependencies": {
