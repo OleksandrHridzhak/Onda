@@ -19,7 +19,7 @@
     "prettier": "^3.6.2"
   },
   "build": {
-    "asar": false,
+    "asar": true,
     "appId": "com.onda.onda",
     "productName": "Onda",
     "publish": null,
