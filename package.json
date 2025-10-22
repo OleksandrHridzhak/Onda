@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Oleksandr Hridzhak <3",
   "license": "ISC",
   "description": "",
   "devDependencies": {
@@ -44,6 +44,13 @@
       "constants/**",
       "assets/**",
       "api/**"
+    ],
+    "extraResources": [
+    {
+      "from": "node_modules/electron/dist/locales",
+      "filter": ["en.pak", "uk.pak"],
+      "to": "locales"
+    }
     ]
   },
   "dependencies": {
