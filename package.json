@@ -19,7 +19,7 @@
     "prettier": "^3.6.2"
   },
   "build": {
-    "asar": true,
+    "asar": false,
     "appId": "com.onda.onda",
     "productName": "Onda",
     "publish": null,
@@ -33,7 +33,17 @@
     },
     "files": [
       "render/build/",
-      "**/*"
+      "tray_icon.png",
+      "preload.js",
+      "main.js",
+      "package.json",
+      ".env",
+      "utils/**",
+      "userData/**",
+      "services/**",
+      "constants/**",
+      "assets/**",
+      "api/**"
     ]
   },
   "dependencies": {
