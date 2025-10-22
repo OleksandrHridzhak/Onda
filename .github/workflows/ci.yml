@@ -94,4 +94,8 @@ jobs:
 
           $unpackedSize = (Get-ChildItem extracted\app -Recurse | Measure-Object Length -Sum).Sum
           Write-Output "Unpacked bundle size: $([math]::Round($unpackedSize / 1MB, 2)) MB"
+      - name: List all files in unpacked bundle (MB)
+        shell: powershell
+        run: |
+          Get-ChildItem extracted\app -Recurse | ForEach-Object { "$($_.FullName) - $([math]::Round($_.Length/1MB, 2)) MB" }
 
