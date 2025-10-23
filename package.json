@@ -33,6 +33,7 @@
       "icon": "assets/onda-logo.ico",
       "compression": "maximum"
     },
+    
     "files": [
       "render/build/",
       "tray_icon.png",
@@ -45,7 +46,11 @@
       "services/**",
       "constants/**",
       "assets/**",
-      "api/**"
+      "api/**",
+      "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
+      "!**/*.{md,txt,html,log}",
+      "!**/node_modules/electron-devtools-installer/**",
+      "!**/node_modules/electron-debug/**"
     ]
   },
   "dependencies": {
