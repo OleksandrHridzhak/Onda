@@ -32,6 +32,9 @@
       "target": "nsis",
       "icon": "assets/onda-logo.ico"
     },
+    "nsis":{
+      "compression":"maximum"
+    },
     "files": [
       "render/build/",
       "tray_icon.png",
