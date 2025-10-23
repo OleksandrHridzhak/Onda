@@ -33,7 +33,7 @@
       "icon": "assets/onda-logo.ico"
     },
     "nsis":{
-      "compression":"maximum"
+      "installerCompression": "maximum"
     },
     "files": [
       "render/build/",
