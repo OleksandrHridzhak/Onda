@@ -68,7 +68,7 @@ function initCronJobs() {
           const notification = new Notification({
             title: 'Нагадування про подію',
             body: `Подія "${event.title}" розпочнеться о ${event.startTime} (${event.date || 'сьогодні'})`,
-            icon: path.join(__dirname, '../assets/onda-logo.png'), // Додай іконку
+            icon: path.join(__dirname, '../assets/onda-logo.ico'), // Додай іконку
           });
           notification.show();
 
