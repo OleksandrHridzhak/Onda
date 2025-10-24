@@ -1,8 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const ipcTableHandlers = require(
-  path.join(__dirname, './api/ipcTableHandlers.js')
-);
+const ipcTableHandlers = require('./api/ipcTableHandlers.js');
 const ipcCalendarHandlers = require('./api/ipcCalendarHandlers.js');
 const ipcWindowHandlers = require('./api/ipcWindowHandlers.js');
 const ipcSettingsHandlers = require('./api/ipcSettingsHandlers.js');
@@ -24,9 +22,10 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.bundle.js'),
     },
   });
+  
 
   console.log('env:', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {

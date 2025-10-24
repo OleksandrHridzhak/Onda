@@ -1,10 +1,12 @@
 {
   "name": "electron-backend",
   "version": "2.0.0",
-  "main": "main.js",
+  "main": "main.bundle.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder",
+    "build:webpack": "webpack --config webpack.config.js",
+    "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
+    "dist": "npm run build:webpack && electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,17 +14,24 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "dotenv": "^17.2.3",
     "electron": "^35.1.4",
     "electron-builder": "^26.0.12",
     "electron-packager": "^17.1.2",
+    "node-cron": "^4.2.1",
     "playwright": "^1.55.1",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1"
   },
   "build": {
     "asar": true,
     "appId": "com.onda.onda",
     "productName": "Onda",
-    "electronLanguages": ["en-US", "uk"],
+    "electronLanguages": [
+      "en-US",
+      "uk"
+    ],
     "publish": null,
     "directories": {
       "buildResources": "assets",
@@ -33,29 +42,20 @@
       "icon": "assets/onda-logo.ico",
       "compression": "maximum"
     },
-    
     "files": [
       "render/build/",
       "tray_icon.png",
-      "preload.js",
-      "main.js",
       "package.json",
+      "main.bundle.js",
+      "preload.bundle.js",
       ".env",
-      "utils/**",
       "userData/**",
-      "services/**",
-      "constants/**",
       "assets/**",
-      "api/**",
       "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
       "!**/*.{md,txt,html,log}",
       "!**/node_modules/electron-devtools-installer/**",
       "!**/node_modules/electron-debug/**"
     ]
-  },
-  "dependencies": {
-    "dotenv": "^17.2.0",
-    "node-cron": "^4.0.5"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
