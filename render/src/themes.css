@@ -61,3 +61,133 @@
   --scrollbar-thumb: rgba(156, 163, 175, 0.7);
   --scrollbar-thumb-hover: rgba(107, 114, 128, 0.9);
 }
+
+:root[data-theme-mode='light'][data-color-scheme='forest'] {
+  --primary-color: #22c55e;
+
+  --background: #f0fdf4;
+  --border: #dcfce7;
+  --text: #166534;
+  --text-table-values: #16a34a;
+  --text-table-real-values: #15803d;
+  --link-inactive-text: #16a34a;
+  --link-inactive-hover-bg: #dcfce7;
+  --icon-active: #ffffff;
+  --icon-inactive: #16a34a;
+  --toggle-icon: #22c55e;
+  --hover-bg: #bbf7d0;
+  --sidebar-toggle-hover-bg: #dcfce7;
+  --table-header: #dcfce7;
+  --table-header-text: #14532d;
+  --table-body-bg: #f0fdf4;
+  --table-summary-text: #14532d;
+  --settings-section-selector-bg: #dcfce7;
+  --bubble-btn-standard: #22c55e;
+  --bubble-btn-standard-hover: #16a34a;
+  --bubble-btn-delete: #ef4444;
+  --bubble-btn-delete-hover: #dc2626;
+  --bubble-btn-clear: #e7e5e4;
+  --bubble-btn-clear-hover: #d6d3d1;
+  --bubble-btn-clear-text: #57534e;
+  --scrollbar-track: rgba(220, 252, 231, 0.2);
+  --scrollbar-thumb: rgba(22, 163, 74, 0.5);
+  --scrollbar-thumb-hover: rgba(21, 128, 61, 0.7);
+}
+
+:root[data-theme-mode='dark'][data-color-scheme='forest'] {
+  --primary-color: #22c55e;
+
+  --background: #052e16;
+  --border: #14532d;
+  --text: #dcfce7;
+  --text-accent: #4ade80;
+  --text-table-values: #bbf7d0;
+  --text-table-real-values: #a7f3d0;
+  --link-inactive-text: #bbf7d0;
+  --link-inactive-hover-bg: #14532d;
+  --icon-active: #ffffff;
+  --icon-inactive: #bbf7d0;
+  --toggle-icon: #4ade80;
+  --hover-bg: #15803d;
+  --sidebar-toggle-hover-bg: #14532d;
+  --table-header: #14532d;
+  --table-header-text: #dcfce7;
+  --table-body-bg: #064e3b;
+  --table-summary-text: #dcfce7;
+  --settings-section-selector-bg: #14532d;
+  --bubble-btn-standard: #22c55e;
+  --bubble-btn-standard-hover: #16a34a;
+  --bubble-btn-delete: #ef4444;
+  --bubble-btn-delete-hover: #dc2626;
+  --bubble-btn-clear: #1c1917;
+  --bubble-btn-clear-hover: #292524;
+  --bubble-btn-clear-text: #e7e5e4;
+  --scrollbar-track: rgba(6, 78, 59, 0.5);
+  --scrollbar-thumb: rgba(34, 197, 94, 0.7);
+  --scrollbar-thumb-hover: rgba(22, 163, 74, 0.9);
+}
+
+:root[data-theme-mode='light'][data-color-scheme='ocean'] {
+  --primary-color: #38bdf8;
+
+  --background: #ecfeff;
+  --border: #cffafe;
+  --text: #0369a1;
+  --text-table-values: #0ea5e9;
+  --text-table-real-values: #0284c7;
+  --link-inactive-text: #0ea5e9;
+  --link-inactive-hover-bg: #cffafe;
+  --icon-active: #ffffff;
+  --icon-inactive: #0ea5e9;
+  --toggle-icon: #38bdf8;
+  --hover-bg: #bae6fd;
+  --sidebar-toggle-hover-bg: #cffafe;
+  --table-header: #cffafe;
+  --table-header-text: #075985;
+  --table-body-bg: #ecfeff;
+  --table-summary-text: #075985;
+  --settings-section-selector-bg: #cffafe;
+  --bubble-btn-standard: #38bdf8;
+  --bubble-btn-standard-hover: #0ea5e9;
+  --bubble-btn-delete: #ef4444;
+  --bubble-btn-delete-hover: #dc2626;
+  --bubble-btn-clear: #e7e5e4;
+  --bubble-btn-clear-hover: #d6d3d1;
+  --bubble-btn-clear-text: #57534e;
+  --scrollbar-track: rgba(207, 250, 254, 0.2);
+  --scrollbar-thumb: rgba(14, 165, 233, 0.5);
+  --scrollbar-thumb-hover: rgba(2, 132, 199, 0.7);
+}
+
+:root[data-theme-mode='dark'][data-color-scheme='ocean'] {
+  --primary-color: #38bdf8;
+
+  --background: #082f49;
+  --border: #0c4a6e;
+  --text: #bae6fd;
+  --text-accent: #7dd3fc;
+  --text-table-values: #e0f2fe;
+  --text-table-real-values: #cffafe;
+  --link-inactive-text: #e0f2fe;
+  --link-inactive-hover-bg: #0c4a6e;
+  --icon-active: #ffffff;
+  --icon-inactive: #e0f2fe;
+  --toggle-icon: #7dd3fc;
+  --hover-bg: #0369a1;
+  --sidebar-toggle-hover-bg: #0c4a6e;
+  --table-header: #0c4a6e;
+  --table-header-text: #bae6fd;
+  --table-body-bg: #075985;
+  --table-summary-text: #bae6fd;
+  --settings-section-selector-bg: #0c4a6e;
+  --bubble-btn-standard: #38bdf8;
+  --bubble-btn-standard-hover: #0ea5e9;
+  --bubble-btn-delete: #ef4444;
+  --bubble-btn-delete-hover: #dc2626;
+  --bubble-btn-clear: #1c1917;
+  --bubble-btn-clear-hover: #292524;
+  --bubble-btn-clear-text: #e7e5e4;
+  --scrollbar-track: rgba(7, 89, 133, 0.5);
+  --scrollbar-thumb: rgba(56, 189, 248, 0.7);
+  --scrollbar-thumb-hover: rgba(14, 165, 233, 0.9);
+}

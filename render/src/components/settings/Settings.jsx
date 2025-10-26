@@ -16,13 +16,12 @@ import CalendarSection from './sections/CalendarSection';
 import { settingsService } from '../../services/settingsDB';
 
 export default function SettingsDashboard() {
-  const { theme } = useSelector((state) => state.theme);
   const [activeSection, setActiveSection] = useState(() => {
     return localStorage.getItem('activeSection') || 'table';
   });
   const [settings, setSettings] = useState({
     theme: {
-      accentColor: 'blue',
+      accentColor: 'standard',
       darkMode: true,
       autoThemeSettings: {
         enabled: false,
@@ -86,8 +85,12 @@ export default function SettingsDashboard() {
 
     switch (section) {
       case 'theme':
-        await settingsService.updateTheme(newSettings);
-        if (newSettings.autoThemeSettings?.enabled === true) {
+        await settingsService.updateTheme(updatedSettings.theme);
+        if (
+          newSettings.darkMode !== undefined ||
+          newSettings.accentColor !== undefined ||
+          newSettings.autoThemeSettings?.enabled !== undefined
+        ) {
           window.location.reload();
         }
         break;

@@ -2,13 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import EventModal from './EventModal';
 import CalendarHeader from './CalendarHeader';
 import CalendarTimeline from './CalendarTimeline';
-import { useSelector } from 'react-redux';
-import { settingsService } from '../../services/settingsDB';
 import { calendarService } from '../../services/calendarDB';
 
 export default function Calendar() {
-  const { mode } = useSelector((state) => state.theme);
-  const darkTheme = mode === 'dark';
   const [currentWeekStart, setCurrentWeekStart] = useState(
     getMonday(new Date())
   );
@@ -37,12 +33,10 @@ export default function Calendar() {
   const slotHeight = 80;
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  // Save viewMode to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('calendarViewMode', viewMode);
   }, [viewMode]);
 
-  // Helper functions
   function getMonday(date) {
     const d = new Date(date);
     const day = d.getDay();
@@ -79,7 +73,6 @@ export default function Calendar() {
     return Math.round(((d - week1) / 86400000 + 1) / 7);
   };
 
-  // Load events from backend
   useEffect(() => {
     const loadEvents = async () => {
       try {
@@ -96,7 +89,6 @@ export default function Calendar() {
     loadEvents();
   }, []);
 
-  // Update current time
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
@@ -104,13 +96,10 @@ export default function Calendar() {
     return () => clearInterval(interval);
   }, []);
 
-
-  // Update week days
   useEffect(() => {
     setWeekDays(getWeekDays(currentWeekStart));
   }, [currentWeekStart]);
 
-  // Navigation
   const goToPrevious = () => {
     if (viewMode === 'week') {
       const prevMonday = new Date(currentWeekStart);
@@ -145,7 +134,6 @@ export default function Calendar() {
     setSelectedDate(today);
   };
 
-  // Handle time slot click
   const handleTimeSlotClick = (dayIndex, hour) => {
     const startTime = formatTime(hour);
     const endTime = formatTime((hour + 1) % 24);
@@ -164,7 +152,6 @@ export default function Calendar() {
     setShowEventModal(true);
   };
 
-  // Create or update event
   const handleSaveEvent = async () => {
     if (
       !newEvent.title.trim() ||
@@ -203,7 +190,6 @@ export default function Calendar() {
     }
   };
 
-  // Edit event
   const handleEditEvent = (event) => {
     setNewEvent({
       ...event,
@@ -214,7 +200,6 @@ export default function Calendar() {
     setShowEventModal(true);
   };
 
-  // Delete event
   const handleDeleteEvent = async (eventId) => {
     try {
       const response = await calendarService.deleteCalendarEvent(eventId);
@@ -239,7 +224,6 @@ export default function Calendar() {
     }
   };
 
-  // Event styling
   const getEventStyle = (event) => {
     const startMinutes = timeToMinutes(event.startTime);
     let endMinutes = timeToMinutes(event.endTime);
@@ -256,13 +240,11 @@ export default function Calendar() {
     };
   };
 
-  // Current time indicator position
   const getCurrentTimePosition = () => {
     const minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
     return (minutes / 60) * slotHeight;
   };
 
-  // Get events for a specific day, including repeating events
   const getEventsForDay = (day) => {
     const dayEvents = [];
     const currentWeekNumber = getWeekNumber(currentWeekStart);
@@ -270,7 +252,7 @@ export default function Calendar() {
 
     events.forEach((event) => {
       const eventDate = new Date(event.date);
-      const dayIndex = day.getDay(); // Sun=0, Mon=1, ..., Sat=6
+      const dayIndex = day.getDay();
 
       if (!event.isRepeating) {
         if (event.date === day.toDateString()) {
@@ -297,7 +279,6 @@ export default function Calendar() {
     );
   };
 
-  // Helper to shift both start and end times by delta minutes
   const adjustEventTimes = (delta) => {
     const shift = (time) => {
       const [h, m] = time.split(':').map(Number);
@@ -325,24 +306,15 @@ export default function Calendar() {
           width: 18px;
           height: 18px;
           appearance: none;
-          background: ${darkTheme
-            ? 'rgba(55, 65, 81, 1)'
-            : 'rgba(255, 255, 255, 1)'};
-          border: 2px solid
-            ${darkTheme
-              ? 'rgba(156, 163, 175, 0.8)'
-              : 'rgba(156, 163, 175, 0.6)'};
+          background: var(--background);
+          border: 2px solid var(--border);
           border-radius: 4px;
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .custom-checkbox:checked {
-          background: ${darkTheme
-            ? 'rgba(59, 130, 246, 1)'
-            : 'rgba(37, 99, 235, 1)'};
-          border-color: ${darkTheme
-            ? 'rgba(59, 130, 246, 1)'
-            : 'rgba(37, 99, 235, 1)'};
+          background: var(--primary-color);
+          border-color: var(--primary-color);
         }
         .custom-checkbox:checked::after {
           content: '✔';
@@ -350,20 +322,15 @@ export default function Calendar() {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          color: ${darkTheme
-            ? 'rgba(255, 255, 255, 0.9)'
-            : 'rgba(255, 255, 255, 1)'};
+          color: var(--icon-active);
           font-size: 12px;
         }
         .custom-checkbox:hover {
-          border-color: ${darkTheme
-            ? 'rgba(107, 114, 128, 1)'
-            : 'rgba(107, 114, 128, 0.8)'};
+          border-color: var(--text-table-values);
         }
         .custom-checkbox:focus {
           outline: none;
-          box-shadow: 0 0 0 3px
-            ${darkTheme ? 'rgba(59, 130, 246, 0.3)' : 'rgba(37, 99, 235, 0.3)'};
+          box-shadow: 0 0 0 3px var(--hover-bg);
         }
         .short-event .event-time {
           display: none;
