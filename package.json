@@ -1,5 +1,5 @@
 {
-  "name": "onda-dev-electron",
+  "name": "onda-app-dev",
   "version": "2.0.0",
   "main": "main.bundle.js",
   "scripts": {
@@ -30,8 +30,8 @@
   },
   "build": {
     "asar": false,
-    "appId": "com.onda.ondaDEV2",
-    "productName": "Onda(DEV)2",
+    "appId": "com.onda.onda.dev",
+    "productName": "Onda(DEV)",
     "electronLanguages": [
       "en-US",
       "uk"
