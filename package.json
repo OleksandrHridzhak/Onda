@@ -1,5 +1,5 @@
 {
-  "name": "electron-backend",
+  "name": "onda-dev-electron",
   "version": "2.0.0",
   "main": "main.bundle.js",
   "scripts": {
@@ -7,6 +7,10 @@
     "build:webpack": "webpack --config webpack.config.js",
     "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
     "dist": "npm run build:webpack && electron-builder",
+    "buildmy:frontend": "cd render && npm run build && cd ..",
+
+    "buildmy:all": "npm run buildmy:frontend && npm run build:webpack",
+    "distmy": "npm run buildmy:all && electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -25,9 +29,9 @@
     "webpack-cli": "^6.0.1"
   },
   "build": {
-    "asar": true,
-    "appId": "com.onda.onda",
-    "productName": "Onda",
+    "asar": false,
+    "appId": "com.onda.ondaDEV2",
+    "productName": "Onda(DEV)2",
     "electronLanguages": [
       "en-US",
       "uk"
@@ -48,13 +52,13 @@
       "package.json",
       "main.bundle.js",
       "preload.bundle.js",
-      ".env",
       "userData/**",
       "assets/**",
       "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
-      "!**/*.{md,txt,html,log}",
+      "!**/*.{md,txt,log}",
       "!**/node_modules/electron-devtools-installer/**",
-      "!**/node_modules/electron-debug/**"
+      "!**/node_modules/electron-debug/**",
+      "!.env"
     ]
   },
   "lint-staged": {
