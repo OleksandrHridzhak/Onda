@@ -3,12 +3,13 @@
   "version": "2.0.0",
   "main": "main.bundle.js",
   "scripts": {
-    "start": "electron .",
+    "start": "concurrently \"npm:watch:webpack\" \"npm:start:react\" \"npm:start:electron\"",
+    "start:react": "cd render && npm start",
+    "start:electron": "electron .",
     "build:webpack": "webpack --config webpack.config.js",
     "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
     "dist": "npm run build:webpack && electron-builder",
     "buildmy:frontend": "cd render && npm run build && cd ..",
-
     "buildmy:all": "npm run buildmy:frontend && npm run build:webpack",
     "distmy": "npm run buildmy:all && electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +19,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "dotenv": "^17.2.3",
     "electron": "^35.1.4",
     "electron-builder": "^26.0.12",
