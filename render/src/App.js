@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import './App.css';
 import {
   HashRouter as Router,
@@ -7,10 +7,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-//import { fetchTheme } from './store/slices/themeSlice';
-import { fetchTheme } from './store/slices/themeSlice';
-
+import { settingsService } from './services/settingsDB';
 import Sidebar from './components/Sidebar';
 import Table from './components/table/Table';
 import MenuWin from './components/MenuWin';
@@ -19,47 +16,41 @@ import Settings from './components/settings/Settings';
 
 const routes = ['/', '/calendar', '/settings'];
 
-function MainContent({ isDarkMode, setIsDarkMode }) {
+function MainContent() {
   const location = useLocation();
-    useEffect(() => {
-    // themeMode
-    let themeMode = localStorage.getItem("themeMode");
-    if (!themeMode) {
-      themeMode = "light"; // дефолтна тема
-      localStorage.setItem("themeMode", themeMode);
-    }
-    document.documentElement.setAttribute("data-theme-mode", themeMode);
 
-    // colorScheme
-    let colorScheme = localStorage.getItem("colorScheme");
-    if (!colorScheme) {
-      colorScheme = "standard"; // дефолтна схема
-      localStorage.setItem("colorScheme", colorScheme);
-    }
-    document.documentElement.setAttribute("data-color-scheme", colorScheme);
+  useEffect(() => {
+    const applyTheme = async () => {
+      try {
+        const { data } = await settingsService.getSettings();
+        if (data && data.theme) {
+          const { darkMode, accentColor } = data.theme;
+          document.documentElement.setAttribute(
+            'data-theme-mode',
+            darkMode ? 'dark' : 'light'
+          );
+          document.documentElement.setAttribute(
+            'data-color-scheme',
+            accentColor || 'standard'
+          );
+        }
+      } catch (error) {
+        console.error('Failed to apply theme:', error);
+      }
+    };
+
+    applyTheme();
   }, []);
-  const { theme, mode } = useSelector((state) => state.theme);
+
   const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
 
   return (
     <div className={`flex-1 flex flex-col bg-background`}>
-      {isElectron && (  
-        <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
-      )}
+      {isElectron && <MenuWin currentPage={location.pathname} />}
       <Routes>
         <Route path="/" element={<Table />} />
-        <Route
-          path="/calendar"
-          element={
-            <Calendar darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <Settings darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />
-          }
-        />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </div>
   );
@@ -69,13 +60,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const isProcessing = useRef(false);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchTheme()); // тут отримуємо тему з Electron при старті апки
-  }, [dispatch]);
-  // Початкове отримання теми
 
-  // Гаряча клавіша для перемикання вкладок
   useEffect(() => {
     const handleNextTab = () => {
       if (isProcessing.current) return;
@@ -90,7 +75,6 @@ function App() {
       }, 300);
     };
 
-    // Локальний шорткат Control+Tab
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 'Tab') {
         event.preventDefault();
@@ -100,7 +84,6 @@ function App() {
 
     window.addEventListener('keydown', handleKeyDown);
 
-    // Очищення
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };

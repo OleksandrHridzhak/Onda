@@ -7,7 +7,6 @@ export const OptionItem = ({
   options,
   doneTags,
   optionColors,
-  darkMode,
   handleColorChange,
   handleRemoveOption,
   handleEditOption,
@@ -60,12 +59,12 @@ export const OptionItem = ({
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
-            className={`px-2 py-1 rounded-full text-xs font-medium border ${darkMode ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-300 bg-white text-gray-900'} focus:outline-none focus:ring-2 focus:ring-indigo-500`}
+            className={`px-2 py-1 rounded-full text-xs font-medium border border-border bg-background text-text focus:outline-none focus:ring-2 focus:ring-primaryColor`}
             aria-label={`Edit ${option}`}
           />
           <button
             onClick={saveEdit}
-            className={`ml-2 p-1 rounded-lg ${darkMode ? 'text-indigo-400 hover:bg-gray-700' : 'text-indigo-500 hover:bg-gray-100'} transition-colors duration-200`}
+            className={`ml-2 p-1 rounded-lg text-primaryColor hover:bg-hoverBg transition-colors duration-200`}
             aria-label={`Save edit for ${option}`}
           >
             <Plus size={14} />
@@ -75,7 +74,7 @@ export const OptionItem = ({
         <>
           <button
             onClick={() => setIsContextMenuOpen(!isContextMenuOpen)}
-            className={`px-2 py-1 rounded-full text-xs font-medium ${getColorOptions({ darkMode }).find((c) => c.name === optionColors[option])?.bg} ${getColorOptions({ darkMode }).find((c) => c.name === optionColors[option])?.text || (darkMode ? 'text-gray-200' : 'text-gray-800')}`}
+            className={`px-2 py-1 rounded-full text-xs font-medium ${getColorOptions().find((c) => c.name === optionColors[option])?.bg} ${getColorOptions().find((c) => c.name === optionColors[option])?.text || 'text-text'}`}
             aria-label={`Options for ${option}`}
           >
             {option} {doneTags.includes(option) && '(Completed)'}
@@ -83,17 +82,17 @@ export const OptionItem = ({
           {isContextMenuOpen && (
             <div
               ref={menuRef}
-              className={`absolute left-0 top-full mt-1 ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg shadow-lg p-2 z-10`}
+              className={`absolute left-0 top-full mt-1 bg-background border-border border rounded-lg shadow-lg p-2 z-10`}
             >
               <div className="flex items-center space-x-2 p-2 overflow-x-auto max-w-xs">
-                {getColorOptions({ darkMode }).map((color) => (
+                {getColorOptions().map((color) => (
                   <button
                     key={color.name}
                     onClick={() => {
                       handleColorChange(option, color.name);
                       setIsContextMenuOpen(false);
                     }}
-                    className={`w-6 h-6 rounded-full ${color.bg} ${color.text || (darkMode ? 'text-gray-200' : 'text-gray-800')} border-2 ${optionColors[option] === color.name ? 'ring-2 ring-indigo-500 ring-offset-2' : 'border-transparent'} hover:scale-110 hover:shadow-md transition-all duration-200`}
+                    className={`w-6 h-6 rounded-full ${color.bg} ${color.text || 'text-text'} border-2 ${optionColors[option] === color.name ? 'ring-2 ring-primaryColor ring-offset-2' : 'border-transparent'} hover:scale-110 hover:shadow-md transition-all duration-200`}
                     aria-label={`Select ${color.name} color for ${option}`}
                   />
                 ))}
@@ -104,7 +103,7 @@ export const OptionItem = ({
                     startEditing();
                     setIsContextMenuOpen(false);
                   }}
-                  className={`p-1 rounded-lg ${darkMode ? 'text-indigo-400 hover:bg-gray-700' : 'text-indigo-500 hover:bg-gray-100'} transition-colors duration-200`}
+                  className={`p-1 rounded-lg text-primaryColor hover:bg-hoverBg transition-colors duration-200`}
                   aria-label={`Edit ${option}`}
                 >
                   <Edit2 size={14} />
@@ -114,7 +113,7 @@ export const OptionItem = ({
                     handleRemoveOption(option);
                     setIsContextMenuOpen(false);
                   }}
-                  className={`p-1 rounded-lg ${darkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-500 hover:bg-gray-100'} transition-colors duration-200`}
+                  className={`p-1 rounded-lg text-red-500 hover:bg-hoverBg transition-colors duration-200`}
                   aria-label={`Remove ${option}`}
                 >
                   <Trash2 size={14} />

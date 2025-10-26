@@ -8,11 +8,9 @@ export const IconSelector = ({
   isIconSectionExpanded,
   setIsIconSectionExpanded,
   icons = allIcons,
-  darkMode,
 }) => {
   const ref = useRef(null);
 
-  // Click outside to collapse
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
@@ -36,11 +34,7 @@ export const IconSelector = ({
     <div className="relative mb-4" ref={ref}>
       <button
         onClick={() => setIsIconSectionExpanded(!isIconSectionExpanded)}
-        className={`w-12 h-12 flex items-center justify-center rounded-xl border ${
-          darkMode
-            ? 'border-gray-700 bg-gray-900 text-gray-200 hover:bg-gray-800'
-            : 'border-gray-300 bg-white text-gray-800 hover:bg-gray-50'
-        } focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200`}
+        className={`w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background text-text hover:bg-hoverBg focus:outline-none focus:ring-2 focus:ring-primaryColor transition-all duration-200`}
         aria-expanded={isIconSectionExpanded}
         aria-label="Select icon"
       >
@@ -53,9 +47,7 @@ export const IconSelector = ({
 
       {isIconSectionExpanded && (
         <div
-          className={`absolute top-full w-96 left-0 mt-1 z-50 overflow-y-auto border rounded-lg shadow-lg
-            ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-300'}
-            flex flex-wrap gap-1`}
+          className={`absolute top-full w-96 left-0 mt-1 z-50 overflow-y-auto border rounded-lg shadow-lg bg-background border-border flex flex-wrap gap-1`}
           style={{ maxWidth: containerMaxWidth }}
         >
           {icons.map((icon) => (
@@ -65,16 +57,11 @@ export const IconSelector = ({
                 setSelectedIcon(icon.name);
                 setIsIconSectionExpanded(false);
               }}
-              className={`flex items-center justify-center rounded-lg
-                ${
-                  selectedIcon === icon.name
-                    ? darkMode
-                      ? 'bg-gray-700 text-gray-100'
-                      : 'bg-gray-100 text-gray-900'
-                    : darkMode
-                      ? 'text-gray-100 hover:bg-gray-700'
-                      : 'text-gray-800 hover:bg-gray-100'
-                } transition-colors duration-200`}
+              className={`flex items-center justify-center rounded-lg ${
+                selectedIcon === icon.name
+                  ? 'bg-hoverBg text-text'
+                  : 'text-text hover:bg-hoverBg'
+              } transition-colors duration-200`}
               aria-label={`Select ${icon.name} icon`}
               type="button"
               style={{ width: `${iconSizePx}px`, height: `${iconSizePx}px` }}

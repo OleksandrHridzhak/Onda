@@ -16,9 +16,6 @@ import {
   handleWidthChange,
 } from './columnMenuHandlers';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
-import { useSelector } from 'react-redux';
-
-
 
 const ColumnMenu = ({
   column,
@@ -38,8 +35,7 @@ const ColumnMenu = ({
 }) => {
   const [state, dispatch] = useReducer(reducer, column, initialState);
   const menuRef = useRef(null);
-  const { mode } = useSelector((state) => state.theme);
-  const darkMode = mode === 'dark' ? true : false;
+
   useEffect(() => {
     dispatch({ type: 'RESET', payload: column });
   }, [column]);
@@ -56,16 +52,14 @@ const ColumnMenu = ({
 
   return (
     <div
-      className={`fixed z-50 cursor-default inset-0 flex items-center justify-center bg-black bg-opacity-50 ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}
+      className={`fixed z-50 cursor-default inset-0 flex items-center justify-center bg-black bg-opacity-50 text-text`}
     >
       <div
-        className={`w-full max-w-md rounded-2xl ${darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border shadow-md p-4`}
+        className={`w-full max-w-md rounded-2xl bg-background border-border border shadow-md p-4`}
         ref={menuRef}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2
-            className={`text-lg z-55 font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}
-          >
+          <h2 className={`text-lg z-55 font-semibold text-text`}>
             Column Settings
           </h2>
           <button
@@ -74,7 +68,7 @@ const ColumnMenu = ({
               onClose();
             }}
             aria-label="Close column settings"
-            className={`p-1 rounded-full ${darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100'} transition-colors duration-200`}
+            className={`p-1 rounded-full text-textTableValues hover:bg-hoverBg transition-colors duration-200`}
           >
             <X size={20} />
           </button>
@@ -91,7 +85,6 @@ const ColumnMenu = ({
                 dispatch({ type: 'TOGGLE_ICON_SECTION' })
               }
               icons={icons}
-              darkMode={darkMode}
             />
             <div className="w-full flex relative">
               <input
@@ -100,7 +93,7 @@ const ColumnMenu = ({
                 onChange={(e) =>
                   dispatch({ type: 'SET_NAME', payload: e.target.value })
                 }
-                className={`w-full h-[50px] px-4 py-2 border ${darkMode ? 'border-gray-700 bg-gray-900 text-gray-200' : 'border-gray-300 bg-white text-gray-900'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all duration-200`}
+                className={`w-full h-[50px] px-4 py-2 border border-border bg-background text-text rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200`}
                 placeholder="Column name"
               />
               <TitleVisibilityToggle
@@ -108,7 +101,6 @@ const ColumnMenu = ({
                 setShowTitle={(value) =>
                   dispatch({ type: 'SET_SHOW_TITLE', payload: value })
                 }
-                darkMode={darkMode}
               />
             </div>
           </div>
@@ -119,17 +111,13 @@ const ColumnMenu = ({
               onChange={(e) =>
                 dispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })
               }
-              className={`w-full px-4 py-2 border ${
-                darkMode
-                  ? 'border-gray-700 bg-gray-900 text-gray-200'
-                  : 'border-gray-300 bg-white text-gray-900'
-              } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all duration-200 resize-none`}
+              className={`w-full px-4 py-2 border border-border bg-background text-text rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200 resize-none`}
               rows="3"
             />
           </div>
           <div className="mb-4">
             <label
-              className={`block text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-700'} mb-1`}
+              className={`block text-sm font-medium text-textTableValues mb-1`}
             >
               Column Position and width
             </label>
@@ -141,11 +129,7 @@ const ColumnMenu = ({
                   onChange={(e) => handleWidthChange(dispatch, onChangeWidth, column, e)}
                   min="0"
                   max="1000"
-                  className={`w-full px-3 py-2.5 flex items-center text-sm border ${
-                    darkMode
-                      ? 'bg-transparent  border-gray-700 text-gray-200 hover:text-white'
-                      : 'bg-transparent   border-gray-300 text-gray-900'
-                  } rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                  className={`w-full px-3 py-2.5 flex items-center text-sm border bg-transparent border-border text-text rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primaryColor`}
                   placeholder="Enter width in pixels"
                   aria-label="Column width"
                 />
@@ -153,14 +137,12 @@ const ColumnMenu = ({
               <TransparentBtn
                 onClick={onMoveUp}
                 disabled={!canMoveUp}
-                darkTheme={darkMode}
               >
                 <ArrowLeft size={18} /> LEFT
               </TransparentBtn>
               <TransparentBtn
                 onClick={onMoveDown}
                 disabled={!canMoveDown}
-                darkTheme={darkMode}
               >
                 RIGHT <ArrowRight size={18} />
               </TransparentBtn>
@@ -188,7 +170,6 @@ const ColumnMenu = ({
                 handleColorChange(state, dispatch, column, onChangeOptions, option, color)
               }
               optionColors={state.optionColors}
-              darkMode={darkMode}
               isColorMenuOpen={state.isColorMenuOpen}
               toggleColorMenu={(option) =>
                 dispatch({ type: 'TOGGLE_COLOR_MENU', payload: option })
@@ -201,7 +182,6 @@ const ColumnMenu = ({
               setCheckboxColor={(color) =>
                 dispatch({ type: 'SET_CHECKBOX_COLOR', payload: color })
               }
-              darkMode={darkMode}
               isColorMenuOpen={state.isColorMenuOpen.checkbox}
               toggleColorMenu={() =>
                 dispatch({ type: 'TOGGLE_COLOR_MENU', payload: 'checkbox' })
