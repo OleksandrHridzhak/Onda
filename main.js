@@ -24,6 +24,7 @@ function createWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.bundle.js'),
       webSecurity: false,
+      webviewTag: true,
     },
   });
   
@@ -51,12 +52,15 @@ if (!gotTheLock) {
   });
 
   app.whenReady().then(() => {
-    // Remove X-Frame-Options header to allow embedding sites in webview
+    // Remove X-Frame-Options and Content-Security-Policy headers to allow embedding sites in webview
     const { session } = require('electron');
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
       const responseHeaders = Object.fromEntries(
         Object.entries(details.responseHeaders).filter(
-          (header) => header[0].toLowerCase() !== 'x-frame-options'
+          (header) =>
+            !['x-frame-options', 'content-security-policy'].includes(
+              header[0].toLowerCase()
+            )
         )
       );
       callback({ responseHeaders });
