@@ -35,6 +35,7 @@ const ColumnMenu = ({
 }) => {
   const [state, dispatch] = useReducer(reducer, column, initialState);
   const menuRef = useRef(null);
+  const darkMode = document.documentElement.getAttribute('data-theme-mode') === 'dark';
 
   useEffect(() => {
     dispatch({ type: 'RESET', payload: column });
@@ -85,6 +86,7 @@ const ColumnMenu = ({
                 dispatch({ type: 'TOGGLE_ICON_SECTION' })
               }
               icons={icons}
+              darkMode={darkMode}
             />
             <div className="w-full flex relative">
               <input
@@ -101,6 +103,7 @@ const ColumnMenu = ({
                 setShowTitle={(value) =>
                   dispatch({ type: 'SET_SHOW_TITLE', payload: value })
                 }
+                darkMode={darkMode}
               />
             </div>
           </div>
@@ -137,12 +140,14 @@ const ColumnMenu = ({
               <TransparentBtn
                 onClick={onMoveUp}
                 disabled={!canMoveUp}
+                darkTheme={darkMode}
               >
                 <ArrowLeft size={18} /> LEFT
               </TransparentBtn>
               <TransparentBtn
                 onClick={onMoveDown}
                 disabled={!canMoveDown}
+                darkTheme={darkMode}
               >
                 RIGHT <ArrowRight size={18} />
               </TransparentBtn>
@@ -170,6 +175,7 @@ const ColumnMenu = ({
                 handleColorChange(state, dispatch, column, onChangeOptions, option, color)
               }
               optionColors={state.optionColors}
+              darkMode={darkMode}
               isColorMenuOpen={state.isColorMenuOpen}
               toggleColorMenu={(option) =>
                 dispatch({ type: 'TOGGLE_COLOR_MENU', payload: option })
@@ -182,6 +188,7 @@ const ColumnMenu = ({
               setCheckboxColor={(color) =>
                 dispatch({ type: 'SET_CHECKBOX_COLOR', payload: color })
               }
+              darkMode={darkMode}
               isColorMenuOpen={state.isColorMenuOpen.checkbox}
               toggleColorMenu={() =>
                 dispatch({ type: 'TOGGLE_COLOR_MENU', payload: 'checkbox' })

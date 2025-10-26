@@ -12,6 +12,7 @@ export const OptionsList = ({
   handleEditOption,
   handleColorChange,
   optionColors,
+  darkMode,
   toggleColorMenu,
 }) => {
   return (
@@ -54,6 +55,7 @@ export const OptionsList = ({
               options={options}
               doneTags={doneTags}
               optionColors={optionColors}
+              darkMode={darkMode}
               handleColorChange={handleColorChange}
               handleRemoveOption={handleRemoveOption}
               handleEditOption={handleEditOption}

@@ -4,6 +4,7 @@ import { getColorOptions } from '../../utils/colorOptions';
 export const CheckboxColorPicker = ({
   checkboxColor,
   setCheckboxColor,
+  darkMode,
   isColorMenuOpen,
   toggleColorMenu,
 }) => (
@@ -18,7 +19,7 @@ export const CheckboxColorPicker = ({
         className={` mt-2 bg-background border-border text-text border rounded-lg p-2 z-10`}
       >
         <div className="flex flex-wrap gap-2 max-h-32 ">
-          {getColorOptions().map((color) => (
+          {getColorOptions({ darkMode }).map((color) => (
             <button
               key={color.name}
               onClick={() => {

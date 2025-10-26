@@ -7,6 +7,7 @@ export const OptionItem = ({
   options,
   doneTags,
   optionColors,
+  darkMode,
   handleColorChange,
   handleRemoveOption,
   handleEditOption,
@@ -74,7 +75,7 @@ export const OptionItem = ({
         <>
           <button
             onClick={() => setIsContextMenuOpen(!isContextMenuOpen)}
-            className={`px-2 py-1 rounded-full text-xs font-medium ${getColorOptions().find((c) => c.name === optionColors[option])?.bg} ${getColorOptions().find((c) => c.name === optionColors[option])?.text || 'text-text'}`}
+            className={`px-2 py-1 rounded-full text-xs font-medium ${getColorOptions({ darkMode }).find((c) => c.name === optionColors[option])?.bg} ${getColorOptions({ darkMode }).find((c) => c.name === optionColors[option])?.text || 'text-text'}`}
             aria-label={`Options for ${option}`}
           >
             {option} {doneTags.includes(option) && '(Completed)'}
@@ -85,7 +86,7 @@ export const OptionItem = ({
               className={`absolute left-0 top-full mt-1 bg-background border-border border rounded-lg shadow-lg p-2 z-10`}
             >
               <div className="flex items-center space-x-2 p-2 overflow-x-auto max-w-xs">
-                {getColorOptions().map((color) => (
+                {getColorOptions({ darkMode }).map((color) => (
                   <button
                     key={color.name}
                     onClick={() => {
