@@ -175,4 +175,22 @@ export const settingsService = {
       return handleError(err, 'Error updating column order');
     }
   },
+
+  async updateCustomPageUrl(url) {
+    try {
+      const db = await dbPromise;
+      const tx = db.transaction('settings', 'readwrite');
+      const store = tx.objectStore('settings');
+
+      const settings = await store.get(1) || getSettingsTemplate();
+      settings.customPage = { url };
+
+      await store.put({ id: 1, ...settings });
+      await tx.done;
+
+      return { status: 'Custom page URL updated' };
+    } catch (err) {
+      return handleError(err, 'Error updating custom page URL');
+    }
+  },
 };

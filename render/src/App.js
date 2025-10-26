@@ -10,14 +10,16 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 //import { fetchTheme } from './store/slices/themeSlice';
 import { fetchTheme } from './store/slices/themeSlice';
+import { fetchSettings } from './store/slices/settingsSlice';
 
 import Sidebar from './components/Sidebar';
 import Table from './components/table/Table';
 import MenuWin from './components/MenuWin';
 import Calendar from './components/calendar/Calendar';
 import Settings from './components/settings/Settings';
+import CustomPage from './components/customPage/CustomPage';
 
-const routes = ['/', '/calendar', '/settings'];
+const routes = ['/', '/calendar', '/settings', '/custom'];
 
 function MainContent({ isDarkMode, setIsDarkMode }) {
   const location = useLocation();
@@ -60,6 +62,7 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
             <Settings darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />
           }
         />
+        <Route path="/custom" element={<CustomPage />} />
       </Routes>
     </div>
   );
@@ -72,6 +75,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchTheme()); // тут отримуємо тему з Electron при старті апки
+    dispatch(fetchSettings());
   }, [dispatch]);
   // Початкове отримання теми
 

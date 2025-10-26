@@ -13,6 +13,7 @@ import UISection from './sections/UiSection';
 import DataSection from './sections/DataSection';
 import HeaderSection from './sections/HeaderSection';
 import CalendarSection from './sections/CalendarSection';
+import CustomPageSettings from './sections/CustomPageSettings';
 import { settingsService } from '../../services/settingsDB';
 
 export default function SettingsDashboard() {
@@ -168,6 +169,12 @@ export default function SettingsDashboard() {
           }
         />
       ),
+    },
+    {
+      id: 'custom',
+      name: 'Custom Page',
+      icon: <Eye className="w-4 h-4" />,
+      component: <CustomPageSettings />,
     },
   ];
 

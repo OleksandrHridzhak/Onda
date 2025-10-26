@@ -13,6 +13,7 @@ const Sidebar = () => {
   const deriveActive = (path) => {
     if (path.startsWith('/calendar')) return 'calendar';
     if (path.startsWith('/settings')) return 'settings';
+    if (path.startsWith('/custom')) return 'custom';
     return 'home';
   };
   const [active, setActive] = useState(deriveActive(location.pathname));
