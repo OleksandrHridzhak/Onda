@@ -17,10 +17,20 @@ export const setCustomPageUrl = createAsyncThunk(
   }
 );
 
+export const setCustomPageEnabled = createAsyncThunk(
+  'settings/setCustomPageEnabled',
+  async (enabled) => {
+    // use generic updateSettings to set enabled flag under customPage
+    await settingsService.updateSettings({ customPage: { enabled } });
+    return enabled;
+  }
+);
+
 const settingsSlice = createSlice({
   name: 'settings',
   initialState: {
     url: 'https://www.google.com',
+    customPageEnabled: true,
     status: 'idle',
     error: null,
   },
@@ -33,6 +43,10 @@ const settingsSlice = createSlice({
       .addCase(fetchSettings.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.url = action.payload.customPage?.url || 'https://www.google.com';
+        state.customPageEnabled =
+          action.payload.customPage?.enabled !== undefined
+            ? action.payload.customPage.enabled
+            : true;
       })
       .addCase(fetchSettings.rejected, (state, action) => {
         state.status = 'failed';
@@ -40,6 +54,9 @@ const settingsSlice = createSlice({
       })
       .addCase(setCustomPageUrl.fulfilled, (state, action) => {
         state.url = action.payload;
+      })
+      .addCase(setCustomPageEnabled.fulfilled, (state, action) => {
+        state.customPageEnabled = action.payload;
       });
   },
 });

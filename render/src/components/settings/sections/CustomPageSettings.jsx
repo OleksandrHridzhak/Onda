@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCustomPageUrl } from '../../../store/slices/settingsSlice';
+import {
+  setCustomPageUrl,
+  setCustomPageEnabled,
+} from '../../../store/slices/settingsSlice';
 
 const CustomPageSettings = () => {
   const dispatch = useDispatch();
-  const { url } = useSelector((state) => state.settings);
+  const { url, customPageEnabled } = useSelector((state) => state.settings);
   const [newUrl, setNewUrl] = useState(url);
+  const [enabled, setEnabled] = useState(customPageEnabled);
+
+  useEffect(() => {
+    setNewUrl(url);
+  }, [url]);
+
+  useEffect(() => {
+    setEnabled(customPageEnabled);
+  }, [customPageEnabled]);
 
   const handleSave = () => {
     dispatch(setCustomPageUrl(newUrl));
+  };
+
+  const handleToggle = () => {
+    const next = !enabled;
+    setEnabled(next);
+    dispatch(setCustomPageEnabled(next));
   };
 
   return (
@@ -25,6 +43,13 @@ const CustomPageSettings = () => {
         <button onClick={handleSave} className="px-4 py-2 bg-blue-500 text-white rounded">
           Save
         </button>
+      </div>
+
+      <div className="flex items-center gap-2 mt-2">
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={enabled} onChange={handleToggle} />
+          <span>Enable Custom Page</span>
+        </label>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import './App.css';
 import {
   HashRouter as Router,
@@ -18,6 +18,19 @@ import MenuWin from './components/MenuWin';
 import Calendar from './components/calendar/Calendar';
 import Settings from './components/settings/Settings';
 import CustomPage from './components/customPage/CustomPage';
+
+// Persistent wrapper keeps CustomPage mounted and only toggles visibility
+const PersistentCustomPageWrapper = () => {
+  const location = useLocation();
+  const { customPageEnabled } = useSelector((state) => state.settings);
+  const show = location.pathname === '/custom' && customPageEnabled;
+
+  return (
+    <div className={`absolute inset-0 z-10 ${show ? '' : 'hidden'}`}>
+      <CustomPage />
+    </div>
+  );
+};
 
 const routes = ['/', '/calendar', '/settings', '/custom'];
 
@@ -40,11 +53,10 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
     }
     document.documentElement.setAttribute("data-color-scheme", colorScheme);
   }, []);
-  const { theme, mode } = useSelector((state) => state.theme);
   const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
 
   return (
-    <div className={`flex-1 flex flex-col bg-background`}>
+    <div className={`flex-1 flex flex-col bg-background relative`}>
       {isElectron && (  
         <MenuWin darkTheme={isDarkMode} currentPage={location.pathname} />
       )}
@@ -62,8 +74,12 @@ function MainContent({ isDarkMode, setIsDarkMode }) {
             <Settings darkTheme={isDarkMode} setDarkTheme={setIsDarkMode} />
           }
         />
-        <Route path="/custom" element={<CustomPage />} />
+        {/* NOTE: '/custom' route is intentionally not rendering CustomPage directly
+            because CustomPage is mounted persistently below to avoid reloads on navigation. */}
       </Routes>
+
+      {/* Persistent CustomPage mount — kept mounted to preserve webview state. */}
+      <PersistentCustomPageWrapper />
     </div>
   );
 }

@@ -20,9 +20,12 @@ function createWindow() {
     icon: path.join(__dirname, './assets/onda-logo.ico'),
     frame: false,
     webPreferences: {
+      
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.bundle.js'),
+      // Allow use of the <webview> tag in renderer
+      webviewTag: true,
       webSecurity: false,
     },
   });
