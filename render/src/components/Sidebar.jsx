@@ -27,16 +27,18 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`w-1/8 h-screen bg-background border-border flex flex-col items-center justify-between p-4 border-r`}
+      className={`w-full md:w-1/8 h-auto md:h-screen bg-background border-border flex flex-row md:flex-col items-center justify-between p-2 md:p-4 border-t md:border-r md:border-t-0`}
     >
-      <div>
+      <div className="hidden md:block">
         {/* Logo */}
         <p
           className={`font-poppins font-medium text-md mt-6 text-primaryColor`}
         >
           ONDA
         </p>
-        <ul className="flex flex-col gap-10 justify-center items-center mt-36">
+      </div>
+      <div className="flex flex-row md:flex-col items-center justify-center gap-4 md:gap-10">
+        <ul className="flex flex-row md:flex-col gap-4 md:gap-10 justify-center items-center">
           {/* List of navigation links */}
           {sideBarItems.map((item) => {
             const Icon = item.icon;
@@ -54,25 +56,26 @@ const Sidebar = () => {
               </Link>
             );
           })}
-          {/* Mode toggle btn */}
-          <li
-            className={`p-2 rounded-xl transition-all duration-300 cursor-pointer`}
-            onClick={toggleTheme}
-          >
-            {themeMode === 'dark' ? (
-              <Moon
-                className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
-                strokeWidth={1.5}
-              />
-            ) : (
-              <Sun
-                className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-180`}
-                strokeWidth={1.5}
-              />
-            )}
-          </li>
         </ul>
+        {/* Mode toggle btn */}
+        <div
+          className={`p-2 rounded-xl transition-all duration-300 cursor-pointer`}
+          onClick={toggleTheme}
+        >
+          {themeMode === 'dark' ? (
+            <Moon
+              className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
+              strokeWidth={1.5}
+            />
+          ) : (
+            <Sun
+              className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-180`}
+              strokeWidth={1.5}
+            />
+          )}
+        </div>
       </div>
+      <div className="block md:hidden"></div> {/* Spacer for mobile */}
     </div>
   );
 };

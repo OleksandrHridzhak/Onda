@@ -91,7 +91,7 @@ function App() {
 
   return (
     <div className={`flex flex-col h-screen`}>
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden flex-col-reverse md:flex-row">
         <Sidebar />
         <MainContent />
       </div>
