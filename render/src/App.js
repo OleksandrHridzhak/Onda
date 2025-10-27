@@ -13,8 +13,9 @@ import Table from './components/table/Table';
 import MenuWin from './components/MenuWin';
 import Calendar from './components/calendar/Calendar';
 import Settings from './components/settings/Settings';
+import Notes from './components/notes/Notes';
 
-const routes = ['/', '/calendar', '/settings'];
+const routes = ['/', '/calendar', '/notes', '/settings'];
 
 function MainContent() {
   const location = useLocation();
@@ -50,6 +51,7 @@ function MainContent() {
       <Routes>
         <Route path="/" element={<Table />} />
         <Route path="/calendar" element={<Calendar />} />
+        <Route path="/notes" element={<Notes />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
     </div>
