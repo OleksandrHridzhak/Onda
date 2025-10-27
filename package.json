@@ -3,14 +3,11 @@
   "version": "2.0.0",
   "main": "main.bundle.js",
   "scripts": {
-    "start": "electron .",
-    "build:webpack": "webpack --config webpack.config.js",
+    "dev": "concurrently \"npm run watch:webpack\" \"npm run start:react\" \"npm run start:electron\"",
+    "start:electron": "wait-on http://localhost:3000 && electron .",
+    "start:react": "cd render && npm start",
     "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
-    "dist": "npm run build:webpack && electron-builder",
-    "buildmy:frontend": "cd render && npm run build && cd ..",
-
-    "buildmy:all": "npm run buildmy:frontend && npm run build:webpack",
-    "distmy": "npm run buildmy:all && electron-builder",
+    "build": "cd render && npm run build && cd .. && webpack --config webpack.config.js --mode=production && electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,6 +15,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "dotenv": "^17.2.3",
     "electron": "^35.1.4",
     "electron-builder": "^26.0.12",
@@ -25,13 +23,14 @@
     "node-cron": "^4.2.1",
     "playwright": "^1.55.1",
     "prettier": "^3.6.2",
+    "wait-on": "^9.0.1",
     "webpack": "^5.102.1",
     "webpack-cli": "^6.0.1"
   },
   "build": {
     "asar": false,
     "appId": "com.onda.onda.dev",
-    "productName": "Onda(DEV)",
+    "productName": "OndaDEV",
     "electronLanguages": [
       "en-US",
       "uk"
