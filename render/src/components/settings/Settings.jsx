@@ -179,13 +179,13 @@ export default function SettingsDashboard() {
 
   return (
     <div
-      className={`font-poppins flex flex-col h-full custom-scroll bg-background`}
+      className={`font-poppins flex flex-col h-full custom-scroll bg-ui-background`}
     >
       <div
-        className={`sticky top-0 z-10 bg-background border-border border-b px-8 py-6`}
+        className={`sticky top-0 z-10 bg-ui-background border-ui-border border-b px-8 py-6`}
       >
         <h1
-          className={`text-xl font-medium text-textTableValues flex items-center`}
+          className={`text-xl font-medium text-text-secondary flex items-center`}
         >
           <Settings className="w-5 h-5 mr-2" />
           Settings
@@ -193,7 +193,7 @@ export default function SettingsDashboard() {
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className={`w-64 border-r border-border p-4`}>
+        <div className={`w-64 border-r border-ui-border p-4`}>
           <nav className="space-y-1">
             {sections.map((section) => (
               <button
@@ -201,8 +201,8 @@ export default function SettingsDashboard() {
                 onClick={() => setActiveSection(section.id)}
                 className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                   activeSection === section.id
-                    ? `bg-settingsSectionSelectorBg text-text`
-                    : `text-textTableValues`
+                    ? `bg-settings-selector-background text-text-primary`
+                    : `text-text-secondary`
                 }`}
               >
                 {section.icon}

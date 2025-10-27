@@ -5,9 +5,9 @@ export const BubbleBtn = ({
   variant = 'standard',
 }) => {
   const variantClass = {
-    standard: 'bg-primaryColor text-white',
-    delete: 'bg-bubbleBtnDelete text-white',
-    clear: 'bg-bubbleBtnClear text-bubbleBtnClearText',
+    standard: 'bg-button-primary-background text-text-on-primary',
+    delete: 'bg-button-danger-background text-text-on-primary',
+    clear: 'bg-button-secondary-background text-button-secondary-text',
   };
 
   return (

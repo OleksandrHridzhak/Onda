@@ -299,22 +299,22 @@ export default function Calendar() {
   };
 
   return (
-    <div className={`font-poppins min-h-screen bg-tableHeader`}>
+    <div className={`font-poppins min-h-screen bg-table-header-background`}>
       <style jsx global>{`
         .custom-checkbox {
           position: relative;
           width: 18px;
           height: 18px;
           appearance: none;
-          background: var(--background);
-          border: 2px solid var(--border);
+          background: var(--ui-background);
+          border: 2px solid var(--ui-border);
           border-radius: 4px;
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .custom-checkbox:checked {
-          background: var(--primary-color);
-          border-color: var(--primary-color);
+          background: var(--ui-primary);
+          border-color: var(--ui-primary);
         }
         .custom-checkbox:checked::after {
           content: '✔';
@@ -322,15 +322,15 @@ export default function Calendar() {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          color: var(--icon-active);
+          color: var(--text-on-primary);
           font-size: 12px;
         }
         .custom-checkbox:hover {
-          border-color: var(--text-table-values);
+          border-color: var(--text-secondary);
         }
         .custom-checkbox:focus {
           outline: none;
-          box-shadow: 0 0 0 3px var(--hover-bg);
+          box-shadow: 0 0 0 3px var(--ui-hover);
         }
         .short-event .event-time {
           display: none;

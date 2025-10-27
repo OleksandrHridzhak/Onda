@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
-import { useSelector } from 'react-redux';
 import { calendarService } from '../../../services/calendarDB';
 
 const TimelineWidget = () => {
-  const theme = useSelector((state) => state.theme.theme); // повний об’єкт з усіма класами
-
   const getCurrentTimeString = () => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
@@ -116,7 +113,7 @@ const TimelineWidget = () => {
 
   return (
     <div
-      className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border bg-tableBodyBg border-border text-textTableValues`}
+      className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border bg-table-body-background border-ui-border text-text-secondary`}
     >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center justify-center w-6 h-6 rounded-full ">
@@ -124,11 +121,11 @@ const TimelineWidget = () => {
         </div>
         <div className="relative flex-1 ml-2">
           <div
-            className={`relative h-5 rounded-full border overflow-hidden bg-background border-border`}
+            className={`relative h-5 rounded-full border overflow-hidden bg-ui-background border-ui-border`}
           >
             <div className="absolute top-0 left-1 h-full w-60">
               <div
-                className="absolute top-0 h-full w-0.5 bg-red-500"
+                className="absolute top-0 h-full w-0.5 bg-button-danger-background"
                 style={{ left: `${timeToPercent(currentTime)}%` }}
               />
               {events.map((event) => {
@@ -157,7 +154,7 @@ const TimelineWidget = () => {
 
           {hoveredEvent && (
             <div
-              className={`absolute z-50 px-2 py-1 rounded-md text-[10px] shadow-lg whitespace-nowrap transform -translate-x-1/2 -translate-y-full -mt-6 bg-background text-text`}
+              className={`absolute z-50 px-2 py-1 rounded-md text-[10px] shadow-lg whitespace-nowrap transform -translate-x-1/2 -translate-y-full -mt-6 bg-ui-background text-text-primary`}
               style={{
                 left: `calc(${timeToPercent(hoveredEvent.startTime)}% + ${
                   durationToPercent(

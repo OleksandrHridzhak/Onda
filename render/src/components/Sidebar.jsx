@@ -27,12 +27,12 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`w-1/8 h-screen bg-background border-border flex flex-col items-center justify-between p-4 border-r`}
+      className={`w-1/8 h-screen bg-ui-background border-ui-border flex flex-col items-center justify-between p-4 border-r`}
     >
       <div>
         {/* Logo */}
         <p
-          className={`font-poppins font-medium text-md mt-6 text-primaryColor`}
+          className={`font-poppins font-medium text-md mt-6 text-text-accent`}
         >
           ONDA
         </p>
@@ -43,11 +43,11 @@ const Sidebar = () => {
             return (
               <Link key={item.name} to={item.path}>
                 <li
-                  className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${active === item.name ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText' : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'}`}
+                  className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${active === item.name ? 'bg-ui-primary scale-110 hover:scale-120 shadow-md text-sidebar-text-active' : 'text-sidebar-text-inactive hover:scale-105 hover:bg-sidebar-background-hover'}`}
                   onClick={() => setActive(item.name)}
                 >
                   <Icon
-                    className={`w-6 h-6 transition-colors duration-300 ${active === item.name ? 'text-iconActive' : 'text-iconInactive'} `}
+                    className={`w-6 h-6 transition-colors duration-300 ${active === item.name ? 'text-sidebar-icon-active' : 'text-sidebar-icon-inactive'} `}
                     strokeWidth={1.5}
                   />
                 </li>
@@ -61,12 +61,12 @@ const Sidebar = () => {
           >
             {themeMode === 'dark' ? (
               <Moon
-                className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
+                className={`w-6 h-6 text-text-accent transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
                 strokeWidth={1.5}
               />
             ) : (
               <Sun
-                className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-180`}
+                className={`w-6 h-6 text-text-accent transition-all duration-300 transform rotate-0 hover:rotate-180`}
                 strokeWidth={1.5}
               />
             )}

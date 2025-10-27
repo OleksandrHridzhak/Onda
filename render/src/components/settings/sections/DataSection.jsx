@@ -1,12 +1,10 @@
 import { Download, Upload } from 'lucide-react';
 import SettingsTemplate from '../SettingsTemplate';
-import { useSelector } from 'react-redux';
 import { BubbleBtn } from '../../shared/BubbleBtn';
 import { settingsService } from '../../../services/settingsDB';
 import { exportData, importData } from '../../../services/indexedDB';
 
 export default function DataSection() {
-  const { theme } = useSelector((state) => state.theme);
   const handleExportData = async () => {
     try {
       const data = await exportData();
@@ -50,7 +48,7 @@ export default function DataSection() {
   return (
     <SettingsTemplate title="Data Management">
       <div className="flex flex-col gap-2">
-        <span className={`text-sm text-textTableValues`}>
+        <span className={`text-sm text-text-secondary`}>
           Export Data / Import Data
         </span>
         <div className="flex flex-row  gap-2">

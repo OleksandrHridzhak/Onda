@@ -8,130 +8,114 @@ import {
   Circle,
   Table,
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
-const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
+const ColumnTypeSelector = ({ onSelect, onCancel }) => {
+  const themeMode = useSelector((state) => state.newTheme.themeMode);
   const columnTypes = [
     {
       id: 'todo',
       label: 'Todo List',
       icon: (
         <ListTodo
-          className={`w-5 h-5 ${darkMode ? 'text-red-400' : 'text-red-600'}`}
+          className={`w-5 h-5 ${themeMode === 'dark' ? 'text-red-400' : 'text-red-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-red-900' : 'bg-red-50',
-      hoverColor: darkMode ? 'hover:bg-red-800' : 'hover:bg-red-100',
+      bgColor: themeMode === 'dark' ? 'bg-red-900' : 'bg-red-50',
+      hoverColor: themeMode === 'dark' ? 'hover:bg-red-800' : 'hover:bg-red-100',
     },
     {
       id: 'checkbox',
       label: 'Checkbox',
       icon: (
         <CheckSquare
-          className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}
+          className={`w-5 h-5 ${themeMode === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-blue-900' : 'bg-blue-50',
-      hoverColor: darkMode ? 'hover:bg-blue-800' : 'hover:bg-blue-100',
+      bgColor: themeMode === 'dark' ? 'bg-blue-900' : 'bg-blue-50',
+      hoverColor: themeMode === 'dark' ? 'hover:bg-blue-800' : 'hover:bg-blue-100',
     },
     {
       id: 'numberbox',
       label: 'Number',
       icon: (
         <Hash
-          className={`w-5 h-5 ${darkMode ? 'text-green-400' : 'text-green-600'}`}
+          className={`w-5 h-5 ${themeMode === 'dark' ? 'text-green-400' : 'text-green-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-green-900' : 'bg-green-50',
-      hoverColor: darkMode ? 'hover:bg-green-800' : 'hover:bg-green-100',
+      bgColor: themeMode === 'dark' ? 'bg-green-900' : 'bg-green-50',
+      hoverColor: themeMode === 'dark' ? 'hover:bg-green-800' : 'hover:bg-green-100',
     },
     {
       id: 'multi-select',
       label: 'Tags',
       icon: (
         <Tag
-          className={`w-5 h-5 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}
+          className={`w-5 h-5 ${themeMode === 'dark' ? 'text-purple-400' : 'text-purple-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-purple-900' : 'bg-purple-50',
-      hoverColor: darkMode ? 'hover:bg-purple-800' : 'hover:bg-purple-100',
+      bgColor: themeMode === 'dark' ? 'bg-purple-900' : 'bg-purple-50',
+      hoverColor: themeMode === 'dark' ? 'hover:bg-purple-800' : 'hover:bg-purple-100',
     },
     {
       id: 'text',
       label: 'Notes',
       icon: (
         <Type
-          className={`w-5 h-5 ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}
+          className={`w-5 h-5 ${themeMode === 'dark' ? 'text-amber-400' : 'text-amber-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-amber-900' : 'bg-amber-50',
-      hoverColor: darkMode ? 'hover:bg-amber-800' : 'hover:bg-amber-100',
+      bgColor: themeMode === 'dark' ? 'bg-amber-900' : 'bg-amber-50',
+      hoverColor: themeMode === 'dark' ? 'hover:bg-amber-800' : 'hover:bg-amber-100',
     },
     {
       id: 'multicheckbox',
       label: 'Multi Checkbox',
       icon: (
         <Circle
-          className={`w-5 h-5 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}
+          className={`w-5 h-5 ${themeMode === 'dark' ? 'text-teal-400' : 'text-teal-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-teal-900' : 'bg-teal-50',
-      hoverColor: darkMode ? 'hover:bg-teal-800' : 'hover:bg-teal-100',
+      bgColor: themeMode === 'dark' ? 'bg-teal-900' : 'bg-teal-50',
+      hoverColor: themeMode === 'dark' ? 'hover:bg-teal-800' : 'hover:bg-teal-100',
     },
     {
       id: 'tasktable',
       label: 'Tasktable',
       icon: (
         <Table
-          className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
+          className={`w-5 h-5 ${themeMode === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-gray-800' : 'bg-gray-50',
-      hoverColor: darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100',
+      bgColor: themeMode === 'dark' ? 'bg-gray-800' : 'bg-gray-50',
+      hoverColor: themeMode === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-100',
     },
   ];
 
   return (
-    <div
-      className={` mt-1 w-56 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-xl z-20 border overflow-hidden animate-fade-in`}
-    >
-      <div
-        className={`p-3 border-b ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-100 bg-white'} flex justify-between items-center`}
-      >
-        <h3
-          className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}
-        >
-          Select Column Type
-        </h3>
+    <div className="mt-1 w-56 bg-ui-background border-ui-border rounded-xl shadow-xl z-20 border overflow-hidden animate-fade-in">
+      <div className="p-3 border-b border-ui-border bg-ui-background flex justify-between items-center">
+        <h3 className="font-medium text-text-primary">Select Column Type</h3>
         <button
           onClick={onCancel}
-          className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+          className="p-1 rounded-full hover:bg-ui-hover transition-colors"
           aria-label="Close"
         >
-          <X
-            className={`w-4 h-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
-          />
+          <X className="w-4 h-4 text-text-tertiary" />
         </button>
       </div>
 
-      <div
-        className={`divide-y ${darkMode ? 'divide-gray-700' : 'divide-gray-100'}`}
-      >
+      <div className="divide-y divide-ui-border">
         {columnTypes.map((type) => (
           <button
             key={type.id}
             onClick={() => onSelect(type.id)}
             className={`w-full px-4 py-3 flex items-center space-x-3 transition-all duration-200 ${type.bgColor} ${type.hoverColor}`}
           >
-            <div
-              className={`p-2 rounded-lg ${darkMode ? 'bg-opacity-70' : ''} ${type.bgColor.replace(darkMode ? '900' : '50', darkMode ? '800' : '100')}`}
-            >
+            <div className={`p-2 rounded-lg bg-opacity-70 ${type.bgColor}`}>
               {type.icon}
             </div>
-            <span
-              className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}
-            >
-              {type.label}
-            </span>
+            <span className="font-medium text-text-primary">{type.label}</span>
           </button>
         ))}
       </div>

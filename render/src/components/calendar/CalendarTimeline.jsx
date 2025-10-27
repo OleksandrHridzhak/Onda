@@ -34,7 +34,7 @@ export default function CalendarTimeline({
     <div className="w-full mx-auto">
       <div
         style={{ height: 'calc(100vh - 100px)' }}
-        className={`flex flex-col bg-background`}
+        className={`flex flex-col bg-ui-background`}
       >
         <div
           className="flex-1 relative overflow-y-auto custom-scroll-y-light"
@@ -42,13 +42,13 @@ export default function CalendarTimeline({
         >
           <div className="flex">
             <div
-              className={`w-20 flex-shrink-0 sticky left-0 bg-background z-10`}
+              className={`w-20 flex-shrink-0 sticky left-0 bg-ui-background z-10`}
             >
               <div className="h-16" />
               {hours.map((hour) => (
                 <div
                   key={hour}
-                  className={`h-[80px] flex items-start justify-end pr-3 text-sm text-textTableValues -translate-y-2.5`}
+                  className={`h-[80px] flex items-start justify-end pr-3 text-sm text-text-secondary -translate-y-2.5`}
                 >
                   {formatTime(hour)}
                 </div>
@@ -59,19 +59,19 @@ export default function CalendarTimeline({
               {getDisplayDays().map((day, dayIndex) => (
                 <div
                   key={day.toDateString()}
-                  className={`flex-1 border-l border-border relative`}
+                  className={`flex-1 border-l border-ui-border relative`}
                 >
                   <div
-                    className={`sticky top-0 bg-background z-40 py-3 text-center border-b border-border`}
+                    className={`sticky top-0 bg-ui-background z-40 py-3 text-center border-b border-ui-border`}
                   >
-                    <div className={`text-xs text-textTableValues`}>
+                    <div className={`text-xs text-text-secondary`}>
                       {dayNames[day.getDay()]}
                     </div>
                     <div
                       className={`mt-1 text-sm font-medium ${
                         day.toDateString() === new Date().toDateString()
-                          ? 'bg-primaryColor text-white'
-                          : 'text-text'
+                          ? 'bg-ui-primary text-text-on-primary'
+                          : 'text-text-primary'
                       } rounded-full w-6 h-6 flex items-center justify-center mx-auto`}
                     >
                       {day.getDate()}
@@ -84,7 +84,7 @@ export default function CalendarTimeline({
                     {hours.map((hour) => (
                       <div
                         key={hour}
-                        className={`absolute w-full border-t border-border hover:bg-hoverBg cursor-pointer z-10`}
+                        className={`absolute w-full border-t border-ui-border hover:bg-ui-hover cursor-pointer z-10`}
                         style={{
                           top: `${hour * slotHeight}px`,
                           height: `${slotHeight}px`,
@@ -125,10 +125,10 @@ export default function CalendarTimeline({
                     })}
                     {day.toDateString() === currentTime.toDateString() && (
                       <div
-                        className="absolute left-0 right-0 h-[2px] bg-red-500 z-30"
+                        className="absolute left-0 right-0 h-[2px] bg-button-danger-background z-30"
                         style={{ top: `${getCurrentTimePosition()}px` }}
                       >
-                        <div className="w-3 h-3 bg-red-500 rounded-full -translate-y-1" />
+                        <div className="w-3 h-3 bg-button-danger-background rounded-full -translate-y-1" />
                       </div>
                     )}
                   </div>

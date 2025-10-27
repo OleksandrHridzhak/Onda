@@ -6,7 +6,7 @@ export default function CalendarSection({ settings, onCalendarChange }) {
     <SettingsTemplate title="Calendar Settings">
       <div className="mt-4 space-y-3">
         <div className="flex items-center justify-between">
-          <span className={`text-sm text-textTableValues`}>Event Notifications</span>
+          <span className={`text-sm text-text-secondary`}>Event Notifications</span>
           <ToggleSwitch
             checked={settings.calendar.notifications}
             onChange={(checked) => onCalendarChange({ notifications: checked })}

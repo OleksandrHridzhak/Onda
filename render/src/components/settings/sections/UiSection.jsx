@@ -1,11 +1,7 @@
 import ToggleSwitch from '../ToggleSwitch';
 import SettingsTemplate from '../SettingsTemplate';
-import { useSelector } from 'react-redux';
 
 export default function UISection({ settings, onThemeChange, onAutoThemeChange }) {
-  const { mode } = useSelector((state) => state.theme);
-  const darkTheme = mode === 'dark';
-
   const handleAccentColorChange = (e) => {
     onThemeChange({ accentColor: e.target.value });
   };
@@ -13,7 +9,7 @@ export default function UISection({ settings, onThemeChange, onAutoThemeChange }
   return (
     <SettingsTemplate title="UI Settings">
       <div className="flex items-center justify-between">
-        <span className={`text-sm text-textTableValues`}>Dark Theme</span>
+        <span className={`text-sm text-text-secondary`}>Dark Theme</span>
         <ToggleSwitch
           checked={settings.theme.darkMode}
           onChange={(checked) => {
@@ -23,15 +19,11 @@ export default function UISection({ settings, onThemeChange, onAutoThemeChange }
       </div>
 
       <div className="flex items-center justify-between mt-4">
-        <span className={`text-sm text-textTableValues`}>Accent Color</span>
+        <span className={`text-sm text-text-secondary`}>Accent Color</span>
         <select
           value={settings.theme.accentColor}
           onChange={handleAccentColorChange}
-          className={`w-32 rounded-md text-m px-2 py-1 ${
-            darkTheme
-              ? 'bg-gray-800 text-gray-200 border border-gray-700'
-              : 'bg-white text-gray-600 border border-gray-300'
-          }`}
+          className={`w-32 rounded-md text-m px-2 py-1 bg-ui-background text-text-secondary border border-ui-border`}
         >
           <option value="standard">Standard</option>
           <option value="forest">Forest</option>
@@ -40,7 +32,7 @@ export default function UISection({ settings, onThemeChange, onAutoThemeChange }
       </div>
 
       <div className="flex items-center justify-between mt-4">
-        <span className={`text-sm text-textTableValues`}>
+        <span className={`text-sm text-text-secondary`}>
           Auto Theme Switcher
         </span>
         <ToggleSwitch
@@ -52,33 +44,25 @@ export default function UISection({ settings, onThemeChange, onAutoThemeChange }
       {settings.theme.autoThemeSettings.enabled && (
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between">
-            <label className={`text-sm text-textTableValues`}>
+            <label className={`text-sm text-text-secondary`}>
               Start of Day
             </label>
             <input
               type="time"
               value={settings.theme.autoThemeSettings.startTime}
               onChange={(e) => onAutoThemeChange({ startTime: e.target.value })}
-              className={`w-32 rounded-md text-m px-2 py-1 ${
-                darkTheme
-                  ? 'bg-gray-800 text-gray-200 border border-gray-700'
-                  : 'bg-white text-gray-600 border border-gray-300'
-              }`}
+              className={`w-32 rounded-md text-m px-2 py-1 bg-ui-background text-text-secondary border border-ui-border`}
             />
           </div>
           <div className="flex items-center justify-between">
-            <label className={`text-sm text-textTableValues`}>
+            <label className={`text-sm text-text-secondary`}>
               End of Day
             </label>
             <input
               type="time"
               value={settings.theme.autoThemeSettings.endTime}
               onChange={(e) => onAutoThemeChange({ endTime: e.target.value })}
-              className={`w-32 rounded-md text-m px-2 py-1 ${
-                darkTheme
-                  ? 'bg-gray-800 text-gray-200 border border-gray-700'
-                  : 'bg-white text-gray-600 border border-gray-300'
-              }`}
+              className={`w-32 rounded-md text-m px-2 py-1 bg-ui-background text-text-secondary border border-ui-border`}
             />
           </div>
         </div>

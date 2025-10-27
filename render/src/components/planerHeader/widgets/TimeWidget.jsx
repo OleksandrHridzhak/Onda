@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 export const TimeWidget = () => {
-  const theme = useSelector((state) => state.theme.theme);
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -24,6 +22,6 @@ export const TimeWidget = () => {
 
 
   return (
-    <h1 className={`font-poppins text-5xl text-textTableValues`}>{time}</h1>
+    <h1 className={`font-poppins text-5xl text-text-secondary`}>{time}</h1>
   );
 };
