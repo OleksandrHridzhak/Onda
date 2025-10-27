@@ -45,7 +45,7 @@ function MainContent() {
   const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
 
   return (
-    <div className={`flex-1 flex flex-col bg-background`}>
+    <div className={`flex-1 flex flex-col bg-background overflow-x-auto`}>
       {isElectron && <MenuWin currentPage={location.pathname} />}
       <Routes>
         <Route path="/" element={<Table />} />

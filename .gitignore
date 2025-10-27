@@ -22,3 +22,14 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# local env files
+.env
+.env.test
+.env.production
+.env.development
+.env.localhistory
+
+#Bundler files
+main.bundle.js
+preload.bundle.js
