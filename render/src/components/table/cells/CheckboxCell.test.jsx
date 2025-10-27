@@ -1,5 +1,5 @@
-import { render, fireEvent } from '@testing-library/react';
-import { CheckboxCell } from '../../components/cells/CheckboxCell';
+import { render, fireEvent } from '../../test-utils';
+import { CheckboxCell } from './CheckboxCell';
 
 describe('CheckboxCell', () => {
   test('renders as an unchecked checkbox', () => {
