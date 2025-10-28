@@ -20,19 +20,32 @@ function MainContent() {
   const location = useLocation();
 
   useEffect(() => {
+    // First, try to apply theme from localStorage to prevent flash
+    const savedTheme = localStorage.getItem('theme-mode');
+    const savedColor = localStorage.getItem('color-scheme');
+    
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme-mode', savedTheme);
+    }
+    if (savedColor) {
+      document.documentElement.setAttribute('data-color-scheme', savedColor);
+    }
+
+    // Then load from settings
     const applyTheme = async () => {
       try {
         const { data } = await settingsService.getSettings();
-        if (data && data.theme) {
+        if (data?.theme) {
           const { darkMode, accentColor } = data.theme;
-          document.documentElement.setAttribute(
-            'data-theme-mode',
-            darkMode ? 'dark' : 'light'
-          );
-          document.documentElement.setAttribute(
-            'data-color-scheme',
-            accentColor || 'standard'
-          );
+          const themeMode = darkMode ? 'dark' : 'light';
+          const colorScheme = accentColor || 'standard';
+          
+          document.documentElement.setAttribute('data-theme-mode', themeMode);
+          document.documentElement.setAttribute('data-color-scheme', colorScheme);
+          
+          // Save to localStorage for next load
+          localStorage.setItem('theme-mode', themeMode);
+          localStorage.setItem('color-scheme', colorScheme);
         }
       } catch (error) {
         console.error('Failed to apply theme:', error);
