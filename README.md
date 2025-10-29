@@ -23,8 +23,8 @@ Instructions for how to run the project locally.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/OleksandrHridzhak/Onda
+cd Onda
 ```
 
 2. Install dependencies in the root folder:
@@ -36,32 +36,15 @@ npm install
 3. Install backend dependencies:
 
 ```bash
-cd sys3-electron/electron-backend
+cd /render
 npm install
-cd ../../
+cd ../
 ```
 
 4. Run the start script:
 
 ```bash
-./start.sh
+npm run start
 ```
-
----
-
-## What `start.sh` Does
-
-- Kills any processes running on ports 5173 and 3000
-- Launches the frontend in a new Git Bash window
-- Launches the backend (`nodemon` for live reload) in another Git Bash window
-- Opens VS Code in the project root
-
----
-
-## Project Structure
-
-- `/sys3-electron/electron-backend` — backend
-- `/frontend` or `/src` — frontend (React)
-- `start.sh` — main startup script
 
 ---
