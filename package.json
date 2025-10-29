@@ -9,15 +9,12 @@
     "build:webpack": "webpack --config webpack.config.js",
     "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
     "dist": "npm run build:webpack && electron-builder",
-    "buildmy:frontend": "cd render && npm run build && cd ..",
-    "buildmy:all": "npm run buildmy:frontend && npm run build:webpack",
-    "distmy": "npm run buildmy:all && electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["planner", "task manager", "sprint", "weekly planning", "productivity", "tasks", "organization"],
   "author": "Oleksandr Hridzhak <3",
-  "license": "ISC",
-  "description": "",
+  "license": "Proprietary – non-commercial use only",
+  "description": "Task management tool with sprint-based weekly planning.",
   "devDependencies": {
     "concurrently": "^9.2.1",
     "dotenv": "^17.2.3",
