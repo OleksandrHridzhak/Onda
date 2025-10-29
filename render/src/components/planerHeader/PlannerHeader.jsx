@@ -1,6 +1,5 @@
 import PomodoroWidget from './widgets/PomodoroWidget';
 import TimelineWidget from './widgets/TimelineWidget';
-import { useSelector } from 'react-redux';
 import { TimeWidget } from './widgets/TimeWidget';
 import { AddNewColumnBtn } from './widgets/AddNewColumnBtn';
 
@@ -10,7 +9,6 @@ const PlannerHeader = ({
   showColumnSelector,
   setShowColumnSelector,
 }) => {
-  const theme = useSelector((state) => state.theme.theme);
 
   const widgetComponents = {
     PomodoroWidget,
@@ -26,9 +24,9 @@ const PlannerHeader = ({
   return (
     <div className={`bg-background`}>
       {layout?.length > 0 ? (
-        <div className="flex flex-wrap justify-between items-center  px-2 pt-10 pb-9">
+        <div className="flex flex-wrap justify-between items-center  px-2 md:pt-10 md:pb-9">
           <TimeWidget />
-          <div className="flex  flex-wrap items-center">
+          <div className="hidden md:flex flex-wrap items-center">
             {renderWidgets(layout)}
             <div className="flex justify-center">
               <AddNewColumnBtn
