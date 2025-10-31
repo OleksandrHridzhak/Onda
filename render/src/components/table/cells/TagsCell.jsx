@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRef } from 'react';
 import { getColorOptions } from '../../utils/colorOptions';
 import { useSelector } from 'react-redux';
@@ -9,8 +9,9 @@ export const TagsCell = ({
   options,
   tagColors = {},
 }) => {
-  const { mode } = useSelector((state) => state.theme);
-  const darkMode = mode === 'dark' ? true : false;
+  const { themeMode } = useSelector((state) => state.newTheme);
+  const darkMode = themeMode === 'dark' ? true : false;
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState(
     typeof value === 'string' && value.trim() !== ''
@@ -71,7 +72,7 @@ export const TagsCell = ({
           <div className="h-full w-full min-h-[2rem]"></div>
         )}
       </div>
-
+      {/* Dropdown menu */}
       {isOpen && (
         <div
           className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}

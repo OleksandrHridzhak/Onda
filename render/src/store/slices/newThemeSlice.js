@@ -24,4 +24,6 @@ const newThemeSlice = createSlice({
 });
 
 export const { toggleThemeMode, setColorScheme } = newThemeSlice.actions;
+
 export default newThemeSlice.reducer;
+export { initialState };

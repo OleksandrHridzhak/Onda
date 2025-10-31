@@ -21,8 +21,8 @@ function MainContent() {
 
   useEffect(() => {
     // First, try to apply theme from localStorage to prevent flash
-    const savedTheme = localStorage.getItem('theme-mode');
-    const savedColor = localStorage.getItem('color-scheme');
+    const savedTheme = localStorage.getItem('themeMode');
+    const savedColor = localStorage.getItem('colorScheme');
     
     if (savedTheme) {
       document.documentElement.setAttribute('data-theme-mode', savedTheme);
@@ -30,29 +30,6 @@ function MainContent() {
     if (savedColor) {
       document.documentElement.setAttribute('data-color-scheme', savedColor);
     }
-
-    // Then load from settings
-    const applyTheme = async () => {
-      try {
-        const { data } = await settingsService.getSettings();
-        if (data?.theme) {
-          const { darkMode, accentColor } = data.theme;
-          const themeMode = darkMode ? 'dark' : 'light';
-          const colorScheme = accentColor || 'standard';
-          
-          document.documentElement.setAttribute('data-theme-mode', themeMode);
-          document.documentElement.setAttribute('data-color-scheme', colorScheme);
-          
-          // Save to localStorage for next load
-          localStorage.setItem('theme-mode', themeMode);
-          localStorage.setItem('color-scheme', colorScheme);
-        }
-      } catch (error) {
-        console.error('Failed to apply theme:', error);
-      }
-    };
-
-    applyTheme();
   }, []);
 
   const isElectron = typeof window !== 'undefined' && !!window.electronAPI;

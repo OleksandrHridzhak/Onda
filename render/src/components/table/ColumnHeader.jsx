@@ -20,9 +20,9 @@ const ColumnHeader = ({
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const style = column.Width ? { width: `${column.Width}px` } : {};
-  const { theme } = useSelector((state) => state.theme);
   const isEmptyHeader =
     !column.EmojiIcon && (column.NameVisible === false || !column.Name);
+
   const handleClose = () => {
     console.log('Menu closed');
     setShowMenu(false);
