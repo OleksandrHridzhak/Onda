@@ -39,15 +39,6 @@ export default function UISection({ settings, onThemeChange, onAutoThemeChange }
         </select>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
-        <span className={`text-sm text-textTableValues`}>
-          Auto Theme Switcher
-        </span>
-        <ToggleSwitch
-          checked={settings.theme.autoThemeSettings.enabled}
-          onChange={(checked) => onAutoThemeChange({ enabled: checked })}
-        />
-      </div>
 
       {settings.theme.autoThemeSettings.enabled && (
         <div className="mt-4 space-y-3">

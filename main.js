@@ -6,7 +6,6 @@ const ipcWindowsHandlers = require('./api/ipcWindowsHandlers.js');
 require('dotenv').config();
 
 
-const { initCronJobs } = require('./services/cronServices.js');
 
 
 let mainWindow;
