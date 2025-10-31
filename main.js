@@ -1,16 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const ipcTableHandlers = require('./api/ipcTableHandlers.js');
-const ipcCalendarHandlers = require('./api/ipcCalendarHandlers.js');
-const ipcWindowHandlers = require('./api/ipcWindowHandlers.js');
-const ipcSettingsHandlers = require('./api/ipcSettingsHandlers.js');
+const ipcWindowsHandlers = require('./api/ipcWindowsHandlers.js');
 
 require('dotenv').config();
 
 
 const { initCronJobs } = require('./services/cronServices.js');
-//TODO create commits rules
-//TODO find on the internet how to improve solo dev system
+
 
 let mainWindow;
 
@@ -54,9 +51,7 @@ if (!gotTheLock) {
   app.whenReady().then(() => {
     createWindow();
     ipcTableHandlers.init(ipcMain);
-    ipcCalendarHandlers.init(ipcMain);
-    ipcSettingsHandlers.init(ipcMain);
-    ipcWindowHandlers.init(ipcMain, mainWindow);
+    ipcWindowsHandlers.init(ipcMain, mainWindow);
     initCronJobs();
   });
 
@@ -70,7 +65,6 @@ if (!gotTheLock) {
     }
   });
 
-  
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
       app.quit();
