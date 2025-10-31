@@ -46,7 +46,6 @@ const Table = () => {
   if (loading) {
     return <LoadingScreen darkMode={mode === 'dark' ? true : false} />;
   }
-  //TODO custom-scroll IN SEPARATE CSS
   return (
     <div
       className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}

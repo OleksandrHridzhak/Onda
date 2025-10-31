@@ -42,6 +42,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   //  ipcRenderer.invoke('update-ui-settings', uiSettings),
 
 
+  
+  // App Management
+  closeApp: () => ipcRenderer.invoke('close-app'),
+
 
   // Window Management
   minimizeWindow: () => ipcRenderer.invoke('window-minimize'),

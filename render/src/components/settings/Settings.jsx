@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Settings,
   LayoutGrid,
@@ -7,8 +6,10 @@ import {
   Table,
   Eye,
   Download,
+  X,
 } from 'lucide-react';
 import TableSection from './sections/TableSection';
+import FullCloseSection from './sections/FullCloseSection';
 import UISection from './sections/UiSection';
 import DataSection from './sections/DataSection';
 import HeaderSection from './sections/HeaderSection';
@@ -145,6 +146,12 @@ export default function SettingsDashboard() {
       name: 'Data',
       icon: <Download className="w-4 h-4" />,
       component: <DataSection />,
+    },
+    {
+      id: 'fullClose',
+      name: 'System',
+      icon: <X className="w-4 h-4" />,
+      component: <FullCloseSection />,
     },
     {
       id: 'header',

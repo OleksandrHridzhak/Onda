@@ -5,7 +5,7 @@
   "scripts": {
     "start": "concurrently \"npm:watch:webpack\" \"npm:start:react\" \"npm:start:electron\"",
     "start:react": "cd render && npm start",
-    "start:electron": "electron .",
+    "start:electron": "nodemon electron .",
     "build:webpack": "webpack --config webpack.config.js",
     "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
     "dist": "npm run build:webpack && electron-builder",

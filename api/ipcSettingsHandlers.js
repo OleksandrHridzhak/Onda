@@ -192,5 +192,9 @@ module.exports = {
         return handleError(error, 'Import failed');
       }
     });
+
+    ipcMain.handle('close-app', () => {
+      app.quit();
+    });
   },
 };
