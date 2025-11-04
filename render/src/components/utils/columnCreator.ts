@@ -59,6 +59,48 @@ abstract class BaseColumn {
 
         return changed
     }
+}
+type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 
-    abstract render(): void
+abstract class DayBasedColumn extends BaseColumn {
+    
+    days: Record<Day, string>;
+
+    clearDays(): boolean {
+        for (const day in this.days) {
+            this.days[day as Day] = '';
+        }
+        return true;
+    }
+
+    constructor(type: string, emojiIcon: string, width: number, nameVisible: boolean, description: string = '') {
+        super(type, emojiIcon, width, nameVisible, description)
+        this.days = {
+            Monday: '',
+            Tuesday: '',
+            Wednesday: '',
+            Thursday:'',
+            Friday:'',
+            Saturday:'',
+            Sunday:'',
+        }
+    };
+}
+
+class CheckBoxColumn extends DayBasedColumn {
+    checkboxColor: string;
+
+    constructor(emojiIcon: string, width: number, nameVisible: boolean, description: string = '') {
+        super('checkbox', 'Star', 50, false, "")
+        this.checkboxColor = 'green';
+    }
+    checkDay(day: Day): boolean {
+        this.days[day] = 'checked';
+        return true;
+    }
+    setCheckboxColor(color: string): boolean {
+        this.checkboxColor = color
+        return true
+    }
+
 }
