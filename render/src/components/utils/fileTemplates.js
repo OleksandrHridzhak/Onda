@@ -1,112 +1,48 @@
-const getColumnTemplates = () => ({
-  todo: {
-    EmojiIcon: 'ListTodo',
-    NameVisible: true,
-    Width: 150,
-    Chosen: {
-      global: [],
+const { ColumnFactory } = require('./columnClasses');
+
+const getColumnTemplates = () => {
+  // Get base templates from ColumnFactory
+  const templates = ColumnFactory.getAllTemplates();
+  
+  // Customize templates with specific icons and visibility settings
+  return {
+    todo: {
+      ...templates.todo,
+      EmojiIcon: 'ListTodo',
+      NameVisible: true,
     },
-    Options: ['Option 1', 'Option 2'],
-    TagColors: {
-      'Option 1': 'blue',
-      'Option 2': 'green',
+    checkbox: {
+      ...templates.checkbox,
+      EmojiIcon: 'Star',
+      NameVisible: false,
     },
-  },
-  checkbox: {
-    EmojiIcon: 'Star',
-    NameVisible: false,
-    Chosen: {
-      Monday: false,
-      Tuesday: false,
-      Wednesday: false,
-      Thursday: false,
-      Friday: false,
-      Saturday: false,
-      Sunday: false,
+    numberbox: {
+      ...templates.numberbox,
+      EmojiIcon: 'Star',
+      NameVisible: false,
     },
-    Width: 50,
-    CheckboxColor: 'green',
-  },
-  numberbox: {
-    EmojiIcon: 'Star',
-    NameVisible: false,
-    Chosen: {
-      Monday: '',
-      Tuesday: '',
-      Wednesday: '',
-      Thursday: '',
-      Friday: '',
-      Saturday: '',
-      Sunday: '',
+    text: {
+      ...templates.text,
+      EmojiIcon: 'Star',
+      NameVisible: true,
     },
-    Width: 60,
-  },
-  text: {
-    EmojiIcon: 'Star',
-    NameVisible: true,
-    Chosen: {
-      Monday: '',
-      Tuesday: '',
-      Wednesday: '',
-      Thursday: '',
-      Friday: '',
-      Saturday: '',
-      Sunday: '',
+    'multi-select': {
+      ...templates['multi-select'],
+      EmojiIcon: 'Star',
+      NameVisible: true,
     },
-    Width: 130,
-  },
-  'multi-select': {
-    EmojiIcon: 'Star',
-    NameVisible: true,
-    Options: ['Option 1', 'Option 2'],
-    TagColors: {
-      'Option 1': 'blue',
-      'Option 2': 'green',
+    multicheckbox: {
+      ...templates.multicheckbox,
+      EmojiIcon: 'Circle',
+      NameVisible: false,
     },
-    Chosen: {
-      Monday: '',
-      Tuesday: '',
-      Wednesday: '',
-      Thursday: '',
-      Friday: '',
-      Saturday: '',
-      Sunday: '',
+    tasktable: {
+      ...templates.tasktable,
+      EmojiIcon: 'ListTodo',
+      NameVisible: true,
     },
-    Width: 90,
-  },
-  multicheckbox: {
-    EmojiIcon: 'Circle',
-    NameVisible: false,
-    Options: ['Task 1', 'Task 2'],
-    TagColors: {
-      'Task 1': 'blue',
-      'Task 2': 'green',
-    },
-    Chosen: {
-      Monday: '',
-      Tuesday: '',
-      Wednesday: '',
-      Thursday: '',
-      Friday: '',
-      Saturday: '',
-      Sunday: '',
-    },
-    Width: 50,
-  },
-  tasktable: {
-    EmojiIcon: 'ListTodo',
-    NameVisible: true,
-    Options: ['Task 1', 'Task 2'],
-    TagColors: {
-      'Task 1': 'blue',
-      'Task 2': 'green',
-    },
-    Chosen: {
-      global: [],
-    },
-    Width: 150,
-  },
-});
+  };
+};
 
 const getSettingsTemplate = () => ({
   theme: {
