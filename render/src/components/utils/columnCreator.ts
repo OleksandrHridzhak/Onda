@@ -104,3 +104,23 @@ class CheckBoxColumn extends DayBasedColumn {
     }
 
 }
+class NumberBoxColumn extends DayBasedColumn {
+
+    constructor(emojiIcon: string, width: number, nameVisible: boolean, description: string = '') {
+        super('numberBox', 'Star', 50, false, "")
+    }
+    setNumber(day: Day, value: number): boolean {
+        this.days[day] = value.toString();
+        return true;
+    }
+}
+class TextBoxColumn extends DayBasedColumn {
+
+    constructor(emojiIcon: string, width: number, nameVisible: boolean, description: string = '') {
+        super('textBox', 'Star', 130, false, "")
+    }
+    setText(day: Day, value: string): boolean {
+        this.days[day] = value;
+        return true;
+    }
+}
