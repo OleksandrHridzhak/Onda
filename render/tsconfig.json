@@ -11,6 +11,8 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strict": false,
+    "rootDir": "src",
+    "outDir": "dist",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true
