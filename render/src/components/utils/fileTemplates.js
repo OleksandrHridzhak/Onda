@@ -1,4 +1,4 @@
-const { ColumnFactory } = require('./columnClasses');
+import { ColumnFactory } from './columnClasses';
 
 const getColumnTemplates = () => {
   // Get base templates from ColumnFactory
@@ -67,4 +67,4 @@ const getSettingsTemplate = () => ({
   },
 });
 
-module.exports = { getColumnTemplates, getSettingsTemplate};
+export { getColumnTemplates, getSettingsTemplate };

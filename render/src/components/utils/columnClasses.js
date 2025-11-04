@@ -15,7 +15,8 @@ class Column {
   }
 
   generateId() {
-    return Date.now().toString();
+    // Use timestamp + random component to avoid collisions
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
   getDefaultWidth() {
@@ -122,7 +123,8 @@ class NumberboxColumn extends Column {
   updateValue(day, value) {
     if (this.Chosen && day in this.Chosen) {
       const numValue = parseFloat(value);
-      this.Chosen[day] = isNaN(numValue) ? '' : value;
+      // Store as string to maintain consistency with data format
+      this.Chosen[day] = isNaN(numValue) ? '' : String(value);
     }
   }
 
