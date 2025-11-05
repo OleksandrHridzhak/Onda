@@ -59,6 +59,15 @@ abstract class BaseColumn {
 
         return changed
     }
+    toJSON(): Record<string, any> {
+        return {
+            type: this.type,
+            emojiIcon: this.emojiIcon,
+            nameVisible: this.nameVisible,
+            description: this.description,
+            width: this.width
+        };
+    }
 }
 type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 
@@ -84,15 +93,36 @@ abstract class DayBasedColumn extends BaseColumn {
             Saturday:'',
             Sunday:'',
         }
-    };
+    }
+
+    toJSON(): Record<string, any> {
+        return {
+            ...super.toJSON(),
+            days: { ...this.days }
+        };
+    }
 }
 
 class CheckBoxColumn extends DayBasedColumn {
+    static fromJSON(json: Record<string, any>): CheckBoxColumn {
+        const instance = new CheckBoxColumn(
+            json.emojiIcon,
+            json.width,
+            json.nameVisible,
+            json.description
+        );
+        for (const day in instance.days) {
+            instance.days[day as Day] = json.days[day];
+        }
+        instance.checkboxColor = json.checkboxColor;
+        return instance;
+    }
     checkboxColor: string;
 
-    constructor(emojiIcon: string, width: number, nameVisible: boolean, description: string = '') {
-        super('checkbox', 'Star', 50, false, "")
+    constructor(emojiIcon: string = 'Star', width: number = 50, nameVisible: boolean = false, description: string = '') {
+        super('checkbox', emojiIcon, width, nameVisible, description)
         this.checkboxColor = 'green';
+        
     }
     checkDay(day: Day): boolean {
         this.days[day] = 'checked';
@@ -102,12 +132,35 @@ class CheckBoxColumn extends DayBasedColumn {
         this.checkboxColor = color
         return true
     }
+    toJSON(): Record<string, any> {
+        return {
+            ...super.toJSON(),
+            checkboxColor: this.checkboxColor
+        };
+    }
 
 }
 class NumberBoxColumn extends DayBasedColumn {
+    static fromJSON(json: Record<string, any>): NumberBoxColumn {
+        const instance = new NumberBoxColumn(
+            json.emojiIcon,
+            json.width,
+            json.nameVisible,
+            json.description
+        );
+        for (const day in instance.days) {
+            instance.days[day as Day] = json.days[day];
+        }
+        return instance;
+    }
+    toJSON(): Record<string, any> {
+        return {
+            ...super.toJSON()
+        };
+    }
 
-    constructor(emojiIcon: string, width: number, nameVisible: boolean, description: string = '') {
-        super('numberBox', 'Star', 50, false, "")
+    constructor(emojiIcon: string = 'Star', width: number = 50, nameVisible: boolean = false, description: string = '') {
+        super('numberBox', emojiIcon, width, nameVisible, description)
     }
     setNumber(day: Day, value: number): boolean {
         this.days[day] = value.toString();
@@ -115,9 +168,26 @@ class NumberBoxColumn extends DayBasedColumn {
     }
 }
 class TextBoxColumn extends DayBasedColumn {
+    static fromJSON(json: Record<string, any>): TextBoxColumn {
+        const instance = new TextBoxColumn(
+            json.emojiIcon,
+            json.width,
+            json.nameVisible,
+            json.description
+        );
+        for (const day in instance.days) {
+            instance.days[day as Day] = json.days[day];
+        }
+        return instance;
+    }
+    toJSON(): Record<string, any> {
+        return {
+            ...super.toJSON()
+        };
+    }
 
-    constructor(emojiIcon: string, width: number, nameVisible: boolean, description: string = '') {
-        super('textBox', 'Star', 130, false, "")
+    constructor(emojiIcon: string = 'Star', width: number = 130, nameVisible: boolean = false, description: string = '') {
+        super('textBox', emojiIcon, width, nameVisible, description)
     }
     setText(day: Day, value: string): boolean {
         this.days[day] = value;
