@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 const ColumnHeader = ({
   column,
   onRemove,
+  onClearColumn,
   onRename,
   onChangeIcon,
   onChangeDescription,
@@ -65,6 +66,7 @@ const ColumnHeader = ({
             column={column}
             onClose={handleClose}
             handleDeleteColumn={onRemove}
+            handleClearColumn={onClearColumn}
             onRename={onRename}
             onChangeIcon={onChangeIcon}
             onChangeDescription={onChangeDescription}

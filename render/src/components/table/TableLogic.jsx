@@ -220,7 +220,13 @@ export const RenderCell = ({
         ? { rowSpan: DAYS.length }
         : {})}
     >
-      <Component {...props} />
+      <Component 
+        {...props} 
+        key={column.Type === 'tasktable' 
+          ? `${column.ColumnId}-${(column.Options || []).length}-${(column.DoneTags || []).length}`
+          : undefined
+        }
+      />
     </td>
   );
 };

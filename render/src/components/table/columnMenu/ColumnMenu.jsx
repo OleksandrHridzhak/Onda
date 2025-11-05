@@ -20,6 +20,7 @@ import { CheckboxColorPicker } from './CheckBoxColorPicker';
 const ColumnMenu = ({
   column,
   handleDeleteColumn,
+  handleClearColumn,
   onClose,
   onRename,
   onChangeIcon,
@@ -200,7 +201,10 @@ const ColumnMenu = ({
               <BubbleBtn
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDeleteColumn(column.ColumnId);
+                  if (window.confirm(`Are you sure you want to delete "${column.Name || 'this column'}"? This action cannot be undone.`)) {
+                    handleDeleteColumn(column.ColumnId);
+                    onClose();
+                  }
                 }}
                 disabled={state.isSaving}
                 variant='delete'
@@ -210,6 +214,7 @@ const ColumnMenu = ({
               <BubbleBtn
                 onClick={(e) => {
                   e.stopPropagation();
+                  handleClearColumn(column.ColumnId);
                 }}
                 disabled={state.isSaving}
                 variant='clear'

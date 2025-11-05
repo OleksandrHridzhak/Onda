@@ -17,6 +17,7 @@ const Table = () => {
     columns,
     setColumns,
     tableData,
+    setTableData,
     showColumnSelector,
     setShowColumnSelector,
     loading,
@@ -29,7 +30,7 @@ const Table = () => {
     handleChangeOptions,
   } = useTableLogic();
 
-  const columnMenuLogic = useColumnMenuLogic(columns, setColumns);
+  const columnMenuLogic = useColumnMenuLogic(columns, setColumns, setTableData);
   const { theme, mode } = useSelector((state) => state.theme);
   const darkMode = false;
 
@@ -121,6 +122,7 @@ const Table = () => {
                       column={column}
                       onRename={columnMenuLogic.handleRename}
                       onRemove={columnMenuLogic.handleDeleteColumn}
+                      onClearColumn={columnMenuLogic.handleClearColumn}
                       onChangeIcon={columnMenuLogic.handleChangeIcon}
                       onChangeDescription={
                         columnMenuLogic.handleChangeDescription

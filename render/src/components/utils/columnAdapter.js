@@ -19,10 +19,10 @@ export const instanceToLegacy = (instance) => {
     Width: instance.width,
     Description: instance.description,
     Chosen: instance.days || instance.tasks,
-    Options: instance.options,
-    TagColors: instance.tagColors,
+    Options: instance.options ? [...instance.options] : undefined,
+    TagColors: instance.tagColors ? {...instance.tagColors} : undefined,
     CheckboxColor: instance.checkboxColor,
-    DoneTags: instance.doneTags,
+    DoneTags: instance.doneTags ? [...instance.doneTags] : undefined,
     _instance: instance
   };
 };
