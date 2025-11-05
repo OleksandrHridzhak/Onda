@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { addNewColumn, getWeek, updateColumn } from '../../services/indexedDB';
 import { CheckboxCell } from './cells/CheckboxCell';
 import { NumberCell } from './cells/NumberCell';
 import { TagsCell } from './cells/TagsCell';
@@ -9,6 +8,16 @@ import { TodoCell } from './cells/TodoCell';
 import { TaskTableCell } from './cells/TaskTableCell';
 import { useSelector } from 'react-redux';
 import { settingsService } from '../../services/settingsDB';
+import { 
+  getAllColumns, 
+  addColumn, 
+  updateColumn,
+  migrateColumnsFromWeeks,
+  getColumnsOrder,
+  updateColumnsOrder
+} from '../../services/columnsDB';
+import { createColumn } from '../utils/columnCreator';
+import { deserializeColumns } from '../utils/columnHelpers';
 
 export const DAYS = [
   'Monday',
@@ -19,14 +28,6 @@ export const DAYS = [
   'Saturday',
   'Sunday',
 ];
-
-const electronAPI = window.electronAPI || {
-  getSettings: async () => ({ status: 'Settings fetched', data: {} }),
-  updateSettings: async () => {},
-  createComponent: async () => ({ status: false }),
-  updateColumnOrder: async () => {},
-  changeColumn: async () => {},
-};
 
 const handleError = (message, error) => {
   console.error(message, error);
@@ -46,9 +47,15 @@ export const useTableLogic = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [daysResult, settingsResult] = await Promise.all([
-          getWeek(),
+        
+        // Міграція старих даних (якщо потрібно)
+        await migrateColumnsFromWeeks();
+        
+        // Завантажуємо колонки з нового сховища
+        const [columnsData, settingsResult, columnOrderData] = await Promise.all([
+          getAllColumns(),
           settingsService.getSettings(),
+          getColumnsOrder()
         ]);
 
         const dayColumn = {
@@ -60,20 +67,46 @@ export const useTableLogic = () => {
         };
         let fetchedColumns = [dayColumn];
 
-        if (
-          daysResult.status === 'Data fetched' &&
-          Array.isArray(daysResult.data)
-        ) {
-          fetchedColumns = [
-            dayColumn,
-            ...daysResult.data.map((col) => ({
-              ...col,
-              Width: col.Width ? parseInt(col.Width) : null,
-            })),
-          ];
+        if (columnsData && columnsData.length > 0) {
+          // Десеріалізація у класи та конвертація в старий формат для сумісності
+          const columnInstances = deserializeColumns(columnsData);
+          const compatibleColumns = columnInstances.map(col => ({
+            ColumnId: col.id,
+            Type: col.type,
+            Name: col.description || 'Column',
+            EmojiIcon: col.emojiIcon,
+            NameVisible: col.nameVisible,
+            Width: col.width,
+            Description: col.description,
+            // Для day-based колонок
+            Chosen: col.days || col.tasks,
+            // Додаткові поля
+            Options: col.options,
+            TagColors: col.tagColors,
+            CheckboxColor: col.checkboxColor,
+            DoneTags: col.doneTags,
+            // Зберігаємо оригінальний екземпляр класу
+            _instance: col
+          }));
+          fetchedColumns = [dayColumn, ...compatibleColumns];
         }
 
-        if (
+        // Застосування порядку колонок
+        if (columnOrderData && columnOrderData.length > 0) {
+          const orderedColumns = [dayColumn];
+          columnOrderData.forEach(columnId => {
+            const col = fetchedColumns.find(c => c.ColumnId === columnId || c._instance?.id === columnId);
+            if (col) orderedColumns.push(col);
+          });
+          
+          // Додаємо колонки які не в порядку
+          fetchedColumns.forEach(column => {
+            if (column.ColumnId !== 'days' && !orderedColumns.some(col => col.ColumnId === column.ColumnId)) {
+              orderedColumns.push(column);
+            }
+          });
+          fetchedColumns = orderedColumns;
+        } else if (
           settingsResult.status === 'Settings fetched' &&
           settingsResult.data.table?.columnOrder?.length > 0
         ) {
@@ -108,13 +141,16 @@ export const useTableLogic = () => {
 
         const initialTableData = DAYS.reduce((acc, day) => {
           acc[day] = fetchedColumns.reduce((dayData, col) => {
-            if (col.ColumnId !== 'days' && col.Type !== 'tasktable') {
+            if (col.ColumnId !== 'days' && col.Type !== 'tasktable' && col.Type !== 'todo') {
+              // Спочатку пробуємо взяти з _instance.days, потім з Chosen
+              const dayValue = col._instance?.days?.[day] ?? col.Chosen?.[day] ?? '';
+              
               dayData[col.ColumnId] =
                 col.Type === 'multi-select' || col.Type === 'multicheckbox'
-                  ? typeof col.Chosen?.[day] === 'string'
-                    ? col.Chosen[day]
+                  ? typeof dayValue === 'string'
+                    ? dayValue
                     : ''
-                  : col.Chosen?.[day] || '';
+                  : dayValue;
             }
             return dayData;
           }, {});
@@ -165,9 +201,38 @@ export const useTableLogic = () => {
   const handleAddColumn = useCallback(
     async (type) => {
       try {
-        const result = await addNewColumn(type);
+        // Створюємо колонку через клас
+        const newColumnInstance = createColumn(type);
+        const columnJson = newColumnInstance.toJSON();
+        
+        // Зберігаємо в новому сховищі
+        const result = await addColumn(columnJson);
+        
         if (result.status) {
-          setColumns((prev) => [...prev, result.data]);
+          // Конвертуємо для сумісності
+          const compatibleColumn = {
+            ColumnId: newColumnInstance.id,
+            Type: newColumnInstance.type,
+            Name: 'New Column',
+            EmojiIcon: newColumnInstance.emojiIcon,
+            NameVisible: newColumnInstance.nameVisible,
+            Width: newColumnInstance.width,
+            Description: newColumnInstance.description,
+            Chosen: newColumnInstance.days || newColumnInstance.tasks,
+            Options: newColumnInstance.options,
+            TagColors: newColumnInstance.tagColors,
+            CheckboxColor: newColumnInstance.checkboxColor,
+            DoneTags: newColumnInstance.doneTags,
+            _instance: newColumnInstance
+          };
+          
+          setColumns((prev) => [...prev, compatibleColumn]);
+          
+          // Оновлюємо порядок
+          const newOrder = columns.filter(c => c.ColumnId !== 'days').map(c => c.ColumnId);
+          newOrder.push(newColumnInstance.id);
+          await updateColumnsOrder(newOrder);
+          
           setTableData((prev) => ({
             ...prev,
             ...DAYS.reduce(
@@ -175,7 +240,7 @@ export const useTableLogic = () => {
                 ...acc,
                 [day]: {
                   ...prev[day],
-                  [result.data.ColumnId]: type !== 'tasktable' ? '' : undefined,
+                  [newColumnInstance.id]: type !== 'tasktable' && type !== 'todo' ? '' : undefined,
                 },
               }),
               {}
@@ -186,13 +251,54 @@ export const useTableLogic = () => {
         handleError('Failed to create column:', err);
       }
     },
-    [setColumns, setTableData]
+    [columns, setColumns, setTableData]
   );
 
   const handleCellChange = useCallback(
     async (day, columnId, value) => {
-      const column = columns.find((col) => col.ColumnId === columnId);
-      if (!column || column.Type === 'tasktable') return;
+      const column = columns.find((col) => col.ColumnId === columnId || col._instance?.id === columnId);
+      if (!column) return;
+
+      // Окремий обробник для Todo колонок
+      if (column.Type === 'todo') {
+        if (!column._instance) return;
+        
+        // Оновлюємо _instance.tasks
+        column._instance.tasks = value;
+        
+        // Зберігаємо в БД
+        try {
+          await updateColumn(column._instance.toJSON());
+          
+          // Оновлюємо стан з збереженням _instance та правильним форматом
+          setColumns((prev) =>
+            prev.map((col) => {
+              if (col.ColumnId === columnId || col._instance?.id === columnId) {
+                return {
+                  ColumnId: column._instance.id,
+                  Type: column._instance.type,
+                  Name: column._instance.description || 'Column',
+                  EmojiIcon: column._instance.emojiIcon,
+                  NameVisible: column._instance.nameVisible,
+                  Width: column._instance.width,
+                  Description: column._instance.description,
+                  Chosen: column._instance.tasks,
+                  Options: column._instance.options,
+                  TagColors: column._instance.tagColors,
+                  _instance: column._instance
+                };
+              }
+              return col;
+            })
+          );
+        } catch (err) {
+          handleError('Failed to update todo column:', err);
+        }
+        return;
+      }
+
+      // Для TaskTable взагалі не обробляємо тут (є окремий handleChangeOptions)
+      if (column.Type === 'tasktable') return;
 
       // Нормалізуємо значення для чекбокса
       const normalizedValue = column.Type === 'checkbox' ? !!value : value;
@@ -203,25 +309,54 @@ export const useTableLogic = () => {
         [day]: { ...prev[day], [columnId]: normalizedValue },
       }));
 
-      const updatedColumn = {
-        ...column,
-        Chosen: {
-          ...(column.Chosen || {}),
-          [day]: normalizedValue,
-        },
-      };
-
       try {
-        await updateColumn(updatedColumn);
-        setColumns((prev) =>
-          prev.map((col) => (col.ColumnId === columnId ? updatedColumn : col))
-        );
+        // Якщо є екземпляр класу
+        if (column._instance && column._instance.days) {
+          column._instance.days[day] = normalizedValue;
+          await updateColumn(column._instance.toJSON());
+          
+          const updatedColumn = {
+            ...column,
+            Chosen: { ...(column.Chosen || {}), [day]: normalizedValue },
+            _instance: column._instance // Зберігаємо посилання на оновлений екземпляр
+          };
+          setColumns((prev) =>
+            prev.map((col) => (col.ColumnId === columnId || col._instance?.id === columnId) ? updatedColumn : col)
+          );
+        } else {
+          // Старий формат
+          const updatedColumn = {
+            ...column,
+            Chosen: {
+              ...(column.Chosen || {}),
+              [day]: normalizedValue,
+            },
+          };
+          
+          const columnData = {
+            id: column.ColumnId,
+            type: column.Type,
+            emojiIcon: column.EmojiIcon,
+            width: column.Width,
+            nameVisible: column.NameVisible,
+            description: column.Description,
+            days: updatedColumn.Chosen,
+            options: column.Options,
+            tagColors: column.TagColors,
+            checkboxColor: column.CheckboxColor,
+          };
+          
+          await updateColumn(columnData);
+          setColumns((prev) =>
+            prev.map((col) => (col.ColumnId === columnId) ? updatedColumn : col)
+          );
+        }
       } catch (err) {
         handleError('Update failed:', err);
         // Відкатуємо до попереднього значення
         setTableData((prev) => ({
           ...prev,
-          [day]: { ...prev[day], [columnId]: column.Chosen?.[day] || false },
+          [day]: { ...prev[day], [columnId]: column._instance?.days?.[day] ?? column.Chosen?.[day] ?? false },
         }));
       }
     },
@@ -230,7 +365,7 @@ export const useTableLogic = () => {
 
   const handleAddTask = useCallback(
     async (columnId, taskText) => {
-      const column = columns.find((col) => col.ColumnId === columnId);
+      const column = columns.find((col) => col.ColumnId === columnId || col._instance?.id === columnId);
       if (!column || column.Type !== 'tasktable') return;
 
       const updatedOptions = [...(column.Options || []), taskText];
@@ -240,10 +375,35 @@ export const useTableLogic = () => {
         Options: updatedOptions,
         TagColors: updatedTagColors,
       };
+      
       try {
-        await updateColumn(updatedColumn);
+        // Якщо є екземпляр класу
+        if (column._instance) {
+          column._instance.options = updatedOptions;
+          column._instance.tagColors = updatedTagColors;
+          await updateColumn(column._instance.toJSON());
+          
+          updatedColumn._instance = column._instance; // Зберігаємо посилання
+        } else {
+          // Старий формат
+          const columnData = {
+            id: column.ColumnId,
+            type: column.Type,
+            emojiIcon: column.EmojiIcon,
+            width: column.Width,
+            nameVisible: column.NameVisible,
+            description: column.Description,
+            days: column.Chosen,
+            options: updatedOptions,
+            tagColors: updatedTagColors,
+            checkboxColor: column.CheckboxColor,
+            doneTags: column.DoneTags,
+          };
+          await updateColumn(columnData);
+        }
+        
         setColumns((prev) =>
-          prev.map((col) => (col.ColumnId === columnId ? updatedColumn : col))
+          prev.map((col) => (col.ColumnId === columnId || col._instance?.id === columnId) ? updatedColumn : col)
         );
       } catch (err) {
         handleError('Update failed:', err);
@@ -255,7 +415,7 @@ export const useTableLogic = () => {
   const handleMoveColumn = useCallback(
     async (columnId, direction) => {
       const currentIndex = columns.findIndex(
-        (col) => col.ColumnId === columnId
+        (col) => col.ColumnId === columnId || col._instance?.id === columnId
       );
       if (
         (direction === 'up' && currentIndex <= 1) ||
@@ -270,11 +430,13 @@ export const useTableLogic = () => {
         newColumns[currentIndex],
       ];
       setColumns(newColumns);
-      const newColumnOrder = newColumns.map((col) => col.ColumnId);
+      const newColumnOrder = newColumns
+        .filter(col => col.ColumnId !== 'days')
+        .map((col) => col._instance?.id || col.ColumnId);
       setColumnOrder(newColumnOrder);
 
       try {
-        await settingsService.updateColumnOrder(newColumnOrder);
+        await updateColumnsOrder(newColumnOrder);
       } catch (err) {
         handleError('Failed to update column order:', err);
       }
@@ -292,19 +454,93 @@ export const useTableLogic = () => {
         );
         return;
       }
-      const column = columns.find((col) => col.ColumnId === columnId);
+      const column = columns.find((col) => col.ColumnId === columnId || col._instance?.id === columnId);
       if (!column) return;
+      
       const updatedColumn = { ...column, Width: width };
+      
       try {
-        await updateColumn(updatedColumn);
+        // Якщо є екземпляр класу
+        if (column._instance) {
+          column._instance.width = width;
+          await updateColumn(column._instance.toJSON());
+          
+          updatedColumn._instance = column._instance; // Зберігаємо посилання
+        } else {
+          // Старий формат
+          const columnData = {
+            id: column.ColumnId,
+            type: column.Type,
+            emojiIcon: column.EmojiIcon,
+            width: width,
+            nameVisible: column.NameVisible,
+            description: column.Description,
+            days: column.Chosen,
+            options: column.Options,
+            tagColors: column.TagColors,
+            checkboxColor: column.CheckboxColor,
+            doneTags: column.DoneTags,
+          };
+          await updateColumn(columnData);
+        }
+        
         setColumns((prev) =>
-          prev.map((col) => (col.ColumnId === columnId ? updatedColumn : col))
+          prev.map((col) => (col.ColumnId === columnId || col._instance?.id === columnId) ? updatedColumn : col)
         );
         document
           .querySelectorAll(`[data-column-id="${columnId}"]`)
           .forEach((element) => {
             element.style.width = `${width}px`;
           });
+      } catch (err) {
+        handleError('Update failed:', err);
+      }
+    },
+    [columns, setColumns]
+  );
+
+  const handleChangeOptions = useCallback(
+    async (columnId, options, tagColors, doneTags = []) => {
+      const column = columns.find((col) => col.ColumnId === columnId || col._instance?.id === columnId);
+      if (!column) return;
+
+      const updatedColumn = {
+        ...column,
+        Options: options,
+        TagColors: tagColors,
+        DoneTags: doneTags,
+      };
+
+      try {
+        // Якщо є екземпляр класу
+        if (column._instance) {
+          column._instance.options = options;
+          column._instance.tagColors = tagColors;
+          column._instance.doneTags = doneTags;
+          await updateColumn(column._instance.toJSON());
+          
+          updatedColumn._instance = column._instance; // Зберігаємо посилання
+        } else {
+          // Старий формат
+          const columnData = {
+            id: column.ColumnId,
+            type: column.Type,
+            emojiIcon: column.EmojiIcon,
+            width: column.Width,
+            nameVisible: column.NameVisible,
+            description: column.Description,
+            days: column.Chosen,
+            options: options,
+            tagColors: tagColors,
+            checkboxColor: column.CheckboxColor,
+            doneTags: doneTags,
+          };
+          await updateColumn(columnData);
+        }
+
+        setColumns((prev) =>
+          prev.map((col) => (col.ColumnId === columnId || col._instance?.id === columnId) ? updatedColumn : col)
+        );
       } catch (err) {
         handleError('Update failed:', err);
       }
@@ -330,6 +566,7 @@ export const useTableLogic = () => {
     handleAddTask,
     handleMoveColumn,
     handleChangeWidth,
+    handleChangeOptions,
   };
 };
 
@@ -430,7 +667,7 @@ export const RenderCell = ({
   const props = {
     value:
       column.Type === 'todo'
-        ? column.Chosen?.global || []
+        ? column.Chosen || []
         : tableData[day]?.[column.ColumnId] || '',
     column,
     onChange: (value) =>

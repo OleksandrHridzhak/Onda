@@ -26,6 +26,7 @@ const Table = () => {
     handleAddTask,
     handleMoveColumn,
     handleChangeWidth,
+    handleChangeOptions,
   } = useTableLogic();
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns);
@@ -171,7 +172,7 @@ const Table = () => {
                       tableData={tableData}
                       darkMode={darkMode}
                       handleCellChange={handleCellChange}
-                      handleChangeOptions={columnMenuLogic.handleChangeOptions}
+                      handleChangeOptions={handleChangeOptions}
                     />
                   ))}
                 </tr>
