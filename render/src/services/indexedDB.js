@@ -68,8 +68,8 @@ const initialWeekBody = [
 ];
 
 // Ініціалізація бази даних
-export const dbPromise = openDB('ondaDB', 1, {
-  upgrade(db) {
+export const dbPromise = openDB('ondaDB', 2, {
+  upgrade(db, oldVersion) {
     if (!db.objectStoreNames.contains('settings')) {
       db.createObjectStore('settings', { keyPath: 'id', autoIncrement: true });
     }
@@ -78,6 +78,13 @@ export const dbPromise = openDB('ondaDB', 1, {
     }
     if (!db.objectStoreNames.contains('calendar')) {
       db.createObjectStore('calendar', { keyPath: 'id', autoIncrement: true });
+    }
+    
+    // Нова версія: створюємо окреме сховище для колонок
+    if (oldVersion < 2) {
+      if (!db.objectStoreNames.contains('columns')) {
+        db.createObjectStore('columns', { keyPath: 'id' });
+      }
     }
   },
 });
@@ -220,6 +227,138 @@ export async function addNewColumn(columnType) {
 export async function deleteColumn(columnId) {
   try {
     const db = await dbPromise;
+    const tx = db.transaction('columns', 'readwrite');
+    const store = tx.objectStore('columns');
+
+    await store.delete(columnId);
+    await tx.done;
+
+    return { status: 'Column deleted', columnId };
+  } catch (error) {
+    console.error('Помилка при видаленні колонки:', error);
+    return { status: 'Error', message: error.message, columnId };
+  }
+}
+
+// Нові функції для роботи з окремими колонками
+
+// Отримати всі колонки
+export async function getAllColumns() {
+  try {
+    const db = await dbPromise;
+    const columns = await db.getAll('columns');
+    console.log('Завантажено колонок:', columns.length);
+    return columns;
+  } catch (error) {
+    console.error('Помилка при отриманні колонок:', error);
+    return [];
+  }
+}
+
+// Додати нову колонку
+export async function addColumn(columnData) {
+  try {
+    const db = await dbPromise;
+    await db.put('columns', columnData);
+    console.log('Колонку додано:', columnData.id);
+    return { status: true, data: columnData };
+  } catch (error) {
+    console.error('Помилка при додаванні колонки:', error);
+    return { status: false, message: error.message };
+  }
+}
+
+// Оновити колонку за id
+export async function updateColumnById(columnData) {
+  try {
+    const db = await dbPromise;
+    await db.put('columns', columnData);
+    console.log('Колонку оновлено:', columnData.id);
+    return true;
+  } catch (error) {
+    console.error('Помилка при оновленні колонки:', error);
+    return false;
+  }
+}
+
+// Видалити колонку за id
+export async function deleteColumnById(columnId) {
+  try {
+    const db = await dbPromise;
+    await db.delete('columns', columnId);
+    console.log('Колонку видалено:', columnId);
+    return { status: 'Column deleted', columnId };
+  } catch (error) {
+    console.error('Помилка при видаленні колонки:', error);
+    return { status: 'Error', message: error.message, columnId };
+  }
+}
+
+// Міграція старих даних з weeks.body до окремих колонок
+export async function migrateColumnsToSeparateStorage() {
+  try {
+    const db = await dbPromise;
+    
+    // Перевіряємо чи вже є колонки
+    const existingColumns = await db.getAll('columns');
+    if (existingColumns.length > 0) {
+      console.log('Колонки вже мігровані');
+      return { status: 'Already migrated', count: existingColumns.length };
+    }
+
+    // Отримуємо старі дані з weeks
+    const tx = db.transaction('weeks', 'readonly');
+    const week = await tx.objectStore('weeks').get(1);
+    
+    if (!week || !week.body || week.body.length === 0) {
+      console.log('Немає даних для міграції');
+      return { status: 'No data to migrate' };
+    }
+
+    // Мігруємо кожну колонку
+    const txWrite = db.transaction('columns', 'readwrite');
+    const columnsStore = txWrite.objectStore('columns');
+    
+    for (const oldColumn of week.body) {
+      // Конвертуємо старі поля у нові
+      const newColumn = {
+        id: oldColumn.ColumnId || Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        type: oldColumn.Type,
+        emojiIcon: oldColumn.EmojiIcon,
+        width: oldColumn.Width,
+        nameVisible: oldColumn.NameVisible,
+        description: oldColumn.Description || '',
+        
+        // Конвертуємо Chosen у days або tasks
+        ...(oldColumn.Chosen && typeof oldColumn.Chosen === 'object' && !oldColumn.Chosen.global 
+          ? { days: oldColumn.Chosen }
+          : {}),
+        ...(oldColumn.Chosen?.global 
+          ? { tasks: oldColumn.Chosen.global }
+          : {}),
+          
+        // Інші поля
+        ...(oldColumn.Options ? { options: oldColumn.Options } : {}),
+        ...(oldColumn.TagColors ? { tagColors: oldColumn.TagColors } : {}),
+        ...(oldColumn.CheckboxColor ? { checkboxColor: oldColumn.CheckboxColor } : {}),
+        ...(oldColumn.DoneTags ? { doneTags: oldColumn.DoneTags } : {}),
+      };
+      
+      await columnsStore.put(newColumn);
+    }
+    
+    await txWrite.done;
+    console.log('Міграцію завершено:', week.body.length, 'колонок');
+    return { status: 'Migration completed', count: week.body.length };
+  } catch (error) {
+    console.error('Помилка при міграції:', error);
+    return { status: 'Error', message: error.message };
+  }
+}
+
+export async function deleteColumn_OLD(columnId) {
+  try {
+    const db = await dbPromise;
     const tx = db.transaction('weeks', 'readwrite');
     const store = tx.objectStore('weeks');
 
@@ -247,64 +386,81 @@ export async function deleteColumn(columnId) {
     return { status: 'Error', message: error.message, columnId };
   }
 }
+/**
+ * Експортує всі дані з IndexedDB
+ * @returns {Object} Об'єкт з weeks, calendar, settings, columns
+ */
 export async function exportData() {
   try {
     const db = await dbPromise;
-    const tx = db.transaction(['weeks', 'calendar', 'settings'], 'readonly');
+    const tx = db.transaction(['weeks', 'calendar', 'settings', 'columns'], 'readonly');
 
     const weeks = await tx.objectStore('weeks').getAll();
     const calendar = await tx.objectStore('calendar').getAll();
     const settings = await tx.objectStore('settings').getAll();
+    const columns = await tx.objectStore('columns').getAll();
 
-    const exportData = { weeks, calendar, settings };
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `onda-data-${new Date().toISOString()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-
-    return { status: 'Data exported' };
+    return { 
+      weeks, 
+      calendar, 
+      settings,
+      columns,
+      exportDate: new Date().toISOString(),
+      version: 2 // версія для майбутніх міграцій
+    };
   } catch (error) {
     console.error('Export failed:', error);
-    return { status: 'Error', message: error.message };
+    throw error;
   }
 }
-export async function importData(file) {
+
+/**
+ * Імпортує дані в IndexedDB
+ * @param {Object} data - Об'єкт з weeks, calendar, settings, columns
+ * @returns {Object} Результат операції
+ */
+export async function importData(data) {
   try {
-    const text = await file.text();
-    const importData = JSON.parse(text);
     const db = await dbPromise;
+    const stores = ['weeks', 'calendar', 'settings', 'columns'];
+    const tx = db.transaction(stores, 'readwrite');
 
-    const tx = db.transaction(['weeks', 'calendar', 'settings'], 'readwrite');
-
-    if (importData.weeks) {
+    // Імпорт weeks
+    if (data.weeks && data.weeks.length > 0) {
       const weeksStore = tx.objectStore('weeks');
-      for (const week of importData.weeks) {
+      for (const week of data.weeks) {
         await weeksStore.put(week);
       }
     }
 
-    if (importData.calendar) {
+    // Імпорт calendar
+    if (data.calendar && data.calendar.length > 0) {
       const calendarStore = tx.objectStore('calendar');
-      for (const cal of importData.calendar) {
+      for (const cal of data.calendar) {
         await calendarStore.put(cal);
       }
     }
 
-    if (importData.settings) {
+    // Імпорт settings
+    if (data.settings && data.settings.length > 0) {
       const settingsStore = tx.objectStore('settings');
-      for (const s of importData.settings) {
+      for (const s of data.settings) {
         await settingsStore.put(s);
       }
     }
 
+    // Імпорт columns
+    if (data.columns && data.columns.length > 0) {
+      const columnsStore = tx.objectStore('columns');
+      for (const col of data.columns) {
+        await columnsStore.put(col);
+      }
+    }
+
     await tx.done;
-    return { status: 'Data imported' };
+    return { status: 'success', message: 'Data imported successfully' };
   } catch (error) {
     console.error('Import failed:', error);
-    return { status: 'Error', message: error.message };
+    return { status: 'error', message: error.message };
   }
 }

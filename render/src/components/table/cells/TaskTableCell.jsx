@@ -11,7 +11,7 @@ export const TaskTableCell = ({ column, onChangeOptions }) => {
   useEffect(() => {
     setIncompleteTasks(column.Options || []);
     setCompletedTasks(column.DoneTags || []);
-  }, [column.Options, column.DoneTags]);
+  }, [column]);
 
   const handleToggleTask = (task, isCompleted) => {
     let updatedIncomplete = [...incompleteTasks];

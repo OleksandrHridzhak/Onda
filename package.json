@@ -11,7 +11,15 @@
     "dist": "npm run build:webpack && electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["planner", "task manager", "sprint", "weekly planning", "productivity", "tasks", "organization"],
+  "keywords": [
+    "planner",
+    "task manager",
+    "sprint",
+    "weekly planning",
+    "productivity",
+    "tasks",
+    "organization"
+  ],
   "author": "Oleksandr Hridzhak <3",
   "license": "Proprietary – non-commercial use only",
   "description": "Task management tool with sprint-based weekly planning.",

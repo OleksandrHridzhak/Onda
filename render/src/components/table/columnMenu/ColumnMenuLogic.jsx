@@ -1,52 +1,30 @@
 import { useCallback } from 'react';
-import { deleteColumn, updateColumn } from '../../../services/indexedDB';
-
-const electronAPI = window.electronAPI || {
-  changeColumn: async () => {},
-  deleteComponent: async () => ({ status: false }),
-};
+import { deleteColumn } from '../../../services/columnsDB';
+import { useColumnOperations } from '../hooks/useColumnOperations';
+import { DAYS } from '../hooks/useColumnsData';
 
 const handleError = (message, error) => {
   console.error(message, error);
 };
 
-// Хук для логіки меню стовпців
-export const useColumnMenuLogic = (columns, setColumns) => {
-  const updateBackend = useCallback(
-    async (columnId, updates) => {
-      let updatedColumn;
-      setColumns((prev) => {
-        const original = prev.find((col) => col.ColumnId === columnId);
-        if (!original) return prev;
-        updatedColumn = { ...original, ...updates };
-        return prev.map((col) =>
-          col.ColumnId === columnId ? updatedColumn : col
-        );
-      });
-
-      try {
-        await updateColumn(updatedColumn);
-        return { status: 'Success', data: updatedColumn };
-      } catch (err) {
-        handleError('Update failed:', err);
-        // Откат
-        setColumns((prev) =>
-          prev.map((col) =>
-            col.ColumnId === columnId ? { ...col, ...updates } : col
-          )
-        );
-        return { status: 'Error', error: err.message };
-      }
-    },
-    [setColumns]
-  );
+/**
+ * Хук для логіки меню колонок
+ * Забезпечує операції оновлення, видалення та модифікації колонок
+ */
+export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
+  const { updateProperties, clearColumn } = useColumnOperations(columns, setColumns);
 
   const handleDeleteColumn = useCallback(
     async (columnId) => {
       try {
-        const result = await deleteColumn(columnId);
-        if (result.status) {
-          setColumns((prev) => prev.filter((col) => col.ColumnId !== columnId));
+        const column = columns.find(col => col.ColumnId === columnId || col._instance?.id === columnId);
+        const actualId = column?._instance?.id || columnId;
+        
+        const result = await deleteColumn(actualId);
+        if (result.status || result.status === 'Column deleted') {
+          setColumns((prev) => prev.filter((col) => 
+            col.ColumnId !== columnId && col._instance?.id !== actualId
+          ));
         }
         return result;
       } catch (err) {
@@ -54,53 +32,86 @@ export const useColumnMenuLogic = (columns, setColumns) => {
         return { status: 'Error', error: err.message };
       }
     },
-    [setColumns]
+    [columns, setColumns]
   );
 
   const handleRename = useCallback(
     async (columnId, newName) => {
-      return await updateBackend(columnId, { Name: newName });
+      return await updateProperties(columnId, { Name: newName });
     },
-    [updateBackend]
+    [updateProperties]
   );
 
   const handleChangeIcon = useCallback(
     (columnId, newIcon) => {
-      return updateBackend(columnId, { EmojiIcon: newIcon });
+      return updateProperties(columnId, { EmojiIcon: newIcon });
     },
-    [updateBackend]
+    [updateProperties]
   );
 
   const handleChangeDescription = useCallback(
     async (columnId, newDescription) => {
-      return await updateBackend(columnId, { Description: newDescription });
+      return await updateProperties(columnId, { Description: newDescription });
     },
-    [updateBackend]
+    [updateProperties]
   );
 
   const handleToggleTitleVisibility = useCallback(
     (columnId, showTitle) => {
-      return updateBackend(columnId, { NameVisible: showTitle });
+      return updateProperties(columnId, { NameVisible: showTitle });
     },
-    [updateBackend]
+    [updateProperties]
   );
 
   const handleChangeOptions = useCallback(
     (columnId, options, tagColors, doneTags = []) => {
-      return updateBackend(columnId, {
+      return updateProperties(columnId, {
         Options: options,
         TagColors: tagColors,
         DoneTags: doneTags,
       });
     },
-    [updateBackend]
+    [updateProperties]
   );
 
   const handleChangeCheckboxColor = useCallback(
     (columnId, color) => {
-      return updateBackend(columnId, { CheckboxColor: color });
+      return updateProperties(columnId, { CheckboxColor: color });
     },
-    [updateBackend]
+    [updateProperties]
+  );
+
+  const handleClearColumn = useCallback(
+    async (columnId) => {
+      console.log('handleClearColumn called for:', columnId);
+      
+      // Clear column data in database and update columns state
+      const result = await clearColumn(columnId);
+      console.log('clearColumn result:', result);
+      
+      // For DayBasedColumn types, also clear tableData
+      const column = columns.find(col => col.ColumnId === columnId);
+      console.log('Found column:', column);
+      
+      if (column && column.Type !== 'todo' && column.Type !== 'tasktable') {
+        console.log('Clearing tableData for DayBasedColumn');
+        // Clear tableData for DayBasedColumns (checkbox, multicheckbox, number, notes, tags, multiselect)
+        setTableData(prev => {
+          const newData = {...prev};
+          DAYS.forEach(day => {
+            if (newData[day]) {
+              newData[day][columnId] = '';
+            }
+          });
+          return newData;
+        });
+      } else {
+        console.log('Column type is todo or tasktable, or not found');
+      }
+      
+      return result;
+    },
+    [clearColumn, columns, setTableData]
   );
 
   return {
@@ -111,5 +122,6 @@ export const useColumnMenuLogic = (columns, setColumns) => {
     handleToggleTitleVisibility,
     handleChangeOptions,
     handleChangeCheckboxColor,
+    handleClearColumn,
   };
 };
