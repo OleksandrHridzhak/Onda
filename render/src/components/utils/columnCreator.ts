@@ -194,3 +194,19 @@ class TextBoxColumn extends DayBasedColumn {
         return true;
     }
 }
+
+/* Factory class for creating column instances from JSON */
+
+function ColumnFactory (json: Record<string, any>): BaseColumn {
+    switch (json.type) {
+        case 'checkbox':
+            return CheckBoxColumn.fromJSON(json)
+        case 'numberBox':
+            return NumberBoxColumn.fromJSON(json)
+        case 'textBox':
+            return TextBoxColumn.fromJSON(json)
+        default:
+            throw new Error(`Unknown column type: ${json.type}`)
+    }
+}
+
