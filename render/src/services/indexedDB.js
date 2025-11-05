@@ -386,64 +386,81 @@ export async function deleteColumn_OLD(columnId) {
     return { status: 'Error', message: error.message, columnId };
   }
 }
+/**
+ * Експортує всі дані з IndexedDB
+ * @returns {Object} Об'єкт з weeks, calendar, settings, columns
+ */
 export async function exportData() {
   try {
     const db = await dbPromise;
-    const tx = db.transaction(['weeks', 'calendar', 'settings'], 'readonly');
+    const tx = db.transaction(['weeks', 'calendar', 'settings', 'columns'], 'readonly');
 
     const weeks = await tx.objectStore('weeks').getAll();
     const calendar = await tx.objectStore('calendar').getAll();
     const settings = await tx.objectStore('settings').getAll();
+    const columns = await tx.objectStore('columns').getAll();
 
-    const exportData = { weeks, calendar, settings };
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `onda-data-${new Date().toISOString()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-
-    return { status: 'Data exported' };
+    return { 
+      weeks, 
+      calendar, 
+      settings,
+      columns,
+      exportDate: new Date().toISOString(),
+      version: 2 // версія для майбутніх міграцій
+    };
   } catch (error) {
     console.error('Export failed:', error);
-    return { status: 'Error', message: error.message };
+    throw error;
   }
 }
-export async function importData(file) {
+
+/**
+ * Імпортує дані в IndexedDB
+ * @param {Object} data - Об'єкт з weeks, calendar, settings, columns
+ * @returns {Object} Результат операції
+ */
+export async function importData(data) {
   try {
-    const text = await file.text();
-    const importData = JSON.parse(text);
     const db = await dbPromise;
+    const stores = ['weeks', 'calendar', 'settings', 'columns'];
+    const tx = db.transaction(stores, 'readwrite');
 
-    const tx = db.transaction(['weeks', 'calendar', 'settings'], 'readwrite');
-
-    if (importData.weeks) {
+    // Імпорт weeks
+    if (data.weeks && data.weeks.length > 0) {
       const weeksStore = tx.objectStore('weeks');
-      for (const week of importData.weeks) {
+      for (const week of data.weeks) {
         await weeksStore.put(week);
       }
     }
 
-    if (importData.calendar) {
+    // Імпорт calendar
+    if (data.calendar && data.calendar.length > 0) {
       const calendarStore = tx.objectStore('calendar');
-      for (const cal of importData.calendar) {
+      for (const cal of data.calendar) {
         await calendarStore.put(cal);
       }
     }
 
-    if (importData.settings) {
+    // Імпорт settings
+    if (data.settings && data.settings.length > 0) {
       const settingsStore = tx.objectStore('settings');
-      for (const s of importData.settings) {
+      for (const s of data.settings) {
         await settingsStore.put(s);
       }
     }
 
+    // Імпорт columns
+    if (data.columns && data.columns.length > 0) {
+      const columnsStore = tx.objectStore('columns');
+      for (const col of data.columns) {
+        await columnsStore.put(col);
+      }
+    }
+
     await tx.done;
-    return { status: 'Data imported' };
+    return { status: 'success', message: 'Data imported successfully' };
   } catch (error) {
     console.error('Import failed:', error);
-    return { status: 'Error', message: error.message };
+    return { status: 'error', message: error.message };
   }
 }

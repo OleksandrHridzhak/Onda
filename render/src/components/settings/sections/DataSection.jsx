@@ -1,15 +1,18 @@
 import { Download, Upload } from 'lucide-react';
 import SettingsTemplate from '../SettingsTemplate';
-import { useSelector } from 'react-redux';
 import { BubbleBtn } from '../../shared/BubbleBtn';
-import { settingsService } from '../../../services/settingsDB';
 import { exportData, importData } from '../../../services/indexedDB';
+import { useState } from 'react';
 
 export default function DataSection() {
-  const { theme } = useSelector((state) => state.theme);
+  const [status, setStatus] = useState('');
+
   const handleExportData = async () => {
     try {
+      setStatus('Exporting...');
       const data = await exportData();
+      
+      // Створюємо файл для скачування
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: 'application/json',
       });
@@ -21,8 +24,13 @@ export default function DataSection() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      
+      setStatus('✅ Export successful!');
+      setTimeout(() => setStatus(''), 3000);
     } catch (error) {
       console.error('Error exporting data:', error);
+      setStatus('❌ Export failed!');
+      setTimeout(() => setStatus(''), 3000);
     }
   };
 
@@ -31,19 +39,34 @@ export default function DataSection() {
       const file = event.target.files[0];
       if (!file) return;
 
+      setStatus('Importing...');
+
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
           const data = JSON.parse(e.target.result);
-          await importData(data);
-          window.location.reload();
+          const result = await importData(data);
+          
+          if (result.status === 'success') {
+            setStatus('✅ Import successful! Reloading...');
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          } else {
+            setStatus(`❌ Import failed: ${result.message}`);
+            setTimeout(() => setStatus(''), 3000);
+          }
         } catch (error) {
           console.error('Error parsing imported data:', error);
+          setStatus('❌ Invalid file format!');
+          setTimeout(() => setStatus(''), 3000);
         }
       };
       reader.readAsText(file);
     } catch (error) {
       console.error('Error importing data:', error);
+      setStatus('❌ Import failed!');
+      setTimeout(() => setStatus(''), 3000);
     }
   };
 
@@ -53,16 +76,30 @@ export default function DataSection() {
         <span className={`text-sm text-textTableValues`}>
           Export Data / Import Data
         </span>
-        <div className="flex flex-row  gap-2">
+        <div className="flex flex-row gap-2">
           <BubbleBtn onClick={handleExportData}>
-            <Upload className="w-4 h-4  mr-3" />
+            <Upload className="w-4 h-4 mr-3" />
             Export All Data
           </BubbleBtn>
-          <BubbleBtn onClick={handleImportData}>
-            <Download className="w-4 h-4  mr-3" />
+          
+          <BubbleBtn onClick={() => document.getElementById('import-file').click()}>
+            <Download className="w-4 h-4 mr-3" />
             Import Data
           </BubbleBtn>
+          
+          <input
+            id="import-file"
+            type="file"
+            accept=".json"
+            onChange={handleImportData}
+            style={{ display: 'none' }}
+          />
         </div>
+        {status && (
+          <span className={`text-sm ${status.includes('✅') ? 'text-green-500' : 'text-red-500'}`}>
+            {status}
+          </span>
+        )}
       </div>
     </SettingsTemplate>
   );
