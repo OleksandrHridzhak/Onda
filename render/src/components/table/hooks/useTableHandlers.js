@@ -27,7 +27,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
         
         if (result.status) {
           // Використовуємо екземпляр напряму
-          newColumnInstance.description = 'New Column';
+          newColumnInstance.name = 'New Column';
           
           setColumns((prev) => [...prev, newColumnInstance]);
           

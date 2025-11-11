@@ -6,8 +6,8 @@ export class TaskTableColumn extends BaseColumn {
 	doneTags: string[];
 	tagColors: Record<string, string>;
 
-	constructor(emojiIcon: string = 'ListTodo', width: number = 150, nameVisible: boolean = true, description: string = '', id?: string) {
-		super('tasktable', emojiIcon, width, nameVisible, description, id);
+	constructor(emojiIcon: string = 'ListTodo', width: number = 150, nameVisible: boolean = true, name: string = '', description: string = '', id?: string) {
+		super('tasktable', emojiIcon, width, nameVisible, name, description, id);
 		this.tasks = [];
 		this.options = ['Task 1', 'Task 2'];
 		this.doneTags = [];
@@ -62,6 +62,7 @@ export class TaskTableColumn extends BaseColumn {
 			json.emojiIcon,
 			json.width,
 			json.nameVisible,
+			json.name,
 			json.description,
 			json.id
 		);

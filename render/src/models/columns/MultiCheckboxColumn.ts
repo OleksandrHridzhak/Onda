@@ -4,8 +4,8 @@ export class MultiCheckboxColumn extends DayBasedColumn {
 	options: string[];
 	tagColors: Record<string, string>;
 
-	constructor(emojiIcon: string = 'Circle', width: number = 50, nameVisible: boolean = false, description: string = '', id?: string) {
-		super('multicheckbox', emojiIcon, width, nameVisible, description, id);
+	constructor(emojiIcon: string = 'Circle', width: number = 50, nameVisible: boolean = false, name: string = '', description: string = '', id?: string) {
+		super('multicheckbox', emojiIcon, width, nameVisible, name, description, id);
 		this.options = ['Task 1', 'Task 2'];
 		this.tagColors = {
 			'Task 1': 'blue',
@@ -38,6 +38,7 @@ export class MultiCheckboxColumn extends DayBasedColumn {
 			json.emojiIcon,
 			json.width,
 			json.nameVisible,
+			json.name,
 			json.description,
 			json.id
 		);

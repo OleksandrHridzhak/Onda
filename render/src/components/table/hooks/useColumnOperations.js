@@ -76,7 +76,7 @@ export const useColumnOperations = (columns, setColumns) => {
       return updateColumnData(columnId, (instance) => {
         // Мапінг legacy полів на поля класу для зворотної сумісності
         const fieldMapping = {
-          Name: 'description',
+          Name: 'name',
           EmojiIcon: 'emojiIcon',
           Width: 'width',
           NameVisible: 'nameVisible',

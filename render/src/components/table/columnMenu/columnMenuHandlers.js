@@ -85,7 +85,7 @@ export const handleSave = async (
 ) => {
   dispatch({ type: 'SET_SAVING', payload: true });
   try {
-    if (state.name !== column.description) {
+    if (state.name !== column.name) {
       await onRename(column.id, state.name);
     }
 
@@ -97,7 +97,7 @@ export const handleSave = async (
       await onChangeDescription(column.id, state.description);
     }
 
-    if (state.showTitle !== (column.descriptionVisible !== false)) {
+    if (state.showTitle !== (column.nameVisible !== false)) {
       await onToggleTitleVisibility(column.id, state.showTitle);
     }
 

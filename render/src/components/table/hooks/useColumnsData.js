@@ -49,7 +49,7 @@ export const useColumnsData = () => {
         const dayColumn = {
           id: 'days',
           type: 'days',
-          description: 'Day',
+          name: 'Day',
           emojiIcon: '',
           nameVisible: true,
         };
@@ -90,7 +90,7 @@ export const useColumnsData = () => {
         const dayColumn = {
           id: 'days',
           type: 'days',
-          description: 'Day',
+          name: 'Day',
           emojiIcon: '',
           nameVisible: true,
         };

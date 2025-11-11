@@ -22,7 +22,7 @@ const ColumnHeader = ({
   const [showMenu, setShowMenu] = useState(false);
   const style = column.width ? { width: `${column.width}px` } : {};
   const isEmptyHeader =
-    !column.emojiIcon && (column.nameVisible === false || !column.description);
+    !column.emojiIcon && (column.nameVisible === false || !column.name);
 
   const handleClose = () => {
     console.log('Menu closed');
@@ -52,11 +52,11 @@ const ColumnHeader = ({
               {getIconComponent(column.emojiIcon, 16)}
             </span>
           )}
-          {column.nameVisible !== false && column.description && (
+          {column.nameVisible !== false && column.name && (
             <span
               className={`truncate block text-textTableValues max-w-full`}
             >
-              {column.description}
+              {column.name}
             </span>
           )}
           {isEmptyHeader && <span className="opacity-0">∅</span>}

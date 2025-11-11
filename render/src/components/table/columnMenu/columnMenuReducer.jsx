@@ -1,9 +1,9 @@
 // columnMenuReducer.js
 export const initialState = (column) => ({
-  name: column.description,
+  name: column.name,
   selectedIcon: column.emojiIcon || '',
   description: column.description || '',
-  showTitle: column.descriptionVisible !== false,
+  showTitle: column.nameVisible !== false,
   options: column.options || [],
   doneTags: column.doneTags || [],
   optionColors: column.tagColors || {},
