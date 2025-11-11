@@ -20,9 +20,9 @@ const ColumnHeader = ({
   onChangeWidth,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const style = column.Width ? { width: `${column.Width}px` } : {};
+  const style = column.width ? { width: `${column.width}px` } : {};
   const isEmptyHeader =
-    !column.EmojiIcon && (column.NameVisible === false || !column.Name);
+    !column.emojiIcon && (column.nameVisible === false || !column.description);
 
   const handleClose = () => {
     console.log('Menu closed');
@@ -31,32 +31,32 @@ const ColumnHeader = ({
 
   return (
     <th
-      data-column-id={column.ColumnId}
+      data-column-id={column.id}
       className={`font-poppins px-3 py-3 text-left text-sm font-medium bg-tableHeader border-border text-textTableValues border-b border-r whitespace-nowrap overflow-hidden`}
       style={
-        column.ColumnId === 'days'
+        column.id === 'days'
           ? { width: '120px', minWidth: '120px', maxWidth: '120px' }
           : style
       }
     >
       <div
-        className={`flex items-center justify-between group cursor-pointer ${column.NameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
-        onClick={() => column.ColumnId !== 'days' && setShowMenu(true)}
+        className={`flex items-center justify-between group cursor-pointer ${column.nameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
+        onClick={() => column.id !== 'days' && setShowMenu(true)}
       >
         <div
-          className={`flex items-center ${column.NameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
-          data-tooltip-id={`tooltip-${column.ColumnId}`}
+          className={`flex items-center ${column.nameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
+          data-tooltip-id={`tooltip-${column.id}`}
         >
-          {column.EmojiIcon && (
-            <span className={column.NameVisible !== false ? 'mr-1' : ''}>
-              {getIconComponent(column.EmojiIcon, 16)}
+          {column.emojiIcon && (
+            <span className={column.nameVisible !== false ? 'mr-1' : ''}>
+              {getIconComponent(column.emojiIcon, 16)}
             </span>
           )}
-          {column.NameVisible !== false && column.Name && (
+          {column.nameVisible !== false && column.description && (
             <span
               className={`truncate block text-textTableValues max-w-full`}
             >
-              {column.Name}
+              {column.description}
             </span>
           )}
           {isEmptyHeader && <span className="opacity-0">∅</span>}

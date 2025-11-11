@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { updateColumn } from '../../../services/columnsDB';
-import { instanceToLegacy, applyLegacyUpdates, legacyToJSON } from '../../../models/columns/columnAdapter';
 
 const handleError = (message, error) => {
   console.error(message, error);
@@ -16,36 +15,25 @@ export const useColumnOperations = (columns, setColumns) => {
    */
   const updateColumnData = useCallback(
     async (columnId, updateFn) => {
-      const column = columns.find((col) => col.ColumnId === columnId || col._instance?.id === columnId);
+      const column = columns.find((col) => col.id === columnId);
       if (!column) {
         console.warn('Column not found:', columnId);
         return { status: 'Error', error: 'Column not found' };
       }
 
       try {
-        // Викликаємо функцію оновлення на _instance
-        if (column._instance) {
-          updateFn(column._instance);
-          await updateColumn(column._instance.toJSON());
-          
-          // Конвертуємо назад в legacy формат та оновлюємо стан
-          const updatedLegacy = instanceToLegacy(column._instance);
-          setColumns((prev) =>
-            prev.map((col) => 
-              (col.ColumnId === columnId || col._instance?.id === columnId) 
-                ? updatedLegacy 
-                : col
-            )
-          );
-          
-          return { status: 'Success', data: updatedLegacy };
-        } else {
-          // Fallback для старого формату (не повинно статися)
-          console.warn('Column without _instance:', columnId);
-          const jsonData = legacyToJSON(column);
-          await updateColumn(jsonData);
-          return { status: 'Success' };
-        }
+        // Викликаємо функцію оновлення на екземплярі
+        updateFn(column);
+        await updateColumn(column.toJSON());
+        
+        // Оновлюємо стан
+        setColumns((prev) =>
+          prev.map((col) => 
+            col.id === columnId ? column : col
+          )
+        );
+        
+        return { status: 'Success', data: column };
       } catch (err) {
         handleError('Failed to update column:', err);
         return { status: 'Error', error: err.message };
@@ -86,7 +74,26 @@ export const useColumnOperations = (columns, setColumns) => {
   const updateProperties = useCallback(
     async (columnId, updates) => {
       return updateColumnData(columnId, (instance) => {
-        applyLegacyUpdates(instance, updates);
+        // Мапінг legacy полів на поля класу для зворотної сумісності
+        const fieldMapping = {
+          Name: 'description',
+          EmojiIcon: 'emojiIcon',
+          Width: 'width',
+          NameVisible: 'nameVisible',
+          Description: 'description',
+          CheckboxColor: 'checkboxColor',
+          Options: 'options',
+          TagColors: 'tagColors',
+          DoneTags: 'doneTags'
+        };
+        
+        Object.entries(updates).forEach(([key, value]) => {
+          // Перевіряємо чи це legacy ключ
+          const instanceKey = fieldMapping[key] || key;
+          if (value !== undefined) {
+            instance[instanceKey] = value;
+          }
+        });
       });
     },
     [updateColumnData]

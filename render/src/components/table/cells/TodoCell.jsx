@@ -135,7 +135,7 @@ export const TodoCell = ({ value, column, onChange }) => {
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
                 className={`p-1 rounded-md ${
                   newCategory
-                    ? `${colorOptions.find((c) => c.name === column.TagColors[newCategory])?.bg} ${colorOptions.find((c) => c.name === column.TagColors[newCategory])?.text}`
+                    ? `${colorOptions.find((c) => c.name === column.tagColors[newCategory])?.bg} ${colorOptions.find((c) => c.name === column.tagColors[newCategory])?.text}`
                     : darkMode
                       ? 'bg-gray-600 text-gray-200'
                       : 'bg-gray-200 text-gray-700'
@@ -147,7 +147,7 @@ export const TodoCell = ({ value, column, onChange }) => {
                 <div
                   className={`absolute z-50 mt-2 right-0 w-40 ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}
                 >
-                  {column.Options.map((category) => (
+                  {column.options.map((category) => (
                     <button
                       key={category}
                       onClick={() => {
@@ -156,7 +156,7 @@ export const TodoCell = ({ value, column, onChange }) => {
                       }}
                       className={`w-full text-left px-3 py-2 text-xs font-medium ${
                         newCategory === category
-                          ? `${colorOptions.find((c) => c.name === column.TagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.TagColors[category])?.text}`
+                          ? `${colorOptions.find((c) => c.name === column.tagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.tagColors[category])?.text}`
                           : darkMode
                             ? 'hover:bg-gray-700 text-gray-200'
                             : 'hover:bg-gray-100 text-gray-700'
@@ -213,13 +213,13 @@ export const TodoCell = ({ value, column, onChange }) => {
             >
               All Todos
             </button>
-            {column.Options.map((category) => (
+            {column.options.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedFilterCategory(category)}
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                   selectedFilterCategory === category
-                    ? `${colorOptions.find((c) => c.name === column.TagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.TagColors[category])?.text}`
+                    ? `${colorOptions.find((c) => c.name === column.tagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.tagColors[category])?.text}`
                     : darkMode
                       ? 'bg-gray-600 text-gray-200'
                       : 'bg-gray-200 text-gray-700'
@@ -317,9 +317,9 @@ export const TodoCell = ({ value, column, onChange }) => {
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         colorOptions.find(
-                          (c) => c.name === column.TagColors[todo.category]
+                          (c) => c.name === column.tagColors[todo.category]
                         )?.bg
-                      } ${colorOptions.find((c) => c.name === column.TagColors[todo.category])?.text}`}
+                      } ${colorOptions.find((c) => c.name === column.tagColors[todo.category])?.text}`}
                     >
                       {todo.category}
                     </span>

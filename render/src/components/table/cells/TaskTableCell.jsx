@@ -4,13 +4,13 @@ import { getColorOptions } from '../../utils/colorOptions';
 export const TaskTableCell = ({ column, onChangeOptions }) => {
   const { themeMode } = useSelector((state) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
-  const [incompleteTasks, setIncompleteTasks] = useState(column.Options || []);
-  const [completedTasks, setCompletedTasks] = useState(column.DoneTags || []);
+  const [incompleteTasks, setIncompleteTasks] = useState(column.options || []);
+  const [completedTasks, setCompletedTasks] = useState(column.doneTags || []);
 
   const colorOptions = getColorOptions({ darkMode });
   useEffect(() => {
-    setIncompleteTasks(column.Options || []);
-    setCompletedTasks(column.DoneTags || []);
+    setIncompleteTasks(column.options || []);
+    setCompletedTasks(column.doneTags || []);
   }, [column]);
 
   const handleToggleTask = (task, isCompleted) => {
@@ -30,9 +30,9 @@ export const TaskTableCell = ({ column, onChangeOptions }) => {
     setIncompleteTasks(updatedIncomplete);
     setCompletedTasks(updatedCompleted);
     onChangeOptions(
-      column.ColumnId,
+      column.id,
       updatedIncomplete,
-      column.TagColors,
+      column.tagColors,
       updatedCompleted
     );
   };
@@ -80,7 +80,7 @@ export const TaskTableCell = ({ column, onChangeOptions }) => {
           </h3>
           <div className="flex flex-wrap gap-1">
             {completedTasks.map((task, index) => {
-              const color = column.TagColors[task] || 'blue';
+              const color = column.tagColors[task] || 'blue';
               const colorOption =
                 colorOptions.find((opt) => opt.name === color) ||
                 colorOptions[1];
