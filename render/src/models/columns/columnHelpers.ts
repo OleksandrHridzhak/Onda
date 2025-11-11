@@ -1,4 +1,4 @@
-import { BaseColumn, ColumnFactory, createColumn } from './index';
+import { BaseColumn, ColumnFactory } from './index';
 
 /**
  * Конвертує масив JSON-об'єктів колонок у масив екземплярів класів
