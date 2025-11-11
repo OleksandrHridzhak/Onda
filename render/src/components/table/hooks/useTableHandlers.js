@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { addColumn, updateColumnsOrder } from '../../../services/columnsDB';
-import { createColumn } from '../../utils/columnCreator';
-import { instanceToLegacy } from '../../utils/columnAdapter';
+import { createColumn } from '../../../models/columns/index';
+import { instanceToLegacy } from '../../../models/columns/columnAdapter';
 import { useColumnOperations } from './useColumnOperations';
 import { DAYS } from './useColumnsData';
 
