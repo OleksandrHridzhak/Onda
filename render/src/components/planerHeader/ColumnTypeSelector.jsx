@@ -55,7 +55,7 @@ const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
       bgColor: darkMode ? 'bg-purple-900' : 'bg-purple-50',
       hoverColor: darkMode ? 'hover:bg-purple-800' : 'hover:bg-purple-100',
     },
-    
+
     {
       id: 'text',
       label: 'Notes',

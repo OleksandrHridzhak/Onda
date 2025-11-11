@@ -9,7 +9,6 @@ const PlannerHeader = ({
   showColumnSelector,
   setShowColumnSelector,
 }) => {
-
   const widgetComponents = {
     PomodoroWidget,
     TimelineWidget,

@@ -5,11 +5,11 @@ const ipcWindowsHandlers = require('./api/ipcWindowsHandlers.js');
 
 require('dotenv').config();
 
-
-
-
 let mainWindow;
 
+/**
+ * Creates the main application window
+ */
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
@@ -23,7 +23,6 @@ function createWindow() {
       webSecurity: false,
     },
   });
-  
 
   console.log('env:', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
@@ -31,6 +30,15 @@ function createWindow() {
   } else {
     mainWindow.loadFile(path.join(__dirname, './render/build/index.html'));
   }
+}
+
+/**
+ * Initializes cron jobs for scheduled tasks
+ * Currently placeholder - implement as needed
+ */
+function initCronJobs() {
+  // TODO: Add cron job implementations if needed
+  console.log('Cron jobs initialized');
 }
 
 // Enable global shortcuts

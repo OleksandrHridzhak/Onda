@@ -3,9 +3,8 @@ export const InputText = ({
   value,
   darkMode = false,
   placeholder = '',
-  width = 'full', 
+  width = 'full',
 }) => {
-
   const widthClass = width === 'full' ? 'w-full' : `w-[${width}]`;
 
   return (

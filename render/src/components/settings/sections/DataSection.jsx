@@ -11,7 +11,7 @@ export default function DataSection() {
     try {
       setStatus('Exporting...');
       const data = await exportData();
-      
+
       // Створюємо файл для скачування
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: 'application/json',
@@ -24,7 +24,7 @@ export default function DataSection() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       setStatus('✅ Export successful!');
       setTimeout(() => setStatus(''), 3000);
     } catch (error) {
@@ -46,7 +46,7 @@ export default function DataSection() {
         try {
           const data = JSON.parse(e.target.result);
           const result = await importData(data);
-          
+
           if (result.status === 'success') {
             setStatus('✅ Import successful! Reloading...');
             setTimeout(() => {
@@ -81,12 +81,14 @@ export default function DataSection() {
             <Upload className="w-4 h-4 mr-3" />
             Export All Data
           </BubbleBtn>
-          
-          <BubbleBtn onClick={() => document.getElementById('import-file').click()}>
+
+          <BubbleBtn
+            onClick={() => document.getElementById('import-file').click()}
+          >
             <Download className="w-4 h-4 mr-3" />
             Import Data
           </BubbleBtn>
-          
+
           <input
             id="import-file"
             type="file"
@@ -96,7 +98,9 @@ export default function DataSection() {
           />
         </div>
         {status && (
-          <span className={`text-sm ${status.includes('✅') ? 'text-green-500' : 'text-red-500'}`}>
+          <span
+            className={`text-sm ${status.includes('✅') ? 'text-green-500' : 'text-red-500'}`}
+          >
             {status}
           </span>
         )}

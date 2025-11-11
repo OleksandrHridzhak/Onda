@@ -9,7 +9,7 @@
  */
 export const instanceToLegacy = (instance) => {
   if (!instance) return null;
-  
+
   return {
     ColumnId: instance.id,
     Type: instance.type,
@@ -20,10 +20,10 @@ export const instanceToLegacy = (instance) => {
     Description: instance.description,
     Chosen: instance.days || instance.tasks,
     Options: instance.options ? [...instance.options] : undefined,
-    TagColors: instance.tagColors ? {...instance.tagColors} : undefined,
+    TagColors: instance.tagColors ? { ...instance.tagColors } : undefined,
     CheckboxColor: instance.checkboxColor,
     DoneTags: instance.doneTags ? [...instance.doneTags] : undefined,
-    _instance: instance
+    _instance: instance,
   };
 };
 
@@ -34,7 +34,7 @@ export const instanceToLegacy = (instance) => {
  */
 export const applyLegacyUpdates = (instance, updates) => {
   if (!instance) return;
-  
+
   // Мапінг legacy полів на поля класу
   const fieldMapping = {
     Name: 'description',
@@ -45,9 +45,9 @@ export const applyLegacyUpdates = (instance, updates) => {
     CheckboxColor: 'checkboxColor',
     Options: 'options',
     TagColors: 'tagColors',
-    DoneTags: 'doneTags'
+    DoneTags: 'doneTags',
   };
-  
+
   Object.entries(updates).forEach(([legacyKey, value]) => {
     const instanceKey = fieldMapping[legacyKey];
     if (instanceKey && value !== undefined) {
@@ -69,7 +69,10 @@ export const legacyToJSON = (legacyColumn) => {
     width: legacyColumn.Width,
     nameVisible: legacyColumn.NameVisible,
     description: legacyColumn.Description || legacyColumn.Name,
-    days: legacyColumn.Type === 'todo' || legacyColumn.Type === 'tasktable' ? undefined : legacyColumn.Chosen,
+    days:
+      legacyColumn.Type === 'todo' || legacyColumn.Type === 'tasktable'
+        ? undefined
+        : legacyColumn.Chosen,
     tasks: legacyColumn.Type === 'todo' ? legacyColumn.Chosen : undefined,
     options: legacyColumn.Options,
     tagColors: legacyColumn.TagColors,

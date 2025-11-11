@@ -50,7 +50,8 @@ export default function SettingsDashboard() {
   });
 
   useEffect(() => {
-    settingsService.getSettings()
+    settingsService
+      .getSettings()
       .then(({ data }) => {
         setSettings((prev) => ({
           ...prev,

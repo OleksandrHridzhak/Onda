@@ -1,7 +1,6 @@
 import { dbPromise } from './indexedDB.js';
 import { getSettingsTemplate } from '../components/utils/fileTemplates.js';
 
-
 const handleError = (err, message) => ({
   status: message,
   error: err.message,
@@ -24,12 +23,14 @@ export const settingsService = {
   async getSettings() {
     try {
       const db = await dbPromise;
-      const store = db.transaction('settings', 'readonly').objectStore('settings');
+      const store = db
+        .transaction('settings', 'readonly')
+        .objectStore('settings');
       const settings = await store.get(1);
 
       if (!settings) {
         this.initSettings();
-      };
+      }
       return { status: 'Settings fetched', data: settings };
     } catch (err) {
       return handleError(err, 'Error fetching settings');
@@ -42,7 +43,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplate();
+      const settings = (await store.get(1)) || getSettingsTemplate();
       const updated = { ...settings, ...newSettings };
 
       await store.put({ id: 1, ...updated });
@@ -60,7 +61,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplate();
+      const settings = (await store.get(1)) || getSettingsTemplate();
       settings.theme = { ...settings.theme, darkMode };
 
       await store.put({ id: 1, ...settings });
@@ -71,13 +72,19 @@ export const settingsService = {
       return handleError(err, 'Error switching theme');
     }
   },
-    async getTheme() {
+  async getTheme() {
     try {
       const db = await dbPromise;
-      const store = db.transaction('settings', 'readonly').objectStore('settings');
+      const store = db
+        .transaction('settings', 'readonly')
+        .objectStore('settings');
       const settings = await store.get(1);
 
-      if (!settings) return { status: 'Theme fetched', darkMode: getSettingsTemplate().theme.darkMode };
+      if (!settings)
+        return {
+          status: 'Theme fetched',
+          darkMode: getSettingsTemplate().theme.darkMode,
+        };
       return { status: 'Theme fetched', darkMode: settings.theme.darkMode };
     } catch (err) {
       return handleError(err, 'Error fetching theme');
@@ -90,7 +97,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplate();
+      const settings = (await store.get(1)) || getSettingsTemplate();
       settings.theme = { ...settings.theme, ...themeSettings };
 
       await store.put({ id: 1, ...settings });
@@ -109,7 +116,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplate();
+      const settings = (await store.get(1)) || getSettingsTemplate();
       settings[section] = { ...settings[section], ...newObject };
 
       await store.put({ id: 1, ...settings });
@@ -128,7 +135,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplate();
+      const settings = (await store.get(1)) || getSettingsTemplate();
       settings.table = { ...settings.table, ...tableSettings };
 
       await store.put({ id: 1, ...settings });
@@ -146,7 +153,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplate();
+      const settings = (await store.get(1)) || getSettingsTemplate();
       settings.ui = { ...settings.ui, ...uiSettings };
 
       await store.put({ id: 1, ...settings });
@@ -164,7 +171,7 @@ export const settingsService = {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
 
-      const settings = await store.get(1) || getSettingsTemplate();
+      const settings = (await store.get(1)) || getSettingsTemplate();
       settings.table.columnOrder = columnOrder;
 
       await store.put({ id: 1, ...settings });

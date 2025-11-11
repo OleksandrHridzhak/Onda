@@ -17,11 +17,12 @@ export const TimeWidget = () => {
 
     // перший рендер
     const date = new Date();
-    setTime(date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    setTime(
+      date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    );
 
     return () => clearInterval(intervalId);
   }, []);
-
 
   return (
     <h1 className={`font-poppins text-5xl text-textTableValues`}>{time}</h1>

@@ -2,7 +2,11 @@ import ToggleSwitch from '../ToggleSwitch';
 import SettingsTemplate from '../SettingsTemplate';
 import { useSelector } from 'react-redux';
 
-export default function UISection({ settings, onThemeChange, onAutoThemeChange }) {
+export default function UISection({
+  settings,
+  onThemeChange,
+  onAutoThemeChange,
+}) {
   const { mode } = useSelector((state) => state.newTheme);
   const darkTheme = mode === 'dark';
 

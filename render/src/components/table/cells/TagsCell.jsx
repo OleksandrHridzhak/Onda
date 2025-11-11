@@ -3,12 +3,7 @@ import { useRef } from 'react';
 import { getColorOptions } from '../../utils/colorOptions';
 import { useSelector } from 'react-redux';
 
-export const TagsCell = ({
-  value,
-  onChange,
-  options,
-  tagColors = {},
-}) => {
+export const TagsCell = ({ value, onChange, options, tagColors = {} }) => {
   const { themeMode } = useSelector((state) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
 

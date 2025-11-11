@@ -1,17 +1,32 @@
-const { app, Notification} = require('electron');
+const { app, Notification } = require('electron');
+
+/**
+ * IPC handlers for window management operations
+ */
 module.exports = {
+  /**
+   * Initializes IPC handlers for window operations
+   * @param {Electron.IpcMain} ipcMain - The IPC main process instance
+   * @param {Electron.BrowserWindow} mainWindow - The main application window
+   */
   init(ipcMain, mainWindow) {
-    // Window close handler
+    /**
+     * Hides the window (instead of closing)
+     */
     ipcMain.handle('window-close', () => {
       mainWindow.hide();
     });
 
-    //WIndow minimize handler
+    /**
+     * Minimizes the window
+     */
     ipcMain.handle('window-minimize', () => {
       mainWindow.minimize();
     });
 
-    // Window maximize handler OR restore WINDOW
+    /**
+     * Toggles window maximize/restore state
+     */
     ipcMain.handle('window-maximize', () => {
       if (mainWindow.isMaximized()) {
         mainWindow.restore();
@@ -20,15 +35,27 @@ module.exports = {
       }
     });
 
-    // Tab navigation handlers
+    /**
+     * Handles tab navigation
+     */
     ipcMain.on('next-tab', () => {
       mainWindow.webContents.send('next-tab');
     });
-    // Notification handler
+
+    /**
+     * Shows a system notification
+     * @param {Object} event - IPC event
+     * @param {Object} notification - Notification data
+     * @param {string} notification.title - Notification title
+     * @param {string} notification.body - Notification body
+     */
     ipcMain.handle('show-notification', (event, { title, body }) => {
       new Notification({ title, body }).show();
     });
-    // App close handler
+
+    /**
+     * Quits the application
+     */
     ipcMain.handle('close-app', () => {
       app.quit();
     });

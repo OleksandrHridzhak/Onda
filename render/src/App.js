@@ -23,7 +23,7 @@ function MainContent() {
     // First, try to apply theme from localStorage to prevent flash
     const savedTheme = localStorage.getItem('themeMode');
     const savedColor = localStorage.getItem('colorScheme');
-    
+
     if (savedTheme) {
       document.documentElement.setAttribute('data-theme-mode', savedTheme);
     }
@@ -44,7 +44,6 @@ function MainContent() {
       </Routes>
     </div>
   );
-  
 }
 
 function App() {

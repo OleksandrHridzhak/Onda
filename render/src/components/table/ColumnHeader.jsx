@@ -53,9 +53,7 @@ const ColumnHeader = ({
             </span>
           )}
           {column.NameVisible !== false && column.Name && (
-            <span
-              className={`truncate block text-textTableValues max-w-full`}
-            >
+            <span className={`truncate block text-textTableValues max-w-full`}>
               {column.Name}
             </span>
           )}

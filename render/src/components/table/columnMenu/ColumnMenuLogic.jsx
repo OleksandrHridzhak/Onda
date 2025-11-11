@@ -12,19 +12,27 @@ const handleError = (message, error) => {
  * Забезпечує операції оновлення, видалення та модифікації колонок
  */
 export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
-  const { updateProperties, clearColumn } = useColumnOperations(columns, setColumns);
+  const { updateProperties, clearColumn } = useColumnOperations(
+    columns,
+    setColumns
+  );
 
   const handleDeleteColumn = useCallback(
     async (columnId) => {
       try {
-        const column = columns.find(col => col.ColumnId === columnId || col._instance?.id === columnId);
+        const column = columns.find(
+          (col) => col.ColumnId === columnId || col._instance?.id === columnId
+        );
         const actualId = column?._instance?.id || columnId;
-        
+
         const result = await deleteColumn(actualId);
         if (result.status || result.status === 'Column deleted') {
-          setColumns((prev) => prev.filter((col) => 
-            col.ColumnId !== columnId && col._instance?.id !== actualId
-          ));
+          setColumns((prev) =>
+            prev.filter(
+              (col) =>
+                col.ColumnId !== columnId && col._instance?.id !== actualId
+            )
+          );
         }
         return result;
       } catch (err) {
@@ -84,21 +92,21 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
   const handleClearColumn = useCallback(
     async (columnId) => {
       console.log('handleClearColumn called for:', columnId);
-      
+
       // Clear column data in database and update columns state
       const result = await clearColumn(columnId);
       console.log('clearColumn result:', result);
-      
+
       // For DayBasedColumn types, also clear tableData
-      const column = columns.find(col => col.ColumnId === columnId);
+      const column = columns.find((col) => col.ColumnId === columnId);
       console.log('Found column:', column);
-      
+
       if (column && column.Type !== 'todo' && column.Type !== 'tasktable') {
         console.log('Clearing tableData for DayBasedColumn');
         // Clear tableData for DayBasedColumns (checkbox, multicheckbox, number, notes, tags, multiselect)
-        setTableData(prev => {
-          const newData = {...prev};
-          DAYS.forEach(day => {
+        setTableData((prev) => {
+          const newData = { ...prev };
+          DAYS.forEach((day) => {
             if (newData[day]) {
               newData[day][columnId] = '';
             }
@@ -108,7 +116,7 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
       } else {
         console.log('Column type is todo or tasktable, or not found');
       }
-      
+
       return result;
     },
     [clearColumn, columns, setTableData]

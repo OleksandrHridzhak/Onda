@@ -3,71 +3,69 @@ import { getColumnTemplates } from '../components/utils/fileTemplates';
 
 const initialWeekBody = [
   {
-    "ColumnId": "1755000000005",
-    "Type": "checkbox",
-    "Name": "Daily Standup",
-    "Description": "Attend team standup meeting",
-    "EmojiIcon": "User",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": true,
-      "Tuesday": false,
-      "Wednesday": true,
-      "Thursday": true,
-      "Friday": true,
-      "Saturday": false,
-      "Sunday": false
+    ColumnId: '1755000000005',
+    Type: 'checkbox',
+    Name: 'Daily Standup',
+    Description: 'Attend team standup meeting',
+    EmojiIcon: 'User',
+    NameVisible: false,
+    Chosen: {
+      Monday: true,
+      Tuesday: false,
+      Wednesday: true,
+      Thursday: true,
+      Friday: true,
+      Saturday: false,
+      Sunday: false,
     },
-    "Width": 50,
-    "CheckboxColor": "orange"
+    Width: 50,
+    CheckboxColor: 'orange',
   },
   {
-    "ColumnId": "1755000000009",
-    "Type": "numberbox",
-    "Name": "Client Calls",
-    "Description": "Hours spent on client calls",
-    "EmojiIcon": "Zap",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": "1",
-      "Tuesday": "2",
-      "Wednesday": "1.5",
-      "Thursday": "1",
-      "Friday": "0",
-      "Saturday": "0",
-      "Sunday": "0"
+    ColumnId: '1755000000009',
+    Type: 'numberbox',
+    Name: 'Client Calls',
+    Description: 'Hours spent on client calls',
+    EmojiIcon: 'Zap',
+    NameVisible: false,
+    Chosen: {
+      Monday: '1',
+      Tuesday: '2',
+      Wednesday: '1.5',
+      Thursday: '1',
+      Friday: '0',
+      Saturday: '0',
+      Sunday: '0',
     },
-    "Width": 60
+    Width: 60,
   },
   {
-    "ColumnId": "1755000000013",
-    "Type": "multicheckbox",
-    "Name": "Wellness Goals",
-    "Description": "Track wellness activities",
-    "EmojiIcon": "Leaf",
-    "NameVisible": false,
-    "Options": [
-      "Yoga",
-      "Running"
-    ],
-    "TagColors": {
-      "Yoga": "blue",
-      "Running": "green"
+    ColumnId: '1755000000013',
+    Type: 'multicheckbox',
+    Name: 'Wellness Goals',
+    Description: 'Track wellness activities',
+    EmojiIcon: 'Leaf',
+    NameVisible: false,
+    Options: ['Yoga', 'Running'],
+    TagColors: {
+      Yoga: 'blue',
+      Running: 'green',
     },
-    "Chosen": {
-      "Monday": "Yoga",
-      "Tuesday": "Running",
-      "Wednesday": "",
-      "Thursday": "Yoga",
-      "Friday": "",
-      "Saturday": "Running",
-      "Sunday": ""
+    Chosen: {
+      Monday: 'Yoga',
+      Tuesday: 'Running',
+      Wednesday: '',
+      Thursday: 'Yoga',
+      Friday: '',
+      Saturday: 'Running',
+      Sunday: '',
     },
-    "Width": 50
-  }
+    Width: 50,
+  },
 ];
 
 // Ініціалізація бази даних
+// Initialize IndexedDB with all necessary object stores
 export const dbPromise = openDB('ondaDB', 2, {
   upgrade(db, oldVersion) {
     if (!db.objectStoreNames.contains('settings')) {
@@ -79,8 +77,8 @@ export const dbPromise = openDB('ondaDB', 2, {
     if (!db.objectStoreNames.contains('calendar')) {
       db.createObjectStore('calendar', { keyPath: 'id', autoIncrement: true });
     }
-    
-    // Нова версія: створюємо окреме сховище для колонок
+
+    // Version 2: Create separate storage for columns
     if (oldVersion < 2) {
       if (!db.objectStoreNames.contains('columns')) {
         db.createObjectStore('columns', { keyPath: 'id' });
@@ -89,35 +87,41 @@ export const dbPromise = openDB('ondaDB', 2, {
   },
 });
 
-// Функція для ініціалізації єдиного тижня
+/**
+ * Initializes the single week entry in the database
+ * @throws {Error} If initialization fails
+ */
 export async function initWeek() {
   try {
     const db = await dbPromise;
     const tx = db.transaction('weeks', 'readwrite');
     const store = tx.objectStore('weeks');
 
-    // Перевіряємо, чи є вже тиждень
+    // Check if week already exists
     const existingWeek = await store.get(1);
     if (!existingWeek) {
-      // Додаємо тиждень із id: 1, якщо його немає
+      // Add week with id: 1 if it doesn't exist
       await store.put({
         id: 1,
         lastUpdated: new Date(),
         body: initialWeekBody,
       });
-      console.log('Тиждень ініціалізовано з ID: 1');
+      console.log('Week initialized with ID: 1');
     } else {
-      console.log('Тиждень уже існує:', existingWeek);
+      console.log('Week already exists:', existingWeek);
     }
 
     await tx.done;
   } catch (error) {
-    console.error('Помилка при ініціалізації тижня:', error);
+    console.error('Error initializing week:', error);
     throw error;
   }
 }
 
-// Функція для отримання тижня
+/**
+ * Retrieves the week data from the database
+ * @returns {Promise<Object>} Object containing status and week data
+ */
 export async function getWeek() {
   try {
     const db = await dbPromise;
@@ -148,7 +152,6 @@ export async function getWeek() {
   }
 }
 
-
 // Функція для редагування об’єкта в body за ColumnId
 export async function updateColumn(updatedColumn) {
   try {
@@ -165,7 +168,9 @@ export async function updateColumn(updatedColumn) {
     }
 
     // Знаходимо індекс блоку за ColumnId
-    const blockIndex = week.body.findIndex((block) => block.ColumnId === columnId);
+    const blockIndex = week.body.findIndex(
+      (block) => block.ColumnId === columnId
+    );
     if (blockIndex === -1) {
       console.log('Блок із ColumnId не знайдено:', columnId);
       await tx.done;
@@ -235,32 +240,37 @@ export async function deleteColumn(columnId) {
 
     return { status: 'Column deleted', columnId };
   } catch (error) {
-    console.error('Помилка при видаленні колонки:', error);
+    console.error('Error deleting column:', error);
     return { status: 'Error', message: error.message, columnId };
   }
 }
 
-// Нові функції для роботи з окремими колонками
-
-// Отримати всі колонки
+/**
+ * Retrieves all columns from the database
+ * @returns {Promise<Array>} Array of column objects
+ */
 export async function getAllColumns() {
   try {
     const db = await dbPromise;
     const columns = await db.getAll('columns');
-    console.log('Завантажено колонок:', columns.length);
+    console.log('Loaded columns:', columns.length);
     return columns;
   } catch (error) {
-    console.error('Помилка при отриманні колонок:', error);
+    console.error('Error fetching columns:', error);
     return [];
   }
 }
 
-// Додати нову колонку
+/**
+ * Adds a new column to the database
+ * @param {Object} columnData - Column data object
+ * @returns {Promise<Object>} Result object with status and data
+ */
 export async function addColumn(columnData) {
   try {
     const db = await dbPromise;
     await db.put('columns', columnData);
-    console.log('Колонку додано:', columnData.id);
+    console.log('Column added:', columnData.id);
     return { status: true, data: columnData };
   } catch (error) {
     console.error('Помилка при додаванні колонки:', error);
@@ -298,7 +308,7 @@ export async function deleteColumnById(columnId) {
 export async function migrateColumnsToSeparateStorage() {
   try {
     const db = await dbPromise;
-    
+
     // Перевіряємо чи вже є колонки
     const existingColumns = await db.getAll('columns');
     if (existingColumns.length > 0) {
@@ -309,7 +319,7 @@ export async function migrateColumnsToSeparateStorage() {
     // Отримуємо старі дані з weeks
     const tx = db.transaction('weeks', 'readonly');
     const week = await tx.objectStore('weeks').get(1);
-    
+
     if (!week || !week.body || week.body.length === 0) {
       console.log('Немає даних для міграції');
       return { status: 'No data to migrate' };
@@ -318,35 +328,39 @@ export async function migrateColumnsToSeparateStorage() {
     // Мігруємо кожну колонку
     const txWrite = db.transaction('columns', 'readwrite');
     const columnsStore = txWrite.objectStore('columns');
-    
+
     for (const oldColumn of week.body) {
       // Конвертуємо старі поля у нові
       const newColumn = {
-        id: oldColumn.ColumnId || Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        id:
+          oldColumn.ColumnId ||
+          Date.now().toString() + Math.random().toString(36).substr(2, 9),
         type: oldColumn.Type,
         emojiIcon: oldColumn.EmojiIcon,
         width: oldColumn.Width,
         nameVisible: oldColumn.NameVisible,
         description: oldColumn.Description || '',
-        
+
         // Конвертуємо Chosen у days або tasks
-        ...(oldColumn.Chosen && typeof oldColumn.Chosen === 'object' && !oldColumn.Chosen.global 
+        ...(oldColumn.Chosen &&
+        typeof oldColumn.Chosen === 'object' &&
+        !oldColumn.Chosen.global
           ? { days: oldColumn.Chosen }
           : {}),
-        ...(oldColumn.Chosen?.global 
-          ? { tasks: oldColumn.Chosen.global }
-          : {}),
-          
+        ...(oldColumn.Chosen?.global ? { tasks: oldColumn.Chosen.global } : {}),
+
         // Інші поля
         ...(oldColumn.Options ? { options: oldColumn.Options } : {}),
         ...(oldColumn.TagColors ? { tagColors: oldColumn.TagColors } : {}),
-        ...(oldColumn.CheckboxColor ? { checkboxColor: oldColumn.CheckboxColor } : {}),
+        ...(oldColumn.CheckboxColor
+          ? { checkboxColor: oldColumn.CheckboxColor }
+          : {}),
         ...(oldColumn.DoneTags ? { doneTags: oldColumn.DoneTags } : {}),
       };
-      
+
       await columnsStore.put(newColumn);
     }
-    
+
     await txWrite.done;
     console.log('Міграцію завершено:', week.body.length, 'колонок');
     return { status: 'Migration completed', count: week.body.length };
@@ -356,36 +370,7 @@ export async function migrateColumnsToSeparateStorage() {
   }
 }
 
-export async function deleteColumn_OLD(columnId) {
-  try {
-    const db = await dbPromise;
-    const tx = db.transaction('weeks', 'readwrite');
-    const store = tx.objectStore('weeks');
 
-    const week = await store.get(1);
-    if (!week) {
-      await tx.done;
-      return { status: 'Week not found', columnId };
-    }
-
-    const initialLength = week.body.length;
-    week.body = week.body.filter((item) => item.ColumnId !== columnId);
-
-    if (week.body.length === initialLength) {
-      await tx.done;
-      return { status: 'Component not found', columnId };
-    }
-
-    week.lastUpdated = new Date();
-    await store.put(week);
-    await tx.done;
-
-    return { status: 'Component deleted', columnId };
-  } catch (error) {
-    console.error('Помилка при видаленні блоку:', error);
-    return { status: 'Error', message: error.message, columnId };
-  }
-}
 /**
  * Експортує всі дані з IndexedDB
  * @returns {Object} Об'єкт з weeks, calendar, settings, columns
@@ -393,20 +378,23 @@ export async function deleteColumn_OLD(columnId) {
 export async function exportData() {
   try {
     const db = await dbPromise;
-    const tx = db.transaction(['weeks', 'calendar', 'settings', 'columns'], 'readonly');
+    const tx = db.transaction(
+      ['weeks', 'calendar', 'settings', 'columns'],
+      'readonly'
+    );
 
     const weeks = await tx.objectStore('weeks').getAll();
     const calendar = await tx.objectStore('calendar').getAll();
     const settings = await tx.objectStore('settings').getAll();
     const columns = await tx.objectStore('columns').getAll();
 
-    return { 
-      weeks, 
-      calendar, 
+    return {
+      weeks,
+      calendar,
       settings,
       columns,
       exportDate: new Date().toISOString(),
-      version: 2 // версія для майбутніх міграцій
+      version: 2, // версія для майбутніх міграцій
     };
   } catch (error) {
     console.error('Export failed:', error);

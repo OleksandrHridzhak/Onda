@@ -27,7 +27,7 @@ const Sidebar = () => {
 
   return (
     <div
-className={`
+      className={`
   fixed bottom-0 w-full h-auto bg-background border-t border-border 
   flex flex-row items-center justify-center p-2 z-50
   md:relative md:w-20 md:h-screen md:flex-col md:items-center 

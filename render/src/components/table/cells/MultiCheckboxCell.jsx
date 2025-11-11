@@ -21,7 +21,7 @@ export const MultiCheckboxCell = ({
   const canvasRef = useRef(null);
 
   // Clean color palette with consistent order
-  
+
   const colorOptions = getCheckBoxColorOptions({ darkMode });
 
   // Fixed color order

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { 
-  getAllColumns, 
+import {
+  getAllColumns,
   migrateColumnsFromWeeks,
-  getColumnsOrder
+  getColumnsOrder,
 } from '../../../services/columnsDB';
 import { settingsService } from '../../../services/settingsDB';
 import { deserializeColumns } from '../../utils/columnHelpers';
@@ -35,16 +35,17 @@ export const useColumnsData = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // Міграція старих даних
         await migrateColumnsFromWeeks();
-        
+
         // Завантажуємо дані
-        const [columnsData, settingsResult, columnOrderData] = await Promise.all([
-          getAllColumns(),
-          settingsService.getSettings(),
-          getColumnsOrder()
-        ]);
+        const [columnsData, settingsResult, columnOrderData] =
+          await Promise.all([
+            getAllColumns(),
+            settingsService.getSettings(),
+            getColumnsOrder(),
+          ]);
 
         // Створюємо колонку "Day"
         const dayColumn = {
@@ -54,7 +55,7 @@ export const useColumnsData = () => {
           EmojiIcon: '',
           NameVisible: true,
         };
-        
+
         let fetchedColumns = [dayColumn];
 
         // Конвертуємо колонки з класів в legacy формат
@@ -65,7 +66,11 @@ export const useColumnsData = () => {
         }
 
         // Застосовуємо порядок колонок
-        fetchedColumns = applyColumnOrder(fetchedColumns, columnOrderData, settingsResult);
+        fetchedColumns = applyColumnOrder(
+          fetchedColumns,
+          columnOrderData,
+          settingsResult
+        );
 
         setColumns(fetchedColumns);
         setColumnOrder(fetchedColumns.map((col) => col.ColumnId));
@@ -85,7 +90,6 @@ export const useColumnsData = () => {
         // Ініціалізуємо дані таблиці
         const initialTableData = initializeTableData(fetchedColumns);
         setTableData(initialTableData);
-        
       } catch (err) {
         handleError('Error fetching data:', err);
         // Fallback до порожньої таблиці
@@ -102,7 +106,7 @@ export const useColumnsData = () => {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -122,21 +126,26 @@ export const useColumnsData = () => {
  */
 const applyColumnOrder = (columns, columnOrderData, settingsResult) => {
   const dayColumn = columns[0]; // 'days' завжди перший
-  
+
   if (columnOrderData && columnOrderData.length > 0) {
     const orderedColumns = [dayColumn];
-    columnOrderData.forEach(columnId => {
-      const col = columns.find(c => c.ColumnId === columnId || c._instance?.id === columnId);
+    columnOrderData.forEach((columnId) => {
+      const col = columns.find(
+        (c) => c.ColumnId === columnId || c._instance?.id === columnId
+      );
       if (col && col.ColumnId !== 'days') orderedColumns.push(col);
     });
-    
+
     // Додаємо колонки які не в порядку
-    columns.forEach(column => {
-      if (column.ColumnId !== 'days' && !orderedColumns.some(col => col.ColumnId === column.ColumnId)) {
+    columns.forEach((column) => {
+      if (
+        column.ColumnId !== 'days' &&
+        !orderedColumns.some((col) => col.ColumnId === column.ColumnId)
+      ) {
         orderedColumns.push(column);
       }
     });
-    
+
     return orderedColumns;
   } else if (
     settingsResult.status === 'Settings fetched' &&
@@ -145,16 +154,16 @@ const applyColumnOrder = (columns, columnOrderData, settingsResult) => {
     const orderedColumns = settingsResult.data.table.columnOrder
       .map((columnId) => columns.find((col) => col.ColumnId === columnId))
       .filter(Boolean);
-      
+
     columns.forEach((column) => {
       if (!orderedColumns.some((col) => col.ColumnId === column.ColumnId)) {
         orderedColumns.push(column);
       }
     });
-    
+
     return orderedColumns;
   }
-  
+
   return columns;
 };
 
@@ -164,13 +173,19 @@ const applyColumnOrder = (columns, columnOrderData, settingsResult) => {
 const initializeTableData = (columns) => {
   return DAYS.reduce((acc, day) => {
     acc[day] = columns.reduce((dayData, col) => {
-      if (col.ColumnId !== 'days' && col.Type !== 'tasktable' && col.Type !== 'todo') {
+      if (
+        col.ColumnId !== 'days' &&
+        col.Type !== 'tasktable' &&
+        col.Type !== 'todo'
+      ) {
         // Беремо дані з _instance.days або з Chosen
         const dayValue = col._instance?.days?.[day] ?? col.Chosen?.[day] ?? '';
-        
+
         dayData[col.ColumnId] =
           col.Type === 'multi-select' || col.Type === 'multicheckbox'
-            ? typeof dayValue === 'string' ? dayValue : ''
+            ? typeof dayValue === 'string'
+              ? dayValue
+              : ''
             : dayValue;
       }
       return dayData;

@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 import { updateColumn } from '../../../services/columnsDB';
-import { instanceToLegacy, applyLegacyUpdates, legacyToJSON } from '../../utils/columnAdapter';
+import {
+  instanceToLegacy,
+  applyLegacyUpdates,
+  legacyToJSON,
+} from '../../utils/columnAdapter';
 
 const handleError = (message, error) => {
   console.error(message, error);
@@ -10,13 +14,14 @@ const handleError = (message, error) => {
  * Хук для операцій оновлення колонок
  */
 export const useColumnOperations = (columns, setColumns) => {
-  
   /**
    * Оновлює колонку в БД та стані
    */
   const updateColumnData = useCallback(
     async (columnId, updateFn) => {
-      const column = columns.find((col) => col.ColumnId === columnId || col._instance?.id === columnId);
+      const column = columns.find(
+        (col) => col.ColumnId === columnId || col._instance?.id === columnId
+      );
       if (!column) {
         console.warn('Column not found:', columnId);
         return { status: 'Error', error: 'Column not found' };
@@ -27,17 +32,17 @@ export const useColumnOperations = (columns, setColumns) => {
         if (column._instance) {
           updateFn(column._instance);
           await updateColumn(column._instance.toJSON());
-          
+
           // Конвертуємо назад в legacy формат та оновлюємо стан
           const updatedLegacy = instanceToLegacy(column._instance);
           setColumns((prev) =>
-            prev.map((col) => 
-              (col.ColumnId === columnId || col._instance?.id === columnId) 
-                ? updatedLegacy 
+            prev.map((col) =>
+              col.ColumnId === columnId || col._instance?.id === columnId
+                ? updatedLegacy
                 : col
             )
           );
-          
+
           return { status: 'Success', data: updatedLegacy };
         } else {
           // Fallback для старого формату (не повинно статися)
@@ -99,32 +104,40 @@ export const useColumnOperations = (columns, setColumns) => {
     async (columnId) => {
       console.log('clearColumn called with columnId:', columnId);
       return updateColumnData(columnId, (instance) => {
-        console.log('clearColumn - instance type:', instance.type, 'instance:', instance);
-        
+        console.log(
+          'clearColumn - instance type:',
+          instance.type,
+          'instance:',
+          instance
+        );
+
         if (instance.type === 'tasktable' && instance.doneTags !== undefined) {
           // TaskTableColumn - повертаємо виконані назад у невиконані (перевіряємо ПЕРШИМ!)
           console.log('Clearing TaskTable - BEFORE:', {
             options: [...instance.options],
-            doneTags: [...instance.doneTags]
+            doneTags: [...instance.doneTags],
           });
           if (instance.doneTags && instance.doneTags.length > 0) {
-            instance.options = [...(instance.options || []), ...instance.doneTags];
+            instance.options = [
+              ...(instance.options || []),
+              ...instance.doneTags,
+            ];
             instance.doneTags = [];
           }
           console.log('Clearing TaskTable - AFTER:', {
             options: [...instance.options],
-            doneTags: [...instance.doneTags]
+            doneTags: [...instance.doneTags],
           });
         } else if (instance.days) {
           // DayBasedColumn (checkbox, numberbox, text, multi-select, multicheckbox)
           console.log('Clearing days for DayBasedColumn');
-          Object.keys(instance.days).forEach(day => {
+          Object.keys(instance.days).forEach((day) => {
             instance.days[day] = '';
           });
         } else if (instance.tasks !== undefined) {
           // TodoColumn - видаляємо тільки виконані
           console.log('Clearing completed tasks for TodoColumn');
-          instance.tasks = instance.tasks.filter(task => !task.completed);
+          instance.tasks = instance.tasks.filter((task) => !task.completed);
         }
       });
     },

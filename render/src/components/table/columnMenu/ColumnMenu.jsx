@@ -36,7 +36,8 @@ const ColumnMenu = ({
 }) => {
   const [state, dispatch] = useReducer(reducer, column, initialState);
   const menuRef = useRef(null);
-  const darkMode = document.documentElement.getAttribute('data-theme-mode') === 'dark';
+  const darkMode =
+    document.documentElement.getAttribute('data-theme-mode') === 'dark';
 
   useEffect(() => {
     dispatch({ type: 'RESET', payload: column });
@@ -130,7 +131,9 @@ const ColumnMenu = ({
                 <input
                   type="number"
                   value={state.width}
-                  onChange={(e) => handleWidthChange(dispatch, onChangeWidth, column, e)}
+                  onChange={(e) =>
+                    handleWidthChange(dispatch, onChangeWidth, column, e)
+                  }
                   min="0"
                   max="1000"
                   className={`w-full px-3 py-2.5 flex items-center text-sm border bg-transparent border-border text-text rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primaryColor`}
@@ -165,15 +168,37 @@ const ColumnMenu = ({
               setNewOption={(value) =>
                 dispatch({ type: 'SET_NEW_OPTION', payload: value })
               }
-              handleAddOption={() => handleAddOption(state, dispatch, column, onChangeOptions)}
+              handleAddOption={() =>
+                handleAddOption(state, dispatch, column, onChangeOptions)
+              }
               handleRemoveOption={(option) =>
-                handleRemoveOption(state, dispatch, column, onChangeOptions, option)
+                handleRemoveOption(
+                  state,
+                  dispatch,
+                  column,
+                  onChangeOptions,
+                  option
+                )
               }
               handleEditOption={(oldOption, newOption) =>
-                handleEditOption(state, dispatch, column, onChangeOptions, oldOption, newOption)
+                handleEditOption(
+                  state,
+                  dispatch,
+                  column,
+                  onChangeOptions,
+                  oldOption,
+                  newOption
+                )
               }
               handleColorChange={(option, color) =>
-                handleColorChange(state, dispatch, column, onChangeOptions, option, color)
+                handleColorChange(
+                  state,
+                  dispatch,
+                  column,
+                  onChangeOptions,
+                  option,
+                  color
+                )
               }
               optionColors={state.optionColors}
               darkMode={darkMode}
@@ -197,17 +222,21 @@ const ColumnMenu = ({
             />
           )}
           <div className="flex justify-between gap-2 mt-6">
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <BubbleBtn
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (window.confirm(`Are you sure you want to delete "${column.Name || 'this column'}"? This action cannot be undone.`)) {
+                  if (
+                    window.confirm(
+                      `Are you sure you want to delete "${column.Name || 'this column'}"? This action cannot be undone.`
+                    )
+                  ) {
                     handleDeleteColumn(column.ColumnId);
                     onClose();
                   }
                 }}
                 disabled={state.isSaving}
-                variant='delete'
+                variant="delete"
               >
                 Delete
               </BubbleBtn>
@@ -217,7 +246,7 @@ const ColumnMenu = ({
                   handleClearColumn(column.ColumnId);
                 }}
                 disabled={state.isSaving}
-                variant='clear'
+                variant="clear"
               >
                 Clear column
               </BubbleBtn>
@@ -240,7 +269,7 @@ const ColumnMenu = ({
                 );
               }}
               disabled={state.isSaving}
-              variant='standard'
+              variant="standard"
             >
               Save Changes
             </BubbleBtn>

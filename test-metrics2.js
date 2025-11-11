@@ -26,19 +26,27 @@ const fs = require('fs');
     let metrics, timestamp;
     try {
       await window.waitForLoadState('domcontentloaded');
-      metrics = await window.evaluate(() => window.electronAPI.collectMetrics());
+      metrics = await window.evaluate(() =>
+        window.electronAPI.collectMetrics()
+      );
       timestamp = Date.now();
       console.log(`✅ [${i + 1}] Metrics collected`);
     } catch (err) {
-      console.log(`⚠️ [${i + 1}] Context lost, catching new window... (${err.message})`);
+      console.log(
+        `⚠️ [${i + 1}] Context lost, catching new window... (${err.message})`
+      );
       window = await app.firstWindow();
       await window.waitForLoadState('domcontentloaded');
       try {
-        metrics = await window.evaluate(() => window.electronAPI.collectMetrics());
+        metrics = await window.evaluate(() =>
+          window.electronAPI.collectMetrics()
+        );
         timestamp = Date.now();
         console.log(`♻️ [${i + 1}] Metrics after reload`);
       } catch (err2) {
-        console.log(`❌ [${i + 1}] Failed after reload, skipping iteration (${err2.message})`);
+        console.log(
+          `❌ [${i + 1}] Failed after reload, skipping iteration (${err2.message})`
+        );
         continue;
       }
     }
@@ -46,18 +54,17 @@ const fs = require('fs');
     let cpuUser_ms_per_sec = '';
     let cpuSystem_ms_per_sec = '';
     if (prevMetrics) {
-      const deltaCpuUser = metrics.cpuUser - prevMetrics.cpuUser;       // µs
+      const deltaCpuUser = metrics.cpuUser - prevMetrics.cpuUser; // µs
       const deltaCpuSystem = metrics.cpuSystem - prevMetrics.cpuSystem; // µs
-      const deltaTime = (timestamp - prevTimestamp) / 1000;             // s
-      cpuUser_ms_per_sec = (deltaCpuUser / 1000 / deltaTime).toFixed(2);    // ms/s
-      cpuSystem_ms_per_sec = (deltaCpuSystem / 1000 / deltaTime).toFixed(2);// ms/s
+      const deltaTime = (timestamp - prevTimestamp) / 1000; // s
+      cpuUser_ms_per_sec = (deltaCpuUser / 1000 / deltaTime).toFixed(2); // ms/s
+      cpuSystem_ms_per_sec = (deltaCpuSystem / 1000 / deltaTime).toFixed(2); // ms/s
     }
 
     // Людиночитний підпис для рядка
-    const label =
-      prevMetrics
-        ? `sample ${i + 1} (ΔCPU user=${cpuUser_ms_per_sec} ms/s, ΔCPU sys=${cpuSystem_ms_per_sec} ms/s)`
-        : `sample ${i + 1} (baseline)`;
+    const label = prevMetrics
+      ? `sample ${i + 1} (ΔCPU user=${cpuUser_ms_per_sec} ms/s, ΔCPU sys=${cpuSystem_ms_per_sec} ms/s)`
+      : `sample ${i + 1} (baseline)`;
 
     const csvLine = `${label},${timestamp},${metrics.rss},${metrics.heapUsed},${metrics.heapTotal},${metrics.cpuUser},${metrics.cpuSystem},${cpuUser_ms_per_sec},${cpuSystem_ms_per_sec}\n`;
     fs.appendFileSync(filePath, csvLine);
@@ -70,7 +77,7 @@ const fs = require('fs');
     prevMetrics = metrics;
     prevTimestamp = timestamp;
 
-    if (i < 49) await new Promise(res => setTimeout(res, 1000));
+    if (i < 49) await new Promise((res) => setTimeout(res, 1000));
   }
 
   await app.close();

@@ -27,7 +27,9 @@ export const calendarService = {
   async getCalendar() {
     try {
       const db = await dbPromise;
-      const store = db.transaction('calendar', 'readonly').objectStore('calendar');
+      const store = db
+        .transaction('calendar', 'readonly')
+        .objectStore('calendar');
 
       let calendar = await store.get(1);
 
@@ -63,7 +65,9 @@ export const calendarService = {
         id: eventData.id || Date.now().toString(),
         isRepeating: eventData.isRepeating ?? false,
         repeatDays: eventData.isRepeating
-          ? Array.isArray(eventData.repeatDays) ? eventData.repeatDays : []
+          ? Array.isArray(eventData.repeatDays)
+            ? eventData.repeatDays
+            : []
           : [],
         repeatFrequency: eventData.isRepeating
           ? eventData.repeatFrequency || 'weekly'

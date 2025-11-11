@@ -15,7 +15,7 @@ module.exports = {
         textAccent: 'var(--text-accent)',
         textTableValues: 'var(--text-table-values)',
         textTableRealValues: 'var(--text-table-real-values)',
-        
+
         // Sidebar
         linkInactiveText: 'var(--link-inactive-text)',
         linkInactiveHoverBg: 'var(--link-inactive-hover-bg)',
@@ -24,16 +24,16 @@ module.exports = {
         toggleIcon: 'var(--toggle-icon)',
         hoverBg: 'var(--hover-bg)',
         sidebarToggleHoverBg: 'var(--sidebar-toggle-hover-bg)',
-        
+
         // Таблиці
         tableHeader: 'var(--table-header)',
         tableHeaderText: 'var(--table-header-text)',
         tableBodyBg: 'var(--table-body-bg)',
         tableSummaryText: 'var(--table-summary-text)',
-        
+
         // Налаштування
         settingsSectionSelectorBg: 'var(--settings-section-selector-bg)',
-        
+
         // Кнопки
         bubbleBtnStandard: 'var(--bubble-btn-standard)',
         bubbleBtnStandardHover: 'var(--bubble-btn-standard-hover)',

@@ -16,7 +16,13 @@ export const handleAddOption = (state, dispatch, column, onChangeOptions) => {
   }
 };
 
-export const handleRemoveOption = (state, dispatch, column, onChangeOptions, option) => {
+export const handleRemoveOption = (
+  state,
+  dispatch,
+  column,
+  onChangeOptions,
+  option
+) => {
   dispatch({ type: 'REMOVE_OPTION', payload: option });
   const isInOptions = state.options.includes(option);
   const isInDoneTags = state.doneTags.includes(option);
@@ -33,7 +39,14 @@ export const handleRemoveOption = (state, dispatch, column, onChangeOptions, opt
   }
 };
 
-export const handleEditOption = (state, dispatch, column, onChangeOptions, oldOption, newOption) => {
+export const handleEditOption = (
+  state,
+  dispatch,
+  column,
+  onChangeOptions,
+  oldOption,
+  newOption
+) => {
   dispatch({ type: 'EDIT_OPTION', payload: { oldOption, newOption } });
   const isInOptions = state.options.includes(oldOption);
   const isInDoneTags = state.doneTags.includes(oldOption);
@@ -60,7 +73,14 @@ export const handleEditOption = (state, dispatch, column, onChangeOptions, oldOp
   }
 };
 
-export const handleColorChange = (state, dispatch, column, onChangeOptions, option, color) => {
+export const handleColorChange = (
+  state,
+  dispatch,
+  column,
+  onChangeOptions,
+  option,
+  color
+) => {
   dispatch({ type: 'CHANGE_OPTION_COLOR', payload: { option, color } });
   onChangeOptions(
     column.ColumnId,

@@ -4,7 +4,6 @@ import { getColorOptions } from '../../utils/colorOptions';
 import { useSelector } from 'react-redux';
 import { Plus, Edit2, Check, Trash2, ListTodo } from 'lucide-react';
 
-
 export const TodoCell = ({ value, column, onChange }) => {
   const [todos, setTodos] = useState(value || []);
   const [newTodo, setNewTodo] = useState('');

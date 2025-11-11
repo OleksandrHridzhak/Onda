@@ -30,7 +30,6 @@ const themes = {
         clear: 'bg-gray-100 hover:bg-gray-200 text-gray-600',
       },
       background: 'bg-white',
-
     },
     dark: {
       background: 'bg-gray-900',

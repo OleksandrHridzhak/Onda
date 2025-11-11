@@ -37,11 +37,18 @@ export const useTableLogic = () => {
   } = useColumnsData();
 
   // Обробники операцій
-  const handlers = useTableHandlers(columns, setColumns, tableData, setTableData, setColumnOrder);
+  const handlers = useTableHandlers(
+    columns,
+    setColumns,
+    tableData,
+    setTableData,
+    setColumnOrder
+  );
 
   // Завантаження налаштувань
   useEffect(() => {
-    settingsService.getSettings()
+    settingsService
+      .getSettings()
       .then(({ data }) => {
         if (typeof data?.table?.showSummaryRow === 'boolean') {
           setShowSummaryRow(data.table.showSummaryRow);
@@ -103,7 +110,10 @@ export const calculateSummary = (column, tableData) => {
       (sum, day) => sum + (parseFloat(tableData[day]?.[column.ColumnId]) || 0),
       0
     );
-  } else if (column.Type === 'multi-select' || column.Type === 'multicheckbox') {
+  } else if (
+    column.Type === 'multi-select' ||
+    column.Type === 'multicheckbox'
+  ) {
     return DAYS.reduce((sum, day) => {
       const tags = tableData[day]?.[column.ColumnId];
       if (typeof tags === 'string' && tags.trim() !== '') {
@@ -137,7 +147,7 @@ export const RenderCell = ({
   const { theme, mode } = useSelector((state) => state.theme);
   const style = getWidthStyle(column);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-  
+
   const cellComponents = {
     checkbox: CheckboxCell,
     numberbox: NumberCell,
@@ -167,7 +177,13 @@ export const RenderCell = ({
 
   // Filler колонка
   if (column.Type === 'filler') {
-    return <td key={column.ColumnId} data-column-id={column.ColumnId} style={style} />;
+    return (
+      <td
+        key={column.ColumnId}
+        data-column-id={column.ColumnId}
+        style={style}
+      />
+    );
   }
 
   // Todo/TaskTable займають всі рядки, показуємо тільки в першому
@@ -220,11 +236,12 @@ export const RenderCell = ({
         ? { rowSpan: DAYS.length }
         : {})}
     >
-      <Component 
-        {...props} 
-        key={column.Type === 'tasktable' 
-          ? `${column.ColumnId}-${(column.Options || []).length}-${(column.DoneTags || []).length}`
-          : undefined
+      <Component
+        {...props}
+        key={
+          column.Type === 'tasktable'
+            ? `${column.ColumnId}-${(column.Options || []).length}-${(column.DoneTags || []).length}`
+            : undefined
         }
       />
     </td>

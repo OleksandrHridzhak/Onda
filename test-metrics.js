@@ -7,14 +7,19 @@ const fs = require('fs');
 
   const filePath = 'metrics.csv';
   if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, 'timestamp,rss,heapUsed,heapTotal,cpuUser,cpuSystem\n');
+    fs.writeFileSync(
+      filePath,
+      'timestamp,rss,heapUsed,heapTotal,cpuUser,cpuSystem\n'
+    );
   }
 
   for (let i = 0; i < 10; i++) {
-    const metrics = await window.evaluate(() => window.electronAPI.collectMetrics());
+    const metrics = await window.evaluate(() =>
+      window.electronAPI.collectMetrics()
+    );
     const csvLine = `${Date.now()},${metrics.rss},${metrics.heapUsed},${metrics.heapTotal},${metrics.cpuUser},${metrics.cpuSystem}\n`;
     fs.appendFileSync(filePath, csvLine);
-    if (i < 9) await new Promise(res => setTimeout(res, 1000));
+    if (i < 9) await new Promise((res) => setTimeout(res, 1000));
   }
 
   await app.close();

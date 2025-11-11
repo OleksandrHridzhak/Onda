@@ -21,4 +21,4 @@ const getSettingsTemplates = () => ({
   },
 });
 
-module.exports = {getSettingsTemplates };
+module.exports = { getSettingsTemplates };

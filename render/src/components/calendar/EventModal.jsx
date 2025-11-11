@@ -46,9 +46,7 @@ export default function EventModal({
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label
-                    className={`block text-sm text-textTableValues mb-1`}
-                  >
+                  <label className={`block text-sm text-textTableValues mb-1`}>
                     Start
                   </label>
                   <div className="flex items-center gap-2">
@@ -62,9 +60,7 @@ export default function EventModal({
                   </div>
                 </div>
                 <div>
-                  <label
-                    className={`block text-sm text-textTableValues mb-1`}
-                  >
+                  <label className={`block text-sm text-textTableValues mb-1`}>
                     End
                   </label>
                   <div className="flex items-center gap-2">
