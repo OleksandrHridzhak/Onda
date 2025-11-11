@@ -5,8 +5,8 @@ import {
   getColumnsOrder
 } from '../../../services/columnsDB';
 import { settingsService } from '../../../services/settingsDB';
-import { deserializeColumns } from '../../utils/columnHelpers';
-import { instanceToLegacy } from '../../utils/columnAdapter';
+import { deserializeColumns } from '../../../models/columns/columnHelpers';
+import { instanceToLegacy } from '../../../models/columns/columnAdapter';
 
 const handleError = (message, error) => {
   console.error(message, error);

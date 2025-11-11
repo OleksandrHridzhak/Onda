@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { updateColumn } from '../../../services/columnsDB';
-import { instanceToLegacy, applyLegacyUpdates, legacyToJSON } from '../../utils/columnAdapter';
+import { instanceToLegacy, applyLegacyUpdates, legacyToJSON } from '../../../models/columns/columnAdapter';
 
 const handleError = (message, error) => {
   console.error(message, error);
