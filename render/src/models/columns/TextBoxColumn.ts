@@ -1,8 +1,8 @@
 import { DayBasedColumn, Day } from './DayBasedColumn';
 
 export class TextBoxColumn extends DayBasedColumn {
-	constructor(emojiIcon: string = 'Star', width: number = 130, nameVisible: boolean = false, description: string = '', id?: string) {
-		super('text', emojiIcon, width, nameVisible, description, id);
+	constructor(emojiIcon: string = 'Star', width: number = 130, nameVisible: boolean = false, name: string = '', description: string = '', id?: string) {
+		super('text', emojiIcon, width, nameVisible, name, description, id);
 	}
 
 	static fromJSON(json: Record<string, any>): TextBoxColumn {
@@ -10,6 +10,7 @@ export class TextBoxColumn extends DayBasedColumn {
 			json.emojiIcon,
 			json.width,
 			json.nameVisible,
+			json.name,
 			json.description,
 			json.id
 		);

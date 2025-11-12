@@ -37,11 +37,11 @@ const Table = () => {
   const displayColumns = [
     ...columns,
     {
-      ColumnId: 'filler',
-      Type: 'filler',
-      Name: '',
-      EmojiIcon: '',
-      NameVisible: false,
+      id: 'filler',
+      type: 'filler',
+      description: '',
+      emojiIcon: '',
+      nameVisible: false,
     },
   ];
 
@@ -114,11 +114,11 @@ const Table = () => {
             <thead>
               <tr className={`border-border bg-tableHeader border-b`}>
                 {displayColumns.map((column) =>
-                  column.Type === 'filler' ? (
-                    <th key={column.ColumnId} style={getWidthStyle(column)} />
+                  column.type === 'filler' ? (
+                    <th key={column.id} style={getWidthStyle(column)} />
                   ) : (
                     <ColumnHeader
-                      key={column.ColumnId}
+                      key={column.id}
                       column={column}
                       onRename={columnMenuLogic.handleRename}
                       onRemove={columnMenuLogic.handleDeleteColumn}
@@ -134,16 +134,16 @@ const Table = () => {
                       onChangeCheckboxColor={
                         columnMenuLogic.handleChangeCheckboxColor
                       }
-                      onMoveUp={() => handleMoveColumn(column.ColumnId, 'up')}
+                      onMoveUp={() => handleMoveColumn(column.id, 'up')}
                       onMoveDown={() =>
-                        handleMoveColumn(column.ColumnId, 'down')
+                        handleMoveColumn(column.id, 'down')
                       }
                       canMoveUp={
-                        column.ColumnId !== 'days' &&
+                        column.id !== 'days' &&
                         columns.indexOf(column) > 1
                       }
                       canMoveDown={
-                        column.ColumnId !== 'days' &&
+                        column.id !== 'days' &&
                         columns.indexOf(column) < columns.length - 1
                       }
                       darkMode={mode === 'dark' ? true : false}
@@ -166,7 +166,7 @@ const Table = () => {
                 >
                   {displayColumns.map((column, index) => (
                     <RenderCell
-                      key={column.ColumnId}
+                      key={column.id}
                       day={day}
                       column={column}
                       columnIndex={index}
@@ -184,10 +184,10 @@ const Table = () => {
               <tfoot>
                 <tr className={`border-t bg-tableBodyBg border-border`}>
                   {displayColumns.map((column) => {
-                    if (column.Type === 'filler') {
+                    if (column.type === 'filler') {
                       return (
                         <td
-                          key={column.ColumnId}
+                          key={column.id}
                           className={`border-border `}
                           style={getWidthStyle(column)}
                         />
@@ -196,7 +196,7 @@ const Table = () => {
                     const summary = calculateSummary(column, tableData);
                     return (
                       <td
-                        key={column.ColumnId}
+                        key={column.id}
                         className={`px-4 py-2 text-center text-sm font-medium text-tableSummaryText border-border border-r`}
                         style={getWidthStyle(column)}
                       >

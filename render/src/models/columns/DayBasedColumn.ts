@@ -5,8 +5,8 @@ export type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | '
 export abstract class DayBasedColumn extends BaseColumn {
 	days: Record<Day, string>;
 
-	constructor(type: string, emojiIcon: string, width: number, nameVisible: boolean, description: string = '', id?: string) {
-		super(type, emojiIcon, width, nameVisible, description, id);
+	constructor(type: string, emojiIcon: string, width: number, nameVisible: boolean, name: string = '', description: string = '', id?: string) {
+		super(type, emojiIcon, width, nameVisible, name, description, id);
 		this.days = {
 			Monday: '',
 			Tuesday: '',

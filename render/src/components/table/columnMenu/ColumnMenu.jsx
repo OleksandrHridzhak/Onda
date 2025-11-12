@@ -155,10 +155,10 @@ const ColumnMenu = ({
             </div>
           </div>
           {['multi-select', 'todo', 'multicheckbox', 'tasktable'].includes(
-            column.Type
+            column.type
           ) && (
             <OptionsList
-              columnType={column.Type}
+              columnType={column.type}
               options={state.options}
               doneTags={state.doneTags}
               newOption={state.newOption}
@@ -183,7 +183,7 @@ const ColumnMenu = ({
               }
             />
           )}
-          {column.Type === 'checkbox' && (
+          {column.type === 'checkbox' && (
             <CheckboxColorPicker
               checkboxColor={state.checkboxColor}
               setCheckboxColor={(color) =>
@@ -201,8 +201,8 @@ const ColumnMenu = ({
               <BubbleBtn
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (window.confirm(`Are you sure you want to delete "${column.Name || 'this column'}"? This action cannot be undone.`)) {
-                    handleDeleteColumn(column.ColumnId);
+                  if (window.confirm(`Are you sure you want to delete "${column.description || 'this column'}"? This action cannot be undone.`)) {
+                    handleDeleteColumn(column.id);
                     onClose();
                   }
                 }}
@@ -214,7 +214,7 @@ const ColumnMenu = ({
               <BubbleBtn
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleClearColumn(column.ColumnId);
+                  handleClearColumn(column.id);
                 }}
                 disabled={state.isSaving}
                 variant='clear'

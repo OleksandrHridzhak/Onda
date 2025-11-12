@@ -84,41 +84,41 @@ export const useTableLogic = () => {
  * Повертає стилі ширини для колонки
  */
 export const getWidthStyle = (column) => {
-  if (column.Type === 'days') return { width: '120px', minWidth: '120px' };
-  if (column.Type === 'filler') return { width: 'auto', minWidth: '0px' };
-  return { width: `${column.Width}px`, minWidth: `${column.Width}px` };
+  if (column.type === 'days') return { width: '120px', minWidth: '120px' };
+  if (column.type === 'filler') return { width: 'auto', minWidth: '0px' };
+  return { width: `${column.width}px`, minWidth: `${column.width}px` };
 };
 
 /**
  * Обчислює сумарні значення для колонки
  */
 export const calculateSummary = (column, tableData) => {
-  if (column.Type === 'checkbox') {
+  if (column.type === 'checkbox') {
     return DAYS.reduce(
-      (sum, day) => sum + (tableData[day]?.[column.ColumnId] ? 1 : 0),
+      (sum, day) => sum + (tableData[day]?.[column.id] ? 1 : 0),
       0
     );
-  } else if (column.Type === 'numberbox') {
+  } else if (column.type === 'numberbox') {
     return DAYS.reduce(
-      (sum, day) => sum + (parseFloat(tableData[day]?.[column.ColumnId]) || 0),
+      (sum, day) => sum + (parseFloat(tableData[day]?.[column.id]) || 0),
       0
     );
-  } else if (column.Type === 'multi-select' || column.Type === 'multicheckbox') {
+  } else if (column.type === 'multi-select' || column.type === 'multicheckbox') {
     return DAYS.reduce((sum, day) => {
-      const tags = tableData[day]?.[column.ColumnId];
+      const tags = tableData[day]?.[column.id];
       if (typeof tags === 'string' && tags.trim() !== '') {
         return sum + tags.split(', ').filter((tag) => tag.trim() !== '').length;
       }
       return sum;
     }, 0);
-  } else if (column.Type === 'todo') {
-    const todos = column.Chosen || [];
+  } else if (column.type === 'todo') {
+    const todos = column.tasks || [];
     const completed = todos.filter((todo) => todo.completed).length;
     return `${completed}/${todos.length}`;
-  } else if (column.Type === 'tasktable') {
-    return `${column.DoneTags?.length || 0}/${(column.Options?.length || 0) + (column.DoneTags?.length || 0)}`;
+  } else if (column.type === 'tasktable') {
+    return `${column.doneTags?.length || 0}/${(column.options?.length || 0) + (column.doneTags?.length || 0)}`;
   }
-  return column.Type === 'days' ? '' : '-';
+  return column.type === 'days' ? '' : '-';
 };
 
 /**
@@ -149,11 +149,11 @@ export const RenderCell = ({
   };
 
   // Колонка "Day"
-  if (column.Type === 'days') {
+  if (column.type === 'days') {
     return (
       <td
-        key={column.ColumnId}
-        data-column-id={column.ColumnId}
+        key={column.id}
+        data-column-id={column.id}
         className={`px-4 py-3 text-sm font-medium text-textTableValues border-border border-r whitespace-nowrap`}
         style={style}
       >
@@ -166,64 +166,64 @@ export const RenderCell = ({
   }
 
   // Filler колонка
-  if (column.Type === 'filler') {
-    return <td key={column.ColumnId} data-column-id={column.ColumnId} style={style} />;
+  if (column.type === 'filler') {
+    return <td key={column.id} data-column-id={column.id} style={style} />;
   }
 
   // Todo/TaskTable займають всі рядки, показуємо тільки в першому
-  if ((column.Type === 'todo' || column.Type === 'tasktable') && rowIndex > 0) {
+  if ((column.type === 'todo' || column.type === 'tasktable') && rowIndex > 0) {
     return null;
   }
 
-  const Component = cellComponents[column.Type];
+  const Component = cellComponents[column.type];
   if (!Component) return null;
 
   const props = {
     value:
-      column.Type === 'todo'
-        ? column.Chosen || []
-        : tableData[day]?.[column.ColumnId] || '',
+      column.type === 'todo'
+        ? column.tasks || []
+        : tableData[day]?.[column.id] || '',
     column,
     onChange: (value) =>
       handleCellChange(
-        column.Type === 'todo' ? 'global' : day,
-        column.ColumnId,
+        column.type === 'todo' ? 'global' : day,
+        column.id,
         value
       ),
     darkMode,
-    ...(column.Type === 'checkbox' && {
-      checked: !!tableData[day]?.[column.ColumnId],
-      color: column.CheckboxColor || 'green',
+    ...(column.type === 'checkbox' && {
+      checked: !!tableData[day]?.[column.id],
+      color: column.checkboxColor || 'green',
     }),
-    ...(column.Type === 'multi-select' || column.Type === 'multicheckbox'
-      ? { options: column.Options || [], tagColors: column.TagColors || {} }
+    ...(column.type === 'multi-select' || column.type === 'multicheckbox'
+      ? { options: column.options || [], tagColors: column.tagColors || {} }
       : {}),
-    ...(column.Type === 'tasktable' && {
+    ...(column.type === 'tasktable' && {
       onChangeOptions: handleChangeOptions,
     }),
   };
 
   return (
     <td
-      key={column.ColumnId}
-      data-column-id={column.ColumnId}
+      key={column.id}
+      data-column-id={column.id}
       className={`px-2 py-3 text-sm border-border text-textTableRealValues border-r ${
-        column.Type === 'todo' || column.Type === 'tasktable' ? 'todo-cell' : ''
+        column.type === 'todo' || column.type === 'tasktable' ? 'todo-cell' : ''
       }`}
       style={{
         ...style,
-        ...(column.Type === 'todo' || column.Type === 'tasktable'
+        ...(column.type === 'todo' || column.type === 'tasktable'
           ? { verticalAlign: 'top' }
           : {}),
       }}
-      {...(column.Type === 'todo' || column.Type === 'tasktable'
+      {...(column.type === 'todo' || column.type === 'tasktable'
         ? { rowSpan: DAYS.length }
         : {})}
     >
       <Component 
         {...props} 
-        key={column.Type === 'tasktable' 
-          ? `${column.ColumnId}-${(column.Options || []).length}-${(column.DoneTags || []).length}`
+        key={column.type === 'tasktable' 
+          ? `${column.id}-${(column.options || []).length}-${(column.doneTags || []).length}`
           : undefined
         }
       />

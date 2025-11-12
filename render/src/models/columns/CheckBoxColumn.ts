@@ -3,8 +3,8 @@ import { DayBasedColumn, Day } from './DayBasedColumn';
 export class CheckBoxColumn extends DayBasedColumn {
 	checkboxColor: string;
 
-	constructor(emojiIcon: string = 'Star', width: number = 50, nameVisible: boolean = false, description: string = '', id?: string) {
-		super('checkbox', emojiIcon, width, nameVisible, description, id);
+	constructor(emojiIcon: string = 'Star', width: number = 50, nameVisible: boolean = false, name: string = '', description: string = '', id?: string) {
+		super('checkbox', emojiIcon, width, nameVisible, name, description, id);
 		this.checkboxColor = 'green';
 	}
 
@@ -13,6 +13,7 @@ export class CheckBoxColumn extends DayBasedColumn {
 			json.emojiIcon,
 			json.width,
 			json.nameVisible,
+			json.name,
 			json.description,
 			json.id
 		);

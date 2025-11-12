@@ -93,7 +93,7 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
       const column = columns.find(col => col.ColumnId === columnId);
       console.log('Found column:', column);
       
-      if (column && column.Type !== 'todo' && column.Type !== 'tasktable') {
+      if (column && column.type !== 'todo' && column.type !== 'tasktable') {
         console.log('Clearing tableData for DayBasedColumn');
         // Clear tableData for DayBasedColumns (checkbox, multicheckbox, number, notes, tags, multiselect)
         setTableData(prev => {

@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { addColumn, updateColumnsOrder } from '../../../services/columnsDB';
 import { createColumn } from '../../../models/columns/index';
-import { instanceToLegacy } from '../../../models/columns/columnAdapter';
 import { useColumnOperations } from './useColumnOperations';
 import { DAYS } from './useColumnsData';
 
@@ -27,13 +26,13 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
         const result = await addColumn(columnJson);
         
         if (result.status) {
-          const compatibleColumn = instanceToLegacy(newColumnInstance);
-          compatibleColumn.Name = 'New Column';
+          // Використовуємо екземпляр напряму
+          newColumnInstance.name = 'New Column';
           
-          setColumns((prev) => [...prev, compatibleColumn]);
+          setColumns((prev) => [...prev, newColumnInstance]);
           
           // Оновлюємо порядок колонок
-          const newOrder = columns.filter(c => c.ColumnId !== 'days').map(c => c.ColumnId);
+          const newOrder = columns.filter(c => c.id !== 'days').map(c => c.id);
           newOrder.push(newColumnInstance.id);
           await updateColumnsOrder(newOrder);
           
@@ -66,20 +65,20 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
    */
   const handleCellChange = useCallback(
     async (day, columnId, value) => {
-      const column = columns.find((col) => col.ColumnId === columnId || col._instance?.id === columnId);
+      const column = columns.find((col) => col.id === columnId);
       if (!column) return;
 
       // Todo колонки
-      if (column.Type === 'todo') {
+      if (column.type === 'todo') {
         await updateTasks(columnId, value);
         return;
       }
 
       // TaskTable - не обробляємо (є окремий handleChangeOptions)
-      if (column.Type === 'tasktable') return;
+      if (column.type === 'tasktable') return;
 
       // Нормалізуємо значення для чекбокса
-      const normalizedValue = column.Type === 'checkbox' ? !!value : value;
+      const normalizedValue = column.type === 'checkbox' ? !!value : value;
 
       // Миттєве оновлення UI
       setTableData((prev) => ({
@@ -93,7 +92,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
       } catch (err) {
         handleError('Update failed:', err);
         // Відкат
-        const oldValue = column._instance?.days?.[day] ?? column.Chosen?.[day] ?? false;
+        const oldValue = column.days?.[day] ?? false;
         setTableData((prev) => ({
           ...prev,
           [day]: { ...prev[day], [columnId]: oldValue },
@@ -108,11 +107,11 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
    */
   const handleAddTask = useCallback(
     async (columnId, taskText) => {
-      const column = columns.find((col) => col.ColumnId === columnId || col._instance?.id === columnId);
-      if (!column || column.Type !== 'tasktable') return;
+      const column = columns.find((col) => col.id === columnId);
+      if (!column || column.type !== 'tasktable') return;
 
-      const updatedOptions = [...(column.Options || []), taskText];
-      const updatedTagColors = { ...column.TagColors, [taskText]: 'blue' };
+      const updatedOptions = [...(column.options || []), taskText];
+      const updatedTagColors = { ...column.tagColors, [taskText]: 'blue' };
 
       await updateProperties(columnId, {
         Options: updatedOptions,
@@ -128,7 +127,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
   const handleMoveColumn = useCallback(
     async (columnId, direction) => {
       const currentIndex = columns.findIndex(
-        (col) => col.ColumnId === columnId || col._instance?.id === columnId
+        (col) => col.id === columnId
       );
       
       if (
@@ -148,8 +147,8 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
       setColumns(newColumns);
       
       const newColumnOrder = newColumns
-        .filter(col => col.ColumnId !== 'days')
-        .map((col) => col._instance?.id || col.ColumnId);
+        .filter(col => col.id !== 'days')
+        .map((col) => col.id);
       setColumnOrder(newColumnOrder);
 
       try {

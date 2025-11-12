@@ -1,17 +1,19 @@
 export abstract class BaseColumn {
 	id: string;
 	type: string;
+	name: string;
 	emojiIcon: string;
 	width: number;
 	nameVisible: boolean;
 	description: string;
 
-	constructor(type: string, emojiIcon: string, width: number, nameVisible: boolean, description: string = '', id?: string) {
+	constructor(type: string, emojiIcon: string, width: number, nameVisible: boolean, name: string = '', description: string = '', id?: string) {
 		this.id = id || Date.now().toString() + Math.random().toString(36).substr(2, 9);
 		this.type = type;
 		this.emojiIcon = emojiIcon;
 		this.width = width;
 		this.nameVisible = nameVisible;
+		this.name = name;
 		this.description = description;
 	}
 
@@ -33,13 +35,19 @@ export abstract class BaseColumn {
 		return true;
 	}
 
+	setName(name: string): boolean {
+		if (name === this.name) return false;
+		this.name = name;
+		return true;
+	}
+
 	setDescription(desc: string): boolean {
 		if (desc === this.description) return false;
 		this.description = desc;
 		return true;
 	}
 
-	update(params: Partial<Pick<BaseColumn, 'emojiIcon' | 'width' | 'nameVisible' | 'description'>>): boolean {
+	update(params: Partial<Pick<BaseColumn, 'emojiIcon' | 'width' | 'nameVisible' | 'name' | 'description'>>): boolean {
 		let changed = false;
 
 		if (params.emojiIcon !== undefined && params.emojiIcon !== this.emojiIcon) {
@@ -54,6 +62,10 @@ export abstract class BaseColumn {
 			this.nameVisible = params.nameVisible;
 			changed = true;
 		}
+		if (params.name !== undefined && params.name !== this.name) {
+			this.name = params.name;
+			changed = true;
+		}
 		if (params.description !== undefined && params.description !== this.description) {
 			this.description = params.description;
 			changed = true;
@@ -66,6 +78,7 @@ export abstract class BaseColumn {
 		return {
 			id: this.id,
 			type: this.type,
+			name: this.name,
 			emojiIcon: this.emojiIcon,
 			nameVisible: this.nameVisible,
 			description: this.description,

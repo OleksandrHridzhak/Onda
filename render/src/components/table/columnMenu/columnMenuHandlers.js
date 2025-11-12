@@ -8,7 +8,7 @@ export const handleAddOption = (state, dispatch, column, onChangeOptions) => {
     !state.doneTags.includes(state.newOption.trim())
   ) {
     onChangeOptions(
-      column.ColumnId,
+      column.id,
       [...state.options, state.newOption.trim()],
       { ...state.optionColors, [state.newOption.trim()]: 'blue' },
       state.doneTags
@@ -24,12 +24,12 @@ export const handleRemoveOption = (state, dispatch, column, onChangeOptions, opt
     const newOptions = state.options.filter((opt) => opt !== option);
     const newColors = { ...state.optionColors };
     delete newColors[option];
-    onChangeOptions(column.ColumnId, newOptions, newColors, state.doneTags);
+    onChangeOptions(column.id, newOptions, newColors, state.doneTags);
   } else if (isInDoneTags) {
     const newDoneTags = state.doneTags.filter((tag) => tag !== option);
     const newColors = { ...state.optionColors };
     delete newColors[option];
-    onChangeOptions(column.ColumnId, state.options, newColors, newDoneTags);
+    onChangeOptions(column.id, state.options, newColors, newDoneTags);
   }
 };
 
@@ -46,7 +46,7 @@ export const handleEditOption = (state, dispatch, column, onChangeOptions, oldOp
       [newOption]: state.optionColors[oldOption],
     };
     delete newColors[oldOption];
-    onChangeOptions(column.ColumnId, newOptions, newColors, state.doneTags);
+    onChangeOptions(column.id, newOptions, newColors, state.doneTags);
   } else if (isInDoneTags) {
     const newDoneTags = state.doneTags.map((tag) =>
       tag === oldOption ? newOption : tag
@@ -56,14 +56,14 @@ export const handleEditOption = (state, dispatch, column, onChangeOptions, oldOp
       [newOption]: state.optionColors[oldOption],
     };
     delete newColors[oldOption];
-    onChangeOptions(column.ColumnId, state.options, newColors, newDoneTags);
+    onChangeOptions(column.id, state.options, newColors, newDoneTags);
   }
 };
 
 export const handleColorChange = (state, dispatch, column, onChangeOptions, option, color) => {
   dispatch({ type: 'CHANGE_OPTION_COLOR', payload: { option, color } });
   onChangeOptions(
-    column.ColumnId,
+    column.id,
     state.options,
     { ...state.optionColors, [option]: color },
     state.doneTags
@@ -85,20 +85,20 @@ export const handleSave = async (
 ) => {
   dispatch({ type: 'SET_SAVING', payload: true });
   try {
-    if (state.name !== column.Name) {
-      await onRename(column.ColumnId, state.name);
+    if (state.name !== column.name) {
+      await onRename(column.id, state.name);
     }
 
-    if (state.selectedIcon !== column.EmojiIcon) {
-      await onChangeIcon(column.ColumnId, state.selectedIcon);
+    if (state.selectedIcon !== column.emojiIcon) {
+      await onChangeIcon(column.id, state.selectedIcon);
     }
 
-    if (state.description !== column.Description) {
-      await onChangeDescription(column.ColumnId, state.description);
+    if (state.description !== column.description) {
+      await onChangeDescription(column.id, state.description);
     }
 
-    if (state.showTitle !== (column.NameVisible !== false)) {
-      await onToggleTitleVisibility(column.ColumnId, state.showTitle);
+    if (state.showTitle !== (column.nameVisible !== false)) {
+      await onToggleTitleVisibility(column.id, state.showTitle);
     }
 
     const isMultiOption = [
@@ -106,15 +106,15 @@ export const handleSave = async (
       'todo',
       'multicheckbox',
       'tasktable',
-    ].includes(column.Type);
+    ].includes(column.type);
     const optionsChanged =
-      JSON.stringify(state.options) !== JSON.stringify(column.Options) ||
-      JSON.stringify(state.optionColors) !== JSON.stringify(column.TagColors) ||
-      JSON.stringify(state.doneTags) !== JSON.stringify(column.DoneTags);
+      JSON.stringify(state.options) !== JSON.stringify(column.options) ||
+      JSON.stringify(state.optionColors) !== JSON.stringify(column.tagColors) ||
+      JSON.stringify(state.doneTags) !== JSON.stringify(column.doneTags);
 
     if (isMultiOption && optionsChanged) {
       await onChangeOptions(
-        column.ColumnId,
+        column.id,
         state.options,
         state.optionColors,
         state.doneTags
@@ -122,14 +122,14 @@ export const handleSave = async (
     }
 
     if (
-      column.Type === 'checkbox' &&
-      state.checkboxColor !== column.CheckboxColor
+      column.type === 'checkbox' &&
+      state.checkboxColor !== column.checkboxColor
     ) {
-      await onChangeCheckboxColor(column.ColumnId, state.checkboxColor);
+      await onChangeCheckboxColor(column.id, state.checkboxColor);
     }
 
-    if (onChangeWidth && state.width !== column.Width) {
-      await onChangeWidth(column.ColumnId, state.width);
+    if (onChangeWidth && state.width !== column.width) {
+      await onChangeWidth(column.id, state.width);
     }
   } catch (err) {
     console.error('Error saving column changes:', err);
@@ -143,6 +143,6 @@ export const handleWidthChange = (dispatch, onChangeWidth, column, e) => {
   const newWidth = e.target.value;
   dispatch({ type: 'SET_WIDTH', payload: newWidth });
   if (onChangeWidth) {
-    onChangeWidth(column.ColumnId, newWidth);
+    onChangeWidth(column.id, newWidth);
   }
 };
