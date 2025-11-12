@@ -33,6 +33,14 @@ export const TagsCell = ({
   };
 
   useEffect(() => {
+    // Sync selectedTags with value prop when it changes externally
+    const newTags = typeof value === 'string' && value.trim() !== ''
+      ? value.split(', ').filter((tag) => tag.trim() !== '')
+      : [];
+    setSelectedTags(newTags);
+  }, [value]);
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);

@@ -88,6 +88,14 @@ export const MultiCheckboxCell = ({
   };
 
   useEffect(() => {
+    // Sync selectedOptions with value prop when it changes externally
+    const newOptions = typeof value === 'string' && value.trim() !== ''
+      ? value.split(', ').filter((opt) => opt.trim() !== '')
+      : [];
+    setSelectedOptions(newOptions);
+  }, [value]);
+
+  useEffect(() => {
     drawCircle();
   }, [selectedOptions, darkMode, options]);
 
