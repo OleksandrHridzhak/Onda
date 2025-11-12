@@ -64,11 +64,12 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
   );
 
   const handleChangeOptions = useCallback(
-    (columnId, options, tagColors, doneTags = [], removedOption = null) => {
+    async (columnId, options, tagColors, doneTags = [], removedOption = null) => {
       // If an option was removed, clean it from all cell data
       if (removedOption) {
         const column = columns.find(col => col.id === columnId);
         if (column && (column.type === 'multi-select' || column.type === 'multicheckbox')) {
+          // Update tableData state for immediate UI feedback
           setTableData(prev => {
             const newData = {...prev};
             DAYS.forEach(day => {
@@ -78,6 +79,11 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
                   // Split tags, filter out the removed option, and rejoin
                   const tags = cellValue.split(', ').filter(tag => tag.trim() !== '' && tag !== removedOption);
                   newData[day][columnId] = tags.join(', ');
+                  
+                  // Also update the column instance's days property
+                  if (column.days) {
+                    column.days[day] = tags.join(', ');
+                  }
                 }
               }
             });
@@ -86,7 +92,7 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
         }
       }
       
-      return updateProperties(columnId, {
+      return await updateProperties(columnId, {
         Options: options,
         TagColors: tagColors,
         DoneTags: doneTags,
