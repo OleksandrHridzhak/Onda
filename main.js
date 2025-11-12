@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const ipcTableHandlers = require('./api/ipcTableHandlers.js');
 const ipcWindowsHandlers = require('./api/ipcWindowsHandlers.js');
 
 require('dotenv').config();
@@ -49,7 +48,6 @@ if (!gotTheLock) {
 
   app.whenReady().then(() => {
     createWindow();
-    ipcTableHandlers.init(ipcMain);
     ipcWindowsHandlers.init(ipcMain, mainWindow);
     initCronJobs();
   });
