@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Settings,
   LayoutGrid,
@@ -17,6 +18,9 @@ import CalendarSection from './sections/CalendarSection';
 import { settingsService } from '../../services/settingsDB';
 
 export default function SettingsDashboard() {
+  const { themeMode } = useSelector((state) => state.newTheme);
+  const darkMode = themeMode === 'dark';
+  
   const [activeSection, setActiveSection] = useState(() => {
     return localStorage.getItem('activeSection') || 'table';
   });
@@ -219,7 +223,9 @@ export default function SettingsDashboard() {
           </nav>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">{renderSection()}</div>
+        <div className={`flex-1 overflow-y-auto p-6 ${
+          darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'
+        }`}>{renderSection()}</div>
       </div>
     </div>
   );

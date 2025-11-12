@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function CalendarTimeline({
   viewMode,
@@ -17,6 +18,9 @@ export default function CalendarTimeline({
   handleTimeSlotClick,
   handleEditEvent,
 }) {
+  const { themeMode } = useSelector((state) => state.newTheme);
+  const darkMode = themeMode === 'dark';
+  
   const getDisplayDays = () => {
     return viewMode === 'day' ? [selectedDate] : weekDays;
   };
@@ -37,7 +41,9 @@ export default function CalendarTimeline({
         className={`flex flex-col bg-background`}
       >
         <div
-          className="flex-1 relative overflow-y-auto custom-scroll-y-light"
+          className={`flex-1 relative overflow-y-auto ${
+            darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'
+          }`}
           ref={gridRef}
         >
           <div className="flex">

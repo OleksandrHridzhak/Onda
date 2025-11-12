@@ -40,16 +40,8 @@ export const TaskTableCell = ({ column, onChangeOptions }) => {
   return (
     <div className="h-full flex flex-col">
       <div
-        className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[380px]
-        [&::-webkit-scrollbar]:w-1/2
-        [&::-webkit-scrollbar-track]:bg-transparent
-        [&::-webkit-scrollbar-thumb]:rounded-full
-        [&::-webkit-scrollbar-thumb]:transition-colors
-        [&::-webkit-scrollbar-thumb]:duration-200
-        ${
-          darkMode
-            ? '[&::-webkit-scrollbar-thumb]:bg-gray-600 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500'
-            : '[&::-webkit-scrollbar-thumb]:bg-gray-200 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300'
+        className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[380px] ${
+          darkMode ? 'custom-scroll-thin-dark' : 'custom-scroll-thin-light'
         }`}
       >
         <div className="mb-4">
