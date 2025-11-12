@@ -126,7 +126,7 @@ export const TodoCell = ({ value, column, onChange }) => {
                   : 'bg-white text-gray-700 placeholder-gray-400 border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
               } border outline-none`}
           />
-          {column?.Options?.length > 0 && (
+          {column?.options?.length > 0 && (
             <div
               ref={categoryMenuRef}
               className="absolute z-50 right-10 top-1/2 -translate-y-1/2"
@@ -197,7 +197,7 @@ export const TodoCell = ({ value, column, onChange }) => {
             <Plus size={16} />
           </button>
         </div>
-        {column?.Options?.length > 0 && (
+        {column?.options?.length > 0 && (
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setSelectedFilterCategory('')}
@@ -313,7 +313,7 @@ export const TodoCell = ({ value, column, onChange }) => {
                   >
                     {todo.text}
                   </div>
-                  {todo.category && column?.TagColors?.[todo.category] && (
+                  {todo.category && column?.tagColors?.[todo.category] && (
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         colorOptions.find(
