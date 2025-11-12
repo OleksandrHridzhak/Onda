@@ -53,29 +53,6 @@ const Table = () => {
       className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
     >
       <style jsx global>{`
-        .custom-scroll::-webkit-scrollbar {
-          width: 5px;
-          height: 4px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-          background: ${darkMode
-            ? 'rgba(55, 65, 81, 0.5)'
-            : 'rgba(241, 241, 241, 0.2)'};
-          border-radius: 4px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-          background: ${darkMode
-            ? 'rgba(51, 85, 144, 0.64)'
-            : 'rgba(156, 163, 175, 0.5)'};
-          border-radius: 4px;
-          height: 1px;
-          width: 1px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-          background: ${darkMode
-            ? 'rgba(107, 114, 128, 0.9)'
-            : 'rgba(107, 114, 128, 0.7)'};
-        }
         .todo-cell {
           position: relative;
           z-index: 1;

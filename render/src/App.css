@@ -1,4 +1,6 @@
-/* white */
+/* Centralized Scrollbar Styles */
+
+/* Standard scrollbar (light mode) */
 .custom-scroll-y-light::-webkit-scrollbar {
   width: 7px;
   height: 5px;
@@ -18,7 +20,7 @@
   background: rgba(107, 114, 128, 0.7);
 }
 
-/* dark */
+/* Standard scrollbar (dark mode) */
 .custom-scroll-y-dark::-webkit-scrollbar {
   width: 5px;
 }
@@ -34,5 +36,87 @@
 }
 
 .custom-scroll-y-dark::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.9);
+}
+
+/* Compact scrollbar for tables (light mode) */
+.custom-scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: rgba(241, 241, 241, 0.2);
+  border-radius: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 4px;
+  height: 1px;
+  width: 1px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.7);
+}
+
+/* Compact scrollbar for tables (dark mode) */
+.custom-scroll-dark::-webkit-scrollbar {
+  width: 5px;
+  height: 4px;
+}
+
+.custom-scroll-dark::-webkit-scrollbar-track {
+  background: rgba(55, 65, 81, 0.5);
+  border-radius: 4px;
+}
+
+.custom-scroll-dark::-webkit-scrollbar-thumb {
+  background: rgba(51, 85, 144, 0.64);
+  border-radius: 4px;
+  height: 1px;
+  width: 1px;
+}
+
+.custom-scroll-dark::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.9);
+}
+
+/* Thin scrollbar for cells (light mode) */
+.custom-scroll-thin-light::-webkit-scrollbar {
+  width: 2px;
+}
+
+.custom-scroll-thin-light::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll-thin-light::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+  transition: background-color 200ms;
+}
+
+.custom-scroll-thin-light::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.6);
+}
+
+/* Thin scrollbar for cells (dark mode) */
+.custom-scroll-thin-dark::-webkit-scrollbar {
+  width: 2px;
+}
+
+.custom-scroll-thin-dark::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll-thin-dark::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.7);
+  border-radius: 9999px;
+  transition: background-color 200ms;
+}
+
+.custom-scroll-thin-dark::-webkit-scrollbar-thumb:hover {
   background: rgba(107, 114, 128, 0.9);
 }
