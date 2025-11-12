@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { X } from 'lucide-react';
 
 export const ConfirmModal = ({ 
@@ -13,7 +14,8 @@ export const ConfirmModal = ({
 }) => {
   if (!isOpen) return null;
 
-  const darkMode = document.documentElement.getAttribute('data-theme-mode') === 'dark';
+  const themeMode = useSelector((state) => state.newTheme.themeMode);
+  const darkMode = themeMode === 'dark';
 
   const handleConfirm = () => {
     onConfirm();

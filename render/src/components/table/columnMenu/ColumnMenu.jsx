@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { X, ArrowRight, ArrowLeft } from 'lucide-react';
 import { icons } from '../../utils/icons';
 import { BubbleBtn } from '../../shared/BubbleBtn';
@@ -36,7 +37,8 @@ const ColumnMenu = ({
 }) => {
   const [state, dispatch] = useReducer(reducer, column, initialState);
   const menuRef = useRef(null);
-  const darkMode = document.documentElement.getAttribute('data-theme-mode') === 'dark';
+  const themeMode = useSelector((state) => state.newTheme.themeMode);
+  const darkMode = themeMode === 'dark';
 
   useEffect(() => {
     dispatch({ type: 'RESET', payload: column });
