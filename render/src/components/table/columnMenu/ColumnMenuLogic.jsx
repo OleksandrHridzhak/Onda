@@ -64,14 +64,35 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
   );
 
   const handleChangeOptions = useCallback(
-    (columnId, options, tagColors, doneTags = []) => {
+    (columnId, options, tagColors, doneTags = [], removedOption = null) => {
+      // If an option was removed, clean it from all cell data
+      if (removedOption) {
+        const column = columns.find(col => col.id === columnId);
+        if (column && (column.type === 'multi-select' || column.type === 'multicheckbox')) {
+          setTableData(prev => {
+            const newData = {...prev};
+            DAYS.forEach(day => {
+              if (newData[day] && newData[day][columnId]) {
+                const cellValue = newData[day][columnId];
+                if (typeof cellValue === 'string' && cellValue.trim() !== '') {
+                  // Split tags, filter out the removed option, and rejoin
+                  const tags = cellValue.split(', ').filter(tag => tag.trim() !== '' && tag !== removedOption);
+                  newData[day][columnId] = tags.join(', ');
+                }
+              }
+            });
+            return newData;
+          });
+        }
+      }
+      
       return updateProperties(columnId, {
         Options: options,
         TagColors: tagColors,
         DoneTags: doneTags,
       });
     },
-    [updateProperties]
+    [updateProperties, columns, setTableData]
   );
 
   const handleChangeCheckboxColor = useCallback(

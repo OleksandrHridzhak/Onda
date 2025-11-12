@@ -24,12 +24,14 @@ export const handleRemoveOption = (state, dispatch, column, onChangeOptions, opt
     const newOptions = state.options.filter((opt) => opt !== option);
     const newColors = { ...state.optionColors };
     delete newColors[option];
-    onChangeOptions(column.id, newOptions, newColors, state.doneTags);
+    // Pass the removed option so it can be cleaned from cell data
+    onChangeOptions(column.id, newOptions, newColors, state.doneTags, option);
   } else if (isInDoneTags) {
     const newDoneTags = state.doneTags.filter((tag) => tag !== option);
     const newColors = { ...state.optionColors };
     delete newColors[option];
-    onChangeOptions(column.id, state.options, newColors, newDoneTags);
+    // Pass the removed option so it can be cleaned from cell data
+    onChangeOptions(column.id, state.options, newColors, newDoneTags, option);
   }
 };
 
