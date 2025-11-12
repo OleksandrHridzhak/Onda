@@ -8,8 +8,12 @@ import {
   Circle,
   Table,
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
-const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
+const ColumnTypeSelector = ({ onSelect, onCancel }) => {
+  const { mode } = useSelector((state) => state.theme);
+  const darkMode = mode === 'dark';
+
   const columnTypes = [
     {
       id: 'todo',
@@ -55,7 +59,7 @@ const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
       bgColor: darkMode ? 'bg-purple-900' : 'bg-purple-50',
       hoverColor: darkMode ? 'hover:bg-purple-800' : 'hover:bg-purple-100',
     },
-    
+
     {
       id: 'text',
       label: 'Notes',
