@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Settings,
@@ -17,14 +17,66 @@ import HeaderSection from './sections/HeaderSection';
 import CalendarSection from './sections/CalendarSection';
 import { settingsService } from '../../services/settingsDB';
 
-export default function SettingsDashboard() {
-  const { themeMode } = useSelector((state) => state.newTheme);
+interface ThemeSettings {
+  accentColor: string;
+  darkMode: boolean;
+  autoThemeSettings: {
+    enabled: boolean;
+    startTime: string;
+    endTime: string;
+  };
+}
+
+interface TableSettings {
+  columnOrder: unknown[];
+  showSummaryRow: boolean;
+  compactMode: boolean;
+  stickyHeader: boolean;
+}
+
+interface UiSettings {
+  animations: boolean;
+  tooltips: boolean;
+  confirmDelete: boolean;
+}
+
+interface HeaderSettings {
+  layout: string;
+}
+
+interface CalendarSettings {
+  notifications: boolean;
+}
+
+interface AppSettings {
+  theme: ThemeSettings;
+  table: TableSettings;
+  ui: UiSettings;
+  header: HeaderSettings;
+  calendar: CalendarSettings;
+}
+
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+}
+
+interface Section {
+  id: string;
+  name: string;
+  icon: React.ReactElement;
+  component: React.ReactElement;
+}
+
+export default function SettingsDashboard(): React.ReactElement {
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
   const darkMode = themeMode === 'dark';
-  
+
   const [activeSection, setActiveSection] = useState(() => {
     return localStorage.getItem('activeSection') || 'table';
   });
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<AppSettings>({
     theme: {
       accentColor: 'standard',
       darkMode: true,
@@ -54,7 +106,8 @@ export default function SettingsDashboard() {
   });
 
   useEffect(() => {
-    settingsService.getSettings()
+    settingsService
+      .getSettings()
       .then(({ data }) => {
         setSettings((prev) => ({
           ...prev,
@@ -70,17 +123,25 @@ export default function SettingsDashboard() {
     localStorage.setItem('activeSection', activeSection);
   }, [activeSection]);
 
-  const handleSettingsChange = async (section, newSettings) => {
+  const handleSettingsChange = async (
+    section: keyof AppSettings,
+    newSettings:
+      | Partial<ThemeSettings>
+      | Partial<TableSettings>
+      | Partial<UiSettings>
+      | Partial<HeaderSettings>
+      | Partial<CalendarSettings>,
+  ): Promise<void> => {
     const updatedSettings = {
       ...settings,
       [section]:
-        section === 'theme' && newSettings.autoThemeSettings
+        section === 'theme' && 'autoThemeSettings' in newSettings
           ? {
               ...settings.theme,
               ...newSettings,
               autoThemeSettings: {
                 ...settings.theme.autoThemeSettings,
-                ...newSettings.autoThemeSettings,
+                ...(newSettings as Partial<ThemeSettings>).autoThemeSettings,
               },
             }
           : { ...settings[section], ...newSettings },
@@ -92,9 +153,11 @@ export default function SettingsDashboard() {
       case 'theme':
         await settingsService.updateTheme(updatedSettings.theme);
         if (
-          newSettings.darkMode !== undefined ||
-          newSettings.accentColor !== undefined ||
-          newSettings.autoThemeSettings?.enabled !== undefined
+          'darkMode' in newSettings ||
+          'accentColor' in newSettings ||
+          ('autoThemeSettings' in newSettings &&
+            (newSettings as Partial<ThemeSettings>).autoThemeSettings
+              ?.enabled !== undefined)
         ) {
           window.location.reload();
         }
@@ -116,7 +179,7 @@ export default function SettingsDashboard() {
     }
   };
 
-  const sections = [
+  const sections: Section[] = [
     {
       id: 'table',
       name: 'Table',
@@ -135,11 +198,11 @@ export default function SettingsDashboard() {
       component: (
         <UISection
           settings={settings}
-          onUIChange={(newUI) => handleSettingsChange('ui', newUI)}
           onThemeChange={(newTheme) => handleSettingsChange('theme', newTheme)}
           onAutoThemeChange={(newAutoThemeSettings) =>
             handleSettingsChange('theme', {
-              autoThemeSettings: newAutoThemeSettings,
+              autoThemeSettings:
+                newAutoThemeSettings as ThemeSettings['autoThemeSettings'],
             })
           }
         />
@@ -185,7 +248,7 @@ export default function SettingsDashboard() {
     },
   ];
 
-  const renderSection = () =>
+  const renderSection = (): React.ReactElement | null =>
     sections.find((s) => s.id === activeSection)?.component || null;
 
   return (
@@ -223,9 +286,13 @@ export default function SettingsDashboard() {
           </nav>
         </div>
 
-        <div className={`flex-1 overflow-y-auto p-6 ${
-          darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'
-        }`}>{renderSection()}</div>
+        <div
+          className={`flex-1 overflow-y-auto p-6 ${
+            darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'
+          }`}
+        >
+          {renderSection()}
+        </div>
       </div>
     </div>
   );

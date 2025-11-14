@@ -1,17 +1,17 @@
+import React, { useState } from 'react';
 import { Download, Upload } from 'lucide-react';
 import SettingsTemplate from '../SettingsTemplate';
 import { BubbleBtn } from '../../shared/BubbleBtn';
 import { exportData, importData } from '../../../services/indexedDB';
-import { useState } from 'react';
 
-export default function DataSection() {
+export default function DataSection(): React.ReactElement {
   const [status, setStatus] = useState('');
 
-  const handleExportData = async () => {
+  const handleExportData = async (): Promise<void> => {
     try {
       setStatus('Exporting...');
       const data = await exportData();
-      
+
       // Створюємо файл для скачування
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: 'application/json',
@@ -24,7 +24,7 @@ export default function DataSection() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       setStatus('✅ Export successful!');
       setTimeout(() => setStatus(''), 3000);
     } catch (error) {
@@ -34,26 +34,31 @@ export default function DataSection() {
     }
   };
 
-  const handleImportData = async (event) => {
+  const handleImportData = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): Promise<void> => {
     try {
-      const file = event.target.files[0];
+      const file = event.target.files?.[0];
       if (!file) return;
 
       setStatus('Importing...');
 
       const reader = new FileReader();
-      reader.onload = async (e) => {
+      reader.onload = async (e): Promise<void> => {
         try {
-          const data = JSON.parse(e.target.result);
-          const result = await importData(data);
-          
-          if (result.status === 'success') {
+          const result = e.target?.result;
+          if (typeof result !== 'string') return;
+
+          const data = JSON.parse(result);
+          const importResult = await importData(data);
+
+          if (importResult.status === 'success') {
             setStatus('✅ Import successful! Reloading...');
             setTimeout(() => {
               window.location.reload();
             }, 1000);
           } else {
-            setStatus(`❌ Import failed: ${result.message}`);
+            setStatus(`❌ Import failed: ${importResult.message}`);
             setTimeout(() => setStatus(''), 3000);
           }
         } catch (error) {
@@ -81,12 +86,14 @@ export default function DataSection() {
             <Upload className="w-4 h-4 mr-3" />
             Export All Data
           </BubbleBtn>
-          
-          <BubbleBtn onClick={() => document.getElementById('import-file').click()}>
+
+          <BubbleBtn
+            onClick={() => document.getElementById('import-file')?.click()}
+          >
             <Download className="w-4 h-4 mr-3" />
             Import Data
           </BubbleBtn>
-          
+
           <input
             id="import-file"
             type="file"
@@ -96,7 +103,9 @@ export default function DataSection() {
           />
         </div>
         {status && (
-          <span className={`text-sm ${status.includes('✅') ? 'text-green-500' : 'text-red-500'}`}>
+          <span
+            className={`text-sm ${status.includes('✅') ? 'text-green-500' : 'text-red-500'}`}
+          >
             {status}
           </span>
         )}

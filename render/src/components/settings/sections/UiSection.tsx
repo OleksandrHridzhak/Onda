@@ -1,12 +1,40 @@
+import React from 'react';
 import ToggleSwitch from '../ToggleSwitch';
 import SettingsTemplate from '../SettingsTemplate';
 import { useSelector } from 'react-redux';
 
-export default function UISection({ settings, onThemeChange, onAutoThemeChange }) {
-  const { mode } = useSelector((state) => state.newTheme);
+interface ThemeSettings {
+  darkMode: boolean;
+  accentColor: string;
+}
+
+interface Settings {
+  theme: ThemeSettings;
+}
+
+interface RootState {
+  newTheme: {
+    mode: string;
+  };
+}
+
+interface UISectionProps {
+  settings: Settings;
+  onThemeChange: (changes: Partial<ThemeSettings>) => void;
+  onAutoThemeChange: (changes: unknown) => void;
+}
+
+export default function UISection({
+  settings,
+  onThemeChange,
+  onAutoThemeChange,
+}: UISectionProps): React.ReactElement {
+  const { mode } = useSelector((state: RootState) => state.newTheme);
   const darkTheme = mode === 'dark';
 
-  const handleAccentColorChange = (e) => {
+  const handleAccentColorChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ): void => {
     onThemeChange({ accentColor: e.target.value });
   };
 

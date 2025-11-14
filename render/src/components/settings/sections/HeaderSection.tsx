@@ -1,8 +1,23 @@
-import { useSelector } from 'react-redux';
+import React from 'react';
 import SettingsTemplate from '../SettingsTemplate';
 
-export default function HeaderSection({ settings, onHeaderChange }) {
-  const { theme } = useSelector((state) => state.theme);
+interface HeaderSettings {
+  layout: string;
+}
+
+interface Settings {
+  header: HeaderSettings;
+}
+
+interface HeaderSectionProps {
+  settings: Settings;
+  onHeaderChange: (changes: Partial<HeaderSettings>) => void;
+}
+
+export default function HeaderSection({
+  settings,
+  onHeaderChange,
+}: HeaderSectionProps): React.ReactElement {
   return (
     <SettingsTemplate title={'Header Layout'}>
       <div className="flex items-center justify-between">
