@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   CheckSquare,
   Hash,
@@ -9,8 +10,22 @@ import {
   Table,
 } from 'lucide-react';
 
-const ColumnTypeSelector = ({ onSelect, onCancel, darkMode }) => {
-  const columnTypes = [
+interface ColumnType {
+  id: string;
+  label: string;
+  icon: React.ReactElement;
+  bgColor: string;
+  hoverColor: string;
+}
+
+interface ColumnTypeSelectorProps {
+  onSelect: (typeId: string) => void;
+  onCancel: () => void;
+  darkMode: boolean;
+}
+
+const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({ onSelect, onCancel, darkMode }) => {
+  const columnTypes: ColumnType[] = [
     {
       id: 'todo',
       label: 'Todo List',

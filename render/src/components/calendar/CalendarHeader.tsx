@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -6,6 +7,31 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { BubbleBtn } from '../shared/BubbleBtn';
+
+interface NewEvent {
+  title: string;
+  startTime: string;
+  endTime: string;
+  color: string;
+  isRepeating: boolean;
+  repeatDays: number[];
+  repeatFrequency: string;
+}
+
+interface CalendarHeaderProps {
+  viewMode: string;
+  setViewMode: (mode: string) => void;
+  selectedDate: Date;
+  weekDays: Date[];
+  currentWeekStart: Date;
+  getWeekNumber: (date: Date) => number;
+  goToPrevious: () => void;
+  goToCurrent: () => void;
+  goToNext: () => void;
+  setNewEvent: (event: NewEvent) => void;
+  setEditingEventId: (id: string | null) => void;
+  setShowEventModal: (show: boolean) => void;
+}
 
 export default function CalendarHeader({
   viewMode,
@@ -20,7 +46,7 @@ export default function CalendarHeader({
   setNewEvent,
   setEditingEventId,
   setShowEventModal,
-}) {
+}: CalendarHeaderProps): React.ReactElement {
   return (
     <div
       className={`sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border`}

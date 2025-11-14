@@ -1,21 +1,29 @@
+import React from 'react';
 import PomodoroWidget from './widgets/PomodoroWidget';
 import TimelineWidget from './widgets/TimelineWidget';
 import { TimeWidget } from './widgets/TimeWidget';
 import { AddNewColumnBtn } from './widgets/AddNewColumnBtn';
 
-const PlannerHeader = ({
+interface PlannerHeaderProps {
+  darkTheme?: boolean;
+  layout?: string[];
+  showColumnSelector: boolean;
+  setShowColumnSelector: (show: boolean) => void;
+}
+
+const PlannerHeader: React.FC<PlannerHeaderProps> = ({
   darkTheme = false,
   layout = ['TimelineWidget', 'PomodoroWidget'],
   showColumnSelector,
   setShowColumnSelector,
 }) => {
 
-  const widgetComponents = {
+  const widgetComponents: Record<string, React.ComponentType<{ darkTheme?: boolean }>> = {
     PomodoroWidget,
     TimelineWidget,
   };
 
-  const renderWidgets = (names = []) =>
+  const renderWidgets = (names: string[] = []): (React.ReactElement | null)[] =>
     names.map((name) => {
       const Widget = widgetComponents[name];
       return Widget ? <Widget key={name} darkTheme={darkTheme} /> : null;

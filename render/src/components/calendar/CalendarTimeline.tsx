@@ -1,5 +1,38 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+
+interface CalendarEvent {
+  id: string | number;
+  title: string;
+  startTime: string;
+  endTime: string;
+  date: string;
+  color?: string;
+}
+
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+}
+
+interface CalendarTimelineProps {
+  viewMode: string;
+  selectedDate: Date;
+  weekDays: Date[];
+  currentTime: Date;
+  hours: number[];
+  slotHeight: number;
+  dayNames: string[];
+  gridRef: React.RefObject<HTMLDivElement>;
+  formatTime: (hour: number) => string;
+  timeToMinutes: (time: string) => number;
+  getEventsForDay: (day: Date) => CalendarEvent[];
+  getEventStyle: (event: CalendarEvent) => React.CSSProperties;
+  getCurrentTimePosition: () => number;
+  handleTimeSlotClick: (dayIndex: number, hour: number) => void;
+  handleEditEvent: (event: CalendarEvent) => void;
+}
 
 export default function CalendarTimeline({
   viewMode,
@@ -17,11 +50,11 @@ export default function CalendarTimeline({
   getCurrentTimePosition,
   handleTimeSlotClick,
   handleEditEvent,
-}) {
-  const { themeMode } = useSelector((state) => state.newTheme);
+}: CalendarTimelineProps): React.ReactElement {
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
   const darkMode = themeMode === 'dark';
   
-  const getDisplayDays = () => {
+  const getDisplayDays = (): Date[] => {
     return viewMode === 'day' ? [selectedDate] : weekDays;
   };
 
@@ -29,9 +62,9 @@ export default function CalendarTimeline({
     const minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
     const scrollPosition =
       (minutes / 60) * slotHeight -
-      gridRef.current.clientHeight / 2 +
+      (gridRef.current?.clientHeight || 0) / 2 +
       slotHeight / 2;
-    gridRef.current.scrollTo({ top: Math.max(0, scrollPosition) });
+    gridRef.current?.scrollTo({ top: Math.max(0, scrollPosition) });
   }, [currentTime, gridRef, slotHeight]);
 
   return (
