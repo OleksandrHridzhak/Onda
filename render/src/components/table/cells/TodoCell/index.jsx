@@ -1,113 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { useRef } from 'react';
-import { getColorOptions } from '../../utils/colorOptions';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import { getColorOptions } from '../../../../utils/colorOptions';
 import { Plus, Edit2, Check, Trash2, ListTodo } from 'lucide-react';
-
+import { useTodoState } from './hooks/useTodoState';
+import { useCategoryMenu } from './hooks/useCategoryMenu';
+import {
+  handleAddTodo,
+  handleToggleTodo,
+  handleDeleteTodo,
+  handleEditTodo,
+  handleSaveEdit,
+  filterTodos,
+} from './logic';
 
 export const TodoCell = ({ value, column, onChange }) => {
-  const [todos, setTodos] = useState(value || []);
-  const [newTodo, setNewTodo] = useState('');
-  const [newCategory, setNewCategory] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [editText, setEditText] = useState('');
-  const [editCategory, setEditCategory] = useState(''); // State for category during editing
-  const [selectedFilterCategory, setSelectedFilterCategory] = useState(''); // State for filtering todos by category
-  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false); // State for category dropdown
-  const categoryMenuRef = useRef(null);
-
-  // Color options from ColumnMenu
   const { themeMode } = useSelector((state) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
   const colorOptions = getColorOptions({ darkMode });
 
-  useEffect(() => {
-    const sortedTodos = [...(value || [])].sort((a, b) => {
-      if (a.completed === b.completed) return 0;
-      return a.completed ? 1 : -1;
-    });
-    setTodos(sortedTodos);
-  }, [value]);
+  const {
+    todos,
+    setTodos,
+    newTodo,
+    setNewTodo,
+    newCategory,
+    setNewCategory,
+    isEditing,
+    setIsEditing,
+    editingIndex,
+    setEditingIndex,
+    editText,
+    setEditText,
+    editCategory,
+    setEditCategory,
+    selectedFilterCategory,
+    setSelectedFilterCategory,
+  } = useTodoState(value);
 
-  // Close category menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        categoryMenuRef.current &&
-        !categoryMenuRef.current.contains(event.target)
-      ) {
-        setIsCategoryMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const {
+    isCategoryMenuOpen,
+    setIsCategoryMenuOpen,
+    categoryMenuRef,
+  } = useCategoryMenu();
 
-  const handleAddTodo = () => {
-    if (newTodo.trim()) {
-      const updatedTodos = [
-        ...todos,
-        { text: newTodo.trim(), completed: false, category: newCategory || '' },
-      ];
-      setTodos(updatedTodos);
-      onChange(updatedTodos);
-      setNewTodo('');
-      setIsCategoryMenuOpen(false);
-    }
-  };
-
-  const handleToggleTodo = (index) => {
-    const updatedTodos = todos.map((todo, i) =>
-      i === index ? { ...todo, completed: !todo.completed } : todo
-    );
-    const sortedTodos = updatedTodos.sort((a, b) => {
-      if (a.completed === b.completed) return 0;
-      return a.completed ? 1 : -1;
-    });
-    setTodos(sortedTodos);
-    onChange(sortedTodos);
-  };
-
-  const handleDeleteTodo = (index) => {
-    const updatedTodos = todos.filter((_, i) => i !== index);
-    const sortedTodos = updatedTodos.sort((a, b) => {
-      if (a.completed === b.completed) return 0;
-      return a.completed ? 1 : -1;
-    });
-    setTodos(sortedTodos);
-    onChange(sortedTodos);
-  };
-
-  const handleEditTodo = (index) => {
-    setIsEditing(true);
-    setEditingIndex(index);
-    setEditText(todos[index].text);
-    setEditCategory(todos[index].category || '');
-  };
-
-  const handleSaveEdit = () => {
-    if (editText.trim()) {
-      const updatedTodos = todos.map((todo, i) =>
-        i === editingIndex
-          ? { ...todo, text: editText.trim(), category: editCategory }
-          : todo
-      );
-      setTodos(updatedTodos);
-      onChange(updatedTodos);
-      setIsEditing(false);
-      setEditingIndex(null);
-      setEditText('');
-      setEditCategory('');
-    }
-  };
-
-  // Filter todos based on selected category
-  const filteredTodos = selectedFilterCategory
-    ? todos.filter((todo) => todo.category === selectedFilterCategory)
-    : todos;
+  const filteredTodos = filterTodos(todos, selectedFilterCategory);
 
   return (
     <div className="h-full flex flex-col">
@@ -117,7 +53,18 @@ export const TodoCell = ({ value, column, onChange }) => {
             type="text"
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleAddTodo()}
+            onKeyPress={(e) =>
+              e.key === 'Enter' &&
+              handleAddTodo(
+                newTodo,
+                newCategory,
+                todos,
+                setTodos,
+                onChange,
+                setNewTodo,
+                setIsCategoryMenuOpen
+              )
+            }
             placeholder="Add new todo..."
             className={`w-full px-3 py-2 pr-10 text-sm rounded-md transition-all duration-200
               ${
@@ -187,7 +134,17 @@ export const TodoCell = ({ value, column, onChange }) => {
             </div>
           )}
           <button
-            onClick={handleAddTodo}
+            onClick={() =>
+              handleAddTodo(
+                newTodo,
+                newCategory,
+                todos,
+                setTodos,
+                onChange,
+                setNewTodo,
+                setIsCategoryMenuOpen
+              )
+            }
             className={`absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md transition-colors duration-200 ${
               darkMode
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -246,7 +203,7 @@ export const TodoCell = ({ value, column, onChange }) => {
             <div className="flex items-center flex-1 min-w-0 w-full">
               <button
                 onClick={() =>
-                  handleToggleTodo(todos.findIndex((t) => t === todo))
+                  handleToggleTodo(todos.findIndex((t) => t === todo), todos, setTodos, onChange)
                 }
                 className={`mr-2 p-1 rounded-full z-20 ${
                   todo.completed
@@ -267,8 +224,35 @@ export const TodoCell = ({ value, column, onChange }) => {
                     type="text"
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit()}
-                    onBlur={handleSaveEdit}
+                    onKeyPress={(e) =>
+                      e.key === 'Enter' &&
+                      handleSaveEdit(
+                        editingIndex,
+                        editText,
+                        editCategory,
+                        todos,
+                        setTodos,
+                        onChange,
+                        setIsEditing,
+                        setEditingIndex,
+                        setEditText,
+                        setEditCategory
+                      )
+                    }
+                    onBlur={() =>
+                      handleSaveEdit(
+                        editingIndex,
+                        editText,
+                        editCategory,
+                        todos,
+                        setTodos,
+                        onChange,
+                        setIsEditing,
+                        setEditingIndex,
+                        setEditText,
+                        setEditCategory
+                      )
+                    }
                     className={`flex-1 px-2 py-1 text-sm rounded-md z-20 ${
                       darkMode
                         ? 'bg-gray-600 text-gray-200 border-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
@@ -325,7 +309,14 @@ export const TodoCell = ({ value, column, onChange }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleEditTodo(todos.findIndex((t) => t === todo));
+                    handleEditTodo(
+                      todos.findIndex((t) => t === todo),
+                      todos,
+                      setIsEditing,
+                      setEditingIndex,
+                      setEditText,
+                      setEditCategory
+                    );
                   }}
                   className={`p-2 rounded-md flex items-center justify-center ${
                     darkMode
@@ -339,7 +330,12 @@ export const TodoCell = ({ value, column, onChange }) => {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleDeleteTodo(todos.findIndex((t) => t === todo));
+                    handleDeleteTodo(
+                      todos.findIndex((t) => t === todo),
+                      todos,
+                      setTodos,
+                      onChange
+                    );
                   }}
                   className={`p-2  rounded-md flex items-center justify-center ${
                     darkMode

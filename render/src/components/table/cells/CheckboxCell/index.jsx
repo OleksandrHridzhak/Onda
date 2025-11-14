@@ -1,18 +1,10 @@
 import React from 'react';
 import { Check } from 'lucide-react';
-import { getCheckBoxColorOptions } from '../../utils/colorOptions';
-import { useSelector } from 'react-redux';
+import { useCheckboxColor } from './hooks/useCheckboxColor';
+import { handleToggle } from './logic';
 
 export const CheckboxCell = ({ checked, onChange, color = 'green' }) => {
-  const { mode } = useSelector((state) => state.theme);
-  const darkMode = mode === 'dark';
-  const colorOptions = getCheckBoxColorOptions({ darkMode });
-
-  const selectedColor = colorOptions[color] || colorOptions.green;
-
-  const handleToggle = () => {
-    onChange(!checked);
-  };
+  const selectedColor = useCheckboxColor(color);
 
   return (
     <div className="flex justify-center items-center w-full h-full">
@@ -20,7 +12,7 @@ export const CheckboxCell = ({ checked, onChange, color = 'green' }) => {
         <input
           type="checkbox"
           checked={checked}
-          onChange={handleToggle}
+          onChange={() => handleToggle(checked, onChange)}
           className="sr-only peer"
         />
         <div
