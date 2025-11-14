@@ -1,22 +1,45 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import EventModal from './EventModal';
 import CalendarHeader from './CalendarHeader';
 import CalendarTimeline from './CalendarTimeline';
 import { calendarService } from '../../services/calendarDB';
 
-export default function Calendar() {
-  const [currentWeekStart, setCurrentWeekStart] = useState(
+interface CalendarEvent {
+  id: string | number;
+  title: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  color: string;
+  isRepeating: boolean;
+  repeatDays: number[];
+  repeatFrequency: string;
+}
+
+interface NewEvent {
+  title: string;
+  date?: string;
+  startTime: string;
+  endTime: string;
+  color: string;
+  isRepeating: boolean;
+  repeatDays: number[];
+  repeatFrequency: string;
+}
+
+export default function Calendar(): React.ReactElement {
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
     getMonday(new Date())
   );
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState(() => {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [viewMode, setViewMode] = useState<string>(() => {
     return localStorage.getItem('calendarViewMode') || 'week';
   });
-  const [weekDays, setWeekDays] = useState(getWeekDays(getMonday(new Date())));
-  const [events, setEvents] = useState([]);
-  const [showEventModal, setShowEventModal] = useState(false);
-  const [editingEventId, setEditingEventId] = useState(null);
-  const [newEvent, setNewEvent] = useState({
+  const [weekDays, setWeekDays] = useState<Date[]>(getWeekDays(getMonday(new Date())));
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [showEventModal, setShowEventModal] = useState<boolean>(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [newEvent, setNewEvent] = useState<NewEvent>({
     title: '',
     startTime: '09:00',
     endTime: '10:00',
@@ -25,10 +48,10 @@ export default function Calendar() {
     repeatDays: [],
     repeatFrequency: 'weekly',
   });
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [filterColor] = useState(null);
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+  const [filterColor] = useState<string | null>(null);
 
-  const gridRef = useRef(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const slotHeight = 80;
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -37,15 +60,15 @@ export default function Calendar() {
     localStorage.setItem('calendarViewMode', viewMode);
   }, [viewMode]);
 
-  function getMonday(date) {
+  function getMonday(date: Date): Date {
     const d = new Date(date);
     const day = d.getDay();
     const diff = d.getDate() - day + (day === 0 ? -6 : 1);
     return new Date(d.setDate(diff));
   }
 
-  function getWeekDays(startDate) {
-    const days = [];
+  function getWeekDays(startDate: Date): Date[] {
+    const days: Date[] = [];
     const date = new Date(startDate);
     for (let i = 0; i < 7; i++) {
       days.push(new Date(date));
@@ -54,27 +77,27 @@ export default function Calendar() {
     return days;
   }
 
-  const formatTime = (hour) => `${hour.toString().padStart(2, '0')}:00`;
-  const timeToMinutes = (time) => {
+  const formatTime = (hour: number): string => `${hour.toString().padStart(2, '0')}:00`;
+  const timeToMinutes = (time: string): number => {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
   };
 
-  const validateTime = (time) => {
+  const validateTime = (time: string): boolean => {
     const regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
     return regex.test(time);
   };
 
-  const getWeekNumber = (date) => {
+  const getWeekNumber = (date: Date): number => {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
     d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
     const week1 = new Date(d.getFullYear(), 0, 4);
-    return Math.round(((d - week1) / 86400000 + 1) / 7);
+    return Math.round(((d.getTime() - week1.getTime()) / 86400000 + 1) / 7);
   };
 
   useEffect(() => {
-    const loadEvents = async () => {
+    const loadEvents = async (): Promise<void> => {
       try {
         const response = await calendarService.getCalendar();
         if (response.status === 'success') {
@@ -100,7 +123,7 @@ export default function Calendar() {
     setWeekDays(getWeekDays(currentWeekStart));
   }, [currentWeekStart]);
 
-  const goToPrevious = () => {
+  const goToPrevious = (): void => {
     if (viewMode === 'week') {
       const prevMonday = new Date(currentWeekStart);
       prevMonday.setDate(prevMonday.getDate() - 7);
@@ -114,7 +137,7 @@ export default function Calendar() {
     }
   };
 
-  const goToNext = () => {
+  const goToNext = (): void => {
     if (viewMode === 'week') {
       const nextMonday = new Date(currentWeekStart);
       nextMonday.setDate(nextMonday.getDate() + 7);
@@ -128,13 +151,13 @@ export default function Calendar() {
     }
   };
 
-  const goToCurrent = () => {
+  const goToCurrent = (): void => {
     const today = new Date();
     setCurrentWeekStart(getMonday(today));
     setSelectedDate(today);
   };
 
-  const handleTimeSlotClick = (dayIndex, hour) => {
+  const handleTimeSlotClick = (dayIndex: number, hour: number): void => {
     const startTime = formatTime(hour);
     const endTime = formatTime((hour + 1) % 24);
     const selectedDay = viewMode === 'day' ? selectedDate : weekDays[dayIndex];
@@ -152,7 +175,7 @@ export default function Calendar() {
     setShowEventModal(true);
   };
 
-  const handleSaveEvent = async () => {
+  const handleSaveEvent = async (): Promise<void> => {
     if (
       !newEvent.title.trim() ||
       !validateTime(newEvent.startTime) ||
@@ -160,9 +183,10 @@ export default function Calendar() {
     )
       return;
     try {
-      const eventData = {
+      const eventData: CalendarEvent = {
         id: editingEventId || Date.now().toString(),
         ...newEvent,
+        date: newEvent.date || new Date().toDateString(),
       };
       const response = await calendarService.updateCalendarEvent(eventData);
       if (response.status === 'success') {
@@ -190,17 +214,17 @@ export default function Calendar() {
     }
   };
 
-  const handleEditEvent = (event) => {
+  const handleEditEvent = (event: CalendarEvent): void => {
     setNewEvent({
       ...event,
       repeatDays: event.repeatDays || [],
       repeatFrequency: event.repeatFrequency || 'weekly',
     });
-    setEditingEventId(event.id);
+    setEditingEventId(event.id.toString());
     setShowEventModal(true);
   };
 
-  const handleDeleteEvent = async (eventId) => {
+  const handleDeleteEvent = async (eventId: string): Promise<void> => {
     try {
       const response = await calendarService.deleteCalendarEvent(eventId);
       if (response.status === 'success') {
@@ -224,7 +248,7 @@ export default function Calendar() {
     }
   };
 
-  const getEventStyle = (event) => {
+  const getEventStyle = (event: CalendarEvent): React.CSSProperties => {
     const startMinutes = timeToMinutes(event.startTime);
     let endMinutes = timeToMinutes(event.endTime);
     if (endMinutes <= startMinutes) {
@@ -240,15 +264,15 @@ export default function Calendar() {
     };
   };
 
-  const getCurrentTimePosition = () => {
+  const getCurrentTimePosition = (): number => {
     const minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
     return (minutes / 60) * slotHeight;
   };
 
-  const getEventsForDay = (day) => {
-    const dayEvents = [];
+  const getEventsForDay = (day: Date): CalendarEvent[] => {
+    const dayEvents: CalendarEvent[] = [];
     const currentWeekNumber = getWeekNumber(currentWeekStart);
-    const eventWeekNumber = (event) => getWeekNumber(new Date(event.date));
+    const eventWeekNumber = (event: CalendarEvent): number => getWeekNumber(new Date(event.date));
 
     events.forEach((event) => {
       const eventDate = new Date(event.date);
@@ -279,8 +303,8 @@ export default function Calendar() {
     );
   };
 
-  const adjustEventTimes = (delta) => {
-    const shift = (time) => {
+  const adjustEventTimes = (delta: number): void => {
+    const shift = (time: string): string => {
       const [h, m] = time.split(':').map(Number);
       let total = h * 60 + m + delta;
       if (total < 0) total += 24 * 60;

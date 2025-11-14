@@ -1,6 +1,29 @@
+import React from 'react';
 import { Trash2 } from 'lucide-react';
 import { InputText } from '../shared/InputText';
 import { BubbleBtn } from '../shared/BubbleBtn';
+
+interface Event {
+  title: string;
+  startTime: string;
+  endTime: string;
+  color: string;
+  isRepeating: boolean;
+  repeatDays: number[];
+  repeatFrequency: string;
+}
+
+interface EventModalProps {
+  showEventModal: boolean;
+  setShowEventModal: (show: boolean) => void;
+  newEvent: Event;
+  setNewEvent: (event: Event) => void;
+  editingEventId: string | null;
+  handleSaveEvent: () => void;
+  handleDeleteEvent: (id: string) => void;
+  validateTime: (time: string) => boolean;
+  adjustEventTimes: (minutes: number) => void;
+}
 
 export default function EventModal({
   showEventModal,
@@ -12,8 +35,8 @@ export default function EventModal({
   handleDeleteEvent,
   validateTime,
   adjustEventTimes,
-}) {
-  const colorMap = {
+}: EventModalProps): React.ReactElement {
+  const colorMap: Record<string, string> = {
     '#2563eb': 'Blue',
     '#059669': 'Green',
     '#7c3aed': 'Purple',
