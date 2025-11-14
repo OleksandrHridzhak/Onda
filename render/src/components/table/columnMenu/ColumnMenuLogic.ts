@@ -3,19 +3,38 @@ import { deleteColumn } from '../../../services/columnsDB';
 import { useColumnOperations } from '../hooks/useColumnOperations';
 import { DAYS } from '../hooks/useColumnsData';
 
-const handleError = (message, error) => {
+const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
+
+interface Column {
+  id?: string;
+  ColumnId?: string;
+  type?: string;
+  _instance?: {
+    id: string;
+  };
+}
+
+interface UpdateResult {
+  status: string;
+  data?: unknown;
+  error?: string;
+}
 
 /**
  * Хук для логіки меню колонок
  * Забезпечує операції оновлення, видалення та модифікації колонок
  */
-export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
+export const useColumnMenuLogic = (
+  columns: Column[],
+  setColumns: React.Dispatch<React.SetStateAction<Column[]>>,
+  setTableData: React.Dispatch<React.SetStateAction<Record<string, Record<string, unknown>>>>
+) => {
   const { updateProperties, clearColumn } = useColumnOperations(columns, setColumns);
 
   const handleDeleteColumn = useCallback(
-    async (columnId) => {
+    async (columnId: string): Promise<UpdateResult> => {
       try {
         const column = columns.find(col => col.ColumnId === columnId || col._instance?.id === columnId);
         const actualId = column?._instance?.id || columnId;
@@ -29,42 +48,47 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
         return result;
       } catch (err) {
         handleError('Failed to delete column:', err);
-        return { status: 'Error', error: err.message };
+        return { status: 'Error', error: (err as Error).message };
       }
     },
     [columns, setColumns]
   );
 
   const handleRename = useCallback(
-    async (columnId, newName) => {
+    async (columnId: string, newName: string): Promise<UpdateResult> => {
       return await updateProperties(columnId, { Name: newName });
     },
     [updateProperties]
   );
 
   const handleChangeIcon = useCallback(
-    (columnId, newIcon) => {
+    (columnId: string, newIcon: string): Promise<UpdateResult> => {
       return updateProperties(columnId, { EmojiIcon: newIcon });
     },
     [updateProperties]
   );
 
   const handleChangeDescription = useCallback(
-    async (columnId, newDescription) => {
+    async (columnId: string, newDescription: string): Promise<UpdateResult> => {
       return await updateProperties(columnId, { Description: newDescription });
     },
     [updateProperties]
   );
 
   const handleToggleTitleVisibility = useCallback(
-    (columnId, showTitle) => {
+    (columnId: string, showTitle: boolean): Promise<UpdateResult> => {
       return updateProperties(columnId, { NameVisible: showTitle });
     },
     [updateProperties]
   );
 
   const handleChangeOptions = useCallback(
-    (columnId, options, tagColors, doneTags = []) => {
+    (
+      columnId: string,
+      options: string[],
+      tagColors: Record<string, string>,
+      doneTags: string[] = []
+    ): Promise<UpdateResult> => {
       return updateProperties(columnId, {
         Options: options,
         TagColors: tagColors,
@@ -75,14 +99,14 @@ export const useColumnMenuLogic = (columns, setColumns, setTableData) => {
   );
 
   const handleChangeCheckboxColor = useCallback(
-    (columnId, color) => {
+    (columnId: string, color: string): Promise<UpdateResult> => {
       return updateProperties(columnId, { CheckboxColor: color });
     },
     [updateProperties]
   );
 
   const handleClearColumn = useCallback(
-    async (columnId) => {
+    async (columnId: string): Promise<UpdateResult> => {
       console.log('handleClearColumn called for:', columnId);
       
       // Clear column data in database and update columns state
