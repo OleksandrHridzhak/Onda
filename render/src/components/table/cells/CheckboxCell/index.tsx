@@ -3,7 +3,13 @@ import { Check } from 'lucide-react';
 import { useCheckboxColor } from './hooks/useCheckboxColor';
 import { handleToggle } from './logic';
 
-export const CheckboxCell = ({ checked, onChange, color = 'green' }) => {
+interface CheckboxCellProps {
+  checked: boolean;
+  onChange: (value: boolean) => void;
+  color?: string;
+}
+
+export const CheckboxCell: React.FC<CheckboxCellProps> = ({ checked, onChange, color = 'green' }) => {
   const selectedColor = useCheckboxColor(color);
 
   return (

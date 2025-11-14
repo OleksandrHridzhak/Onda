@@ -1,7 +1,15 @@
 import React from 'react';
 import { getColorOptions } from '../../utils/colorOptions';
 
-export const CheckboxColorPicker = ({
+interface CheckboxColorPickerProps {
+  checkboxColor: string;
+  setCheckboxColor: (color: string) => void;
+  darkMode: boolean;
+  isColorMenuOpen: boolean;
+  toggleColorMenu: () => void;
+}
+
+export const CheckboxColorPicker: React.FC<CheckboxColorPickerProps> = ({
   checkboxColor,
   setCheckboxColor,
   darkMode,

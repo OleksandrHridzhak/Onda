@@ -1,16 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
 
-export const useNotesEdit = (value, onChange) => {
+interface NotesEditState {
+  isEditing: boolean;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  tempValue: string;
+  setTempValue: React.Dispatch<React.SetStateAction<string>>;
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
+  handleSave: () => void;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+}
+
+export const useNotesEdit = (value: string, onChange: (value: string) => void): NotesEditState => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);
-  const textareaRef = useRef(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     onChange(tempValue);
     setIsEditing(false);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSave();

@@ -2,7 +2,12 @@ import React from 'react';
 import { useNotesEdit } from './hooks/useNotesEdit';
 import { startEditing } from './logic';
 
-export const NotesCell = ({ value, onChange }) => {
+interface NotesCellProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const NotesCell: React.FC<NotesCellProps> = ({ value, onChange }) => {
   const {
     isEditing,
     setIsEditing,
