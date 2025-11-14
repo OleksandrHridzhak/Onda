@@ -4,8 +4,26 @@ import { getColorOptions } from '../../../utils/colorOptions';
 import { useTaskState } from './hooks/useTaskState';
 import { handleToggleTask } from './logic';
 
-export const TaskTableCell = ({ column, onChangeOptions }) => {
-  const { themeMode } = useSelector((state) => state.newTheme);
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+}
+
+interface Column {
+  id: string;
+  options?: string[];
+  doneTags?: string[];
+  tagColors: Record<string, string>;
+}
+
+interface TaskTableCellProps {
+  column: Column;
+  onChangeOptions: (id: string, incomplete: string[], tagColors: Record<string, string>, completed: string[]) => void;
+}
+
+export const TaskTableCell: React.FC<TaskTableCellProps> = ({ column, onChangeOptions }) => {
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
   
   const {

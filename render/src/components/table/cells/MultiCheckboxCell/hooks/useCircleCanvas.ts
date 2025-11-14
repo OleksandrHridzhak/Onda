@@ -1,11 +1,27 @@
 import { useEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getCheckBoxColorOptions } from '../../../../utils/colorOptions';
+import { getCheckBoxColorOptions, CheckBoxColorOptions } from '../../../../utils/colorOptions';
 
-export const useCircleCanvas = (selectedOptions, options, tagColors) => {
-  const { themeMode } = useSelector((state) => state.newTheme);
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+}
+
+interface CircleCanvasResult {
+  canvasRef: React.RefObject<HTMLCanvasElement>;
+  colorOptions: CheckBoxColorOptions;
+  colorOrder: string[];
+}
+
+export const useCircleCanvas = (
+  selectedOptions: string[],
+  options: string[],
+  tagColors: Record<string, string>
+): CircleCanvasResult => {
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const colorOptions = getCheckBoxColorOptions({ darkMode });
   const colorOrder = useMemo(() => ['green', 'blue', 'purple', 'orange'], []);
 
@@ -14,6 +30,8 @@ export const useCircleCanvas = (selectedOptions, options, tagColors) => {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     const scale = window.devicePixelRatio || 1;
     const size = 32;
     canvas.width = size * scale;

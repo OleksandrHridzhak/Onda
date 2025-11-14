@@ -1,15 +1,29 @@
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { getColorOptions } from '../../../utils/colorOptions';
 import { useTagsDropdown } from './hooks/useTagsDropdown';
 import { handleTagChange } from './logic';
 
-export const TagsCell = ({
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+}
+
+interface TagsCellProps {
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  tagColors?: Record<string, string>;
+}
+
+export const TagsCell: React.FC<TagsCellProps> = ({
   value,
   onChange,
   options,
   tagColors = {},
 }) => {
-  const { themeMode } = useSelector((state) => state.newTheme);
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
 
   const {
@@ -38,7 +52,7 @@ export const TagsCell = ({
               return (
                 <span
                   key={tag}
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text}`}
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption?.bg} ${colorOption?.text}`}
                 >
                   {tag}
                 </span>
@@ -68,7 +82,7 @@ export const TagsCell = ({
               >
                 <div className="flex items-center">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text} mr-2`}
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption?.bg} ${colorOption?.text} mr-2`}
                   >
                     {option}
                   </span>

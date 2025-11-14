@@ -4,13 +4,26 @@ import { useMultiCheckboxDropdown } from './hooks/useMultiCheckboxDropdown';
 import { useCircleCanvas } from './hooks/useCircleCanvas';
 import { getColorForOption, handleOptionChange } from './logic';
 
-export const MultiCheckboxCell = ({
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+}
+
+interface MultiCheckboxCellProps {
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  tagColors?: Record<string, string>;
+}
+
+export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
   value,
   onChange,
   options,
   tagColors = {},
 }) => {
-  const { themeMode } = useSelector((state) => state.newTheme);
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
   
   const {
