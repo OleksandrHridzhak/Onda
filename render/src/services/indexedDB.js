@@ -3,68 +3,66 @@ import { getColumnTemplates } from '../components/utils/fileTemplates';
 
 const initialWeekBody = [
   {
-    "ColumnId": "1755000000005",
-    "Type": "checkbox",
-    "Name": "Daily Standup",
-    "Description": "Attend team standup meeting",
-    "EmojiIcon": "User",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": true,
-      "Tuesday": false,
-      "Wednesday": true,
-      "Thursday": true,
-      "Friday": true,
-      "Saturday": false,
-      "Sunday": false
+    ColumnId: '1755000000005',
+    Type: 'checkbox',
+    Name: 'Daily Standup',
+    Description: 'Attend team standup meeting',
+    EmojiIcon: 'User',
+    NameVisible: false,
+    Chosen: {
+      Monday: true,
+      Tuesday: false,
+      Wednesday: true,
+      Thursday: true,
+      Friday: true,
+      Saturday: false,
+      Sunday: false,
     },
-    "Width": 50,
-    "CheckboxColor": "orange"
+    Width: 50,
+    CheckboxColor: 'orange',
   },
   {
-    "ColumnId": "1755000000009",
-    "Type": "numberbox",
-    "Name": "Client Calls",
-    "Description": "Hours spent on client calls",
-    "EmojiIcon": "Zap",
-    "NameVisible": false,
-    "Chosen": {
-      "Monday": "1",
-      "Tuesday": "2",
-      "Wednesday": "1.5",
-      "Thursday": "1",
-      "Friday": "0",
-      "Saturday": "0",
-      "Sunday": "0"
+    ColumnId: '1755000000009',
+    Type: 'numberbox',
+    Name: 'Client Calls',
+    Description: 'Hours spent on client calls',
+    EmojiIcon: 'Zap',
+    NameVisible: false,
+    Chosen: {
+      Monday: '1',
+      Tuesday: '2',
+      Wednesday: '1.5',
+      Thursday: '1',
+      Friday: '0',
+      Saturday: '0',
+      Sunday: '0',
     },
-    "Width": 60
+    Width: 60,
   },
+
   {
-    "ColumnId": "1755000000013",
-    "Type": "multicheckbox",
-    "Name": "Wellness Goals",
-    "Description": "Track wellness activities",
-    "EmojiIcon": "Leaf",
-    "NameVisible": false,
-    "Options": [
-      "Yoga",
-      "Running"
-    ],
-    "TagColors": {
-      "Yoga": "blue",
-      "Running": "green"
+    ColumnId: '1755000000013',
+    Type: 'multicheckbox',
+    Name: 'Wellness Goals',
+    Description: 'Track wellness activities',
+    EmojiIcon: 'Leaf',
+    NameVisible: false,
+    Options: ['Yoga', 'Running'],
+    TagColors: {
+      Yoga: 'blue',
+      Running: 'green',
     },
-    "Chosen": {
-      "Monday": "Yoga",
-      "Tuesday": "Running",
-      "Wednesday": "",
-      "Thursday": "Yoga",
-      "Friday": "",
-      "Saturday": "Running",
-      "Sunday": ""
+    Chosen: {
+      Monday: 'Yoga',
+      Tuesday: 'Running',
+      Wednesday: '',
+      Thursday: 'Yoga',
+      Friday: '',
+      Saturday: 'Running',
+      Sunday: '',
     },
-    "Width": 50
-  }
+    Width: 50,
+  },
 ];
 
 // Ініціалізація бази даних
@@ -79,7 +77,7 @@ export const dbPromise = openDB('ondaDB', 2, {
     if (!db.objectStoreNames.contains('calendar')) {
       db.createObjectStore('calendar', { keyPath: 'id', autoIncrement: true });
     }
-    
+
     // Нова версія: створюємо окреме сховище для колонок
     if (oldVersion < 2) {
       if (!db.objectStoreNames.contains('columns')) {
@@ -148,7 +146,6 @@ export async function getWeek() {
   }
 }
 
-
 // Функція для редагування об’єкта в body за ColumnId
 export async function updateColumn(updatedColumn) {
   try {
@@ -165,7 +162,9 @@ export async function updateColumn(updatedColumn) {
     }
 
     // Знаходимо індекс блоку за ColumnId
-    const blockIndex = week.body.findIndex((block) => block.ColumnId === columnId);
+    const blockIndex = week.body.findIndex(
+      (block) => block.ColumnId === columnId,
+    );
     if (blockIndex === -1) {
       console.log('Блок із ColumnId не знайдено:', columnId);
       await tx.done;
@@ -298,7 +297,7 @@ export async function deleteColumnById(columnId) {
 export async function migrateColumnsToSeparateStorage() {
   try {
     const db = await dbPromise;
-    
+
     // Перевіряємо чи вже є колонки
     const existingColumns = await db.getAll('columns');
     if (existingColumns.length > 0) {
@@ -309,7 +308,7 @@ export async function migrateColumnsToSeparateStorage() {
     // Отримуємо старі дані з weeks
     const tx = db.transaction('weeks', 'readonly');
     const week = await tx.objectStore('weeks').get(1);
-    
+
     if (!week || !week.body || week.body.length === 0) {
       console.log('Немає даних для міграції');
       return { status: 'No data to migrate' };
@@ -318,35 +317,39 @@ export async function migrateColumnsToSeparateStorage() {
     // Мігруємо кожну колонку
     const txWrite = db.transaction('columns', 'readwrite');
     const columnsStore = txWrite.objectStore('columns');
-    
+
     for (const oldColumn of week.body) {
       // Конвертуємо старі поля у нові
       const newColumn = {
-        id: oldColumn.ColumnId || Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        id:
+          oldColumn.ColumnId ||
+          Date.now().toString() + Math.random().toString(36).substr(2, 9),
         type: oldColumn.Type,
         emojiIcon: oldColumn.EmojiIcon,
         width: oldColumn.Width,
         nameVisible: oldColumn.NameVisible,
         description: oldColumn.Description || '',
-        
+
         // Конвертуємо Chosen у days або tasks
-        ...(oldColumn.Chosen && typeof oldColumn.Chosen === 'object' && !oldColumn.Chosen.global 
+        ...(oldColumn.Chosen &&
+        typeof oldColumn.Chosen === 'object' &&
+        !oldColumn.Chosen.global
           ? { days: oldColumn.Chosen }
           : {}),
-        ...(oldColumn.Chosen?.global 
-          ? { tasks: oldColumn.Chosen.global }
-          : {}),
-          
+        ...(oldColumn.Chosen?.global ? { tasks: oldColumn.Chosen.global } : {}),
+
         // Інші поля
         ...(oldColumn.Options ? { options: oldColumn.Options } : {}),
         ...(oldColumn.TagColors ? { tagColors: oldColumn.TagColors } : {}),
-        ...(oldColumn.CheckboxColor ? { checkboxColor: oldColumn.CheckboxColor } : {}),
+        ...(oldColumn.CheckboxColor
+          ? { checkboxColor: oldColumn.CheckboxColor }
+          : {}),
         ...(oldColumn.DoneTags ? { doneTags: oldColumn.DoneTags } : {}),
       };
-      
+
       await columnsStore.put(newColumn);
     }
-    
+
     await txWrite.done;
     console.log('Міграцію завершено:', week.body.length, 'колонок');
     return { status: 'Migration completed', count: week.body.length };
@@ -393,20 +396,23 @@ export async function deleteColumn_OLD(columnId) {
 export async function exportData() {
   try {
     const db = await dbPromise;
-    const tx = db.transaction(['weeks', 'calendar', 'settings', 'columns'], 'readonly');
+    const tx = db.transaction(
+      ['weeks', 'calendar', 'settings', 'columns'],
+      'readonly',
+    );
 
     const weeks = await tx.objectStore('weeks').getAll();
     const calendar = await tx.objectStore('calendar').getAll();
     const settings = await tx.objectStore('settings').getAll();
     const columns = await tx.objectStore('columns').getAll();
 
-    return { 
-      weeks, 
-      calendar, 
+    return {
+      weeks,
+      calendar,
       settings,
       columns,
       exportDate: new Date().toISOString(),
-      version: 2 // версія для майбутніх міграцій
+      version: 2, // версія для майбутніх міграцій
     };
   } catch (error) {
     console.error('Export failed:', error);

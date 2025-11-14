@@ -1,0 +1,107 @@
+import React from 'react';
+import {
+  Heart,
+  Star,
+  Zap,
+  Sun,
+  Moon,
+  Coffee,
+  Rocket,
+  Shield,
+  Flag,
+  Bell,
+  Book,
+  Music,
+  Pizza,
+  Gamepad,
+  Camera,
+  Clock,
+  Globe,
+  Lock,
+  Map,
+  Mic,
+  Pen,
+  Phone,
+  Search,
+  User,
+  BicepsFlexed,
+  Smile,
+  Flame,
+  Brain,
+  Bug,
+  Wand2,
+  Cloud,
+  Eye,
+  Gift,
+  Hammer,
+  Home,
+  IceCream,
+  Leaf,
+  Lightbulb,
+  Trophy,
+  Wallet,
+  Circle,
+  ListTodo,
+  LucideIcon,
+} from 'lucide-react';
+
+export interface Icon {
+  name: string;
+  component: LucideIcon;
+}
+
+export const icons: Icon[] = [
+  { name: 'Heart', component: Heart },
+  { name: 'Star', component: Star },
+  { name: 'Zap', component: Zap },
+  { name: 'Sun', component: Sun },
+  { name: 'Moon', component: Moon },
+  { name: 'Coffee', component: Coffee },
+  { name: 'Rocket', component: Rocket },
+  { name: 'Shield', component: Shield },
+  { name: 'Flag', component: Flag },
+  { name: 'Bell', component: Bell },
+  { name: 'Book', component: Book },
+  { name: 'Music', component: Music },
+  { name: 'Pizza', component: Pizza },
+  { name: 'Gamepad', component: Gamepad },
+  { name: 'Camera', component: Camera },
+  { name: 'Clock', component: Clock },
+  { name: 'Globe', component: Globe },
+  { name: 'Lock', component: Lock },
+  { name: 'Map', component: Map },
+  { name: 'Mic', component: Mic },
+  { name: 'Pen', component: Pen },
+  { name: 'Phone', component: Phone },
+  { name: 'Search', component: Search },
+  { name: 'User', component: User },
+  { name: 'BicepsFlexed', component: BicepsFlexed },
+  { name: 'Smile', component: Smile },
+  { name: 'Flame', component: Flame },
+  { name: 'Brain', component: Brain },
+  { name: 'Bug', component: Bug },
+  { name: 'Wand2', component: Wand2 },
+  { name: 'Cloud', component: Cloud },
+  { name: 'Eye', component: Eye },
+  { name: 'Gift', component: Gift },
+  { name: 'Hammer', component: Hammer },
+  { name: 'Home', component: Home },
+  { name: 'IceCream', component: IceCream },
+  { name: 'Leaf', component: Leaf },
+  { name: 'Lightbulb', component: Lightbulb },
+  { name: 'Trophy', component: Trophy },
+  { name: 'Wallet', component: Wallet },
+  { name: 'Circle', component: Circle },
+  { name: 'ListTodo', component: ListTodo },
+];
+
+// Функція для рендерингу іконки з потрібним розміром
+export const getIconComponent = (
+  iconName: string,
+  size: number = 16,
+): React.ReactElement | null => {
+  const icon = icons.find((i) => i.name === iconName);
+  if (!icon) return null;
+  const IconComponent = icon.component;
+  return React.createElement(IconComponent, { size });
+};

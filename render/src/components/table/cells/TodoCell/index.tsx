@@ -1,0 +1,384 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { getColorOptions } from '../../../utils/colorOptions';
+import { Plus, Edit2, Check, Trash2, ListTodo } from 'lucide-react';
+import { useTodoState } from './hooks/useTodoState';
+import { useCategoryMenu } from './hooks/useCategoryMenu';
+import {
+  handleAddTodo,
+  handleToggleTodo,
+  handleDeleteTodo,
+  handleEditTodo,
+  handleSaveEdit,
+  filterTodos,
+} from './logic';
+
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+  theme: {
+    mode: string;
+  };
+  pomodoro: unknown;
+}
+
+interface TodoCellProps {
+  value: Array<{ text: string; completed: boolean; category?: string }>;
+  column: {
+    id: string;
+    type: string;
+    options?: string[];
+    tagColors?: Record<string, string>;
+  };
+  onChange: (
+    value: Array<{ text: string; completed: boolean; category?: string }>,
+  ) => void;
+}
+
+export const TodoCell: React.FC<TodoCellProps> = ({
+  value,
+  column,
+  onChange,
+}) => {
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
+  const darkMode = themeMode === 'dark' ? true : false;
+  const colorOptions = getColorOptions({ darkMode });
+
+  const {
+    todos,
+    setTodos,
+    newTodo,
+    setNewTodo,
+    newCategory,
+    setNewCategory,
+    isEditing,
+    setIsEditing,
+    editingIndex,
+    setEditingIndex,
+    editText,
+    setEditText,
+    editCategory,
+    setEditCategory,
+    selectedFilterCategory,
+    setSelectedFilterCategory,
+  } = useTodoState(value);
+
+  const { isCategoryMenuOpen, setIsCategoryMenuOpen, categoryMenuRef } =
+    useCategoryMenu();
+
+  const filteredTodos = filterTodos(todos, selectedFilterCategory);
+
+  return (
+    <div className="h-full flex flex-col">
+      <div className="flex flex-col gap-2 mb-2">
+        <div className="flex items-center relative">
+          <input
+            type="text"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+            onKeyPress={(e) =>
+              e.key === 'Enter' &&
+              handleAddTodo(
+                newTodo,
+                newCategory,
+                todos,
+                setTodos,
+                onChange,
+                setNewTodo,
+                setIsCategoryMenuOpen,
+              )
+            }
+            placeholder="Add new todo..."
+            className={`w-full px-3 py-2 pr-10 text-sm rounded-md transition-all duration-200
+              ${
+                darkMode
+                  ? 'bg-gray-700 text-gray-200 placeholder-gray-400 border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                  : 'bg-white text-gray-700 placeholder-gray-400 border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+              } border outline-none`}
+          />
+          {column?.options?.length > 0 && (
+            <div
+              ref={categoryMenuRef}
+              className="absolute z-50 right-10 top-1/2 -translate-y-1/2"
+            >
+              <button
+                onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
+                className={`p-1 rounded-md ${
+                  newCategory
+                    ? `${colorOptions.find((c) => c.name === column.tagColors[newCategory])?.bg} ${colorOptions.find((c) => c.name === column.tagColors[newCategory])?.text}`
+                    : darkMode
+                      ? 'bg-gray-600 text-gray-200'
+                      : 'bg-gray-200 text-gray-700'
+                }`}
+              >
+                <ListTodo size={16} />
+              </button>
+              {isCategoryMenuOpen && (
+                <div
+                  className={`absolute z-50 mt-2 right-0 w-40 ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}
+                >
+                  {column.options.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => {
+                        setNewCategory(category);
+                        setIsCategoryMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 text-xs font-medium ${
+                        newCategory === category
+                          ? `${colorOptions.find((c) => c.name === column.tagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.tagColors[category])?.text}`
+                          : darkMode
+                            ? 'hover:bg-gray-700 text-gray-200'
+                            : 'hover:bg-gray-100 text-gray-700'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => {
+                      setNewCategory('');
+                      setIsCategoryMenuOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 text-xs font-medium ${
+                      !newCategory
+                        ? darkMode
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-blue-500 text-white'
+                        : darkMode
+                          ? 'hover:bg-gray-700 text-gray-400'
+                          : 'hover:bg-gray-100 text-gray-400'
+                    }`}
+                  >
+                    Clear Category
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+          <button
+            onClick={() =>
+              handleAddTodo(
+                newTodo,
+                newCategory,
+                todos,
+                setTodos,
+                onChange,
+                setNewTodo,
+                setIsCategoryMenuOpen,
+              )
+            }
+            className={`absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md transition-colors duration-200 ${
+              darkMode
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-blue-500 hover:bg-blue-600 text-white'
+            }`}
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+        {column?.options?.length > 0 && (
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setSelectedFilterCategory('')}
+              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                selectedFilterCategory === ''
+                  ? darkMode
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-blue-500 text-white'
+                  : darkMode
+                    ? 'bg-gray-600 text-gray-200'
+                    : 'bg-gray-200 text-gray-700'
+              }`}
+            >
+              All Todos
+            </button>
+            {column.options.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedFilterCategory(category)}
+                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  selectedFilterCategory === category
+                    ? `${colorOptions.find((c) => c.name === column.tagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.tagColors[category])?.text}`
+                    : darkMode
+                      ? 'bg-gray-600 text-gray-200'
+                      : 'bg-gray-200 text-gray-700'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      <div
+        className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[310px] mt-0 ${
+          darkMode ? 'custom-scroll-thin-dark' : 'custom-scroll-thin-light'
+        }`}
+      >
+        {filteredTodos.map((todo, index) => (
+          <div
+            key={index}
+            className={`group flex items-center justify-between p-2 rounded-md ${
+              darkMode ? 'bg-gray-700' : 'bg-gray-50'
+            } ${index !== filteredTodos.length - 1 ? 'mb-[2px]' : ''} relative`}
+          >
+            <div className="flex items-center flex-1 min-w-0 w-full">
+              <button
+                onClick={() =>
+                  handleToggleTodo(
+                    todos.findIndex((t) => t === todo),
+                    todos,
+                    setTodos,
+                    onChange,
+                  )
+                }
+                className={`mr-2 p-1 rounded-full z-20 ${
+                  todo.completed
+                    ? darkMode
+                      ? 'bg-green-600 text-white'
+                      : 'bg-green-500 text-white'
+                    : darkMode
+                      ? 'bg-gray-600 text-gray-400'
+                      : 'bg-gray-200 text-gray-400'
+                }`}
+              >
+                <Check size={14} />
+              </button>
+              {isEditing &&
+              editingIndex === todos.findIndex((t) => t === todo) ? (
+                <div className="flex flex-col gap-2 flex-1">
+                  <input
+                    type="text"
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    onKeyPress={(e) =>
+                      e.key === 'Enter' &&
+                      handleSaveEdit(
+                        editingIndex,
+                        editText,
+                        editCategory,
+                        todos,
+                        setTodos,
+                        onChange,
+                        setIsEditing,
+                        setEditingIndex,
+                        setEditText,
+                        setEditCategory,
+                      )
+                    }
+                    onBlur={() =>
+                      handleSaveEdit(
+                        editingIndex,
+                        editText,
+                        editCategory,
+                        todos,
+                        setTodos,
+                        onChange,
+                        setIsEditing,
+                        setEditingIndex,
+                        setEditText,
+                        setEditCategory,
+                      )
+                    }
+                    className={`flex-1 px-2 py-1 text-sm rounded-md z-20 ${
+                      darkMode
+                        ? 'bg-gray-600 text-gray-200 border-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                        : 'bg-white text-gray-700 border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    } border outline-none focus:outline-none min-w-0`}
+                    autoFocus
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center flex-1 min-w-0 w-full gap-2">
+                  <div
+                    className={`
+                      flex-1 min-w-0 w-full
+                      text-sm
+                      ${
+                        todo.completed
+                          ? darkMode
+                            ? 'text-gray-500 line-through'
+                            : 'text-gray-400 line-through'
+                          : darkMode
+                            ? 'text-gray-200'
+                            : 'text-gray-700'
+                      }
+                      transition-opacity
+                      duration-150
+                      group-hover:opacity-0
+                      break-words
+                      overflow-hidden
+                      whitespace-pre-line
+                      cursor-default
+                      z-10
+                    `}
+                    style={{ wordBreak: 'break-word' }}
+                  >
+                    {todo.text}
+                  </div>
+                  {todo.category && column?.tagColors?.[todo.category] && (
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        colorOptions.find(
+                          (c) => c.name === column.tagColors[todo.category],
+                        )?.bg
+                      } ${colorOptions.find((c) => c.name === column.tagColors[todo.category])?.text}`}
+                    >
+                      {todo.category}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+            {!isEditing && (
+              <div className="flex space-x-1 absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-full justify-center z-10">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleEditTodo(
+                      todos.findIndex((t) => t === todo),
+                      todos,
+                      setIsEditing,
+                      setEditingIndex,
+                      setEditText,
+                      setEditCategory,
+                    );
+                  }}
+                  className={`p-2 rounded-md flex items-center justify-center ${
+                    darkMode
+                      ? 'bg-gray-800 text-gray-400 hover:text-gray-200'
+                      : 'bg-gray-100 text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <Edit2 size={14} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteTodo(
+                      todos.findIndex((t) => t === todo),
+                      todos,
+                      setTodos,
+                      onChange,
+                    );
+                  }}
+                  className={`p-2  rounded-md flex items-center justify-center ${
+                    darkMode
+                      ? 'bg-gray-800 text-red-400 hover:text-red-300'
+                      : 'bg-gray-100 text-red-500 hover:text-red-700'
+                  }`}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
