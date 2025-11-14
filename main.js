@@ -1,8 +1,9 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { init } from './api/ipcWindowsHandlers.js';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 
 
 
