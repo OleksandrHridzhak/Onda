@@ -1,4 +1,11 @@
-export const NumberCell = ({ value, onChange }) => {
+import React from 'react';
+
+interface NumberCellProps {
+  value: string | number;
+  onChange: (value: string) => void;
+}
+
+export const NumberCell: React.FC<NumberCellProps> = ({ value, onChange }) => {
   return (
     <input
       type="number"

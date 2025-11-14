@@ -1,9 +1,35 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { getIconComponent } from '../utils/icons';
 import ColumnMenu from './columnMenu/ColumnMenu';
-import { useSelector } from 'react-redux';
 
-const ColumnHeader = ({
+interface Column {
+  id: string;
+  name: string;
+  emojiIcon?: string;
+  nameVisible?: boolean;
+  width?: number;
+  description?: string;
+  type?: string;
+}
+
+interface ColumnHeaderProps {
+  column: Column;
+  onRemove: (id: string) => void;
+  onClearColumn: (id: string) => void;
+  onRename: (id: string, newName: string) => void;
+  onChangeIcon: (id: string, newIcon: string) => void;
+  onChangeDescription: (id: string, newDescription: string) => void;
+  onToggleTitleVisibility: (id: string) => void;
+  onChangeOptions: (id: string, options: unknown) => void;
+  onChangeCheckboxColor: (id: string, color: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  onChangeWidth: (id: string, width: number) => void;
+}
+
+const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   column,
   onRemove,
   onClearColumn,
@@ -24,7 +50,7 @@ const ColumnHeader = ({
   const isEmptyHeader =
     !column.emojiIcon && (column.nameVisible === false || !column.name);
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     console.log('Menu closed');
     setShowMenu(false);
   };
