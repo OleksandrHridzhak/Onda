@@ -13,6 +13,16 @@ import {
   filterTodos,
 } from './logic';
 
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+  theme: {
+    mode: string;
+  };
+  pomodoro: unknown;
+}
+
 interface TodoCellProps {
   value: Array<{ text: string; completed: boolean; category?: string }>;
   column: {
@@ -21,11 +31,17 @@ interface TodoCellProps {
     options?: string[];
     tagColors?: Record<string, string>;
   };
-  onChange: (value: Array<{ text: string; completed: boolean; category?: string }>) => void;
+  onChange: (
+    value: Array<{ text: string; completed: boolean; category?: string }>,
+  ) => void;
 }
 
-export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) => {
-  const { themeMode } = useSelector((state) => state.newTheme);
+export const TodoCell: React.FC<TodoCellProps> = ({
+  value,
+  column,
+  onChange,
+}) => {
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
   const colorOptions = getColorOptions({ darkMode });
 
@@ -48,11 +64,8 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
     setSelectedFilterCategory,
   } = useTodoState(value);
 
-  const {
-    isCategoryMenuOpen,
-    setIsCategoryMenuOpen,
-    categoryMenuRef,
-  } = useCategoryMenu();
+  const { isCategoryMenuOpen, setIsCategoryMenuOpen, categoryMenuRef } =
+    useCategoryMenu();
 
   const filteredTodos = filterTodos(todos, selectedFilterCategory);
 
@@ -73,7 +86,7 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
                 setTodos,
                 onChange,
                 setNewTodo,
-                setIsCategoryMenuOpen
+                setIsCategoryMenuOpen,
               )
             }
             placeholder="Add new todo..."
@@ -153,7 +166,7 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
                 setTodos,
                 onChange,
                 setNewTodo,
-                setIsCategoryMenuOpen
+                setIsCategoryMenuOpen,
               )
             }
             className={`absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md transition-colors duration-200 ${
@@ -214,7 +227,12 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
             <div className="flex items-center flex-1 min-w-0 w-full">
               <button
                 onClick={() =>
-                  handleToggleTodo(todos.findIndex((t) => t === todo), todos, setTodos, onChange)
+                  handleToggleTodo(
+                    todos.findIndex((t) => t === todo),
+                    todos,
+                    setTodos,
+                    onChange,
+                  )
                 }
                 className={`mr-2 p-1 rounded-full z-20 ${
                   todo.completed
@@ -247,7 +265,7 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
                         setIsEditing,
                         setEditingIndex,
                         setEditText,
-                        setEditCategory
+                        setEditCategory,
                       )
                     }
                     onBlur={() =>
@@ -261,7 +279,7 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
                         setIsEditing,
                         setEditingIndex,
                         setEditText,
-                        setEditCategory
+                        setEditCategory,
                       )
                     }
                     className={`flex-1 px-2 py-1 text-sm rounded-md z-20 ${
@@ -304,7 +322,7 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         colorOptions.find(
-                          (c) => c.name === column.tagColors[todo.category]
+                          (c) => c.name === column.tagColors[todo.category],
                         )?.bg
                       } ${colorOptions.find((c) => c.name === column.tagColors[todo.category])?.text}`}
                     >
@@ -326,7 +344,7 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
                       setIsEditing,
                       setEditingIndex,
                       setEditText,
-                      setEditCategory
+                      setEditCategory,
                     );
                   }}
                   className={`p-2 rounded-md flex items-center justify-center ${
@@ -345,7 +363,7 @@ export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) =
                       todos.findIndex((t) => t === todo),
                       todos,
                       setTodos,
-                      onChange
+                      onChange,
                     );
                   }}
                   className={`p-2  rounded-md flex items-center justify-center ${

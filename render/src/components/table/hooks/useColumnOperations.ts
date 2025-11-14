@@ -1,20 +1,12 @@
 import { useCallback } from 'react';
 import { updateColumn } from '../../../services/columnsDB';
+import { BaseColumn } from '../../../models/columns/BaseColumn';
 
 const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
 
-interface Column {
-  id: string;
-  type: string;
-  days?: Record<string, unknown>;
-  tasks?: unknown;
-  options?: string[];
-  doneTags?: string[];
-  toJSON: () => unknown;
-  [key: string]: unknown;
-}
+type Column = BaseColumn;
 
 interface UpdateResult {
   status: string;
@@ -27,14 +19,16 @@ interface UpdateResult {
  */
 export const useColumnOperations = (
   columns: Column[],
-  setColumns: React.Dispatch<React.SetStateAction<Column[]>>
+  setColumns: React.Dispatch<React.SetStateAction<Column[]>>,
 ) => {
-  
   /**
    * Оновлює колонку в БД та стані
    */
   const updateColumnData = useCallback(
-    async (columnId: string, updateFn: (column: Column) => void): Promise<UpdateResult> => {
+    async (
+      columnId: string,
+      updateFn: (column: Column) => void,
+    ): Promise<UpdateResult> => {
       const column = columns.find((col) => col.id === columnId);
       if (!column) {
         console.warn('Column not found:', columnId);
@@ -45,35 +39,37 @@ export const useColumnOperations = (
         // Викликаємо функцію оновлення на екземплярі
         updateFn(column);
         await updateColumn(column.toJSON());
-        
+
         // Оновлюємо стан
         setColumns((prev) =>
-          prev.map((col) => 
-            col.id === columnId ? column : col
-          )
+          prev.map((col) => (col.id === columnId ? column : col)),
         );
-        
+
         return { status: 'Success', data: column };
       } catch (err) {
         handleError('Failed to update column:', err);
         return { status: 'Error', error: (err as Error).message };
       }
     },
-    [columns, setColumns]
+    [columns, setColumns],
   );
 
   /**
    * Оновлює день-специфічні дані (для DayBasedColumn)
    */
   const updateDayData = useCallback(
-    async (columnId: string, day: string, value: unknown): Promise<UpdateResult> => {
+    async (
+      columnId: string,
+      day: string,
+      value: unknown,
+    ): Promise<UpdateResult> => {
       return updateColumnData(columnId, (instance) => {
-        if (instance.days) {
+        if ('days' in instance && instance.days) {
           instance.days[day] = value;
         }
       });
     },
-    [updateColumnData]
+    [updateColumnData],
   );
 
   /**
@@ -82,17 +78,22 @@ export const useColumnOperations = (
   const updateTasks = useCallback(
     async (columnId: string, tasks: unknown): Promise<UpdateResult> => {
       return updateColumnData(columnId, (instance) => {
-        instance.tasks = tasks;
+        if ('tasks' in instance) {
+          (instance as any).tasks = tasks;
+        }
       });
     },
-    [updateColumnData]
+    [updateColumnData],
   );
 
   /**
    * Оновлює базові властивості колонки
    */
   const updateProperties = useCallback(
-    async (columnId: string, updates: Record<string, unknown>): Promise<UpdateResult> => {
+    async (
+      columnId: string,
+      updates: Record<string, unknown>,
+    ): Promise<UpdateResult> => {
       return updateColumnData(columnId, (instance) => {
         // Мапінг legacy полів на поля класу для зворотної сумісності
         const fieldMapping: Record<string, string> = {
@@ -104,9 +105,9 @@ export const useColumnOperations = (
           CheckboxColor: 'checkboxColor',
           Options: 'options',
           TagColors: 'tagColors',
-          DoneTags: 'doneTags'
+          DoneTags: 'doneTags',
         };
-        
+
         Object.entries(updates).forEach(([key, value]) => {
           // Перевіряємо чи це legacy ключ
           const instanceKey = fieldMapping[key] || key;
@@ -116,7 +117,7 @@ export const useColumnOperations = (
         });
       });
     },
-    [updateColumnData]
+    [updateColumnData],
   );
 
   /**
@@ -126,36 +127,46 @@ export const useColumnOperations = (
     async (columnId: string): Promise<UpdateResult> => {
       console.log('clearColumn called with columnId:', columnId);
       return updateColumnData(columnId, (instance) => {
-        console.log('clearColumn - instance type:', instance.type, 'instance:', instance);
-        
-        if (instance.type === 'tasktable' && instance.doneTags !== undefined) {
+        console.log(
+          'clearColumn - instance type:',
+          instance.type,
+          'instance:',
+          instance,
+        );
+
+        if (instance.type === 'tasktable' && 'doneTags' in instance) {
           // TaskTableColumn - повертаємо виконані назад у невиконані (перевіряємо ПЕРШИМ!)
+          const taskCol = instance as any;
           console.log('Clearing TaskTable - BEFORE:', {
-            options: [...(instance.options || [])],
-            doneTags: [...(instance.doneTags || [])]
+            options: [...(taskCol.options || [])],
+            doneTags: [...(taskCol.doneTags || [])],
           });
-          if (instance.doneTags && instance.doneTags.length > 0) {
-            instance.options = [...(instance.options || []), ...instance.doneTags];
-            instance.doneTags = [];
+          if (taskCol.doneTags && taskCol.doneTags.length > 0) {
+            taskCol.options = [...(taskCol.options || []), ...taskCol.doneTags];
+            taskCol.doneTags = [];
           }
           console.log('Clearing TaskTable - AFTER:', {
-            options: [...(instance.options || [])],
-            doneTags: [...(instance.doneTags || [])]
+            options: [...(taskCol.options || [])],
+            doneTags: [...(taskCol.doneTags || [])],
           });
-        } else if (instance.days) {
+        } else if ('days' in instance) {
           // DayBasedColumn (checkbox, numberbox, text, multi-select, multicheckbox)
           console.log('Clearing days for DayBasedColumn');
-          Object.keys(instance.days).forEach(day => {
-            instance.days![day] = '';
+          const dayCol = instance as any;
+          Object.keys(dayCol.days).forEach((day) => {
+            dayCol.days[day] = '';
           });
-        } else if (instance.tasks !== undefined) {
+        } else if ('tasks' in instance) {
           // TodoColumn - видаляємо тільки виконані
           console.log('Clearing completed tasks for TodoColumn');
-          instance.tasks = (instance.tasks as Array<{completed: boolean}>).filter(task => !task.completed);
+          const todoCol = instance as any;
+          todoCol.tasks = (
+            todoCol.tasks as Array<{ completed: boolean }>
+          ).filter((task) => !task.completed);
         }
       });
     },
-    [updateColumnData]
+    [updateColumnData],
   );
 
   return {

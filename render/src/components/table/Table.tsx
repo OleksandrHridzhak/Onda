@@ -40,10 +40,19 @@ const Table: React.FC = () => {
     {
       id: 'filler',
       type: 'filler',
+      name: '',
       description: '',
       emojiIcon: '',
       nameVisible: false,
-    },
+      width: 0,
+      setEmojiIcon: () => false,
+      setWidth: () => false,
+      setNameVisible: () => false,
+      setName: () => false,
+      setDescription: () => false,
+      update: () => false,
+      toJSON: () => ({}),
+    } as any,
   ];
 
   if (loading) {
@@ -97,7 +106,7 @@ const Table: React.FC = () => {
                   ) : (
                     <ColumnHeader
                       key={column.id}
-                      column={column}
+                      column={column as any}
                       onRename={columnMenuLogic.handleRename}
                       onRemove={columnMenuLogic.handleDeleteColumn}
                       onClearColumn={columnMenuLogic.handleClearColumn}
@@ -105,31 +114,37 @@ const Table: React.FC = () => {
                       onChangeDescription={
                         columnMenuLogic.handleChangeDescription
                       }
-                      onToggleTitleVisibility={
-                        columnMenuLogic.handleToggleTitleVisibility
+                      onToggleTitleVisibility={(id: string, visible: boolean) =>
+                        columnMenuLogic.handleToggleTitleVisibility(id, visible)
                       }
-                      onChangeOptions={columnMenuLogic.handleChangeOptions}
+                      onChangeOptions={(
+                        id: string,
+                        options: string[],
+                        tagColors: Record<string, string>,
+                        doneTags?: string[],
+                      ) =>
+                        columnMenuLogic.handleChangeOptions(
+                          id,
+                          options,
+                          tagColors,
+                          doneTags,
+                        )
+                      }
                       onChangeCheckboxColor={
                         columnMenuLogic.handleChangeCheckboxColor
                       }
-                      onMoveUp={() => handleMoveColumn(column.id, 'up')}
-                      onMoveDown={() =>
-                        handleMoveColumn(column.id, 'down')
-                      }
+                      onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+                      onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
                       canMoveUp={
-                        column.id !== 'days' &&
-                        columns.indexOf(column) > 1
+                        column.id !== 'days' && columns.indexOf(column) > 1
                       }
                       canMoveDown={
                         column.id !== 'days' &&
                         columns.indexOf(column) < columns.length - 1
                       }
-                      darkMode={mode === 'dark' ? true : false}
                       onChangeWidth={handleChangeWidth}
-                      onAddTask={handleAddTask}
-                      style={getWidthStyle(column)}
                     />
-                  )
+                  ),
                 )}
               </tr>
             </thead>

@@ -2,9 +2,10 @@ import React from 'react';
 
 interface BubbleBtnProps {
   children: React.ReactNode;
-  onClick: () => void;
+  onClick: (e?: React.MouseEvent) => void;
   disabled?: boolean;
   variant?: 'standard' | 'delete' | 'clear';
+  className?: string;
 }
 
 export const BubbleBtn: React.FC<BubbleBtnProps> = ({
@@ -12,6 +13,7 @@ export const BubbleBtn: React.FC<BubbleBtnProps> = ({
   onClick,
   disabled = false,
   variant = 'standard',
+  className = '',
 }) => {
   const variantClass: Record<string, string> = {
     standard: 'bg-primaryColor text-white',
@@ -24,7 +26,10 @@ export const BubbleBtn: React.FC<BubbleBtnProps> = ({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`items-center flex px-4 py-2.5 text-sm rounded-xl transition ${variantClass[variant]}`}
+      className={
+        className ||
+        `items-center flex px-4 py-2.5 text-sm rounded-xl transition ${variantClass[variant]}`
+      }
     >
       {children}
     </button>

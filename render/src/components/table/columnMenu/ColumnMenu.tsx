@@ -17,19 +17,26 @@ import {
 } from './columnMenuHandlers';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
 
+import { BaseColumn } from '../../../models/columns/BaseColumn';
+
+type Column =
+  | BaseColumn
+  | {
+      id: string;
+      type: string;
+      name: string;
+      description?: string;
+      emojiIcon?: string;
+      nameVisible?: boolean;
+      width?: number;
+      options?: string[];
+      doneTags?: string[];
+      tagColors?: Record<string, string>;
+      checkboxColor?: string;
+    };
+
 interface ColumnMenuProps {
-  column: {
-    id: string;
-    type: string;
-    description: string;
-    emojiIcon: string;
-    nameVisible?: boolean;
-    width?: number;
-    options?: string[];
-    doneTags?: string[];
-    tagColors?: Record<string, string>;
-    checkboxColor?: string;
-  };
+  column: Column;
   handleDeleteColumn: (id: string) => void;
   handleClearColumn: (id: string) => void;
   onClose: () => void;
@@ -37,9 +44,14 @@ interface ColumnMenuProps {
   onChangeIcon: (id: string, icon: string) => void;
   onChangeDescription: (id: string, description: string) => void;
   onToggleTitleVisibility: (id: string, visible: boolean) => void;
-  onChangeOptions: (id: string, options: string[], tagColors: Record<string, string>, doneTags?: string[]) => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
+  onChangeOptions: (
+    id: string,
+    options: string[],
+    tagColors: Record<string, string>,
+    doneTags?: string[],
+  ) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
   canMoveUp: boolean;
   canMoveDown: boolean;
   onChangeWidth: (id: string, width: number) => void;
@@ -65,7 +77,8 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
 }) => {
   const [state, dispatch] = useReducer(reducer, column, initialState);
   const menuRef = useRef(null);
-  const darkMode = document.documentElement.getAttribute('data-theme-mode') === 'dark';
+  const darkMode =
+    document.documentElement.getAttribute('data-theme-mode') === 'dark';
 
   useEffect(() => {
     dispatch({ type: 'RESET', payload: column });
@@ -145,7 +158,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 dispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })
               }
               className={`w-full px-4 py-2 border border-border bg-background text-text rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200 resize-none`}
-              rows="3"
+              rows={3}
             />
           </div>
           <div className="mb-4">
@@ -159,7 +172,9 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 <input
                   type="number"
                   value={state.width}
-                  onChange={(e) => handleWidthChange(dispatch, onChangeWidth, column, e)}
+                  onChange={(e) =>
+                    handleWidthChange(dispatch, onChangeWidth, column, e)
+                  }
                   min="0"
                   max="1000"
                   className={`w-full px-3 py-2.5 flex items-center text-sm border bg-transparent border-border text-text rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primaryColor`}
@@ -168,14 +183,14 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 />
               </div>
               <TransparentBtn
-                onClick={onMoveUp}
+                onClick={() => onMoveUp(column.id)}
                 disabled={!canMoveUp}
                 darkTheme={darkMode}
               >
                 <ArrowLeft size={18} /> LEFT
               </TransparentBtn>
               <TransparentBtn
-                onClick={onMoveDown}
+                onClick={() => onMoveDown(column.id)}
                 disabled={!canMoveDown}
                 darkTheme={darkMode}
               >
@@ -184,7 +199,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
             </div>
           </div>
           {['multi-select', 'todo', 'multicheckbox', 'tasktable'].includes(
-            column.type
+            column.type,
           ) && (
             <OptionsList
               columnType={column.type}
@@ -194,15 +209,37 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
               setNewOption={(value) =>
                 dispatch({ type: 'SET_NEW_OPTION', payload: value })
               }
-              handleAddOption={() => handleAddOption(state, dispatch, column, onChangeOptions)}
+              handleAddOption={() =>
+                handleAddOption(state, dispatch, column, onChangeOptions)
+              }
               handleRemoveOption={(option) =>
-                handleRemoveOption(state, dispatch, column, onChangeOptions, option)
+                handleRemoveOption(
+                  state,
+                  dispatch,
+                  column,
+                  onChangeOptions,
+                  option,
+                )
               }
               handleEditOption={(oldOption, newOption) =>
-                handleEditOption(state, dispatch, column, onChangeOptions, oldOption, newOption)
+                handleEditOption(
+                  state,
+                  dispatch,
+                  column,
+                  onChangeOptions,
+                  oldOption,
+                  newOption,
+                )
               }
               handleColorChange={(option, color) =>
-                handleColorChange(state, dispatch, column, onChangeOptions, option, color)
+                handleColorChange(
+                  state,
+                  dispatch,
+                  column,
+                  onChangeOptions,
+                  option,
+                  color,
+                )
               }
               optionColors={state.optionColors}
               darkMode={darkMode}
@@ -226,17 +263,21 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
             />
           )}
           <div className="flex justify-between gap-2 mt-6">
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <BubbleBtn
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (window.confirm(`Are you sure you want to delete "${column.description || 'this column'}"? This action cannot be undone.`)) {
+                  if (
+                    window.confirm(
+                      `Are you sure you want to delete "${column.description || 'this column'}"? This action cannot be undone.`,
+                    )
+                  ) {
                     handleDeleteColumn(column.id);
                     onClose();
                   }
                 }}
                 disabled={state.isSaving}
-                variant='delete'
+                variant="delete"
               >
                 Delete
               </BubbleBtn>
@@ -246,7 +287,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                   handleClearColumn(column.id);
                 }}
                 disabled={state.isSaving}
-                variant='clear'
+                variant="clear"
               >
                 Clear column
               </BubbleBtn>
@@ -265,11 +306,11 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                   onChangeOptions,
                   onChangeCheckboxColor,
                   onChangeWidth,
-                  onClose
+                  onClose,
                 );
               }}
               disabled={state.isSaving}
-              variant='standard'
+              variant="standard"
             >
               Save Changes
             </BubbleBtn>

@@ -16,8 +16,8 @@ interface State {
 interface Column {
   id: string;
   name: string;
-  emojiIcon: string;
-  description: string;
+  emojiIcon?: string;
+  description?: string;
   nameVisible?: boolean;
   type: string;
   options?: string[];
@@ -39,7 +39,12 @@ export const handleAddOption = (
   state: State,
   dispatch: React.Dispatch<Action>,
   column: Column,
-  onChangeOptions: (id: string, options: string[], colors: Record<string, string>, doneTags: string[]) => void
+  onChangeOptions: (
+    id: string,
+    options: string[],
+    colors: Record<string, string>,
+    doneTags: string[],
+  ) => void,
 ): void => {
   dispatch({ type: 'ADD_OPTION' });
   if (
@@ -51,7 +56,7 @@ export const handleAddOption = (
       column.id,
       [...state.options, state.newOption.trim()],
       { ...state.optionColors, [state.newOption.trim()]: 'blue' },
-      state.doneTags
+      state.doneTags,
     );
   }
 };
@@ -60,8 +65,13 @@ export const handleRemoveOption = (
   state: State,
   dispatch: React.Dispatch<Action>,
   column: Column,
-  onChangeOptions: (id: string, options: string[], colors: Record<string, string>, doneTags: string[]) => void,
-  option: string
+  onChangeOptions: (
+    id: string,
+    options: string[],
+    colors: Record<string, string>,
+    doneTags: string[],
+  ) => void,
+  option: string,
 ): void => {
   dispatch({ type: 'REMOVE_OPTION', payload: option });
   const isInOptions = state.options.includes(option);
@@ -83,16 +93,21 @@ export const handleEditOption = (
   state: State,
   dispatch: React.Dispatch<Action>,
   column: Column,
-  onChangeOptions: (id: string, options: string[], colors: Record<string, string>, doneTags: string[]) => void,
+  onChangeOptions: (
+    id: string,
+    options: string[],
+    colors: Record<string, string>,
+    doneTags: string[],
+  ) => void,
   oldOption: string,
-  newOption: string
+  newOption: string,
 ): void => {
   dispatch({ type: 'EDIT_OPTION', payload: { oldOption, newOption } });
   const isInOptions = state.options.includes(oldOption);
   const isInDoneTags = state.doneTags.includes(oldOption);
   if (isInOptions) {
     const newOptions = state.options.map((opt) =>
-      opt === oldOption ? newOption : opt
+      opt === oldOption ? newOption : opt,
     );
     const newColors = {
       ...state.optionColors,
@@ -102,7 +117,7 @@ export const handleEditOption = (
     onChangeOptions(column.id, newOptions, newColors, state.doneTags);
   } else if (isInDoneTags) {
     const newDoneTags = state.doneTags.map((tag) =>
-      tag === oldOption ? newOption : tag
+      tag === oldOption ? newOption : tag,
     );
     const newColors = {
       ...state.optionColors,
@@ -117,16 +132,21 @@ export const handleColorChange = (
   state: State,
   dispatch: React.Dispatch<Action>,
   column: Column,
-  onChangeOptions: (id: string, options: string[], colors: Record<string, string>, doneTags: string[]) => void,
+  onChangeOptions: (
+    id: string,
+    options: string[],
+    colors: Record<string, string>,
+    doneTags: string[],
+  ) => void,
   option: string,
-  color: string
+  color: string,
 ): void => {
   dispatch({ type: 'CHANGE_OPTION_COLOR', payload: { option, color } });
   onChangeOptions(
     column.id,
     state.options,
     { ...state.optionColors, [option]: color },
-    state.doneTags
+    state.doneTags,
   );
 };
 
@@ -134,14 +154,27 @@ export const handleSave = async (
   state: State,
   dispatch: React.Dispatch<Action>,
   column: Column,
-  onRename: (id: string, name: string) => Promise<void>,
-  onChangeIcon: (id: string, icon: string) => Promise<void>,
-  onChangeDescription: (id: string, description: string) => Promise<void>,
-  onToggleTitleVisibility: (id: string, visible: boolean) => Promise<void>,
-  onChangeOptions: (id: string, options: string[], colors: Record<string, string>, doneTags: string[]) => Promise<void>,
-  onChangeCheckboxColor: (id: string, color: string) => Promise<void>,
-  onChangeWidth: ((id: string, width: number) => Promise<void>) | undefined,
-  onClose: () => void
+  onRename: (id: string, name: string) => void | Promise<void>,
+  onChangeIcon: (id: string, icon: string) => void | Promise<void>,
+  onChangeDescription: (
+    id: string,
+    description: string,
+  ) => void | Promise<void>,
+  onToggleTitleVisibility: (
+    id: string,
+    visible: boolean,
+  ) => void | Promise<void>,
+  onChangeOptions: (
+    id: string,
+    options: string[],
+    colors: Record<string, string>,
+    doneTags: string[],
+  ) => void | Promise<void>,
+  onChangeCheckboxColor: (id: string, color: string) => void | Promise<void>,
+  onChangeWidth:
+    | ((id: string, width: number) => void | Promise<void>)
+    | undefined,
+  onClose: () => void,
 ): Promise<void> => {
   dispatch({ type: 'SET_SAVING', payload: true });
   try {
@@ -177,7 +210,7 @@ export const handleSave = async (
         column.id,
         state.options,
         state.optionColors,
-        state.doneTags
+        state.doneTags,
       );
     }
 
@@ -203,7 +236,7 @@ export const handleWidthChange = (
   dispatch: React.Dispatch<Action>,
   onChangeWidth: ((id: string, width: number) => void) | undefined,
   column: Column,
-  e: React.ChangeEvent<HTMLInputElement>
+  e: React.ChangeEvent<HTMLInputElement>,
 ): void => {
   const newWidth = parseInt(e.target.value, 10);
   dispatch({ type: 'SET_WIDTH', payload: newWidth });

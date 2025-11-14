@@ -14,6 +14,7 @@ interface OptionsListProps {
   handleColorChange: (option: string, color: string) => void;
   optionColors: Record<string, string>;
   darkMode: boolean;
+  isColorMenuOpen?: Record<string, boolean>;
   toggleColorMenu: (option: string) => void;
 }
 
@@ -33,9 +34,7 @@ export const OptionsList: React.FC<OptionsListProps> = ({
 }) => {
   return (
     <div className="mb-4">
-      <label
-        className={`block text-sm font-medium text-textTableValues mb-1`}
-      >
+      <label className={`block text-sm font-medium text-textTableValues mb-1`}>
         {columnType === 'tasktable'
           ? 'Tasks'
           : columnType === 'multi-select'

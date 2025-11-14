@@ -2,19 +2,13 @@ import { useCallback } from 'react';
 import { deleteColumn } from '../../../services/columnsDB';
 import { useColumnOperations } from '../hooks/useColumnOperations';
 import { DAYS } from '../hooks/useColumnsData';
+import { BaseColumn } from '../../../models/columns/BaseColumn';
 
 const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
 
-interface Column {
-  id?: string;
-  ColumnId?: string;
-  type?: string;
-  _instance?: {
-    id: string;
-  };
-}
+type Column = BaseColumn;
 
 interface UpdateResult {
   status: string;
@@ -29,21 +23,26 @@ interface UpdateResult {
 export const useColumnMenuLogic = (
   columns: Column[],
   setColumns: React.Dispatch<React.SetStateAction<Column[]>>,
-  setTableData: React.Dispatch<React.SetStateAction<Record<string, Record<string, unknown>>>>
+  setTableData: React.Dispatch<
+    React.SetStateAction<Record<string, Record<string, unknown>>>
+  >,
 ) => {
-  const { updateProperties, clearColumn } = useColumnOperations(columns, setColumns);
+  const { updateProperties, clearColumn } = useColumnOperations(
+    columns,
+    setColumns,
+  );
 
   const handleDeleteColumn = useCallback(
     async (columnId: string): Promise<UpdateResult> => {
       try {
-        const column = columns.find(col => col.ColumnId === columnId || col._instance?.id === columnId);
-        const actualId = column?._instance?.id || columnId;
-        
-        const result = await deleteColumn(actualId);
+        const column = columns.find((col) => col.id === columnId);
+        if (!column) {
+          return { status: 'Error', error: 'Column not found' };
+        }
+
+        const result = await deleteColumn(columnId);
         if (result.status || result.status === 'Column deleted') {
-          setColumns((prev) => prev.filter((col) => 
-            col.ColumnId !== columnId && col._instance?.id !== actualId
-          ));
+          setColumns((prev) => prev.filter((col) => col.id !== columnId));
         }
         return result;
       } catch (err) {
@@ -51,35 +50,35 @@ export const useColumnMenuLogic = (
         return { status: 'Error', error: (err as Error).message };
       }
     },
-    [columns, setColumns]
+    [columns, setColumns],
   );
 
   const handleRename = useCallback(
     async (columnId: string, newName: string): Promise<UpdateResult> => {
       return await updateProperties(columnId, { Name: newName });
     },
-    [updateProperties]
+    [updateProperties],
   );
 
   const handleChangeIcon = useCallback(
     (columnId: string, newIcon: string): Promise<UpdateResult> => {
       return updateProperties(columnId, { EmojiIcon: newIcon });
     },
-    [updateProperties]
+    [updateProperties],
   );
 
   const handleChangeDescription = useCallback(
     async (columnId: string, newDescription: string): Promise<UpdateResult> => {
       return await updateProperties(columnId, { Description: newDescription });
     },
-    [updateProperties]
+    [updateProperties],
   );
 
   const handleToggleTitleVisibility = useCallback(
     (columnId: string, showTitle: boolean): Promise<UpdateResult> => {
       return updateProperties(columnId, { NameVisible: showTitle });
     },
-    [updateProperties]
+    [updateProperties],
   );
 
   const handleChangeOptions = useCallback(
@@ -87,7 +86,7 @@ export const useColumnMenuLogic = (
       columnId: string,
       options: string[],
       tagColors: Record<string, string>,
-      doneTags: string[] = []
+      doneTags: string[] = [],
     ): Promise<UpdateResult> => {
       return updateProperties(columnId, {
         Options: options,
@@ -95,34 +94,34 @@ export const useColumnMenuLogic = (
         DoneTags: doneTags,
       });
     },
-    [updateProperties]
+    [updateProperties],
   );
 
   const handleChangeCheckboxColor = useCallback(
     (columnId: string, color: string): Promise<UpdateResult> => {
       return updateProperties(columnId, { CheckboxColor: color });
     },
-    [updateProperties]
+    [updateProperties],
   );
 
   const handleClearColumn = useCallback(
     async (columnId: string): Promise<UpdateResult> => {
       console.log('handleClearColumn called for:', columnId);
-      
+
       // Clear column data in database and update columns state
       const result = await clearColumn(columnId);
       console.log('clearColumn result:', result);
-      
+
       // For DayBasedColumn types, also clear tableData
-      const column = columns.find(col => col.ColumnId === columnId);
+      const column = columns.find((col) => col.id === columnId);
       console.log('Found column:', column);
-      
+
       if (column && column.type !== 'todo' && column.type !== 'tasktable') {
         console.log('Clearing tableData for DayBasedColumn');
         // Clear tableData for DayBasedColumns (checkbox, multicheckbox, number, notes, tags, multiselect)
-        setTableData(prev => {
-          const newData = {...prev};
-          DAYS.forEach(day => {
+        setTableData((prev) => {
+          const newData = { ...prev };
+          DAYS.forEach((day) => {
             if (newData[day]) {
               newData[day][columnId] = '';
             }
@@ -132,10 +131,10 @@ export const useColumnMenuLogic = (
       } else {
         console.log('Column type is todo or tasktable, or not found');
       }
-      
+
       return result;
     },
-    [clearColumn, columns, setTableData]
+    [clearColumn, columns, setTableData],
   );
 
   return {

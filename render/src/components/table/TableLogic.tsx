@@ -38,17 +38,27 @@ export const useTableLogic = () => {
   } = useColumnsData();
 
   // Обробники операцій
-  const handlers = useTableHandlers(columns, setColumns, tableData, setTableData, setColumnOrder);
+  const handlers = useTableHandlers(
+    columns,
+    setColumns,
+    tableData,
+    setTableData,
+    setColumnOrder,
+  );
 
   // Завантаження налаштувань
   useEffect(() => {
-    settingsService.getSettings()
-      .then(({ data }: { data: any }) => {
-        if (typeof data?.table?.showSummaryRow === 'boolean') {
-          setShowSummaryRow(data.table.showSummaryRow);
-        }
-        if (data?.header?.layout) {
-          setHeaderLayout(data.header.layout);
+    settingsService
+      .getSettings()
+      .then((response: { status: string; data?: any; error?: any }) => {
+        if (response.status === 'success' && response.data) {
+          const { data } = response;
+          if (typeof data?.table?.showSummaryRow === 'boolean') {
+            setShowSummaryRow(data.table.showSummaryRow);
+          }
+          if (data?.header?.layout) {
+            setHeaderLayout(data.header.layout);
+          }
         }
       })
       .catch((err: any) => handleError('Error fetching settings:', err));
@@ -93,18 +103,24 @@ export const getWidthStyle = (column: any): React.CSSProperties => {
 /**
  * Обчислює сумарні значення для колонки
  */
-export const calculateSummary = (column: any, tableData: any): string | number => {
+export const calculateSummary = (
+  column: any,
+  tableData: any,
+): string | number => {
   if (column.type === 'checkbox') {
     return DAYS.reduce(
       (sum, day) => sum + (tableData[day]?.[column.id] ? 1 : 0),
-      0
+      0,
     );
   } else if (column.type === 'numberbox') {
     return DAYS.reduce(
       (sum, day) => sum + (parseFloat(tableData[day]?.[column.id]) || 0),
-      0
+      0,
     );
-  } else if (column.type === 'multi-select' || column.type === 'multicheckbox') {
+  } else if (
+    column.type === 'multi-select' ||
+    column.type === 'multicheckbox'
+  ) {
     return DAYS.reduce((sum, day) => {
       const tags = tableData[day]?.[column.id];
       if (typeof tags === 'string' && tags.trim() !== '') {
@@ -130,7 +146,12 @@ interface RenderCellProps {
   tableData: any;
   darkMode: boolean;
   handleCellChange: (day: string, columnId: string, value: any) => void;
-  handleChangeOptions: (columnId: string, options: string[], tagColors: Record<string, string>, doneTags?: string[]) => void;
+  handleChangeOptions: (
+    columnId: string,
+    options: string[],
+    tagColors: Record<string, string>,
+    doneTags?: string[],
+  ) => void;
 }
 
 /**
@@ -149,7 +170,7 @@ export const RenderCell: React.FC<RenderCellProps> = ({
   const { theme, mode } = useSelector((state: any) => state.theme);
   const style = getWidthStyle(column);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-  
+
   const cellComponents = {
     checkbox: CheckboxCell,
     numberbox: NumberCell,
@@ -200,7 +221,7 @@ export const RenderCell: React.FC<RenderCellProps> = ({
       handleCellChange(
         column.type === 'todo' ? 'global' : day,
         column.id,
-        value
+        value,
       ),
     darkMode,
     ...(column.type === 'checkbox' && {
@@ -232,11 +253,12 @@ export const RenderCell: React.FC<RenderCellProps> = ({
         ? { rowSpan: DAYS.length }
         : {})}
     >
-      <Component 
-        {...props} 
-        key={column.type === 'tasktable' 
-          ? `${column.id}-${(column.options || []).length}-${(column.doneTags || []).length}`
-          : undefined
+      <Component
+        {...props}
+        key={
+          column.type === 'tasktable'
+            ? `${column.id}-${(column.options || []).length}-${(column.doneTags || []).length}`
+            : undefined
         }
       />
     </td>

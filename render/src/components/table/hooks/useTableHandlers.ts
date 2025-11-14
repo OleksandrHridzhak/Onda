@@ -3,20 +3,13 @@ import { addColumn, updateColumnsOrder } from '../../../services/columnsDB';
 import { createColumn } from '../../../models/columns/index';
 import { useColumnOperations } from './useColumnOperations';
 import { DAYS } from './useColumnsData';
+import { BaseColumn } from '../../../models/columns/BaseColumn';
 
 const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
 
-interface Column {
-  id: string;
-  type: string;
-  name?: string;
-  days?: Record<string, unknown>;
-  options?: string[];
-  tagColors?: Record<string, string>;
-  toJSON: () => unknown;
-}
+type Column = BaseColumn;
 
 /**
  * Хук для обробників операцій таблиці
@@ -25,10 +18,15 @@ export const useTableHandlers = (
   columns: Column[],
   setColumns: React.Dispatch<React.SetStateAction<Column[]>>,
   tableData: Record<string, Record<string, unknown>>,
-  setTableData: React.Dispatch<React.SetStateAction<Record<string, Record<string, unknown>>>>,
-  setColumnOrder: React.Dispatch<React.SetStateAction<string[]>>
+  setTableData: React.Dispatch<
+    React.SetStateAction<Record<string, Record<string, unknown>>>
+  >,
+  setColumnOrder: React.Dispatch<React.SetStateAction<string[]>>,
 ) => {
-  const { updateDayData, updateTasks, updateProperties } = useColumnOperations(columns, setColumns);
+  const { updateDayData, updateTasks, updateProperties } = useColumnOperations(
+    columns,
+    setColumns,
+  );
 
   /**
    * Додає нову колонку
@@ -38,20 +36,22 @@ export const useTableHandlers = (
       try {
         const newColumnInstance = createColumn(type);
         const columnJson = newColumnInstance.toJSON();
-        
+
         const result = await addColumn(columnJson);
-        
+
         if (result.status) {
           // Використовуємо екземпляр напряму
           newColumnInstance.name = 'New Column';
-          
+
           setColumns((prev) => [...prev, newColumnInstance]);
-          
+
           // Оновлюємо порядок колонок
-          const newOrder = columns.filter(c => c.id !== 'days').map(c => c.id);
+          const newOrder = columns
+            .filter((c) => c.id !== 'days')
+            .map((c) => c.id);
           newOrder.push(newColumnInstance.id);
           await updateColumnsOrder(newOrder);
-          
+
           // Додаємо порожні дані для нових днів (крім todo/tasktable)
           if (type !== 'tasktable' && type !== 'todo') {
             setTableData((prev) => ({
@@ -64,7 +64,7 @@ export const useTableHandlers = (
                     [newColumnInstance.id]: '',
                   },
                 }),
-                {}
+                {},
               ),
             }));
           }
@@ -73,7 +73,7 @@ export const useTableHandlers = (
         handleError('Failed to create column:', err);
       }
     },
-    [columns, setColumns, setTableData]
+    [columns, setColumns, setTableData],
   );
 
   /**
@@ -108,14 +108,15 @@ export const useTableHandlers = (
       } catch (err) {
         handleError('Update failed:', err);
         // Відкат
-        const oldValue = column.days?.[day] ?? false;
+        const oldValue =
+          'days' in column && column.days ? (column.days as any)[day] : false;
         setTableData((prev) => ({
           ...prev,
           [day]: { ...prev[day], [columnId]: oldValue },
         }));
       }
     },
-    [columns, setTableData, updateDayData, updateTasks]
+    [columns, setTableData, updateDayData, updateTasks],
   );
 
   /**
@@ -126,15 +127,16 @@ export const useTableHandlers = (
       const column = columns.find((col) => col.id === columnId);
       if (!column || column.type !== 'tasktable') return;
 
-      const updatedOptions = [...(column.options || []), taskText];
-      const updatedTagColors = { ...column.tagColors, [taskText]: 'blue' };
+      const taskCol = column as any;
+      const updatedOptions = [...(taskCol.options || []), taskText];
+      const updatedTagColors = { ...taskCol.tagColors, [taskText]: 'blue' };
 
       await updateProperties(columnId, {
         Options: updatedOptions,
         TagColors: updatedTagColors,
       });
     },
-    [columns, updateProperties]
+    [columns, updateProperties],
   );
 
   /**
@@ -142,10 +144,8 @@ export const useTableHandlers = (
    */
   const handleMoveColumn = useCallback(
     async (columnId: string, direction: 'up' | 'down'): Promise<void> => {
-      const currentIndex = columns.findIndex(
-        (col) => col.id === columnId
-      );
-      
+      const currentIndex = columns.findIndex((col) => col.id === columnId);
+
       if (
         (direction === 'up' && currentIndex <= 1) ||
         (direction === 'down' && currentIndex === columns.length - 1)
@@ -159,11 +159,11 @@ export const useTableHandlers = (
         newColumns[newIndex],
         newColumns[currentIndex],
       ];
-      
+
       setColumns(newColumns);
-      
+
       const newColumnOrder = newColumns
-        .filter(col => col.id !== 'days')
+        .filter((col) => col.id !== 'days')
         .map((col) => col.id);
       setColumnOrder(newColumnOrder);
 
@@ -173,42 +173,53 @@ export const useTableHandlers = (
         handleError('Failed to update column order:', err);
       }
     },
-    [columns, setColumns, setColumnOrder]
+    [columns, setColumns, setColumnOrder],
   );
 
   /**
    * Змінює ширину колонки
    */
   const handleChangeWidth = useCallback(
-    async (columnId: string, newWidth: string): Promise<void> => {
-      const width = parseInt(newWidth);
+    async (columnId: string, newWidth: number | string): Promise<void> => {
+      const width =
+        typeof newWidth === 'string' ? parseInt(newWidth) : newWidth;
       if (isNaN(width) || width < 50 || width > 1000) {
-        handleError('Invalid width value', new Error('Width must be between 50 and 1000'));
+        handleError(
+          'Invalid width value',
+          new Error('Width must be between 50 and 1000'),
+        );
         return;
       }
 
       await updateProperties(columnId, { Width: width });
 
       // Оновлюємо CSS
-      document.querySelectorAll(`[data-column-id="${columnId}"]`).forEach((element) => {
-        (element as HTMLElement).style.width = `${width}px`;
-      });
+      document
+        .querySelectorAll(`[data-column-id="${columnId}"]`)
+        .forEach((element) => {
+          (element as HTMLElement).style.width = `${width}px`;
+        });
     },
-    [updateProperties]
+    [updateProperties],
   );
 
   /**
    * Змінює options для multi-select, multicheckbox, tasktable
    */
   const handleChangeOptions = useCallback(
-    async (columnId: string, options: string[], tagColors: Record<string, string>, doneTags: string[] = []): Promise<void> => {
+    async (
+      columnId: string,
+      options: string[],
+      tagColors: Record<string, string>,
+      doneTags: string[] = [],
+    ): Promise<void> => {
       await updateProperties(columnId, {
         Options: options,
         TagColors: tagColors,
         DoneTags: doneTags,
       });
     },
-    [updateProperties]
+    [updateProperties],
   );
 
   return {

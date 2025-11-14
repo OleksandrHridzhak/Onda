@@ -8,6 +8,7 @@ interface IconSelectorProps {
   isIconSectionExpanded: boolean;
   setIsIconSectionExpanded: (expanded: boolean) => void;
   icons?: Icon[];
+  darkMode?: boolean;
 }
 
 export const IconSelector: React.FC<IconSelectorProps> = ({

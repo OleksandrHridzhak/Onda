@@ -5,11 +5,15 @@ import ColumnMenu from './columnMenu/ColumnMenu';
 interface Column {
   id: string;
   name: string;
+  type: string;
   emojiIcon?: string;
   nameVisible?: boolean;
   width?: number;
   description?: string;
-  type?: string;
+  options?: string[];
+  doneTags?: string[];
+  tagColors?: Record<string, string>;
+  checkboxColor?: string;
 }
 
 interface ColumnHeaderProps {
@@ -19,8 +23,13 @@ interface ColumnHeaderProps {
   onRename: (id: string, newName: string) => void;
   onChangeIcon: (id: string, newIcon: string) => void;
   onChangeDescription: (id: string, newDescription: string) => void;
-  onToggleTitleVisibility: (id: string) => void;
-  onChangeOptions: (id: string, options: unknown) => void;
+  onToggleTitleVisibility: (id: string, visible: boolean) => void;
+  onChangeOptions: (
+    id: string,
+    options: string[],
+    tagColors: Record<string, string>,
+    doneTags?: string[],
+  ) => void;
   onChangeCheckboxColor: (id: string, color: string) => void;
   onMoveUp: (id: string) => void;
   onMoveDown: (id: string) => void;
@@ -79,9 +88,7 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
             </span>
           )}
           {column.nameVisible !== false && column.name && (
-            <span
-              className={`truncate block text-textTableValues max-w-full`}
-            >
+            <span className={`truncate block text-textTableValues max-w-full`}>
               {column.name}
             </span>
           )}

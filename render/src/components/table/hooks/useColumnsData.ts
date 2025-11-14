@@ -1,24 +1,16 @@
 import { useState, useEffect } from 'react';
-import { 
-  getAllColumns, 
+import {
+  getAllColumns,
   migrateColumnsFromWeeks,
-  getColumnsOrder
+  getColumnsOrder,
 } from '../../../services/columnsDB';
 import { settingsService } from '../../../services/settingsDB';
 import { deserializeColumns } from '../../../models/columns/columnHelpers';
+import { BaseColumn } from '../../../models/columns/BaseColumn';
 
 const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
-
-interface Column {
-  id: string;
-  type: string;
-  name?: string;
-  emojiIcon?: string;
-  nameVisible?: boolean;
-  days?: Record<string, unknown>;
-}
 
 interface Settings {
   status: string;
@@ -44,8 +36,10 @@ export const DAYS = [
  * Хук для завантаження та управління даними колонок
  */
 export const useColumnsData = () => {
-  const [columns, setColumns] = useState<Column[]>([]);
-  const [tableData, setTableData] = useState<Record<string, Record<string, unknown>>>({});
+  const [columns, setColumns] = useState<BaseColumn[]>([]);
+  const [tableData, setTableData] = useState<
+    Record<string, Record<string, unknown>>
+  >({});
   const [loading, setLoading] = useState(true);
   const [columnOrder, setColumnOrder] = useState<string[]>([]);
 
@@ -53,27 +47,45 @@ export const useColumnsData = () => {
     const fetchData = async (): Promise<void> => {
       try {
         setLoading(true);
-        
+
         // Міграція старих даних
         await migrateColumnsFromWeeks();
-        
+
         // Завантажуємо дані
-        const [columnsData, settingsResult, columnOrderData] = await Promise.all([
-          getAllColumns(),
-          settingsService.getSettings(),
-          getColumnsOrder()
-        ]);
+        const [columnsData, settingsResult, columnOrderData] =
+          await Promise.all([
+            getAllColumns(),
+            settingsService.getSettings(),
+            getColumnsOrder(),
+          ]);
 
         // Створюємо колонку "Day"
-        const dayColumn: Column = {
+        const dayColumn = {
           id: 'days',
           type: 'days',
           name: 'Day',
           emojiIcon: '',
           nameVisible: true,
-        };
-        
-        let fetchedColumns: Column[] = [dayColumn];
+          width: 120,
+          description: '',
+          setEmojiIcon: () => false,
+          setWidth: () => false,
+          setNameVisible: () => false,
+          setName: () => false,
+          setDescription: () => false,
+          update: () => false,
+          toJSON: () => ({
+            id: 'days',
+            type: 'days',
+            name: 'Day',
+            emojiIcon: '',
+            nameVisible: true,
+            width: 120,
+            description: '',
+          }),
+        } as BaseColumn;
+
+        let fetchedColumns: BaseColumn[] = [dayColumn];
 
         // Використовуємо екземпляри класів напряму
         if (columnsData && columnsData.length > 0) {
@@ -82,7 +94,11 @@ export const useColumnsData = () => {
         }
 
         // Застосовуємо порядок колонок
-        fetchedColumns = applyColumnOrder(fetchedColumns, columnOrderData, settingsResult);
+        fetchedColumns = applyColumnOrder(
+          fetchedColumns,
+          columnOrderData,
+          settingsResult,
+        );
 
         setColumns(fetchedColumns);
         setColumnOrder(fetchedColumns.map((col) => col.id));
@@ -102,24 +118,40 @@ export const useColumnsData = () => {
         // Ініціалізуємо дані таблиці
         const initialTableData = initializeTableData(fetchedColumns);
         setTableData(initialTableData);
-        
       } catch (err) {
         handleError('Error fetching data:', err);
         // Fallback до порожньої таблиці
-        const dayColumn: Column = {
+        const dayColumn = {
           id: 'days',
           type: 'days',
           name: 'Day',
           emojiIcon: '',
           nameVisible: true,
-        };
+          width: 120,
+          description: '',
+          setEmojiIcon: () => false,
+          setWidth: () => false,
+          setNameVisible: () => false,
+          setName: () => false,
+          setDescription: () => false,
+          update: () => false,
+          toJSON: () => ({
+            id: 'days',
+            type: 'days',
+            name: 'Day',
+            emojiIcon: '',
+            nameVisible: true,
+            width: 120,
+            description: '',
+          }),
+        } as BaseColumn;
         setColumns([dayColumn]);
         setTableData(DAYS.reduce((acc, day) => ({ ...acc, [day]: {} }), {}));
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -137,23 +169,30 @@ export const useColumnsData = () => {
 /**
  * Застосовує порядок колонок
  */
-const applyColumnOrder = (columns: Column[], columnOrderData: string[], settingsResult: Settings): Column[] => {
+const applyColumnOrder = (
+  columns: BaseColumn[],
+  columnOrderData: string[],
+  settingsResult: Settings,
+): BaseColumn[] => {
   const dayColumn = columns[0]; // 'days' завжди перший
-  
+
   if (columnOrderData && columnOrderData.length > 0) {
     const orderedColumns = [dayColumn];
-    columnOrderData.forEach(columnId => {
-      const col = columns.find(c => c.id === columnId);
+    columnOrderData.forEach((columnId) => {
+      const col = columns.find((c) => c.id === columnId);
       if (col && col.id !== 'days') orderedColumns.push(col);
     });
-    
+
     // Додаємо колонки які не в порядку
-    columns.forEach(column => {
-      if (column.id !== 'days' && !orderedColumns.some(col => col.id === column.id)) {
+    columns.forEach((column) => {
+      if (
+        column.id !== 'days' &&
+        !orderedColumns.some((col) => col.id === column.id)
+      ) {
         orderedColumns.push(column);
       }
     });
-    
+
     return orderedColumns;
   } else if (
     settingsResult.status === 'Settings fetched' &&
@@ -162,37 +201,51 @@ const applyColumnOrder = (columns: Column[], columnOrderData: string[], settings
   ) {
     const orderedColumns = settingsResult.data.table.columnOrder
       .map((columnId) => columns.find((col) => col.id === columnId))
-      .filter((col): col is Column => col !== undefined);
-      
+      .filter((col): col is BaseColumn => col !== undefined);
+
     columns.forEach((column) => {
       if (!orderedColumns.some((col) => col.id === column.id)) {
         orderedColumns.push(column);
       }
     });
-    
+
     return orderedColumns;
   }
-  
+
   return columns;
 };
 
 /**
  * Ініціалізує дані таблиці з колонок
  */
-const initializeTableData = (columns: Column[]): Record<string, Record<string, unknown>> => {
-  return DAYS.reduce((acc, day) => {
-    acc[day] = columns.reduce((dayData, col) => {
-      if (col.id !== 'days' && col.type !== 'tasktable' && col.type !== 'todo') {
-        // Беремо дані з days
-        const dayValue = col.days?.[day] ?? '';
-        
-        dayData[col.id] =
-          col.type === 'multi-select' || col.type === 'multicheckbox'
-            ? typeof dayValue === 'string' ? dayValue : ''
-            : dayValue;
-      }
-      return dayData;
-    }, {} as Record<string, unknown>);
-    return acc;
-  }, {} as Record<string, Record<string, unknown>>);
+const initializeTableData = (
+  columns: BaseColumn[],
+): Record<string, Record<string, unknown>> => {
+  return DAYS.reduce(
+    (acc, day) => {
+      acc[day] = columns.reduce(
+        (dayData, col) => {
+          if (
+            col.id !== 'days' &&
+            col.type !== 'tasktable' &&
+            col.type !== 'todo'
+          ) {
+            // Беремо дані з days
+            const dayValue = 'days' in col && col.days ? col.days[day] : '';
+
+            dayData[col.id] =
+              col.type === 'multi-select' || col.type === 'multicheckbox'
+                ? typeof dayValue === 'string'
+                  ? dayValue
+                  : ''
+                : dayValue;
+          }
+          return dayData;
+        },
+        {} as Record<string, unknown>,
+      );
+      return acc;
+    },
+    {} as Record<string, Record<string, unknown>>,
+  );
 };

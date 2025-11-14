@@ -128,7 +128,6 @@ export default function CalendarHeader({
               setEditingEventId(null);
               setShowEventModal(true);
             }}
-            className={`px-4 py-1.5 text-sm text-white bg-primaryColor hover:bg-bubbleBtnStandardHover rounded-xl flex items-center gap-2 transition-colors shadow-sm hover:shadow-md`}
           >
             <Plus size={16} className="mr-2" />
             New Event

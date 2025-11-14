@@ -24,7 +24,7 @@ export interface MenuState {
   checkboxColor: string;
   newOption: string;
   Chosen?: unknown;
-  width: number | string;
+  width: number;
   isIconSectionExpanded: boolean;
   isColorMenuOpen: Record<string, boolean>;
   isSaving: boolean;
@@ -58,7 +58,7 @@ export const initialState = (column: Column): MenuState => ({
   checkboxColor: column.checkboxColor || 'green',
   newOption: '',
   Chosen: column.Chosen,
-  width: column.width ? parseInt(String(column.width)) : '',
+  width: column.width ? parseInt(String(column.width)) : 0,
   isIconSectionExpanded: false,
   isColorMenuOpen: {},
   isSaving: false,
@@ -81,7 +81,13 @@ export const reducer = (state: MenuState, action: MenuAction): MenuState => {
     case 'SET_NEW_OPTION':
       return { ...state, newOption: action.payload };
     case 'SET_WIDTH':
-      return { ...state, width: action.payload };
+      return {
+        ...state,
+        width:
+          typeof action.payload === 'string'
+            ? parseInt(action.payload) || 0
+            : action.payload,
+      };
     case 'TOGGLE_ICON_SECTION':
       return { ...state, isIconSectionExpanded: !state.isIconSectionExpanded };
     case 'TOGGLE_COLOR_MENU':
@@ -123,14 +129,14 @@ export const reducer = (state: MenuState, action: MenuAction): MenuState => {
       if (isInOptions) {
         console.log('U USED REMOVE OPTION REDUCER');
         const newOptions = state.options.filter(
-          (opt) => opt !== action.payload
+          (opt) => opt !== action.payload,
         );
         const newColors = { ...state.optionColors };
         delete newColors[action.payload];
         return { ...state, options: newOptions, optionColors: newColors };
       } else if (isInDoneTags) {
         const newDoneTags = state.doneTags.filter(
-          (tag) => tag !== action.payload
+          (tag) => tag !== action.payload,
         );
         const newColors = { ...state.optionColors };
         delete newColors[action.payload];
@@ -143,7 +149,7 @@ export const reducer = (state: MenuState, action: MenuAction): MenuState => {
       const isInDoneTagsEdit = state.doneTags.includes(oldOption);
       if (isInOptionsEdit) {
         const newOptions = state.options.map((opt) =>
-          opt === oldOption ? newOption : opt
+          opt === oldOption ? newOption : opt,
         );
         const newColors = {
           ...state.optionColors,
@@ -153,7 +159,7 @@ export const reducer = (state: MenuState, action: MenuAction): MenuState => {
         return { ...state, options: newOptions, optionColors: newColors };
       } else if (isInDoneTagsEdit) {
         const newDoneTags = state.doneTags.map((tag) =>
-          tag === oldOption ? newOption : tag
+          tag === oldOption ? newOption : tag,
         );
         const newColors = {
           ...state.optionColors,
