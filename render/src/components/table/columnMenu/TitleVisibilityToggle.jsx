@@ -1,5 +1,4 @@
-import {Eye, EyeOff} from 'lucide-react';
-
+import { Eye, EyeOff } from 'lucide-react';
 
 export const TitleVisibilityToggle = ({ showTitle, setShowTitle }) => (
   <div className="flex items-center h-12 w-12 justify-center absolute right-0 top-0">
