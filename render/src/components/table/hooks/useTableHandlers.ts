@@ -4,21 +4,37 @@ import { createColumn } from '../../../models/columns/index';
 import { useColumnOperations } from './useColumnOperations';
 import { DAYS } from './useColumnsData';
 
-const handleError = (message, error) => {
+const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
+
+interface Column {
+  id: string;
+  type: string;
+  name?: string;
+  days?: Record<string, unknown>;
+  options?: string[];
+  tagColors?: Record<string, string>;
+  toJSON: () => unknown;
+}
 
 /**
  * Хук для обробників операцій таблиці
  */
-export const useTableHandlers = (columns, setColumns, tableData, setTableData, setColumnOrder) => {
+export const useTableHandlers = (
+  columns: Column[],
+  setColumns: React.Dispatch<React.SetStateAction<Column[]>>,
+  tableData: Record<string, Record<string, unknown>>,
+  setTableData: React.Dispatch<React.SetStateAction<Record<string, Record<string, unknown>>>>,
+  setColumnOrder: React.Dispatch<React.SetStateAction<string[]>>
+) => {
   const { updateDayData, updateTasks, updateProperties } = useColumnOperations(columns, setColumns);
 
   /**
    * Додає нову колонку
    */
   const handleAddColumn = useCallback(
-    async (type) => {
+    async (type: string): Promise<void> => {
       try {
         const newColumnInstance = createColumn(type);
         const columnJson = newColumnInstance.toJSON();
@@ -64,7 +80,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
    * Обробляє зміну даних в клітинці
    */
   const handleCellChange = useCallback(
-    async (day, columnId, value) => {
+    async (day: string, columnId: string, value: unknown): Promise<void> => {
       const column = columns.find((col) => col.id === columnId);
       if (!column) return;
 
@@ -106,7 +122,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
    * Додає завдання в TaskTable
    */
   const handleAddTask = useCallback(
-    async (columnId, taskText) => {
+    async (columnId: string, taskText: string): Promise<void> => {
       const column = columns.find((col) => col.id === columnId);
       if (!column || column.type !== 'tasktable') return;
 
@@ -125,7 +141,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
    * Переміщує колонку вгору/вниз
    */
   const handleMoveColumn = useCallback(
-    async (columnId, direction) => {
+    async (columnId: string, direction: 'up' | 'down'): Promise<void> => {
       const currentIndex = columns.findIndex(
         (col) => col.id === columnId
       );
@@ -164,7 +180,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
    * Змінює ширину колонки
    */
   const handleChangeWidth = useCallback(
-    async (columnId, newWidth) => {
+    async (columnId: string, newWidth: string): Promise<void> => {
       const width = parseInt(newWidth);
       if (isNaN(width) || width < 50 || width > 1000) {
         handleError('Invalid width value', new Error('Width must be between 50 and 1000'));
@@ -175,7 +191,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
 
       // Оновлюємо CSS
       document.querySelectorAll(`[data-column-id="${columnId}"]`).forEach((element) => {
-        element.style.width = `${width}px`;
+        (element as HTMLElement).style.width = `${width}px`;
       });
     },
     [updateProperties]
@@ -185,7 +201,7 @@ export const useTableHandlers = (columns, setColumns, tableData, setTableData, s
    * Змінює options для multi-select, multicheckbox, tasktable
    */
   const handleChangeOptions = useCallback(
-    async (columnId, options, tagColors, doneTags = []) => {
+    async (columnId: string, options: string[], tagColors: Record<string, string>, doneTags: string[] = []): Promise<void> => {
       await updateProperties(columnId, {
         Options: options,
         TagColors: tagColors,

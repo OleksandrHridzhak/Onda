@@ -7,9 +7,28 @@ import {
 import { settingsService } from '../../../services/settingsDB';
 import { deserializeColumns } from '../../../models/columns/columnHelpers';
 
-const handleError = (message, error) => {
+const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
+
+interface Column {
+  id: string;
+  type: string;
+  name?: string;
+  emojiIcon?: string;
+  nameVisible?: boolean;
+  days?: Record<string, unknown>;
+}
+
+interface Settings {
+  status: string;
+  data?: {
+    table?: {
+      columnOrder?: string[];
+    };
+    [key: string]: unknown;
+  };
+}
 
 export const DAYS = [
   'Monday',
@@ -25,13 +44,13 @@ export const DAYS = [
  * Хук для завантаження та управління даними колонок
  */
 export const useColumnsData = () => {
-  const [columns, setColumns] = useState([]);
-  const [tableData, setTableData] = useState({});
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [tableData, setTableData] = useState<Record<string, Record<string, unknown>>>({});
   const [loading, setLoading] = useState(true);
-  const [columnOrder, setColumnOrder] = useState([]);
+  const [columnOrder, setColumnOrder] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
         setLoading(true);
         
@@ -46,7 +65,7 @@ export const useColumnsData = () => {
         ]);
 
         // Створюємо колонку "Day"
-        const dayColumn = {
+        const dayColumn: Column = {
           id: 'days',
           type: 'days',
           name: 'Day',
@@ -54,7 +73,7 @@ export const useColumnsData = () => {
           nameVisible: true,
         };
         
-        let fetchedColumns = [dayColumn];
+        let fetchedColumns: Column[] = [dayColumn];
 
         // Використовуємо екземпляри класів напряму
         if (columnsData && columnsData.length > 0) {
@@ -73,7 +92,7 @@ export const useColumnsData = () => {
           const newSettings = {
             ...settingsResult.data,
             table: {
-              ...settingsResult.data.table,
+              ...settingsResult.data?.table,
               columnOrder: fetchedColumns.map((col) => col.id),
             },
           };
@@ -87,7 +106,7 @@ export const useColumnsData = () => {
       } catch (err) {
         handleError('Error fetching data:', err);
         // Fallback до порожньої таблиці
-        const dayColumn = {
+        const dayColumn: Column = {
           id: 'days',
           type: 'days',
           name: 'Day',
@@ -118,7 +137,7 @@ export const useColumnsData = () => {
 /**
  * Застосовує порядок колонок
  */
-const applyColumnOrder = (columns, columnOrderData, settingsResult) => {
+const applyColumnOrder = (columns: Column[], columnOrderData: string[], settingsResult: Settings): Column[] => {
   const dayColumn = columns[0]; // 'days' завжди перший
   
   if (columnOrderData && columnOrderData.length > 0) {
@@ -138,11 +157,12 @@ const applyColumnOrder = (columns, columnOrderData, settingsResult) => {
     return orderedColumns;
   } else if (
     settingsResult.status === 'Settings fetched' &&
-    settingsResult.data.table?.columnOrder?.length > 0
+    settingsResult.data?.table?.columnOrder &&
+    settingsResult.data.table.columnOrder.length > 0
   ) {
     const orderedColumns = settingsResult.data.table.columnOrder
       .map((columnId) => columns.find((col) => col.id === columnId))
-      .filter(Boolean);
+      .filter((col): col is Column => col !== undefined);
       
     columns.forEach((column) => {
       if (!orderedColumns.some((col) => col.id === column.id)) {
@@ -159,7 +179,7 @@ const applyColumnOrder = (columns, columnOrderData, settingsResult) => {
 /**
  * Ініціалізує дані таблиці з колонок
  */
-const initializeTableData = (columns) => {
+const initializeTableData = (columns: Column[]): Record<string, Record<string, unknown>> => {
   return DAYS.reduce((acc, day) => {
     acc[day] = columns.reduce((dayData, col) => {
       if (col.id !== 'days' && col.type !== 'tasktable' && col.type !== 'todo') {
@@ -172,7 +192,7 @@ const initializeTableData = (columns) => {
             : dayValue;
       }
       return dayData;
-    }, {});
+    }, {} as Record<string, unknown>);
     return acc;
-  }, {});
+  }, {} as Record<string, Record<string, unknown>>);
 };
