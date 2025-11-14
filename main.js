@@ -1,11 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
-const ipcWindowsHandlers = require('./api/ipcWindowsHandlers.js');
+/* eslint-disable @typescript-eslint/no-require-imports */
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { join } from 'path';
+import { init } from './api/ipcWindowsHandlers.js';
 
 require('dotenv').config();
-
-
-
 
 let mainWindow;
 
@@ -13,22 +11,21 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    icon: path.join(__dirname, './assets/onda-logo.ico'),
+    icon: join(__dirname, './assets/onda-logo.ico'),
     frame: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.bundle.js'),
+      preload: join(__dirname, 'preload.bundle.js'),
       webSecurity: false,
     },
   });
-  
 
   console.log('env:', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:3000');
   } else {
-    mainWindow.loadFile(path.join(__dirname, './render/build/index.html'));
+    mainWindow.loadFile(join(__dirname, './render/build/index.html'));
   }
 }
 
@@ -48,8 +45,7 @@ if (!gotTheLock) {
 
   app.whenReady().then(() => {
     createWindow();
-    ipcWindowsHandlers.init(ipcMain, mainWindow);
-    initCronJobs();
+    init(ipcMain, mainWindow);
   });
 
   app.on('activate', () => {

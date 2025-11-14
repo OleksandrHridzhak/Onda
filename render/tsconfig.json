@@ -4,18 +4,18 @@
     "module": "esnext",
     "lib": ["dom", "esnext"],
     "jsx": "react-jsx",
-    "allowJs": true,       // читає і JS
-    "checkJs": false,      // не перевіряє типи в JS файлах
+    "allowJs": true,
+    "checkJs": false,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strict": false,
-    "rootDir": "src",
-    "outDir": "dist",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "**/dist"]
 }
