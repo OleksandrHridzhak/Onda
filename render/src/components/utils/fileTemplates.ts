@@ -1,4 +1,111 @@
-const getColumnTemplates = () => ({
+interface ChosenGlobal {
+  global: unknown[];
+}
+
+interface TagColors {
+  [key: string]: string;
+}
+
+interface TodoColumnTemplate {
+  EmojiIcon: string;
+  NameVisible: boolean;
+  Width: number;
+  Chosen: ChosenGlobal;
+  Options: string[];
+  TagColors: TagColors;
+}
+
+interface CheckboxColumnTemplate {
+  EmojiIcon: string;
+  NameVisible: boolean;
+  Chosen: Record<string, boolean>;
+  Width: number;
+  CheckboxColor: string;
+}
+
+interface NumberboxColumnTemplate {
+  EmojiIcon: string;
+  NameVisible: boolean;
+  Chosen: Record<string, string>;
+  Width: number;
+}
+
+interface TextColumnTemplate {
+  EmojiIcon: string;
+  NameVisible: boolean;
+  Chosen: Record<string, string>;
+  Width: number;
+}
+
+interface MultiSelectColumnTemplate {
+  EmojiIcon: string;
+  NameVisible: boolean;
+  Options: string[];
+  TagColors: TagColors;
+  Chosen: Record<string, string>;
+  Width: number;
+}
+
+interface MulticheckboxColumnTemplate {
+  EmojiIcon: string;
+  NameVisible: boolean;
+  Options: string[];
+  TagColors: TagColors;
+  Chosen: Record<string, string>;
+  Width: number;
+}
+
+interface TasktableColumnTemplate {
+  EmojiIcon: string;
+  NameVisible: boolean;
+  Options: string[];
+  TagColors: TagColors;
+  Chosen: ChosenGlobal;
+  Width: number;
+}
+
+interface ColumnTemplates {
+  todo: TodoColumnTemplate;
+  checkbox: CheckboxColumnTemplate;
+  numberbox: NumberboxColumnTemplate;
+  text: TextColumnTemplate;
+  'multi-select': MultiSelectColumnTemplate;
+  multicheckbox: MulticheckboxColumnTemplate;
+  tasktable: TasktableColumnTemplate;
+}
+
+interface AutoThemeSettings {
+  enabled: boolean;
+  startTime: string;
+  endTime: string;
+}
+
+interface ThemeSettings {
+  darkMode: boolean;
+  accentColor: string;
+  autoThemeSettings: AutoThemeSettings;
+}
+
+interface TableSettings {
+  columnOrder: unknown[];
+  showSummaryRow: boolean;
+  compactMode: boolean;
+  stickyHeader: boolean;
+}
+
+interface UiSettings {
+  animations: boolean;
+  tooltips: boolean;
+  confirmDelete: boolean;
+}
+
+interface SettingsTemplate {
+  theme: ThemeSettings;
+  table: TableSettings;
+  ui: UiSettings;
+}
+
+const getColumnTemplates = (): ColumnTemplates => ({
   todo: {
     EmojiIcon: 'ListTodo',
     NameVisible: true,
@@ -108,7 +215,7 @@ const getColumnTemplates = () => ({
   },
 });
 
-const getSettingsTemplate = () => ({
+const getSettingsTemplate = (): SettingsTemplate => ({
   theme: {
     darkMode: false,
     accentColor: 'blue',
@@ -131,4 +238,4 @@ const getSettingsTemplate = () => ({
   },
 });
 
-module.exports = { getColumnTemplates, getSettingsTemplate};
+module.exports = { getColumnTemplates, getSettingsTemplate };

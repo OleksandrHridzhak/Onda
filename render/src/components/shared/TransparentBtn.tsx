@@ -1,11 +1,17 @@
 import React from 'react';
 
-export const TransparentBtn = ({
+interface TransparentBtnProps {
+  children: React.ReactNode;
+  onClick: () => void;
+  darkTheme?: boolean;
+  disablet?: boolean;
+}
+
+export const TransparentBtn: React.FC<TransparentBtnProps> = ({
   children,
   onClick,
   darkTheme = false,
   disablet = false,
-  light = false,
 }) => {
   return (
     <button

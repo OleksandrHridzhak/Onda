@@ -1,10 +1,20 @@
 import { Minus, Square, X } from 'lucide-react';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const MenuWin = ({ currentPage = '/' }) => {
-  const themeMode = useSelector((state) => state.newTheme.themeMode);
- 
-  const getContainerClass = () => {
+interface MenuWinProps {
+  currentPage?: string;
+}
+
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+}
+
+const MenuWin: React.FC<MenuWinProps> = ({ currentPage = '/' }) => {
+  const themeMode = useSelector((state: RootState) => state.newTheme.themeMode);
+
+  const getContainerClass = (): string => {
     if (!(themeMode === 'dark')) return '';
 
     if (currentPage === '/settings' || currentPage === '/calendar') {
@@ -14,7 +24,7 @@ const MenuWin = ({ currentPage = '/' }) => {
     return ' bg-gray-900';
   };
 
-  const getButtonClass = () => {
+  const getButtonClass = (): string => {
     const base =
       'w-8 h-8 flex items-center justify-center rounded no-drag transition-colors duration-200';
     return themeMode === 'dark'
@@ -23,7 +33,9 @@ const MenuWin = ({ currentPage = '/' }) => {
   };
 
   return (
-    <div className={`w-full flex items-center justify-end gap-1 drag ${getContainerClass()}`}>
+    <div
+      className={`w-full flex items-center justify-end gap-1 drag ${getContainerClass()}`}
+    >
       <button
         onClick={() => window.electronAPI?.minimizeWindow()}
         className={getButtonClass()}

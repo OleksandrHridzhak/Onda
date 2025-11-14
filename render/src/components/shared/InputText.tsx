@@ -1,11 +1,20 @@
-export const InputText = ({
+import React from 'react';
+
+interface InputTextProps {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string;
+  darkMode?: boolean;
+  placeholder?: string;
+  width?: string;
+}
+
+export const InputText: React.FC<InputTextProps> = ({
   onChange,
   value,
   darkMode = false,
   placeholder = '',
-  width = 'full', 
+  width = 'full',
 }) => {
-
   const widthClass = width === 'full' ? 'w-full' : `w-[${width}]`;
 
   return (

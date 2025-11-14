@@ -1,4 +1,46 @@
-const themes = {
+interface BubbleBtnTheme {
+  standard: string;
+  delete: string;
+  clear: string;
+}
+
+interface ThemeColors {
+  background: string;
+  border: string;
+  text: string;
+  textAccent: string;
+  textTableValues: string;
+  textTableRealValues: string;
+  linkActive: string;
+  linkInactive: string;
+  iconActive: string;
+  iconInactive: string;
+  toggleIcon: string;
+  hover: string;
+  sidebarToggleHover: string;
+  tableHeader: string;
+  tableHeaderText: string;
+  tableBodyBg: string;
+  tableSummaryText: string;
+  scrollbarTrack: string;
+  scrollbarThumb: string;
+  scrollbarThumbHover: string;
+  settingsSectionSelectorBg: string;
+  bubbleBtn: BubbleBtnTheme;
+}
+
+interface Theme {
+  light: ThemeColors;
+  dark: ThemeColors;
+}
+
+interface Themes {
+  standard: Theme;
+  nature: Theme;
+  [key: string]: Theme;
+}
+
+const themes: Themes = {
   standard: {
     light: {
       border: 'border-gray-200',
@@ -30,7 +72,6 @@ const themes = {
         clear: 'bg-gray-100 hover:bg-gray-200 text-gray-600',
       },
       background: 'bg-white',
-
     },
     dark: {
       background: 'bg-gray-900',

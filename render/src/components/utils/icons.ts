@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Heart,
   Star,
@@ -41,9 +42,15 @@ import {
   Wallet,
   Circle,
   ListTodo,
+  LucideIcon,
 } from 'lucide-react';
 
-export const icons = [
+export interface Icon {
+  name: string;
+  component: LucideIcon;
+}
+
+export const icons: Icon[] = [
   { name: 'Heart', component: Heart },
   { name: 'Star', component: Star },
   { name: 'Zap', component: Zap },
@@ -89,9 +96,12 @@ export const icons = [
 ];
 
 // Функція для рендерингу іконки з потрібним розміром
-export const getIconComponent = (iconName, size = 16) => {
+export const getIconComponent = (
+  iconName: string,
+  size: number = 16,
+): React.ReactElement | null => {
   const icon = icons.find((i) => i.name === iconName);
   if (!icon) return null;
   const IconComponent = icon.component;
-  return <IconComponent size={size} />;
+  return React.createElement(IconComponent, { size });
 };

@@ -1,4 +1,24 @@
-export const getColorOptions = ({ darkMode = false }) => [
+export interface ColorOption {
+  name: string;
+  bg: string;
+  text: string;
+}
+
+export interface CheckBoxColorOption {
+  bg: string;
+  hex: string;
+  hover: string;
+}
+
+export type CheckBoxColorOptions = {
+  [key: string]: CheckBoxColorOption;
+};
+
+export const getColorOptions = ({
+  darkMode = false,
+}: {
+  darkMode?: boolean;
+}): ColorOption[] => [
   {
     name: 'green',
     bg: darkMode ? 'bg-green-900' : 'bg-green-100',
@@ -51,7 +71,11 @@ export const getColorOptions = ({ darkMode = false }) => [
   },
 ];
 
-export const getCheckBoxColorOptions = ({ darkMode = false }) => ({
+export const getCheckBoxColorOptions = ({
+  darkMode = false,
+}: {
+  darkMode?: boolean;
+}): CheckBoxColorOptions => ({
   green: {
     bg: 'bg-green-500',
     hex: '#10b981',

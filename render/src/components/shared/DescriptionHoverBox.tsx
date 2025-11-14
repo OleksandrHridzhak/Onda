@@ -1,4 +1,20 @@
-export const DescriptionHoverBox = ({ darkMode, column }) => {
+import React from 'react';
+
+interface Column {
+  NameVisible: boolean;
+  Name: string;
+  Description: string;
+}
+
+interface DescriptionHoverBoxProps {
+  darkMode: boolean;
+  column: Column;
+}
+
+export const DescriptionHoverBox: React.FC<DescriptionHoverBoxProps> = ({
+  darkMode,
+  column,
+}) => {
   return (
     <div
       className={`absolute z-10 opacity-0 group-hover:opacity-100 ${darkMode ? 'bg-gray-800 text-gray-200 border-gray-700' : 'bg-gray-800 text-white'} text-xs rounded py-1 px-2 mb-20 min-w-48 max-w-72 whitespace-normal`}

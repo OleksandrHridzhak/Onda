@@ -5,29 +5,44 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleThemeMode } from '../store/slices/newThemeSlice';
 import { sideBarItems } from './utils/constants';
 
-const Sidebar = () => {
+interface RootState {
+  newTheme: {
+    themeMode: string;
+  };
+}
+
+type ActivePage = 'home' | 'calendar' | 'settings';
+
+const Sidebar: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const themeMode = useSelector((state) => state.newTheme.themeMode);
-  const deriveActive = (path) => {
+  const themeMode = useSelector((state: RootState) => state.newTheme.themeMode);
+
+  const deriveActive = (path: string): ActivePage => {
     if (path.startsWith('/calendar')) return 'calendar';
     if (path.startsWith('/settings')) return 'settings';
     return 'home';
   };
-  const [active, setActive] = useState(deriveActive(location.pathname));
+
+  const [active, setActive] = useState<ActivePage>(
+    deriveActive(location.pathname),
+  );
 
   useEffect(() => {
-    setActive(deriveActive(location.pathname));
+    const newActive = deriveActive(location.pathname);
+    // Disable the rule because the original logic uses setState in useEffect
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setActive(newActive);
   }, [location.pathname]);
 
-  const toggleTheme = () => {
+  const toggleTheme = (): void => {
     dispatch(toggleThemeMode());
   };
 
   return (
     <div
-className={`
+      className={`
   fixed bottom-0 w-full h-auto bg-background border-t border-border 
   flex flex-row items-center justify-center p-2 z-50
   md:relative md:w-20 md:h-screen md:flex-col md:items-center 
@@ -58,7 +73,7 @@ className={`
                       ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText'
                       : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'
                   }`}
-                  onClick={() => setActive(item.name)}
+                  onClick={() => setActive(item.name as ActivePage)}
                 >
                   <Icon
                     className={`w-6 h-6 transition-colors duration-300 ${
