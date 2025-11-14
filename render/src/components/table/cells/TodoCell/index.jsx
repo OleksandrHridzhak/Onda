@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getColorOptions } from '../../../../utils/colorOptions';
+import { getColorOptions } from '../../../utils/colorOptions';
 import { Plus, Edit2, Check, Trash2, ListTodo } from 'lucide-react';
 import { useTodoState } from './hooks/useTodoState';
 import { useCategoryMenu } from './hooks/useCategoryMenu';

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getCheckBoxColorOptions } from '../../../../utils/colorOptions';
 
@@ -7,7 +7,7 @@ export const useCircleCanvas = (selectedOptions, options, tagColors) => {
   const darkMode = themeMode === 'dark' ? true : false;
   const canvasRef = useRef(null);
   const colorOptions = getCheckBoxColorOptions({ darkMode });
-  const colorOrder = ['green', 'blue', 'purple', 'orange'];
+  const colorOrder = useMemo(() => ['green', 'blue', 'purple', 'orange'], []);
 
   useEffect(() => {
     const canvas = canvasRef.current;

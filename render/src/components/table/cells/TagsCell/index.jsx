@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { getColorOptions } from '../../../../utils/colorOptions';
+import { getColorOptions } from '../../../utils/colorOptions';
 import { useTagsDropdown } from './hooks/useTagsDropdown';
 import { handleTagChange } from './logic';
 
