@@ -1,15 +1,14 @@
-const { contextBridge, ipcRenderer } = require('electron');
+import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electronAPI', {
-
   closeApp: () => ipcRenderer.invoke('close-app'),
-
 
   // Window Management
   minimizeWindow: () => ipcRenderer.invoke('window-minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window-maximize'),
   closeWindow: () => ipcRenderer.invoke('window-close'),
-  showNotification: (options) => ipcRenderer.invoke('show-notification', options),
+  showNotification: (options) =>
+    ipcRenderer.invoke('show-notification', options),
   sendNextTab: () => ipcRenderer.send('next-tab'),
   onNextTab: (callback) => {
     ipcRenderer.on('next-tab', callback);
@@ -17,7 +16,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   //Metric colection
-  collectMetrics: (event, data) => ipcRenderer.invoke('collect-metrics', event, data),
+  collectMetrics: (event, data) =>
+    ipcRenderer.invoke('collect-metrics', event, data),
   // preload.js
-
 });
