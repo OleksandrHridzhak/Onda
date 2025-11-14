@@ -324,7 +324,7 @@ export default function Calendar(): React.ReactElement {
 
   return (
     <div className={`font-poppins min-h-screen bg-tableHeader`}>
-      <style jsx global>{`
+      <style>{`
         .custom-checkbox {
           position: relative;
           width: 18px;

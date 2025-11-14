@@ -31,10 +31,10 @@ const Sidebar: React.FC = () => {
 
   useEffect(() => {
     const newActive = deriveActive(location.pathname);
-    // Disable the rule because the original logic uses setState in useEffect
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setActive(newActive);
-  }, [location.pathname]);
+    if (newActive !== active) {
+      setActive(newActive);
+    }
+  }, [location.pathname, active]);
 
   const toggleTheme = (): void => {
     dispatch(toggleThemeMode());
