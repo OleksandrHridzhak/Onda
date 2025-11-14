@@ -3,7 +3,7 @@ import SettingsTemplate from '../SettingsTemplate';
 import { BubbleBtn } from '../../shared/BubbleBtn';
 
 const onFullClose = async (): Promise<void> => {
-  await window.electronAPI.closeApp();
+  await window.electronAPI?.closeApp();
 };
 
 export default function FullCloseSection(): React.ReactElement {

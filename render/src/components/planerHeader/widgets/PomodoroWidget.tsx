@@ -50,7 +50,7 @@ const PomodoroWidget: React.FC = () => {
       } catch (err) {
         console.warn('Audio play failed:', err);
       }
-      window.electronAPI.showNotification({
+      window.electronAPI?.showNotification({
         title: 'Pomodoro Timer',
         body: `Your ${initialMinutes}-minute timer has ended!`,
       });
