@@ -17,7 +17,36 @@ import {
 } from './columnMenuHandlers';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
 
-const ColumnMenu = ({
+interface ColumnMenuProps {
+  column: {
+    id: string;
+    type: string;
+    description: string;
+    emojiIcon: string;
+    nameVisible?: boolean;
+    width?: number;
+    options?: string[];
+    doneTags?: string[];
+    tagColors?: Record<string, string>;
+    checkboxColor?: string;
+  };
+  handleDeleteColumn: (id: string) => void;
+  handleClearColumn: (id: string) => void;
+  onClose: () => void;
+  onRename: (id: string, name: string) => void;
+  onChangeIcon: (id: string, icon: string) => void;
+  onChangeDescription: (id: string, description: string) => void;
+  onToggleTitleVisibility: (id: string, visible: boolean) => void;
+  onChangeOptions: (id: string, options: string[], tagColors: Record<string, string>, doneTags?: string[]) => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  onChangeWidth: (id: string, width: number) => void;
+  onChangeCheckboxColor?: (id: string, color: string) => void;
+}
+
+const ColumnMenu: React.FC<ColumnMenuProps> = ({
   column,
   handleDeleteColumn,
   handleClearColumn,
@@ -43,8 +72,8 @@ const ColumnMenu = ({
   }, [column]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         onClose();
       }
     };

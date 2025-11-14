@@ -13,7 +13,18 @@ import {
   filterTodos,
 } from './logic';
 
-export const TodoCell = ({ value, column, onChange }) => {
+interface TodoCellProps {
+  value: Array<{ text: string; completed: boolean; category?: string }>;
+  column: {
+    id: string;
+    type: string;
+    options?: string[];
+    tagColors?: Record<string, string>;
+  };
+  onChange: (value: Array<{ text: string; completed: boolean; category?: string }>) => void;
+}
+
+export const TodoCell: React.FC<TodoCellProps> = ({ value, column, onChange }) => {
   const { themeMode } = useSelector((state) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
   const colorOptions = getColorOptions({ darkMode });

@@ -12,7 +12,8 @@ import {
 } from './TableLogic';
 import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
 import { useSelector } from 'react-redux';
-const Table = () => {
+
+const Table: React.FC = () => {
   const {
     columns,
     setColumns,
@@ -31,7 +32,7 @@ const Table = () => {
   } = useTableLogic();
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns, setTableData);
-  const { theme, mode } = useSelector((state) => state.theme);
+  const { theme, mode } = useSelector((state: any) => state.theme);
   const darkMode = false;
 
   const displayColumns = [
@@ -52,7 +53,7 @@ const Table = () => {
     <div
       className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
     >
-      <style jsx global>{`
+      <style>{`
         .todo-cell {
           position: relative;
           z-index: 1;

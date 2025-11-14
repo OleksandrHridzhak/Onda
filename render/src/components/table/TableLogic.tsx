@@ -10,8 +10,9 @@ import { useSelector } from 'react-redux';
 import { settingsService } from '../../services/settingsDB';
 import { useColumnsData, DAYS } from './hooks/useColumnsData';
 import { useTableHandlers } from './hooks/useTableHandlers';
+import React from 'react';
 
-const handleError = (message, error) => {
+const handleError = (message: string, error: any): void => {
   console.error(message, error);
 };
 
@@ -42,7 +43,7 @@ export const useTableLogic = () => {
   // Завантаження налаштувань
   useEffect(() => {
     settingsService.getSettings()
-      .then(({ data }) => {
+      .then(({ data }: { data: any }) => {
         if (typeof data?.table?.showSummaryRow === 'boolean') {
           setShowSummaryRow(data.table.showSummaryRow);
         }
@@ -50,12 +51,12 @@ export const useTableLogic = () => {
           setHeaderLayout(data.header.layout);
         }
       })
-      .catch((err) => handleError('Error fetching settings:', err));
+      .catch((err: any) => handleError('Error fetching settings:', err));
   }, []);
 
   // Слухач змін header layout
   useEffect(() => {
-    const onHeaderChange = (e) => {
+    const onHeaderChange = (e: any) => {
       if (e.detail?.layout) setHeaderLayout(e.detail.layout);
     };
     window.addEventListener('header-settings-changed', onHeaderChange);
@@ -83,7 +84,7 @@ export const useTableLogic = () => {
 /**
  * Повертає стилі ширини для колонки
  */
-export const getWidthStyle = (column) => {
+export const getWidthStyle = (column: any): React.CSSProperties => {
   if (column.type === 'days') return { width: '120px', minWidth: '120px' };
   if (column.type === 'filler') return { width: 'auto', minWidth: '0px' };
   return { width: `${column.width}px`, minWidth: `${column.width}px` };
@@ -92,7 +93,7 @@ export const getWidthStyle = (column) => {
 /**
  * Обчислює сумарні значення для колонки
  */
-export const calculateSummary = (column, tableData) => {
+export const calculateSummary = (column: any, tableData: any): string | number => {
   if (column.type === 'checkbox') {
     return DAYS.reduce(
       (sum, day) => sum + (tableData[day]?.[column.id] ? 1 : 0),
@@ -121,10 +122,21 @@ export const calculateSummary = (column, tableData) => {
   return column.type === 'days' ? '' : '-';
 };
 
+interface RenderCellProps {
+  day: string;
+  column: any;
+  columnIndex: number;
+  rowIndex: number;
+  tableData: any;
+  darkMode: boolean;
+  handleCellChange: (day: string, columnId: string, value: any) => void;
+  handleChangeOptions: (columnId: string, options: string[], tagColors: Record<string, string>, doneTags?: string[]) => void;
+}
+
 /**
  * Компонент для рендерингу клітинки
  */
-export const RenderCell = ({
+export const RenderCell: React.FC<RenderCellProps> = ({
   day,
   column,
   columnIndex,
@@ -134,7 +146,7 @@ export const RenderCell = ({
   handleCellChange,
   handleChangeOptions,
 }) => {
-  const { theme, mode } = useSelector((state) => state.theme);
+  const { theme, mode } = useSelector((state: any) => state.theme);
   const style = getWidthStyle(column);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   
