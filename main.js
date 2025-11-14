@@ -15,12 +15,10 @@ function createWindow() {
     width: 1920,
     height: 1080,
     icon: join(__dirname, './assets/onda-logo.ico'),
-    icon: join(__dirname, './assets/onda-logo.ico'),
     frame: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: join(__dirname, 'preload.bundle.js'),
       preload: join(__dirname, 'preload.bundle.js'),
       webSecurity: false,
     },
