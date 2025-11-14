@@ -1,13 +1,18 @@
+interface Column {
+  id: string;
+  tagColors: Record<string, string>;
+}
+
 export const handleToggleTask = (
-  task,
-  isCompleted,
-  incompleteTasks,
-  completedTasks,
-  setIncompleteTasks,
-  setCompletedTasks,
-  onChangeOptions,
-  column
-) => {
+  task: string,
+  isCompleted: boolean,
+  incompleteTasks: string[],
+  completedTasks: string[],
+  setIncompleteTasks: React.Dispatch<React.SetStateAction<string[]>>,
+  setCompletedTasks: React.Dispatch<React.SetStateAction<string[]>>,
+  onChangeOptions: (id: string, incomplete: string[], tagColors: Record<string, string>, completed: string[]) => void,
+  column: Column
+): void => {
   let updatedIncomplete = [...incompleteTasks];
   let updatedCompleted = [...completedTasks];
 
