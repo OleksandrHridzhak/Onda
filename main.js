@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { init } from './api/ipcWindowsHandlers.js';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
+
+
+
 
 let mainWindow;
 
@@ -12,10 +15,12 @@ function createWindow() {
     width: 1920,
     height: 1080,
     icon: join(__dirname, './assets/onda-logo.ico'),
+    icon: join(__dirname, './assets/onda-logo.ico'),
     frame: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: join(__dirname, 'preload.bundle.js'),
       preload: join(__dirname, 'preload.bundle.js'),
       webSecurity: false,
     },
@@ -25,6 +30,7 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:3000');
   } else {
+    mainWindow.loadFile(join(__dirname, './render/build/index.html'));
     mainWindow.loadFile(join(__dirname, './render/build/index.html'));
   }
 }
@@ -45,6 +51,7 @@ if (!gotTheLock) {
 
   app.whenReady().then(() => {
     createWindow();
+    init(ipcMain, mainWindow);
     init(ipcMain, mainWindow);
   });
 

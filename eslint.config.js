@@ -71,12 +71,11 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       'no-console': 'off',
       'react/jsx-uses-react': 'off',
+      'react-hooks/set-state-in-effect': 'off',
     },
     settings: {
-      react: {
-        version: 'detect',
-      },
-    },
+        'react-hooks/set-state-in-effect': 'off',
+   },
   },
   {
     ignores: [
