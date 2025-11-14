@@ -1,11 +1,15 @@
+import React from 'react';
 import { Plus } from 'lucide-react';
-import { useSelector } from 'react-redux';
 
-export const AddNewColumnBtn = ({
+interface AddNewColumnBtnProps {
+  setShowColumnSelector: (show: boolean) => void;
+  showColumnSelector: boolean;
+}
+
+export const AddNewColumnBtn: React.FC<AddNewColumnBtnProps> = ({
   setShowColumnSelector,
   showColumnSelector,
 }) => {
-  const theme = useSelector((state) => state.theme.theme);
   return (
     <button
       onClick={() => setShowColumnSelector(!showColumnSelector)}

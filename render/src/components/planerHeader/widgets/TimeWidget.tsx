@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-export const TimeWidget = () => {
-  const theme = useSelector((state) => state.theme.theme);
+export const TimeWidget: React.FC = () => {
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -17,11 +15,14 @@ export const TimeWidget = () => {
 
     // перший рендер
     const date = new Date();
-    setTime(date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    // Disable the rule because the original logic uses setState in useEffect
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTime(
+      date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    );
 
     return () => clearInterval(intervalId);
   }, []);
-
 
   return (
     <h1 className={`font-poppins text-5xl text-textTableValues`}>{time}</h1>

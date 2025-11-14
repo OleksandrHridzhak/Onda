@@ -1,44 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
-import { useSelector } from 'react-redux';
 import { calendarService } from '../../../services/calendarDB';
 
-const TimelineWidget = () => {
-  const theme = useSelector((state) => state.theme.theme); // повний об’єкт з усіма класами
+interface Event {
+  id: string | number;
+  title: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  color: string;
+  isRepeating: boolean;
+  repeatDays?: number[];
+}
 
-  const getCurrentTimeString = () => {
+const TimelineWidget: React.FC = () => {
+  const getCurrentTimeString = (): string => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   };
 
-  const [events, setEvents] = useState([]);
-  const [hoveredEvent, setHoveredEvent] = useState(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [hoveredEvent, setHoveredEvent] = useState<Event | null>(null);
   const [currentTime, setCurrentTime] = useState(getCurrentTimeString());
 
   useEffect(() => {
     const interval = setInterval(
       () => setCurrentTime(getCurrentTimeString()),
-      60 * 1000
+      60 * 1000,
     );
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    const loadTodayEvents = async () => {
+    const loadTodayEvents = async (): Promise<void> => {
       try {
         const response = await calendarService.getCalendar();
         if (response.status === 'success') {
           const now = new Date();
           const todayDay = now.getDay();
 
-          const isSameDate = (d1, d2) =>
+          const isSameDate = (d1: Date, d2: Date): boolean =>
             d1.getFullYear() === d2.getFullYear() &&
             d1.getMonth() === d2.getMonth() &&
             d1.getDate() === d2.getDate();
 
-          const filteredEvents = response.data.filter((event) => {
+          const filteredEvents = response.data.filter((event: Event) => {
             const isRepeatingToday =
               event.isRepeating &&
               Array.isArray(event.repeatDays) &&
@@ -50,7 +58,7 @@ const TimelineWidget = () => {
             return isSameDate(eventDate, now);
           });
 
-          filteredEvents.sort((a, b) => {
+          filteredEvents.sort((a: Event, b: Event) => {
             const [hA, mA] = a.startTime.split(':').map(Number);
             const [hB, mB] = b.startTime.split(':').map(Number);
             return hA * 60 + mA - (hB * 60 + mB);
@@ -68,8 +76,8 @@ const TimelineWidget = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const getColorClass = (color) => {
-    const colorMap = {
+  const getColorClass = (color: string): string => {
+    const colorMap: Record<string, string> = {
       '#2563eb': 'bg-blue-500',
       '#059669': 'bg-green-500',
       '#7c3aed': 'bg-purple-500',
@@ -79,7 +87,7 @@ const TimelineWidget = () => {
     return colorMap[color] || 'bg-blue-500';
   };
 
-  const timeToPercent = (time) => {
+  const timeToPercent = (time: string): number => {
     const now = new Date();
     const [h, m] = time.split(':').map(Number);
     const eventDate = new Date(now);
@@ -88,10 +96,12 @@ const TimelineWidget = () => {
     const start = new Date(now);
     start.setHours(0, 0, 0, 0);
 
-    return ((eventDate - start) / (24 * 60 * 60 * 1000)) * 100;
+    return (
+      ((eventDate.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) * 100
+    );
   };
 
-  const durationToPercent = (startTime, endTime) => {
+  const durationToPercent = (startTime: string, endTime: string): number => {
     const [sh, sm] = startTime.split(':').map(Number);
     const [eh, em] = endTime.split(':').map(Number);
 
@@ -104,10 +114,12 @@ const TimelineWidget = () => {
     if (endDate < startDate)
       endDate = new Date(endDate.getTime() + 24 * 60 * 60 * 1000);
 
-    return ((endDate - startDate) / (24 * 60 * 60 * 1000)) * 100;
+    return (
+      ((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000)) * 100
+    );
   };
 
-  const getTimeLabel = (offsetHours) => {
+  const getTimeLabel = (offsetHours: number): string => {
     const now = new Date();
     const t = new Date(now);
     t.setHours(offsetHours, 0, 0, 0);
@@ -134,7 +146,7 @@ const TimelineWidget = () => {
               {events.map((event) => {
                 const width = Math.max(
                   1,
-                  durationToPercent(event.startTime, event.endTime)
+                  durationToPercent(event.startTime, event.endTime),
                 );
                 const left = timeToPercent(event.startTime);
                 return (
@@ -162,7 +174,7 @@ const TimelineWidget = () => {
                 left: `calc(${timeToPercent(hoveredEvent.startTime)}% + ${
                   durationToPercent(
                     hoveredEvent.startTime,
-                    hoveredEvent.endTime
+                    hoveredEvent.endTime,
                   ) / 2
                 }%)`,
               }}

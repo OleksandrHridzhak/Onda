@@ -1,4 +1,14 @@
-export default function ToggleSwitch({ checked, onChange }) {
+import React from 'react';
+
+interface ToggleSwitchProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}
+
+export default function ToggleSwitch({
+  checked,
+  onChange,
+}: ToggleSwitchProps): React.ReactElement {
   return (
     <label className="relative inline-flex items-center cursor-pointer">
       <input

@@ -1,6 +1,10 @@
 import React from 'react';
 
-export const LoadingScreen = ({ darkMode }) => {
+interface LoadingScreenProps {
+  darkMode: boolean;
+}
+
+export const LoadingScreen: React.FC<LoadingScreenProps> = ({ darkMode }) => {
   return (
     <div className="flex flex-col items-center justify-center h-full py-20">
       <div className="flex space-x-1 text-5xl font-bold text-blue-600 font-poppins">

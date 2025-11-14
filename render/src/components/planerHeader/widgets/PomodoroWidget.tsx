@@ -12,13 +12,26 @@ import {
   updateTime,
 } from '../../../store/slices/pomodoroSlice';
 
-const PomodoroWidget = () => {
-  const dispatch = useDispatch();
-  const theme = useSelector((state) => state.theme.theme);
-  const { time, isRunning, isEnded, isPaused, initialMinutes, notifyEnabled } =
-    useSelector((state) => state.pomodoro);
+interface RootState {
+  theme: {
+    theme: unknown;
+  };
+  pomodoro: {
+    time: number;
+    isRunning: boolean;
+    isEnded: boolean;
+    isPaused: boolean;
+    initialMinutes: number;
+    notifyEnabled: boolean;
+  };
+}
 
-  const alarmAudio = useRef(null);
+const PomodoroWidget: React.FC = () => {
+  const dispatch = useDispatch();
+  const { time, isRunning, isEnded, isPaused, initialMinutes, notifyEnabled } =
+    useSelector((state: RootState) => state.pomodoro);
+
+  const alarmAudio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const src = `${process.env.PUBLIC_URL}/alert.mp3`;
@@ -44,7 +57,7 @@ const PomodoroWidget = () => {
     }
   }, [isEnded, notifyEnabled, initialMinutes]);
 
-  const handleStart = (minutes) => {
+  const handleStart = (minutes: number): void => {
     if (alarmAudio.current) {
       alarmAudio.current.pause();
       alarmAudio.current.currentTime = 0;
@@ -57,16 +70,20 @@ const PomodoroWidget = () => {
     dispatch(setInitialMinutes(minutes));
   };
 
-  const handlePause = () => dispatch(setIsRunning(false));
-  const handleResume = () => dispatch(setIsRunning(true));
-  const handleEnd = () => {
+  const handlePause = (): void => {
+    dispatch(setIsRunning(false));
+  };
+  const handleResume = (): void => {
+    dispatch(setIsRunning(true));
+  };
+  const handleEnd = (): void => {
     dispatch(setNotifyEnabled(false));
     dispatch(setIsRunning(false));
     dispatch(setTime(0));
     dispatch(setIsEnded(true));
     dispatch(setIsPaused(false));
   };
-  const handleClose = () => {
+  const handleClose = (): void => {
     dispatch(setNotifyEnabled(false));
     if (alarmAudio.current) {
       alarmAudio.current.pause();
@@ -75,7 +92,7 @@ const PomodoroWidget = () => {
     dispatch(resetTimer());
   };
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number): string => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m}:${s < 10 ? '0' : ''}${s}`;
