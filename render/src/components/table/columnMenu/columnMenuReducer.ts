@@ -1,5 +1,53 @@
-// columnMenuReducer.js
-export const initialState = (column) => ({
+// columnMenuReducer.ts
+
+interface Column {
+  name: string;
+  emojiIcon?: string;
+  description?: string;
+  nameVisible?: boolean;
+  options?: string[];
+  doneTags?: string[];
+  tagColors?: Record<string, string>;
+  checkboxColor?: string;
+  Chosen?: unknown;
+  width?: number;
+}
+
+export interface MenuState {
+  name: string;
+  selectedIcon: string;
+  description: string;
+  showTitle: boolean;
+  options: string[];
+  doneTags: string[];
+  optionColors: Record<string, string>;
+  checkboxColor: string;
+  newOption: string;
+  Chosen?: unknown;
+  width: number | string;
+  isIconSectionExpanded: boolean;
+  isColorMenuOpen: Record<string, boolean>;
+  isSaving: boolean;
+}
+
+export type MenuAction =
+  | { type: 'SET_NAME'; payload: string }
+  | { type: 'SET_SELECTED_ICON'; payload: string }
+  | { type: 'SET_DESCRIPTION'; payload: string }
+  | { type: 'SET_SHOW_TITLE'; payload: boolean }
+  | { type: 'SET_NEW_OPTION'; payload: string }
+  | { type: 'SET_WIDTH'; payload: number | string }
+  | { type: 'TOGGLE_ICON_SECTION' }
+  | { type: 'TOGGLE_COLOR_MENU'; payload: string }
+  | { type: 'SET_CHECKBOX_COLOR'; payload: string }
+  | { type: 'ADD_OPTION' }
+  | { type: 'REMOVE_OPTION'; payload: string }
+  | { type: 'EDIT_OPTION'; payload: { oldOption: string; newOption: string } }
+  | { type: 'CHANGE_OPTION_COLOR'; payload: { option: string; color: string } }
+  | { type: 'SET_SAVING'; payload: boolean }
+  | { type: 'RESET'; payload: Column };
+
+export const initialState = (column: Column): MenuState => ({
   name: column.name,
   selectedIcon: column.emojiIcon || '',
   description: column.description || '',
@@ -10,13 +58,13 @@ export const initialState = (column) => ({
   checkboxColor: column.checkboxColor || 'green',
   newOption: '',
   Chosen: column.Chosen,
-  width: column.width ? parseInt(column.width) : '',
+  width: column.width ? parseInt(String(column.width)) : '',
   isIconSectionExpanded: false,
   isColorMenuOpen: {},
   isSaving: false,
 });
 
-export const reducer = (state, action) => {
+export const reducer = (state: MenuState, action: MenuAction): MenuState => {
   switch (action.type) {
     case 'SET_NAME':
       return { ...state, name: action.payload };

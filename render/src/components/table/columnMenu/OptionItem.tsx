@@ -2,7 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { getColorOptions } from '../../utils/colorOptions';
 
-export const OptionItem = ({
+interface OptionItemProps {
+  option: string;
+  options: string[];
+  doneTags: string[];
+  optionColors: Record<string, string>;
+  darkMode: boolean;
+  handleColorChange: (option: string, color: string) => void;
+  handleRemoveOption: (option: string) => void;
+  handleEditOption: (oldOption: string, newOption: string) => void;
+}
+
+export const OptionItem: React.FC<OptionItemProps> = ({
   option,
   options,
   doneTags,
@@ -13,16 +24,16 @@ export const OptionItem = ({
   handleEditOption,
 }) => {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
-  const [editingOption, setEditingOption] = useState(null);
+  const [editingOption, setEditingOption] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
-  const menuRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  const startEditing = () => {
+  const startEditing = (): void => {
     setEditingOption(option);
     setEditValue(option);
   };
 
-  const saveEdit = () => {
+  const saveEdit = (): void => {
     if (
       editValue.trim() &&
       !options.includes(editValue.trim()) &&
@@ -36,8 +47,8 @@ export const OptionItem = ({
   };
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setIsContextMenuOpen(false);
       }
     };

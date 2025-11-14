@@ -1,7 +1,23 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
 import { OptionItem } from './OptionItem';
-export const OptionsList = ({
+
+interface OptionsListProps {
+  columnType: string;
+  options: string[];
+  doneTags: string[];
+  newOption: string;
+  setNewOption: (value: string) => void;
+  handleAddOption: () => void;
+  handleRemoveOption: (option: string) => void;
+  handleEditOption: (oldOption: string, newOption: string) => void;
+  handleColorChange: (option: string, color: string) => void;
+  optionColors: Record<string, string>;
+  darkMode: boolean;
+  toggleColorMenu: (option: string) => void;
+}
+
+export const OptionsList: React.FC<OptionsListProps> = ({
   columnType,
   options,
   doneTags,
@@ -59,7 +75,6 @@ export const OptionsList = ({
               handleColorChange={handleColorChange}
               handleRemoveOption={handleRemoveOption}
               handleEditOption={handleEditOption}
-              toggleColorMenu={toggleColorMenu}
             />
           ))}
         </div>

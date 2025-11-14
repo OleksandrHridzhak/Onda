@@ -1,19 +1,27 @@
 import React, { useRef, useEffect } from 'react';
 
-import { icons as allIcons, getIconComponent } from '../../utils/icons';
+import { icons as allIcons, getIconComponent, Icon } from '../../utils/icons';
 
-export const IconSelector = ({
+interface IconSelectorProps {
+  selectedIcon: string;
+  setSelectedIcon: (icon: string) => void;
+  isIconSectionExpanded: boolean;
+  setIsIconSectionExpanded: (expanded: boolean) => void;
+  icons?: Icon[];
+}
+
+export const IconSelector: React.FC<IconSelectorProps> = ({
   selectedIcon,
   setSelectedIcon,
   isIconSectionExpanded,
   setIsIconSectionExpanded,
   icons = allIcons,
 }) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
         setIsIconSectionExpanded(false);
       }
     };
