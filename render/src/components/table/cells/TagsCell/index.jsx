@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useRef } from 'react';
-import { getColorOptions } from '../../utils/colorOptions';
 import { useSelector } from 'react-redux';
+import { getColorOptions } from '../../../utils/colorOptions';
+import { useTagsDropdown } from './hooks/useTagsDropdown';
+import { handleTagChange } from './logic';
 
 export const TagsCell = ({
   value,
@@ -12,38 +12,15 @@ export const TagsCell = ({
   const { themeMode } = useSelector((state) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedTags, setSelectedTags] = useState(
-    typeof value === 'string' && value.trim() !== ''
-      ? value.split(', ').filter((tag) => tag.trim() !== '')
-      : []
-  );
-  const dropdownRef = useRef(null);
+  const {
+    isOpen,
+    setIsOpen,
+    selectedTags,
+    setSelectedTags,
+    dropdownRef,
+  } = useTagsDropdown(value);
 
   const colorOptions = getColorOptions({ darkMode });
-
-  const handleTagChange = (tag) => {
-    setSelectedTags((prevTags) => {
-      const updatedTags = prevTags.includes(tag)
-        ? prevTags.filter((t) => t !== tag)
-        : [...prevTags, tag];
-      onChange(updatedTags.join(', '));
-      return updatedTags;
-    });
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -85,7 +62,7 @@ export const TagsCell = ({
                 key={option}
                 className={`px-3 py-2 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-blue-50'} cursor-pointer text-sm whitespace-nowrap`}
                 onClick={() => {
-                  handleTagChange(option);
+                  handleTagChange(option, selectedTags, setSelectedTags, onChange);
                   setIsOpen(false);
                 }}
               >

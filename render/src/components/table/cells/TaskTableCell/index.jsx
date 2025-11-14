@@ -1,41 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { getColorOptions } from '../../utils/colorOptions';
+import { getColorOptions } from '../../../utils/colorOptions';
+import { useTaskState } from './hooks/useTaskState';
+import { handleToggleTask } from './logic';
+
 export const TaskTableCell = ({ column, onChangeOptions }) => {
   const { themeMode } = useSelector((state) => state.newTheme);
   const darkMode = themeMode === 'dark' ? true : false;
-  const [incompleteTasks, setIncompleteTasks] = useState(column.options || []);
-  const [completedTasks, setCompletedTasks] = useState(column.doneTags || []);
+  
+  const {
+    incompleteTasks,
+    setIncompleteTasks,
+    completedTasks,
+    setCompletedTasks,
+  } = useTaskState(column);
 
   const colorOptions = getColorOptions({ darkMode });
-  useEffect(() => {
-    setIncompleteTasks(column.options || []);
-    setCompletedTasks(column.doneTags || []);
-  }, [column]);
-
-  const handleToggleTask = (task, isCompleted) => {
-    let updatedIncomplete = [...incompleteTasks];
-    let updatedCompleted = [...completedTasks];
-
-    if (isCompleted) {
-      // Move from DoneTags to Options (mark as incomplete)
-      updatedCompleted = updatedCompleted.filter((t) => t !== task);
-      updatedIncomplete = [...updatedIncomplete, task];
-    } else {
-      // Move from Options to DoneTags (mark as completed)
-      updatedIncomplete = updatedIncomplete.filter((t) => t !== task);
-      updatedCompleted = [...updatedCompleted, task];
-    }
-
-    setIncompleteTasks(updatedIncomplete);
-    setCompletedTasks(updatedCompleted);
-    onChangeOptions(
-      column.id,
-      updatedIncomplete,
-      column.tagColors,
-      updatedCompleted
-    );
-  };
 
   return (
     <div className="h-full flex flex-col">
@@ -54,7 +34,16 @@ export const TaskTableCell = ({ column, onChangeOptions }) => {
             {incompleteTasks.map((task, index) => (
               <div
                 key={index}
-                onClick={() => handleToggleTask(task, false)}
+                onClick={() => handleToggleTask(
+                  task,
+                  false,
+                  incompleteTasks,
+                  completedTasks,
+                  setIncompleteTasks,
+                  setCompletedTasks,
+                  onChangeOptions,
+                  column
+                )}
                 className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer
                   ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}
                   hover:opacity-80 transition-opacity flex items-center gap-1`}
@@ -79,7 +68,16 @@ export const TaskTableCell = ({ column, onChangeOptions }) => {
               return (
                 <div
                   key={index}
-                  onClick={() => handleToggleTask(task, true)}
+                  onClick={() => handleToggleTask(
+                    task,
+                    true,
+                    incompleteTasks,
+                    completedTasks,
+                    setIncompleteTasks,
+                    setCompletedTasks,
+                    onChangeOptions,
+                    column
+                  )}
                   className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer line-through 
                     ${colorOption.bg} ${colorOption.text}
                     hover:opacity-100 transition-opacity flex items-center gap-1`}
