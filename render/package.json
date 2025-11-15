@@ -5,6 +5,8 @@
   "homepage": "./",
   "dependencies": {
     "@reduxjs/toolkit": "^2.7.0",
+    "@tauri-apps/api": "^2.9.0",
+    "@tauri-apps/plugin-notification": "^2.3.3",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/user-event": "^13.5.0",
     "idb": "^8.0.3",

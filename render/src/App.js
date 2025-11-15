@@ -7,12 +7,12 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { settingsService } from './services/settingsDB';
 import Sidebar from './components/Sidebar';
 import Table from './components/table/Table';
 import MenuWin from './components/MenuWin';
 import Calendar from './components/calendar/Calendar';
 import Settings from './components/settings/Settings';
+import './services/tauriAPI'; // Import Tauri API to setup window.electronAPI
 
 const routes = ['/', '/calendar', '/settings'];
 
@@ -23,7 +23,7 @@ function MainContent() {
     // First, try to apply theme from localStorage to prevent flash
     const savedTheme = localStorage.getItem('themeMode');
     const savedColor = localStorage.getItem('colorScheme');
-    
+
     if (savedTheme) {
       document.documentElement.setAttribute('data-theme-mode', savedTheme);
     }
@@ -44,7 +44,6 @@ function MainContent() {
       </Routes>
     </div>
   );
-  
 }
 
 function App() {
