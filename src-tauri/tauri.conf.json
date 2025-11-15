@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Onda-rust",
-  "version": "2.3.0-dev",
+  "version": "2.3.0",
   "identifier": "com.onda.app.rust",
   "build": {
     "frontendDist": "../render/build",
@@ -27,7 +27,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis", "msi"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
