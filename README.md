@@ -11,10 +11,13 @@ Instructions for how to run the project locally.
 
 ### Requirements
 
-- Node.js (version XX+)
-- npm or yarn
-- Git Bash (for Windows)
-- VS Code (optional)
+- Node.js (version 20+)
+- npm
+- Rust (for Tauri)
+- System dependencies:
+  - **Linux**: `libwebkit2gtk-4.1-dev`, `libgtk-3-dev`, `libayatana-appindicator3-dev`, `librsvg2-dev`, `patchelf`
+  - **macOS**: Xcode Command Line Tools
+  - **Windows**: Microsoft Visual C++ 2019 Redistributable and WebView2
 
 ---
 
@@ -33,18 +36,48 @@ cd Onda
 npm install
 ```
 
-3. Install backend dependencies:
+3. Install frontend dependencies:
 
 ```bash
-cd /render
-npm install
-cd ../
+cd render
+npm install --legacy-peer-deps
+cd ..
 ```
 
-4. Run the start script:
+4. Run the development server:
 
 ```bash
-npm run start
+npm run dev
 ```
+
+Or simply:
+
+```bash
+npm start
+```
+
+---
+
+## Building for Production
+
+To build the application for production:
+
+```bash
+npm run build
+```
+
+This will create platform-specific installers in the `src-tauri/target/release/bundle/` directory:
+
+- **Linux**: `.deb`, `.rpm`, and `.AppImage` files
+- **macOS**: `.dmg` file
+- **Windows**: `.exe` installer
+
+---
+
+## Technology Stack
+
+- **Frontend**: React, Redux Toolkit, TypeScript, Tailwind CSS
+- **Desktop Framework**: Tauri (Rust + WebView)
+- **Data Storage**: IndexedDB
 
 ---
