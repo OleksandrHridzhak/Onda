@@ -29,13 +29,15 @@ interface NewEvent {
 
 export default function Calendar(): React.ReactElement {
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
-    getMonday(new Date())
+    getMonday(new Date()),
   );
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<string>(() => {
     return localStorage.getItem('calendarViewMode') || 'week';
   });
-  const [weekDays, setWeekDays] = useState<Date[]>(getWeekDays(getMonday(new Date())));
+  const [weekDays, setWeekDays] = useState<Date[]>(
+    getWeekDays(getMonday(new Date())),
+  );
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [showEventModal, setShowEventModal] = useState<boolean>(false);
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
@@ -77,7 +79,8 @@ export default function Calendar(): React.ReactElement {
     return days;
   }
 
-  const formatTime = (hour: number): string => `${hour.toString().padStart(2, '0')}:00`;
+  const formatTime = (hour: number): string =>
+    `${hour.toString().padStart(2, '0')}:00`;
   const timeToMinutes = (time: string): number => {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
@@ -193,7 +196,7 @@ export default function Calendar(): React.ReactElement {
         setEvents((prev) =>
           editingEventId
             ? prev.map((e) => (e.id === editingEventId ? eventData : e))
-            : [...prev, eventData]
+            : [...prev, eventData],
         );
         setShowEventModal(false);
         setNewEvent({
@@ -272,10 +275,11 @@ export default function Calendar(): React.ReactElement {
   const getEventsForDay = (day: Date): CalendarEvent[] => {
     const dayEvents: CalendarEvent[] = [];
     const currentWeekNumber = getWeekNumber(currentWeekStart);
-    const eventWeekNumber = (event: CalendarEvent): number => getWeekNumber(new Date(event.date));
+    const eventWeekNumber = (event: CalendarEvent): number =>
+      getWeekNumber(new Date(event.date));
 
     events.forEach((event) => {
-      const eventDate = new Date(event.date);
+      // const eventDate = new Date(event.date);
       const dayIndex = day.getDay();
 
       if (!event.isRepeating) {
@@ -299,7 +303,7 @@ export default function Calendar(): React.ReactElement {
     });
 
     return dayEvents.filter(
-      (event) => !filterColor || event.color === filterColor
+      (event) => !filterColor || event.color === filterColor,
     );
   };
 

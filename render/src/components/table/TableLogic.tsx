@@ -6,7 +6,6 @@ import { NotesCell } from './cells/NotesCell';
 import { MultiCheckboxCell } from './cells/MultiCheckboxCell';
 import { TodoCell } from './cells/TodoCell';
 import { TaskTableCell } from './cells/TaskTableCell';
-import { useSelector } from 'react-redux';
 import { settingsService } from '../../services/settingsDB';
 import { useColumnsData, DAYS } from './hooks/useColumnsData';
 import { useTableHandlers } from './hooks/useTableHandlers';
@@ -167,7 +166,7 @@ export const RenderCell: React.FC<RenderCellProps> = ({
   handleCellChange,
   handleChangeOptions,
 }) => {
-  const { theme, mode } = useSelector((state: any) => state.theme);
+  // const { theme, mode } = useSelector((state: any) => state.theme);
   const style = getWidthStyle(column);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 

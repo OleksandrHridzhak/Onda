@@ -25,14 +25,14 @@ const Table: React.FC = () => {
     showSummaryRow,
     handleAddColumn,
     handleCellChange,
-    handleAddTask,
+    // handleAddTask,
     handleMoveColumn,
     handleChangeWidth,
     handleChangeOptions,
   } = useTableLogic();
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns, setTableData);
-  const { theme, mode } = useSelector((state: any) => state.theme);
+  const { mode } = useSelector((state: any) => state.newTheme);
   const darkMode = false;
 
   const displayColumns = [

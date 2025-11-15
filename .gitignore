@@ -30,6 +30,9 @@ yarn-error.log*
 .env.development
 .env.localhistory
 
-#Bundler files
+#Bundler files (legacy Electron)
 main.bundle.js
 preload.bundle.js
+
+# Tauri build artifacts
+/src-tauri/target
