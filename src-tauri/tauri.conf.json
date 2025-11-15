@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Onda",
-  "version": "2.2.0",
-  "identifier": "com.onda.app",
+  "productName": "Onda-rust",
+  "version": "2.3.0-dev",
+  "identifier": "com.onda.app.rust",
   "build": {
     "frontendDist": "../render/build",
     "devUrl": "http://localhost:3000",

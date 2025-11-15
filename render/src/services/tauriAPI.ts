@@ -4,6 +4,7 @@ import {
   isPermissionGranted,
   requestPermission,
 } from '@tauri-apps/plugin-notification';
+import type { PermissionState } from '@tauri-apps/plugin-notification';
 
 export const tauriAPI = {
   minimizeWindow: async () => {

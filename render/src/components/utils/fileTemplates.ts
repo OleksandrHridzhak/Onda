@@ -1,3 +1,6 @@
+// Make this file a module by adding an export statement
+export {};
+
 interface ChosenGlobal {
   global: unknown[];
 }
@@ -238,4 +241,4 @@ const getSettingsTemplate = (): SettingsTemplate => ({
   },
 });
 
-module.exports = { getColumnTemplates, getSettingsTemplate };
+export { getColumnTemplates, getSettingsTemplate };
