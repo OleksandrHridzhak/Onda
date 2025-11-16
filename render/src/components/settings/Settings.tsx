@@ -273,11 +273,12 @@ export default function SettingsDashboard(): React.ReactElement {
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                   activeSection === section.id
-                    ? `bg-settingsSectionSelectorBg text-text`
-                    : `text-textTableValues`
-                }`}
+                    ? `bg-settingsSectionSelectorBg text-text shadow-md transform scale-105`
+                    : `text-textTableValues hover:bg-linkInactiveHoverBg hover:transform hover:scale-102`
+                } focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-2`}
+                aria-current={activeSection === section.id ? 'page' : undefined}
               >
                 {section.icon}
                 <span className="ml-3">{section.name}</span>

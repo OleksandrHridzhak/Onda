@@ -34,15 +34,15 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center"
+      className="fixed inset-0 z-[9999] flex items-center justify-center animate-in fade-in duration-200"
       onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-200" />
 
       {/* Modal */}
       <div
-        className={`relative z-10 w-full max-w-md mx-4 rounded-xl shadow-2xl
+        className={`relative z-10 w-full max-w-md mx-4 rounded-xl shadow-2xl animate-in zoom-in-95 duration-200
           ${darkMode ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'}`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -54,12 +54,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <h2 className="text-xl font-semibold">{title}</h2>
           <button
             onClick={onClose}
-            className={`p-1 rounded-lg transition-colors
+            className={`p-1 rounded-lg transition-all duration-200
               ${
                 darkMode
                   ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-200'
                   : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
-              }`}
+              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            aria-label="Close modal"
           >
             <X size={20} />
           </button>
@@ -79,18 +80,18 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         >
           <button
             onClick={onClose}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors
+            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 active:scale-95
               ${
                 darkMode
                   ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500`}
           >
             {cancelText}
           </button>
           <button
             onClick={handleConfirm}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors
+            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 active:scale-95
               ${
                 variant === 'danger'
                   ? darkMode
@@ -99,6 +100,10 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   : darkMode
                     ? 'bg-yellow-600 text-white hover:bg-yellow-700'
                     : 'bg-yellow-500 text-white hover:bg-yellow-600'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                variant === 'danger'
+                  ? 'focus:ring-red-500'
+                  : 'focus:ring-yellow-500'
               }`}
           >
             {confirmText}

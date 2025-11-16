@@ -68,10 +68,10 @@ const Sidebar: React.FC = () => {
             return (
               <Link key={item.name} to={item.path}>
                 <li
-                  className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${
+                  className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl focus-within:ring-2 focus-within:ring-primaryColor focus-within:ring-offset-2 ${
                     active === item.name
-                      ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText'
-                      : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'
+                      ? 'bg-primaryColor scale-110 shadow-lg text-linkActiveText'
+                      : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg hover:shadow-md'
                   }`}
                   onClick={() => setActive(item.name as ActivePage)}
                 >
@@ -88,8 +88,17 @@ const Sidebar: React.FC = () => {
             );
           })}
           <li
-            className={`p-2 rounded-xl transition-all duration-300 cursor-pointer`}
+            className={`p-2 rounded-xl transition-all duration-300 cursor-pointer hover:scale-105 hover:bg-linkInactiveHoverBg focus-within:ring-2 focus-within:ring-primaryColor focus-within:ring-offset-2`}
             onClick={toggleTheme}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTheme();
+              }
+            }}
+            aria-label={`Switch to ${themeMode === 'dark' ? 'light' : 'dark'} mode`}
           >
             {themeMode === 'dark' ? (
               <Moon

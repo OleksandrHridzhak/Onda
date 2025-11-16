@@ -24,12 +24,19 @@ const MenuWin: React.FC<MenuWinProps> = ({ currentPage = '/' }) => {
     return ' bg-gray-900';
   };
 
-  const getButtonClass = (): string => {
+  const getButtonClass = (isClose = false): string => {
     const base =
-      'w-8 h-8 flex items-center justify-center rounded no-drag transition-colors duration-200';
+      'w-8 h-8 flex items-center justify-center rounded no-drag transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1';
+
+    if (isClose) {
+      return themeMode === 'dark'
+        ? `${base} text-gray-300 hover:bg-red-600 hover:text-white focus:ring-red-500`
+        : `${base} text-gray-400 hover:bg-red-500 hover:text-white focus:ring-red-400`;
+    }
+
     return themeMode === 'dark'
-      ? `${base} text-gray-300 hover:bg-gray-600 hover:text-white`
-      : `${base} text-gray-400 hover:bg-gray-200`;
+      ? `${base} text-gray-300 hover:bg-gray-600 hover:text-white focus:ring-gray-500`
+      : `${base} text-gray-400 hover:bg-gray-200 hover:text-gray-900 focus:ring-gray-400`;
   };
 
   return (
@@ -52,7 +59,7 @@ const MenuWin: React.FC<MenuWinProps> = ({ currentPage = '/' }) => {
       </button>
       <button
         onClick={() => window.electronAPI?.closeWindow()}
-        className={getButtonClass()}
+        className={getButtonClass(true)}
         aria-label="Close window"
       >
         <X size={16} />
