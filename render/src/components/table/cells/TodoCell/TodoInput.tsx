@@ -15,7 +15,6 @@ interface TodoInputProps {
   todos: Todo[];
   setTodos: (todos: Todo[]) => void;
   onChange: (value: Todo[]) => void;
-  setIsCategoryMenuOpen: (open: boolean) => void;
   darkMode: boolean;
 }
 
@@ -26,19 +25,10 @@ export const TodoInput: React.FC<TodoInputProps> = ({
   todos,
   setTodos,
   onChange,
-  setIsCategoryMenuOpen,
   darkMode,
 }) => {
   const onAddTodo = () =>
-    handleAddTodo(
-      newTodo,
-      newCategory,
-      todos,
-      setTodos,
-      onChange,
-      setNewTodo,
-      setIsCategoryMenuOpen,
-    );
+    handleAddTodo(newTodo, newCategory, todos, setTodos, onChange, setNewTodo);
 
   return (
     <div className="flex items-center relative">

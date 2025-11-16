@@ -18,7 +18,6 @@ export const handleAddTodo = (
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>,
   onChange: (todos: Todo[]) => void,
   setNewTodo: React.Dispatch<React.SetStateAction<string>>,
-  setIsCategoryMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   if (newTodo.trim()) {
     const updatedTodos = [
@@ -28,7 +27,6 @@ export const handleAddTodo = (
     setTodos(updatedTodos);
     onChange(updatedTodos);
     setNewTodo('');
-    setIsCategoryMenuOpen(false);
   }
 };
 
@@ -36,10 +34,10 @@ export const handleToggleTodo = (
   index: number,
   todos: Todo[],
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>,
-  onChange: (todos: Todo[]) => void
+  onChange: (todos: Todo[]) => void,
 ): void => {
   const updatedTodos = todos.map((todo, i) =>
-    i === index ? { ...todo, completed: !todo.completed } : todo
+    i === index ? { ...todo, completed: !todo.completed } : todo,
   );
   const sortedTodos = sortTodos(updatedTodos);
   setTodos(sortedTodos);
@@ -50,7 +48,7 @@ export const handleDeleteTodo = (
   index: number,
   todos: Todo[],
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>,
-  onChange: (todos: Todo[]) => void
+  onChange: (todos: Todo[]) => void,
 ): void => {
   const updatedTodos = todos.filter((_, i) => i !== index);
   const sortedTodos = sortTodos(updatedTodos);
@@ -64,7 +62,7 @@ export const handleEditTodo = (
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>,
   setEditingIndex: React.Dispatch<React.SetStateAction<number | null>>,
   setEditText: React.Dispatch<React.SetStateAction<string>>,
-  setEditCategory: React.Dispatch<React.SetStateAction<string>>
+  setEditCategory: React.Dispatch<React.SetStateAction<string>>,
 ): void => {
   setIsEditing(true);
   setEditingIndex(index);
@@ -82,13 +80,13 @@ export const handleSaveEdit = (
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>,
   setEditingIndex: React.Dispatch<React.SetStateAction<number | null>>,
   setEditText: React.Dispatch<React.SetStateAction<string>>,
-  setEditCategory: React.Dispatch<React.SetStateAction<string>>
+  setEditCategory: React.Dispatch<React.SetStateAction<string>>,
 ): void => {
   if (editText.trim() && editingIndex !== null) {
     const updatedTodos = todos.map((todo, i) =>
       i === editingIndex
         ? { ...todo, text: editText.trim(), category: editCategory }
-        : todo
+        : todo,
     );
     setTodos(updatedTodos);
     onChange(updatedTodos);
@@ -99,7 +97,10 @@ export const handleSaveEdit = (
   }
 };
 
-export const filterTodos = (todos: Todo[], selectedFilterCategory: string): Todo[] => {
+export const filterTodos = (
+  todos: Todo[],
+  selectedFilterCategory: string,
+): Todo[] => {
   return selectedFilterCategory
     ? todos.filter((todo) => todo.category === selectedFilterCategory)
     : todos;

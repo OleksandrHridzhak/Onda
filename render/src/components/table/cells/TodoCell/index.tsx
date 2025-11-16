@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getColorOptions } from '../../../utils/colorOptions';
 import { useTodoState } from './hooks/useTodoState';
-import { useCategoryMenu } from './hooks/useCategoryMenu';
 import { filterTodos } from './logic';
 import { TodoInput } from './TodoInput';
 import { TodoCategoryFilter } from './TodoCategoryFilter';
@@ -59,9 +58,6 @@ export const TodoCell: React.FC<TodoCellProps> = ({
     setSelectedFilterCategory,
   } = useTodoState(value);
 
-  const { isCategoryMenuOpen, setIsCategoryMenuOpen, categoryMenuRef } =
-    useCategoryMenu();
-
   const filteredTodos = filterTodos(todos, selectedFilterCategory);
 
   return (
@@ -74,7 +70,6 @@ export const TodoCell: React.FC<TodoCellProps> = ({
           todos={todos}
           setTodos={setTodos}
           onChange={onChange}
-          setIsCategoryMenuOpen={setIsCategoryMenuOpen}
           darkMode={darkMode}
         />
         <TodoCategoryFilter
