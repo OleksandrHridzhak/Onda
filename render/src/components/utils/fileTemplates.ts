@@ -238,4 +238,4 @@ const getSettingsTemplate = (): SettingsTemplate => ({
   },
 });
 
-module.exports = { getColumnTemplates, getSettingsTemplate };
+export { getColumnTemplates, getSettingsTemplate };
