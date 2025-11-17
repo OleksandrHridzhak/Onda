@@ -223,6 +223,11 @@ export async function addNewColumn(columnType) {
   }
 }
 
+/**
+ * Delete column by id
+ * @deprecated Use columnService.deleteColumn() from columnsDB.js instead
+ * Kept only for legacy compatibility with old code
+ */
 export async function deleteColumn(columnId) {
   try {
     const db = await dbPromise;
@@ -236,126 +241,6 @@ export async function deleteColumn(columnId) {
   } catch (error) {
     console.error('Помилка при видаленні колонки:', error);
     return { status: 'Error', message: error.message, columnId };
-  }
-}
-
-// Нові функції для роботи з окремими колонками
-
-// Отримати всі колонки
-export async function getAllColumns() {
-  try {
-    const db = await dbPromise;
-    const columns = await db.getAll('columns');
-    console.log('Завантажено колонок:', columns.length);
-    return columns;
-  } catch (error) {
-    console.error('Помилка при отриманні колонок:', error);
-    return [];
-  }
-}
-
-// Додати нову колонку
-export async function addColumn(columnData) {
-  try {
-    const db = await dbPromise;
-    await db.put('columns', columnData);
-    console.log('Колонку додано:', columnData.id);
-    return { status: true, data: columnData };
-  } catch (error) {
-    console.error('Помилка при додаванні колонки:', error);
-    return { status: false, message: error.message };
-  }
-}
-
-// Оновити колонку за id
-export async function updateColumnById(columnData) {
-  try {
-    const db = await dbPromise;
-    await db.put('columns', columnData);
-    console.log('Колонку оновлено:', columnData.id);
-    return true;
-  } catch (error) {
-    console.error('Помилка при оновленні колонки:', error);
-    return false;
-  }
-}
-
-// Видалити колонку за id
-export async function deleteColumnById(columnId) {
-  try {
-    const db = await dbPromise;
-    await db.delete('columns', columnId);
-    console.log('Колонку видалено:', columnId);
-    return { status: 'Column deleted', columnId };
-  } catch (error) {
-    console.error('Помилка при видаленні колонки:', error);
-    return { status: 'Error', message: error.message, columnId };
-  }
-}
-
-// Міграція старих даних з weeks.body до окремих колонок
-export async function migrateColumnsToSeparateStorage() {
-  try {
-    const db = await dbPromise;
-
-    // Перевіряємо чи вже є колонки
-    const existingColumns = await db.getAll('columns');
-    if (existingColumns.length > 0) {
-      console.log('Колонки вже мігровані');
-      return { status: 'Already migrated', count: existingColumns.length };
-    }
-
-    // Отримуємо старі дані з weeks
-    const tx = db.transaction('weeks', 'readonly');
-    const week = await tx.objectStore('weeks').get(1);
-
-    if (!week || !week.body || week.body.length === 0) {
-      console.log('Немає даних для міграції');
-      return { status: 'No data to migrate' };
-    }
-
-    // Мігруємо кожну колонку
-    const txWrite = db.transaction('columns', 'readwrite');
-    const columnsStore = txWrite.objectStore('columns');
-
-    for (const oldColumn of week.body) {
-      // Конвертуємо старі поля у нові
-      const newColumn = {
-        id:
-          oldColumn.ColumnId ||
-          Date.now().toString() + Math.random().toString(36).substr(2, 9),
-        type: oldColumn.Type,
-        emojiIcon: oldColumn.EmojiIcon,
-        width: oldColumn.Width,
-        nameVisible: oldColumn.NameVisible,
-        description: oldColumn.Description || '',
-
-        // Конвертуємо Chosen у days або tasks
-        ...(oldColumn.Chosen &&
-        typeof oldColumn.Chosen === 'object' &&
-        !oldColumn.Chosen.global
-          ? { days: oldColumn.Chosen }
-          : {}),
-        ...(oldColumn.Chosen?.global ? { tasks: oldColumn.Chosen.global } : {}),
-
-        // Інші поля
-        ...(oldColumn.Options ? { options: oldColumn.Options } : {}),
-        ...(oldColumn.TagColors ? { tagColors: oldColumn.TagColors } : {}),
-        ...(oldColumn.CheckboxColor
-          ? { checkboxColor: oldColumn.CheckboxColor }
-          : {}),
-        ...(oldColumn.DoneTags ? { doneTags: oldColumn.DoneTags } : {}),
-      };
-
-      await columnsStore.put(newColumn);
-    }
-
-    await txWrite.done;
-    console.log('Міграцію завершено:', week.body.length, 'колонок');
-    return { status: 'Migration completed', count: week.body.length };
-  } catch (error) {
-    console.error('Помилка при міграції:', error);
-    return { status: 'Error', message: error.message };
   }
 }
 

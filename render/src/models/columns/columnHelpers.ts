@@ -1,27 +1,38 @@
-import { BaseColumn, ColumnFactory } from './index';
+import { columnService } from '../../services/ColumnService';
 
 /**
- * Конвертує масив JSON-об'єктів колонок у масив екземплярів класів
+ * Column Helper Functions
+ * 
+ * These are convenience functions that delegate to the ColumnService
+ * for serialization and deserialization of column data.
  */
-export function deserializeColumns(jsonColumns: Record<string, any>[]): BaseColumn[] {
-    return jsonColumns.map(json => ColumnFactory(json));
+
+/**
+ * Convert JSON column data to BaseColumn instances
+ * @deprecated Use columnService.deserializeColumns() directly
+ */
+export function deserializeColumns(jsonColumns: Record<string, any>[]) {
+  return columnService.deserializeColumns(jsonColumns);
 }
 
 /**
- * Конвертує масив екземплярів класів колонок у JSON для збереження
+ * Convert BaseColumn instances to JSON for storage
+ * @deprecated Use columnService.serializeColumns() directly
  */
-export function serializeColumns(columns: BaseColumn[]): Record<string, any>[] {
-    return columns.map(column => column.toJSON());
+export function serializeColumns(columns: any[]) {
+  return columnService.serializeColumns(columns);
 }
+
 /**
- * Оновлює колонку і повертає новий екземпляр
+ * Update a column field and return the updated instance
+ * This is a helper for immutable updates in React components
  */
 export function updateColumnField(
-    column: BaseColumn,
-    field: string,
-    value: any
-): BaseColumn {
-    const json = column.toJSON();
-    json[field] = value;
-    return ColumnFactory(json);
+  column: any,
+  field: string,
+  value: any
+): any {
+  const json = column.toJSON();
+  json[field] = value;
+  return columnService.deserializeColumns([json])[0];
 }
