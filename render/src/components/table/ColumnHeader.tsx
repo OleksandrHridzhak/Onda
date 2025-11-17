@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { getIconComponent } from '../utils/icons';
 import ColumnMenu from './columnMenu/ColumnMenu';
+import { useColumnContext } from './context/ColumnContext';
 
 interface Column {
   id: string;
@@ -18,43 +19,31 @@ interface Column {
 
 interface ColumnHeaderProps {
   column: Column;
-  onRemove: (id: string) => void;
-  onClearColumn: (id: string) => void;
-  onRename: (id: string, newName: string) => void;
-  onChangeIcon: (id: string, newIcon: string) => void;
-  onChangeDescription: (id: string, newDescription: string) => void;
-  onToggleTitleVisibility: (id: string, visible: boolean) => void;
-  onChangeOptions: (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => void;
-  onChangeCheckboxColor: (id: string, color: string) => void;
-  onMoveUp: (id: string) => void;
-  onMoveDown: (id: string) => void;
   canMoveUp: boolean;
   canMoveDown: boolean;
-  onChangeWidth: (id: string, width: number) => void;
 }
 
 const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   column,
-  onRemove,
-  onClearColumn,
-  onRename,
-  onChangeIcon,
-  onChangeDescription,
-  onToggleTitleVisibility,
-  onChangeOptions,
-  onChangeCheckboxColor,
-  onMoveUp,
-  onMoveDown,
   canMoveUp,
   canMoveDown,
-  onChangeWidth,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
+  
+  // Get operations from context instead of props
+  const {
+    handleRename,
+    handleDeleteColumn,
+    handleClearColumn,
+    handleChangeIcon,
+    handleChangeDescription,
+    handleToggleTitleVisibility,
+    handleChangeOptions,
+    handleChangeCheckboxColor,
+    handleMoveColumn,
+    handleChangeWidth,
+  } = useColumnContext();
+  
   const style = column.width ? { width: `${column.width}px` } : {};
   const isEmptyHeader =
     !column.emojiIcon && (column.nameVisible === false || !column.name);
@@ -98,19 +87,19 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
           <ColumnMenu
             column={column}
             onClose={handleClose}
-            handleDeleteColumn={onRemove}
-            handleClearColumn={onClearColumn}
-            onRename={onRename}
-            onChangeIcon={onChangeIcon}
-            onChangeDescription={onChangeDescription}
-            onToggleTitleVisibility={onToggleTitleVisibility}
-            onChangeOptions={onChangeOptions}
-            onChangeCheckboxColor={onChangeCheckboxColor}
-            onMoveUp={onMoveUp}
-            onMoveDown={onMoveDown}
+            handleDeleteColumn={handleDeleteColumn}
+            handleClearColumn={handleClearColumn}
+            onRename={handleRename}
+            onChangeIcon={handleChangeIcon}
+            onChangeDescription={handleChangeDescription}
+            onToggleTitleVisibility={handleToggleTitleVisibility}
+            onChangeOptions={handleChangeOptions}
+            onChangeCheckboxColor={handleChangeCheckboxColor}
+            onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+            onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
             canMoveUp={canMoveUp}
             canMoveDown={canMoveDown}
-            onChangeWidth={onChangeWidth}
+            onChangeWidth={handleChangeWidth}
           />
         )}
       </div>

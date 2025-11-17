@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { settingsService } from '../../services/settingsDB';
 import { useColumnsData, DAYS } from './hooks/useColumnsData';
 import { useTableHandlers } from './hooks/useTableHandlers';
+import { useColumnContext } from './context/ColumnContext';
 import React from 'react';
 
 const handleError = (message: string, error: any): void => {
@@ -143,15 +144,7 @@ interface RenderCellProps {
   column: any;
   columnIndex: number;
   rowIndex: number;
-  tableData: any;
   darkMode: boolean;
-  handleCellChange: (day: string, columnId: string, value: any) => void;
-  handleChangeOptions: (
-    columnId: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => void;
 }
 
 /**
@@ -162,12 +155,10 @@ export const RenderCell: React.FC<RenderCellProps> = ({
   column,
   columnIndex,
   rowIndex,
-  tableData,
   darkMode,
-  handleCellChange,
-  handleChangeOptions,
 }) => {
   const { theme, mode } = useSelector((state: any) => state.theme);
+  const { handleCellChange, handleChangeOptions, tableData } = useColumnContext();
   const style = getWidthStyle(column);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 

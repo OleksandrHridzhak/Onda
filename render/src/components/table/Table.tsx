@@ -12,6 +12,7 @@ import {
 } from './TableLogic';
 import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
 import { useSelector } from 'react-redux';
+import { ColumnProvider } from './context/ColumnContext';
 
 const Table: React.FC = () => {
   const {
@@ -34,6 +35,17 @@ const Table: React.FC = () => {
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns, setTableData);
   const { theme, mode } = useSelector((state: any) => state.theme);
   const darkMode = false;
+
+  // Prepare operations object for context
+  const columnOperations = {
+    ...columnMenuLogic,
+    handleMoveColumn,
+    handleChangeWidth,
+    handleCellChange,
+    handleChangeOptions,
+    columns,
+    tableData,
+  };
 
   const displayColumns = [
     ...columns,
@@ -58,10 +70,12 @@ const Table: React.FC = () => {
   if (loading) {
     return <LoadingScreen darkMode={mode === 'dark' ? true : false} />;
   }
+  
   return (
-    <div
-      className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
-    >
+    <ColumnProvider operations={columnOperations}>
+      <div
+        className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
+      >
       <style>{`
         .todo-cell {
           position: relative;
@@ -107,34 +121,6 @@ const Table: React.FC = () => {
                     <ColumnHeader
                       key={column.id}
                       column={column as any}
-                      onRename={columnMenuLogic.handleRename}
-                      onRemove={columnMenuLogic.handleDeleteColumn}
-                      onClearColumn={columnMenuLogic.handleClearColumn}
-                      onChangeIcon={columnMenuLogic.handleChangeIcon}
-                      onChangeDescription={
-                        columnMenuLogic.handleChangeDescription
-                      }
-                      onToggleTitleVisibility={(id: string, visible: boolean) =>
-                        columnMenuLogic.handleToggleTitleVisibility(id, visible)
-                      }
-                      onChangeOptions={(
-                        id: string,
-                        options: string[],
-                        tagColors: Record<string, string>,
-                        doneTags?: string[],
-                      ) =>
-                        columnMenuLogic.handleChangeOptions(
-                          id,
-                          options,
-                          tagColors,
-                          doneTags,
-                        )
-                      }
-                      onChangeCheckboxColor={
-                        columnMenuLogic.handleChangeCheckboxColor
-                      }
-                      onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-                      onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
                       canMoveUp={
                         column.id !== 'days' && columns.indexOf(column) > 1
                       }
@@ -142,7 +128,6 @@ const Table: React.FC = () => {
                         column.id !== 'days' &&
                         columns.indexOf(column) < columns.length - 1
                       }
-                      onChangeWidth={handleChangeWidth}
                     />
                   ),
                 )}
@@ -164,10 +149,7 @@ const Table: React.FC = () => {
                       column={column}
                       columnIndex={index}
                       rowIndex={idx}
-                      tableData={tableData}
                       darkMode={darkMode}
-                      handleCellChange={handleCellChange}
-                      handleChangeOptions={handleChangeOptions}
                     />
                   ))}
                 </tr>
@@ -204,6 +186,7 @@ const Table: React.FC = () => {
         </div>
       </div>
     </div>
+    </ColumnProvider>
   );
 };
 
