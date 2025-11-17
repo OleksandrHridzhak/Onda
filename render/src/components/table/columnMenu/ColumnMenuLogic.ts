@@ -1,6 +1,4 @@
 import { useCallback } from 'react';
-import { deleteColumn } from '../../../services/columnsDB';
-import { useColumnOperations } from '../hooks/useColumnOperations';
 import { DAYS } from '../hooks/useColumnsData';
 import { BaseColumn } from '../../../models/columns/BaseColumn';
 
@@ -27,11 +25,6 @@ export const useColumnMenuLogic = (
     React.SetStateAction<Record<string, Record<string, unknown>>>
   >,
 ) => {
-  const { updateProperties, clearColumn } = useColumnOperations(
-    columns,
-    setColumns,
-  );
-
   const handleDeleteColumn = useCallback(
     async (columnId: string): Promise<UpdateResult> => {
       try {
@@ -40,11 +33,13 @@ export const useColumnMenuLogic = (
           return { status: 'Error', error: 'Column not found' };
         }
 
-        const result = await deleteColumn(columnId);
-        if (result.status || result.status === 'Column deleted') {
+        // Use column's own delete method
+        const success = await column.delete();
+        if (success) {
           setColumns((prev) => prev.filter((col) => col.id !== columnId));
+          return { status: 'Column deleted' };
         }
-        return result;
+        return { status: 'Error', error: 'Failed to delete column' };
       } catch (err) {
         handleError('Failed to delete column:', err);
         return { status: 'Error', error: (err as Error).message };
@@ -55,86 +50,147 @@ export const useColumnMenuLogic = (
 
   const handleRename = useCallback(
     async (columnId: string, newName: string): Promise<UpdateResult> => {
-      return await updateProperties(columnId, { Name: newName });
+      const column = columns.find((col) => col.id === columnId);
+      if (!column) return { status: 'Error', error: 'Column not found' };
+
+      await column.setName(newName);
+      setColumns((prev) => [...prev]); // Trigger re-render
+      return { status: 'Success' };
     },
-    [updateProperties],
+    [columns, setColumns],
   );
 
   const handleChangeIcon = useCallback(
-    (columnId: string, newIcon: string): Promise<UpdateResult> => {
-      return updateProperties(columnId, { EmojiIcon: newIcon });
+    async (columnId: string, newIcon: string): Promise<UpdateResult> => {
+      const column = columns.find((col) => col.id === columnId);
+      if (!column) return { status: 'Error', error: 'Column not found' };
+
+      await column.setEmojiIcon(newIcon);
+      setColumns((prev) => [...prev]); // Trigger re-render
+      return { status: 'Success' };
     },
-    [updateProperties],
+    [columns, setColumns],
   );
 
   const handleChangeDescription = useCallback(
     async (columnId: string, newDescription: string): Promise<UpdateResult> => {
-      return await updateProperties(columnId, { Description: newDescription });
+      const column = columns.find((col) => col.id === columnId);
+      if (!column) return { status: 'Error', error: 'Column not found' };
+
+      await column.setDescription(newDescription);
+      setColumns((prev) => [...prev]); // Trigger re-render
+      return { status: 'Success' };
     },
-    [updateProperties],
+    [columns, setColumns],
   );
 
   const handleToggleTitleVisibility = useCallback(
-    (columnId: string, showTitle: boolean): Promise<UpdateResult> => {
-      return updateProperties(columnId, { NameVisible: showTitle });
+    async (columnId: string, showTitle: boolean): Promise<UpdateResult> => {
+      const column = columns.find((col) => col.id === columnId);
+      if (!column) return { status: 'Error', error: 'Column not found' };
+
+      await column.setNameVisible(showTitle);
+      setColumns((prev) => [...prev]); // Trigger re-render
+      return { status: 'Success' };
     },
-    [updateProperties],
+    [columns, setColumns],
   );
 
   const handleChangeOptions = useCallback(
-    (
+    async (
       columnId: string,
       options: string[],
       tagColors: Record<string, string>,
       doneTags: string[] = [],
     ): Promise<UpdateResult> => {
-      return updateProperties(columnId, {
-        Options: options,
-        TagColors: tagColors,
-        DoneTags: doneTags,
-      });
+      const column = columns.find((col) => col.id === columnId) as any;
+      if (!column) return { status: 'Error', error: 'Column not found' };
+
+      // Use column's own updateOptions method if available
+      if ('updateOptions' in column) {
+        if (column.type === 'tasktable' && 'updateOptionsAndTags' in column) {
+          await column.updateOptionsAndTags(options, tagColors, doneTags);
+        } else {
+          await column.updateOptions(options, tagColors);
+        }
+      } else {
+        // Fallback for columns without updateOptions
+        column.options = options;
+        column.tagColors = tagColors;
+        if ('doneTags' in column) {
+          column.doneTags = doneTags;
+        }
+        await column.save();
+      }
+
+      setColumns((prev) => [...prev]); // Trigger re-render
+      return { status: 'Success' };
     },
-    [updateProperties],
+    [columns, setColumns],
   );
 
   const handleChangeCheckboxColor = useCallback(
-    (columnId: string, color: string): Promise<UpdateResult> => {
-      return updateProperties(columnId, { CheckboxColor: color });
+    async (columnId: string, color: string): Promise<UpdateResult> => {
+      const column = columns.find((col) => col.id === columnId) as any;
+      if (!column) return { status: 'Error', error: 'Column not found' };
+
+      // Use column's own setCheckboxColor method if available
+      if ('setCheckboxColor' in column) {
+        await column.setCheckboxColor(color);
+      } else {
+        column.checkboxColor = color;
+        await column.save();
+      }
+
+      setColumns((prev) => [...prev]); // Trigger re-render
+      return { status: 'Success' };
     },
-    [updateProperties],
+    [columns, setColumns],
   );
 
   const handleClearColumn = useCallback(
     async (columnId: string): Promise<UpdateResult> => {
       console.log('handleClearColumn called for:', columnId);
 
-      // Clear column data in database and update columns state
-      const result = await clearColumn(columnId);
-      console.log('clearColumn result:', result);
-
-      // For DayBasedColumn types, also clear tableData
-      const column = columns.find((col) => col.id === columnId);
+      const column = columns.find((col) => col.id === columnId) as any;
       console.log('Found column:', column);
 
-      if (column && column.type !== 'todo' && column.type !== 'tasktable') {
-        console.log('Clearing tableData for DayBasedColumn');
-        // Clear tableData for DayBasedColumns (checkbox, multicheckbox, number, notes, tags, multiselect)
-        setTableData((prev) => {
-          const newData = { ...prev };
-          DAYS.forEach((day) => {
-            if (newData[day]) {
-              newData[day][columnId] = '';
-            }
-          });
-          return newData;
-        });
-      } else {
-        console.log('Column type is todo or tasktable, or not found');
-      }
+      if (!column) return { status: 'Error', error: 'Column not found' };
 
-      return result;
+      try {
+        if (column.type === 'tasktable' && 'clearDoneTasks' in column) {
+          // TaskTableColumn - move done tasks back to options
+          console.log('Clearing TaskTable');
+          await column.clearDoneTasks();
+        } else if ('clearDays' in column) {
+          // DayBasedColumn (checkbox, numberbox, text, multi-select, multicheckbox)
+          console.log('Clearing days for DayBasedColumn');
+          await column.clearDays();
+
+          // Also clear tableData for DayBasedColumns
+          setTableData((prev) => {
+            const newData = { ...prev };
+            DAYS.forEach((day) => {
+              if (newData[day]) {
+                newData[day][columnId] = '';
+              }
+            });
+            return newData;
+          });
+        } else if ('removeCompletedTasks' in column) {
+          // TodoColumn - remove completed tasks
+          console.log('Clearing completed tasks for TodoColumn');
+          await column.removeCompletedTasks();
+        }
+
+        setColumns((prev) => [...prev]); // Trigger re-render
+        return { status: 'Success' };
+      } catch (err) {
+        handleError('Failed to clear column:', err);
+        return { status: 'Error', error: (err as Error).message };
+      }
     },
-    [clearColumn, columns, setTableData],
+    [columns, setColumns, setTableData],
   );
 
   return {

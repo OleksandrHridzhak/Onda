@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
-import { addColumn, updateColumnsOrder } from '../../../services/columnsDB';
+import { updateColumnsOrder } from '../../../services/columnsDB';
 import { createColumn } from '../../../models/columns/index';
-import { useColumnOperations } from './useColumnOperations';
 import { DAYS } from './useColumnsData';
 import { BaseColumn } from '../../../models/columns/BaseColumn';
 
@@ -23,11 +22,6 @@ export const useTableHandlers = (
   >,
   setColumnOrder: React.Dispatch<React.SetStateAction<string[]>>,
 ) => {
-  const { updateDayData, updateTasks, updateProperties } = useColumnOperations(
-    columns,
-    setColumns,
-  );
-
   /**
    * Додає нову колонку
    */
@@ -35,39 +29,35 @@ export const useTableHandlers = (
     async (type: string): Promise<void> => {
       try {
         const newColumnInstance = createColumn(type);
-        const columnJson = newColumnInstance.toJSON();
+        newColumnInstance.name = 'New Column';
 
-        const result = await addColumn(columnJson);
+        // Use column's own save method
+        await newColumnInstance.save();
 
-        if (result.status) {
-          // Використовуємо екземпляр напряму
-          newColumnInstance.name = 'New Column';
+        setColumns((prev) => [...prev, newColumnInstance]);
 
-          setColumns((prev) => [...prev, newColumnInstance]);
+        // Оновлюємо порядок колонок
+        const newOrder = columns
+          .filter((c) => c.id !== 'days')
+          .map((c) => c.id);
+        newOrder.push(newColumnInstance.id);
+        await updateColumnsOrder(newOrder);
 
-          // Оновлюємо порядок колонок
-          const newOrder = columns
-            .filter((c) => c.id !== 'days')
-            .map((c) => c.id);
-          newOrder.push(newColumnInstance.id);
-          await updateColumnsOrder(newOrder);
-
-          // Додаємо порожні дані для нових днів (крім todo/tasktable)
-          if (type !== 'tasktable' && type !== 'todo') {
-            setTableData((prev) => ({
-              ...prev,
-              ...DAYS.reduce(
-                (acc, day) => ({
-                  ...acc,
-                  [day]: {
-                    ...prev[day],
-                    [newColumnInstance.id]: '',
-                  },
-                }),
-                {},
-              ),
-            }));
-          }
+        // Додаємо порожні дані для нових днів (крім todo/tasktable)
+        if (type !== 'tasktable' && type !== 'todo') {
+          setTableData((prev) => ({
+            ...prev,
+            ...DAYS.reduce(
+              (acc, day) => ({
+                ...acc,
+                [day]: {
+                  ...prev[day],
+                  [newColumnInstance.id]: '',
+                },
+              }),
+              {},
+            ),
+          }));
         }
       } catch (err) {
         handleError('Failed to create column:', err);
@@ -81,12 +71,13 @@ export const useTableHandlers = (
    */
   const handleCellChange = useCallback(
     async (day: string, columnId: string, value: unknown): Promise<void> => {
-      const column = columns.find((col) => col.id === columnId);
+      const column = columns.find((col) => col.id === columnId) as any;
       if (!column) return;
 
       // Todo колонки
       if (column.type === 'todo') {
-        await updateTasks(columnId, value);
+        await column.updateTasks(value);
+        setColumns((prev) => [...prev]); // Trigger re-render
         return;
       }
 
@@ -102,9 +93,11 @@ export const useTableHandlers = (
         [day]: { ...prev[day], [columnId]: normalizedValue },
       }));
 
-      // Зберігаємо в БД
+      // Зберігаємо в БД через метод колонки
       try {
-        await updateDayData(columnId, day, normalizedValue);
+        if ('setDayValue' in column) {
+          await column.setDayValue(day, normalizedValue);
+        }
       } catch (err) {
         handleError('Update failed:', err);
         // Відкат
@@ -116,7 +109,7 @@ export const useTableHandlers = (
         }));
       }
     },
-    [columns, setTableData, updateDayData, updateTasks],
+    [columns, setTableData, setColumns],
   );
 
   /**
@@ -124,19 +117,14 @@ export const useTableHandlers = (
    */
   const handleAddTask = useCallback(
     async (columnId: string, taskText: string): Promise<void> => {
-      const column = columns.find((col) => col.id === columnId);
+      const column = columns.find((col) => col.id === columnId) as any;
       if (!column || column.type !== 'tasktable') return;
 
-      const taskCol = column as any;
-      const updatedOptions = [...(taskCol.options || []), taskText];
-      const updatedTagColors = { ...taskCol.tagColors, [taskText]: 'blue' };
-
-      await updateProperties(columnId, {
-        Options: updatedOptions,
-        TagColors: updatedTagColors,
-      });
+      // Use column's own addTask method
+      await column.addTask(taskText, 'blue');
+      setColumns((prev) => [...prev]); // Trigger re-render
     },
-    [columns, updateProperties],
+    [columns, setColumns],
   );
 
   /**
@@ -191,7 +179,12 @@ export const useTableHandlers = (
         return;
       }
 
-      await updateProperties(columnId, { Width: width });
+      const column = columns.find((col) => col.id === columnId);
+      if (!column) return;
+
+      // Use column's own setWidth method
+      await column.setWidth(width);
+      setColumns((prev) => [...prev]); // Trigger re-render
 
       // Оновлюємо CSS
       document
@@ -200,7 +193,7 @@ export const useTableHandlers = (
           (element as HTMLElement).style.width = `${width}px`;
         });
     },
-    [updateProperties],
+    [columns, setColumns],
   );
 
   /**
@@ -213,13 +206,29 @@ export const useTableHandlers = (
       tagColors: Record<string, string>,
       doneTags: string[] = [],
     ): Promise<void> => {
-      await updateProperties(columnId, {
-        Options: options,
-        TagColors: tagColors,
-        DoneTags: doneTags,
-      });
+      const column = columns.find((col) => col.id === columnId) as any;
+      if (!column) return;
+
+      // Use column's own updateOptions method if available
+      if ('updateOptions' in column) {
+        if (column.type === 'tasktable' && 'updateOptionsAndTags' in column) {
+          await column.updateOptionsAndTags(options, tagColors, doneTags);
+        } else {
+          await column.updateOptions(options, tagColors);
+        }
+      } else {
+        // Fallback for columns without updateOptions
+        column.options = options;
+        column.tagColors = tagColors;
+        if ('doneTags' in column) {
+          column.doneTags = doneTags;
+        }
+        await column.save();
+      }
+
+      setColumns((prev) => [...prev]); // Trigger re-render
     },
-    [updateProperties],
+    [columns, setColumns],
   );
 
   return {

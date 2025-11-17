@@ -25,14 +25,13 @@ const Table: React.FC = () => {
     showSummaryRow,
     handleAddColumn,
     handleCellChange,
-    handleAddTask,
     handleMoveColumn,
     handleChangeWidth,
     handleChangeOptions,
   } = useTableLogic();
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns, setTableData);
-  const { theme, mode } = useSelector((state: any) => state.theme);
+  const { mode } = useSelector((state: any) => state.theme);
   const darkMode = false;
 
   const displayColumns = [
@@ -45,12 +44,14 @@ const Table: React.FC = () => {
       emojiIcon: '',
       nameVisible: false,
       width: 0,
-      setEmojiIcon: () => false,
-      setWidth: () => false,
-      setNameVisible: () => false,
-      setName: () => false,
-      setDescription: () => false,
-      update: () => false,
+      setEmojiIcon: async () => false,
+      setWidth: async () => false,
+      setNameVisible: async () => false,
+      setName: async () => false,
+      setDescription: async () => false,
+      update: async () => false,
+      save: async () => false,
+      delete: async () => false,
       toJSON: () => ({}),
     } as any,
   ];
