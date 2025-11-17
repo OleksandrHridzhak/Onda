@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
-import {
-  getAllColumns,
-  migrateColumnsFromWeeks,
-  getColumnsOrder,
-} from '../../../services/columnsDB';
+import { columnService } from '../../../services/ColumnService';
 import { settingsService } from '../../../services/settingsDB';
-import { deserializeColumns } from '../../../models/columns/columnHelpers';
 import { BaseColumn } from '../../../models/columns/BaseColumn';
 
 const handleError = (message: string, error: unknown): void => {
@@ -48,15 +43,15 @@ export const useColumnsData = () => {
       try {
         setLoading(true);
 
-        // Міграція старих даних
-        await migrateColumnsFromWeeks();
+        // Migrate old data
+        await columnService.migrateColumnsFromWeeks();
 
-        // Завантажуємо дані
+        // Load data
         const [columnsData, settingsResult, columnOrderData] =
           await Promise.all([
-            getAllColumns(),
+            columnService.getAllColumns(),
             settingsService.getSettings(),
-            getColumnsOrder(),
+            columnService.getColumnsOrder(),
           ]);
 
         // Створюємо колонку "Day"
@@ -87,9 +82,9 @@ export const useColumnsData = () => {
 
         let fetchedColumns: BaseColumn[] = [dayColumn];
 
-        // Використовуємо екземпляри класів напряму
+        // Use column instances directly
         if (columnsData && columnsData.length > 0) {
-          const columnInstances = deserializeColumns(columnsData);
+          const columnInstances = columnService.deserializeColumns(columnsData);
           fetchedColumns = [dayColumn, ...columnInstances];
         }
 

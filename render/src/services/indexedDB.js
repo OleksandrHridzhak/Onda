@@ -225,7 +225,7 @@ export async function addNewColumn(columnType) {
 
 /**
  * Delete column by id
- * @deprecated Use columnService.deleteColumn() from columnsDB.js instead
+ * @deprecated Use columnService.deleteColumn() from ColumnService.ts instead
  * Kept only for legacy compatibility with old code
  */
 export async function deleteColumn(columnId) {

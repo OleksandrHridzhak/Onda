@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import { addColumn, updateColumnsOrder } from '../../../services/columnsDB';
-import { createColumn } from '../../../models/columns/index';
+import { columnService } from '../../../services/ColumnService';
 import { useColumnOperations } from './useColumnOperations';
 import { DAYS } from './useColumnsData';
 import { BaseColumn } from '../../../models/columns/BaseColumn';
@@ -34,10 +33,10 @@ export const useTableHandlers = (
   const handleAddColumn = useCallback(
     async (type: string): Promise<void> => {
       try {
-        const newColumnInstance = createColumn(type);
+        const newColumnInstance = columnService.createColumn(type);
         const columnJson = newColumnInstance.toJSON();
 
-        const result = await addColumn(columnJson);
+        const result = await columnService.addColumn(columnJson);
 
         if (result.status) {
           // Використовуємо екземпляр напряму
@@ -50,7 +49,7 @@ export const useTableHandlers = (
             .filter((c) => c.id !== 'days')
             .map((c) => c.id);
           newOrder.push(newColumnInstance.id);
-          await updateColumnsOrder(newOrder);
+          await columnService.updateColumnsOrder(newOrder);
 
           // Додаємо порожні дані для нових днів (крім todo/tasktable)
           if (type !== 'tasktable' && type !== 'todo') {
@@ -168,7 +167,7 @@ export const useTableHandlers = (
       setColumnOrder(newColumnOrder);
 
       try {
-        await updateColumnsOrder(newColumnOrder);
+        await columnService.updateColumnsOrder(newColumnOrder);
       } catch (err) {
         handleError('Failed to update column order:', err);
       }

@@ -49,6 +49,8 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+**Note:** This is a simplified, direct architecture. We removed unnecessary wrapper layers (columnsDB.js, columnHelpers.ts) for clarity.
+
 ## Layer Responsibilities
 
 ### 1. React Components Layer
@@ -191,20 +193,18 @@ New column appears in table
 4. **Scalability**: Easy to add new features
 5. **Type Safety**: TypeScript throughout
 6. **Single Source of Truth**: ColumnService centralizes operations
-7. **Backward Compatibility**: Legacy API wrapper provided
+7. **Simplified**: Removed unnecessary wrapper layers
 
-## Migration from Old Architecture
+## Simplified Architecture
 
 ### Old Architecture Issues
 ```
-Component → Direct IndexedDB calls
-         → Duplicate functions in multiple files
-         → Unclear data flow
-         → Hard to test
+Component → Hook → columnsDB wrapper → ColumnService → Model → Storage
+         Too many layers of indirection
 ```
 
 ### New Architecture Benefits
 ```
-Component → Hook → Service → Model → Storage
-         Clean layers, clear flow, easy to test
+Component → Hook → ColumnService → Model → Storage
+         Clean layers, clear flow, easy to understand
 ```

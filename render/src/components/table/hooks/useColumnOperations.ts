@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { updateColumn } from '../../../services/columnsDB';
+import { columnService } from '../../../services/ColumnService';
 import { BaseColumn } from '../../../models/columns/BaseColumn';
 
 const handleError = (message: string, error: unknown): void => {
@@ -38,7 +38,7 @@ export const useColumnOperations = (
       try {
         // Викликаємо функцію оновлення на екземплярі
         updateFn(column);
-        await updateColumn(column.toJSON());
+        await columnService.updateColumn(column.toJSON());
 
         // Оновлюємо стан
         setColumns((prev) =>

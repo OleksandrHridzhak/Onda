@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { deleteColumn } from '../../../services/columnsDB';
+import { columnService } from '../../../services/ColumnService';
 import { useColumnOperations } from '../hooks/useColumnOperations';
 import { DAYS } from '../hooks/useColumnsData';
 import { BaseColumn } from '../../../models/columns/BaseColumn';
@@ -40,7 +40,7 @@ export const useColumnMenuLogic = (
           return { status: 'Error', error: 'Column not found' };
         }
 
-        const result = await deleteColumn(columnId);
+        const result = await columnService.deleteColumn(columnId);
         if (result.status || result.status === 'Column deleted') {
           setColumns((prev) => prev.filter((col) => col.id !== columnId));
         }

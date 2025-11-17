@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { deleteColumn, updateColumn } from '../../../services/columnsDB';
+import { columnService } from '../../../services/ColumnService';
 
 interface Column {
   id: string;
@@ -55,7 +55,7 @@ export const useColumnMenuLogic = (
       if (!updatedColumn) {
         return { status: 'Error', error: 'Column not found' };
       }
-      await updateColumn(updatedColumn.toJSON());
+      await columnService.updateColumn(updatedColumn.toJSON());
       return { status: 'Success', data: updatedColumn };
     } catch (err) {
       console.error('Update failed:', err);
@@ -68,7 +68,7 @@ export const useColumnMenuLogic = (
   // Видалення колонки
   const handleDeleteColumn = useCallback(async (columnId: string): Promise<UpdateResult> => {
     try {
-      const result = await deleteColumn(columnId);
+      const result = await columnService.deleteColumn(columnId);
       if (result.status) {
         setColumns(prev => prev.filter(col => col.id !== columnId));
       }

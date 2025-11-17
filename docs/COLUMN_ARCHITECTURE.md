@@ -62,15 +62,7 @@ columnService.updateColumnsOrder(ids)   // Save new order
 columnService.migrateColumnsFromWeeks() // One-time migration
 ```
 
-### 3. Legacy API (`/services/columnsDB.js`)
-
-**Location:** `render/src/services/columnsDB.js`
-
-Provides backward compatibility by delegating to ColumnService.
-
-**Note:** This file is marked as deprecated. New code should use ColumnService directly.
-
-### 4. React Hooks (`/components/table/hooks/`)
+### 3. React Hooks (`/components/table/hooks/`)
 
 **Location:** `render/src/components/table/hooks/`
 
@@ -81,7 +73,7 @@ Custom hooks provide React-friendly interfaces:
 - **useTableHandlers** - Table interaction handlers
 - **useColumnMenuLogic** - Column menu operations
 
-## Data Flow
+## Data Flow (Simplified)
 
 ```
 ┌─────────────────┐
@@ -103,6 +95,8 @@ Custom hooks provide React-friendly interfaces:
 │   IndexedDB     │  Persistence layer
 └─────────────────┘
 ```
+
+**Note:** We removed unnecessary wrapper layers (columnsDB.js, columnHelpers.ts) to simplify the architecture. All code now uses ColumnService directly.
 
 ## Adding a New Column Type
 
@@ -181,9 +175,9 @@ column.update({ name: 'New Name', width: 100 });
 ## Benefits of This Architecture
 
 1. **Single Source of Truth** - All column operations go through ColumnService
-2. **Type Safety** - TypeScript provides compile-time type checking
-3. **Testability** - Service layer can be easily mocked and tested
-4. **Maintainability** - Clear separation of concerns
-5. **Extensibility** - Adding new column types is straightforward
-6. **Documentation** - JSDoc comments provide inline documentation
-7. **Backward Compatibility** - Legacy API maintained for gradual migration
+2. **Simplified Architecture** - Removed unnecessary wrapper layers
+3. **Type Safety** - TypeScript provides compile-time type checking
+4. **Testability** - Service layer can be easily mocked and tested
+5. **Maintainability** - Clear separation of concerns
+6. **Extensibility** - Adding new column types is straightforward
+7. **Documentation** - JSDoc comments provide inline documentation
