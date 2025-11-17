@@ -1,5 +1,25 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 
+interface Column {
+  id: string;
+  name: string;
+  type: string;
+  emojiIcon?: string;
+  nameVisible?: boolean;
+  width?: number;
+  description?: string;
+  options?: string[];
+  doneTags?: string[];
+  tagColors?: Record<string, string>;
+  checkboxColor?: string;
+}
+
+interface TableData {
+  [day: string]: {
+    [columnId: string]: unknown;
+  };
+}
+
 interface TableContextValue {
   // Column operations
   handleRename: (id: string, newName: string) => void;
@@ -19,11 +39,11 @@ interface TableContextValue {
   handleChangeWidth: (id: string, width: number) => void;
 
   // Cell operations
-  handleCellChange: (day: string, columnId: string, value: any) => void;
+  handleCellChange: (day: string, columnId: string, value: unknown) => void;
 
   // Table data
-  columns: any[];
-  tableData: any;
+  columns: Column[];
+  tableData: TableData;
 }
 
 const TableContext = createContext<TableContextValue | undefined>(undefined);
