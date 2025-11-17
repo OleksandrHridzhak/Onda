@@ -1,39 +1,49 @@
 import { render, screen } from '@testing-library/react';
-import ColumnMenu from '../components/ColumnMenu';
+import ColumnMenu from './ColumnMenu';
+import { TableProvider } from '../contexts/TableContext';
 
 const defaultProps = {
   column: {
-    ColumnId: '1',
-    Name: 'Test Column',
-    EmojiIcon: 'star',
-    Description: '',
-    NameVisible: true,
-    Options: [],
-    DoneTags: [],
-    TagColors: {},
-    CheckboxColor: '',
-    Type: 'text',
-    Width: '200',
+    id: '1',
+    name: 'Test Column',
+    emojiIcon: 'star',
+    description: '',
+    nameVisible: true,
+    options: [],
+    doneTags: [],
+    tagColors: {},
+    checkboxColor: '',
+    type: 'text',
+    width: 200,
   },
-  handleDeleteColumn: jest.fn(),
   onClose: jest.fn(),
-  onRename: jest.fn(),
-  onChangeIcon: jest.fn(),
-  onChangeDescription: jest.fn(),
-  onToggleTitleVisibility: jest.fn(),
-  onChangeOptions: jest.fn(),
-  onMoveUp: jest.fn(),
-  onMoveDown: jest.fn(),
   canMoveUp: true,
   canMoveDown: true,
-  darkMode: false,
-  onChangeWidth: jest.fn(),
-  onChangeCheckboxColor: jest.fn(),
+};
+
+const mockContextValue = {
+  handleRename: jest.fn(),
+  handleDeleteColumn: jest.fn(),
+  handleClearColumn: jest.fn(),
+  handleChangeIcon: jest.fn(),
+  handleChangeDescription: jest.fn(),
+  handleToggleTitleVisibility: jest.fn(),
+  handleChangeOptions: jest.fn(),
+  handleChangeCheckboxColor: jest.fn(),
+  handleMoveColumn: jest.fn(),
+  handleChangeWidth: jest.fn(),
+  handleCellChange: jest.fn(),
+  columns: [],
+  tableData: {},
 };
 
 describe('ColumnMenu', () => {
   test('renders with column name and close button', () => {
-    render(<ColumnMenu {...defaultProps} />);
+    render(
+      <TableProvider value={mockContextValue}>
+        <ColumnMenu {...defaultProps} />
+      </TableProvider>,
+    );
 
     // перевірка заголовку
     expect(screen.getByText('Column Settings')).toBeInTheDocument();
@@ -41,7 +51,7 @@ describe('ColumnMenu', () => {
 
     // перевірка кнопки закриття
     expect(
-      screen.getByRole('button', { name: /close column settings/i })
+      screen.getByRole('button', { name: /close column settings/i }),
     ).toBeInTheDocument();
   });
 });

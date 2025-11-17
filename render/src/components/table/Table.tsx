@@ -12,6 +12,7 @@ import {
 } from './TableLogic';
 import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
 import { useSelector } from 'react-redux';
+import { TableProvider } from './contexts/TableContext';
 
 const Table: React.FC = () => {
   const {
@@ -25,14 +26,12 @@ const Table: React.FC = () => {
     showSummaryRow,
     handleAddColumn,
     handleCellChange,
-    handleAddTask,
     handleMoveColumn,
     handleChangeWidth,
-    handleChangeOptions,
   } = useTableLogic();
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns, setTableData);
-  const { theme, mode } = useSelector((state: any) => state.theme);
+  const { mode } = useSelector((state: any) => state.theme);
   const darkMode = false;
 
   const displayColumns = [
@@ -58,11 +57,30 @@ const Table: React.FC = () => {
   if (loading) {
     return <LoadingScreen darkMode={mode === 'dark' ? true : false} />;
   }
+
+  // Create context value with all handlers
+  const tableContextValue = {
+    handleRename: columnMenuLogic.handleRename,
+    handleDeleteColumn: columnMenuLogic.handleDeleteColumn,
+    handleClearColumn: columnMenuLogic.handleClearColumn,
+    handleChangeIcon: columnMenuLogic.handleChangeIcon,
+    handleChangeDescription: columnMenuLogic.handleChangeDescription,
+    handleToggleTitleVisibility: columnMenuLogic.handleToggleTitleVisibility,
+    handleChangeOptions: columnMenuLogic.handleChangeOptions,
+    handleChangeCheckboxColor: columnMenuLogic.handleChangeCheckboxColor,
+    handleMoveColumn,
+    handleChangeWidth,
+    handleCellChange,
+    columns,
+    tableData,
+  };
+
   return (
-    <div
-      className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
-    >
-      <style>{`
+    <TableProvider value={tableContextValue}>
+      <div
+        className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
+      >
+        <style>{`
         .todo-cell {
           position: relative;
           z-index: 1;
@@ -75,135 +93,104 @@ const Table: React.FC = () => {
           table-layout: fixed;
         }
       `}</style>
-      <div className="p-4 relative">
-        <PlannerHeader
-          setShowColumnSelector={setShowColumnSelector}
-          showColumnSelector={showColumnSelector}
-        />
-        {showColumnSelector && (
-          <div className="absolute right-0 z-50">
-            <ColumnTypeSelector
-              onSelect={(type) => {
-                handleAddColumn(type);
-                setShowColumnSelector(false);
-              }}
-              onCancel={() => setShowColumnSelector(false)}
-              darkMode={mode === 'dark' ? true : false}
-            />
-          </div>
-        )}
-      </div>
-      <div
-        className={`overflow-x-auto border border-border rounded-xl m-2 custom-scroll`}
-      >
-        <div className="overflow-x-auto custom-scroll">
-          <table className="w-full">
-            <thead>
-              <tr className={`border-border bg-tableHeader border-b`}>
-                {displayColumns.map((column) =>
-                  column.type === 'filler' ? (
-                    <th key={column.id} style={getWidthStyle(column)} />
-                  ) : (
-                    <ColumnHeader
-                      key={column.id}
-                      column={column as any}
-                      onRename={columnMenuLogic.handleRename}
-                      onRemove={columnMenuLogic.handleDeleteColumn}
-                      onClearColumn={columnMenuLogic.handleClearColumn}
-                      onChangeIcon={columnMenuLogic.handleChangeIcon}
-                      onChangeDescription={
-                        columnMenuLogic.handleChangeDescription
-                      }
-                      onToggleTitleVisibility={(id: string, visible: boolean) =>
-                        columnMenuLogic.handleToggleTitleVisibility(id, visible)
-                      }
-                      onChangeOptions={(
-                        id: string,
-                        options: string[],
-                        tagColors: Record<string, string>,
-                        doneTags?: string[],
-                      ) =>
-                        columnMenuLogic.handleChangeOptions(
-                          id,
-                          options,
-                          tagColors,
-                          doneTags,
-                        )
-                      }
-                      onChangeCheckboxColor={
-                        columnMenuLogic.handleChangeCheckboxColor
-                      }
-                      onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-                      onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-                      canMoveUp={
-                        column.id !== 'days' && columns.indexOf(column) > 1
-                      }
-                      canMoveDown={
-                        column.id !== 'days' &&
-                        columns.indexOf(column) < columns.length - 1
-                      }
-                      onChangeWidth={handleChangeWidth}
-                    />
-                  ),
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {DAYS.map((day, idx) => (
-                <tr
-                  key={day}
-                  className={`
+        <div className="p-4 relative">
+          <PlannerHeader
+            setShowColumnSelector={setShowColumnSelector}
+            showColumnSelector={showColumnSelector}
+          />
+          {showColumnSelector && (
+            <div className="absolute right-0 z-50">
+              <ColumnTypeSelector
+                onSelect={(type) => {
+                  handleAddColumn(type);
+                  setShowColumnSelector(false);
+                }}
+                onCancel={() => setShowColumnSelector(false)}
+                darkMode={mode === 'dark' ? true : false}
+              />
+            </div>
+          )}
+        </div>
+        <div
+          className={`overflow-x-auto border border-border rounded-xl m-2 custom-scroll`}
+        >
+          <div className="overflow-x-auto custom-scroll">
+            <table className="w-full">
+              <thead>
+                <tr className={`border-border bg-tableHeader border-b`}>
+                  {displayColumns.map((column) =>
+                    column.type === 'filler' ? (
+                      <th key={column.id} style={getWidthStyle(column)} />
+                    ) : (
+                      <ColumnHeader
+                        key={column.id}
+                        column={column as any}
+                        canMoveUp={
+                          column.id !== 'days' && columns.indexOf(column) > 1
+                        }
+                        canMoveDown={
+                          column.id !== 'days' &&
+                          columns.indexOf(column) < columns.length - 1
+                        }
+                      />
+                    ),
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {DAYS.map((day, idx) => (
+                  <tr
+                    key={day}
+                    className={`
                     bg-tableBodyBg
                     ${idx !== DAYS.length - 1 ? `border-border border-b` : ''}
                   `}
-                >
-                  {displayColumns.map((column, index) => (
-                    <RenderCell
-                      key={column.id}
-                      day={day}
-                      column={column}
-                      columnIndex={index}
-                      rowIndex={idx}
-                      tableData={tableData}
-                      darkMode={darkMode}
-                      handleCellChange={handleCellChange}
-                      handleChangeOptions={handleChangeOptions}
-                    />
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-            {showSummaryRow && (
-              <tfoot>
-                <tr className={`border-t bg-tableBodyBg border-border`}>
-                  {displayColumns.map((column) => {
-                    if (column.type === 'filler') {
+                  >
+                    {displayColumns.map((column, index) => (
+                      <RenderCell
+                        key={column.id}
+                        day={day}
+                        column={column}
+                        columnIndex={index}
+                        rowIndex={idx}
+                        darkMode={darkMode}
+                      />
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+              {showSummaryRow && (
+                <tfoot>
+                  <tr className={`border-t bg-tableBodyBg border-border`}>
+                    {displayColumns.map((column) => {
+                      if (column.type === 'filler') {
+                        return (
+                          <td
+                            key={column.id}
+                            className={`border-border `}
+                            style={getWidthStyle(column)}
+                          />
+                        );
+                      }
+                      const summary = calculateSummary(column, tableData);
                       return (
                         <td
                           key={column.id}
-                          className={`border-border `}
+                          className={`px-4 py-2 text-center text-sm font-medium text-tableSummaryText border-border border-r`}
                           style={getWidthStyle(column)}
-                        />
+                        >
+                          {summary}
+                        </td>
                       );
-                    }
-                    const summary = calculateSummary(column, tableData);
-                    return (
-                      <td
-                        key={column.id}
-                        className={`px-4 py-2 text-center text-sm font-medium text-tableSummaryText border-border border-r`}
-                        style={getWidthStyle(column)}
-                      >
-                        {summary}
-                      </td>
-                    );
-                  })}
-                </tr>
-              </tfoot>
-            )}
-          </table>
+                    })}
+                  </tr>
+                </tfoot>
+              )}
+            </table>
+          </div>
         </div>
       </div>
-    </div>
+    </TableProvider>
   );
 };
 

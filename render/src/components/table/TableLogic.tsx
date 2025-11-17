@@ -6,11 +6,11 @@ import { NotesCell } from './cells/NotesCell';
 import { MultiCheckboxCell } from './cells/MultiCheckboxCell';
 import { TodoCell } from './cells/TodoCell';
 import { TaskTableCell } from './cells/TaskTableCell';
-import { useSelector } from 'react-redux';
 import { settingsService } from '../../services/settingsDB';
 import { useColumnsData, DAYS } from './hooks/useColumnsData';
 import { useTableHandlers } from './hooks/useTableHandlers';
 import React from 'react';
+import { useTableContext } from './contexts/TableContext';
 
 const handleError = (message: string, error: any): void => {
   console.error(message, error);
@@ -143,15 +143,7 @@ interface RenderCellProps {
   column: any;
   columnIndex: number;
   rowIndex: number;
-  tableData: any;
   darkMode: boolean;
-  handleCellChange: (day: string, columnId: string, value: any) => void;
-  handleChangeOptions: (
-    columnId: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => void;
 }
 
 /**
@@ -162,12 +154,10 @@ export const RenderCell: React.FC<RenderCellProps> = ({
   column,
   columnIndex,
   rowIndex,
-  tableData,
   darkMode,
-  handleCellChange,
-  handleChangeOptions,
 }) => {
-  const { theme, mode } = useSelector((state: any) => state.theme);
+  const { handleCellChange, handleChangeOptions, tableData } =
+    useTableContext();
   const style = getWidthStyle(column);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 

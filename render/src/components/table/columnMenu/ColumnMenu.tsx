@@ -16,8 +16,8 @@ import {
   handleWidthChange,
 } from './columnMenuHandlers';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
-
 import { BaseColumn } from '../../../models/columns/BaseColumn';
+import { useTableContext } from '../contexts/TableContext';
 
 type Column =
   | BaseColumn
@@ -37,48 +37,35 @@ type Column =
 
 interface ColumnMenuProps {
   column: Column;
-  handleDeleteColumn: (id: string) => void;
-  handleClearColumn: (id: string) => void;
   onClose: () => void;
-  onRename: (id: string, name: string) => void;
-  onChangeIcon: (id: string, icon: string) => void;
-  onChangeDescription: (id: string, description: string) => void;
-  onToggleTitleVisibility: (id: string, visible: boolean) => void;
-  onChangeOptions: (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => void;
-  onMoveUp: (id: string) => void;
-  onMoveDown: (id: string) => void;
   canMoveUp: boolean;
   canMoveDown: boolean;
-  onChangeWidth: (id: string, width: number) => void;
-  onChangeCheckboxColor?: (id: string, color: string) => void;
 }
 
 const ColumnMenu: React.FC<ColumnMenuProps> = ({
   column,
-  handleDeleteColumn,
-  handleClearColumn,
   onClose,
-  onRename,
-  onChangeIcon,
-  onChangeDescription,
-  onToggleTitleVisibility,
-  onChangeOptions,
-  onMoveUp,
-  onMoveDown,
   canMoveUp,
   canMoveDown,
-  onChangeWidth,
-  onChangeCheckboxColor = () => {},
 }) => {
   const [state, dispatch] = useReducer(reducer, column, initialState);
   const menuRef = useRef(null);
   const darkMode =
     document.documentElement.getAttribute('data-theme-mode') === 'dark';
+
+  // Get handlers from context
+  const {
+    handleRename,
+    handleDeleteColumn,
+    handleClearColumn,
+    handleChangeIcon,
+    handleChangeDescription,
+    handleToggleTitleVisibility,
+    handleChangeOptions,
+    handleChangeCheckboxColor,
+    handleMoveColumn,
+    handleChangeWidth,
+  } = useTableContext();
 
   useEffect(() => {
     dispatch({ type: 'RESET', payload: column });
@@ -173,7 +160,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                   type="number"
                   value={state.width}
                   onChange={(e) =>
-                    handleWidthChange(dispatch, onChangeWidth, column, e)
+                    handleWidthChange(dispatch, handleChangeWidth, column, e)
                   }
                   min="0"
                   max="1000"
@@ -183,14 +170,14 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 />
               </div>
               <TransparentBtn
-                onClick={() => onMoveUp(column.id)}
+                onClick={() => handleMoveColumn(column.id, 'up')}
                 disabled={!canMoveUp}
                 darkTheme={darkMode}
               >
                 <ArrowLeft size={18} /> LEFT
               </TransparentBtn>
               <TransparentBtn
-                onClick={() => onMoveDown(column.id)}
+                onClick={() => handleMoveColumn(column.id, 'down')}
                 disabled={!canMoveDown}
                 darkTheme={darkMode}
               >
@@ -210,14 +197,14 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 dispatch({ type: 'SET_NEW_OPTION', payload: value })
               }
               handleAddOption={() =>
-                handleAddOption(state, dispatch, column, onChangeOptions)
+                handleAddOption(state, dispatch, column, handleChangeOptions)
               }
               handleRemoveOption={(option) =>
                 handleRemoveOption(
                   state,
                   dispatch,
                   column,
-                  onChangeOptions,
+                  handleChangeOptions,
                   option,
                 )
               }
@@ -226,7 +213,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                   state,
                   dispatch,
                   column,
-                  onChangeOptions,
+                  handleChangeOptions,
                   oldOption,
                   newOption,
                 )
@@ -236,7 +223,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                   state,
                   dispatch,
                   column,
-                  onChangeOptions,
+                  handleChangeOptions,
                   option,
                   color,
                 )
@@ -299,13 +286,13 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                   state,
                   dispatch,
                   column,
-                  onRename,
-                  onChangeIcon,
-                  onChangeDescription,
-                  onToggleTitleVisibility,
-                  onChangeOptions,
-                  onChangeCheckboxColor,
-                  onChangeWidth,
+                  handleRename,
+                  handleChangeIcon,
+                  handleChangeDescription,
+                  handleToggleTitleVisibility,
+                  handleChangeOptions,
+                  handleChangeCheckboxColor,
+                  handleChangeWidth,
                   onClose,
                 );
               }}
