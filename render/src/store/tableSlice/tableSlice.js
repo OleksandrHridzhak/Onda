@@ -68,7 +68,7 @@ const initialState = {
   },
 
   // 2. Порядок відображення: Масив ID
-  columnOrder: ['1755000000005', '1755000000009', '1755000000013'],
+  columnOrder: [1755000000005, 1755000000009, 1755000000013],
 };
 
 const tableSlice = createSlice({
