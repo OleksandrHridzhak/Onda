@@ -39,6 +39,26 @@ const tableSlice = createSlice({
         ...properties,
       };
     },
+    swapColumnsPosition: (state, action) => {
+      const { id, direction } = action.payload;
+      const index = state.columnOrder.indexOf(id);
+      if (index === -1) return;
+
+      let newIndex;
+      if (direction === 'left' && index > 0) {
+        newIndex = index - 1;
+      } else if (
+        direction === 'right' &&
+        index < state.columnOrder.length - 1
+      ) {
+        newIndex = index + 1;
+      } else {
+        return;
+      }
+      const temp = state.columnOrder[newIndex];
+      state.columnOrder[newIndex] = state.columnOrder[index];
+      state.columnOrder[index] = temp;
+    },
   },
 });
 
