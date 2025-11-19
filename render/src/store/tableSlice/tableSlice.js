@@ -1,85 +1,43 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-const initialState = {
-  // 1. Сховище сутностей: доступ за ID (для швидкого пошуку)
-  columns: {
-    1755000000005: {
-      // Колонка 1: Daily Standup
-      Type: 'checkbox',
-      Name: 'Daily Standup',
-      Description: 'Attend team standup meeting',
-      EmojiIcon: 'User',
-      NameVisible: false,
-      Chosen: {
-        Monday: true,
-        Tuesday: false,
-        Wednesday: true,
-        Thursday: true,
-        Friday: true,
-        Saturday: false,
-        Sunday: false,
-      },
-      Width: 50,
-      CheckboxColor: 'orange',
-    },
-
-    1755000000009: {
-      // Колонка 2: Client Calls
-      Type: 'numberbox',
-      Name: 'Client Calls',
-      Description: 'Hours spent on client calls',
-      EmojiIcon: 'Zap',
-      NameVisible: false,
-      Chosen: {
-        Monday: '1',
-        Tuesday: '2',
-        Wednesday: '1.5',
-        Thursday: '1',
-        Friday: '0',
-        Saturday: '0',
-        Sunday: '0',
-      },
-      Width: 60,
-    },
-
-    1755000000013: {
-      // Колонка 3: Wellness Goals
-      Type: 'multicheckbox',
-      Name: 'Wellness Goals',
-      Description: 'Track wellness activities',
-      EmojiIcon: 'Leaf',
-      NameVisible: false,
-      Options: ['Yoga', 'Running'],
-      TagColors: {
-        Yoga: 'blue',
-        Running: 'green',
-      },
-      Chosen: {
-        Monday: 'Yoga',
-        Tuesday: 'Running',
-        Wednesday: '',
-        Thursday: 'Yoga',
-        Friday: '',
-        Saturday: 'Running',
-        Sunday: '',
-      },
-      Width: 50,
-    },
-  },
-
-  // 2. Порядок відображення: Масив ID
-  columnOrder: [1755000000005, 1755000000009, 1755000000013],
-};
+import { columnsFactory } from './columnsFactory';
 
 const tableSlice = createSlice({
   name: 'tableData',
-  initialState: initialState,
+  initialState: {
+    columns: {},
+    columnOrder: [],
+    status: 'idle',
+  },
   reducers: {
-    createNewColumn: (state, action) => {},
+    createNewColumn: (state, action) => {
+      const columnType = action.payload.columnType;
+      const newColumn = columnsFactory(columnType);
+      const columnId = Object.keys(newColumn)[0];
+      state.columns[columnId] = newColumn[columnId];
+      state.columnOrder.push(columnId);
+    },
     deleteColumn: (state, action) => {
       const columnId = action.payload.columnId;
       delete state.columns[columnId];
       state.columnOrder = state.columnOrder.filter((id) => id !== columnId);
+    },
+    updateColumnNested: (state, action) => {
+      const { columnId, path, value } = action.payload;
+      let obj = state.columns[columnId].uniqueProperties;
+
+      for (let i = 0; i < path.length - 1; i++) {
+        obj = obj[path[i]];
+        if (!obj) return;
+      }
+
+      obj[path[path.length - 1]] = value;
+    },
+    updateCommonColumnProperties: (state, action) => {
+      const { columnId, properties } = action.payload;
+      state.columns[columnId] = {
+        ...state.columns[columnId],
+        ...properties,
+      };
     },
   },
 });
