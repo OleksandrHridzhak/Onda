@@ -19,14 +19,14 @@ export const NotesCell: React.FC<NotesCellProps> = ({ value, onChange }) => {
   } = useNotesEdit(value, onChange);
 
   return isEditing ? (
-    <div className="w-full min-w-32 relative">
+    <div className="w-full min-w-32 relative font-poppins">
       <textarea
         ref={textareaRef}
         value={tempValue}
         onChange={(e) => setTempValue(e.target.value)}
         onBlur={handleSave}
         onKeyDown={handleKeyDown}
-        className="w-full px-2 py-1 text-sm bg-transparent rounded-md focus:outline-none resize-none"
+        className="w-full px-2 py-1 text-sm bg-transparent font-poppins rounded-md focus:outline-none resize-none"
         rows={1}
         autoFocus
       />

@@ -79,11 +79,13 @@ const ColumnHeader: React.FC<ColumnHeaderProps> = ({
         onClick={() => column.id !== 'days' && setShowMenu(true)}
       >
         <div
-          className={`flex items-center ${column.nameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
+          className={`flex text-textTableValues items-center ${column.nameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
           data-tooltip-id={`tooltip-${column.id}`}
         >
           {column.emojiIcon && (
-            <span className={column.nameVisible !== false ? 'mr-1' : ''}>
+            <span
+              className={`text-textTableValues ${column.nameVisible !== false ? 'mr-1' : ''}`}
+            >
               {getIconComponent(column.emojiIcon, 16)}
             </span>
           )}

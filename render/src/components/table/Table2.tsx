@@ -27,7 +27,13 @@ const ColumnHeaderContent: React.FC<{
   handleMoveColumn: any;
   handleChangeWidth: any;
   columns: any[];
-}> = ({ column, columnMenuLogic, handleMoveColumn, handleChangeWidth, columns }) => {
+}> = ({
+  column,
+  columnMenuLogic,
+  handleMoveColumn,
+  handleChangeWidth,
+  columns,
+}) => {
   const [showMenu, setShowMenu] = useState(false);
   const isEmptyHeader =
     !column.emojiIcon && (column.nameVisible === false || !column.name);
@@ -86,8 +92,7 @@ const ColumnHeaderContent: React.FC<{
           onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
           canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
           canMoveDown={
-            column.id !== 'days' &&
-            columns.indexOf(column) < columns.length - 1
+            column.id !== 'days' && columns.indexOf(column) < columns.length - 1
           }
           onChangeWidth={handleChangeWidth}
         />
@@ -489,7 +494,7 @@ const TodoColumnWrapper: React.FC<{
           </th>
         </tr>
       </thead>
-      <tbody className="bg-tableBodyBg">
+      <tbody className="bg-tableBodyBg font-poppins">
         <tr>
           <td className="todo-cell" rowSpan={DAYS.length}>
             <TodoCell
@@ -622,6 +627,18 @@ const Table2: React.FC = () => {
           table-layout: fixed;
         }
         
+        /* Примусово застосовуємо Poppins */
+        .checkbox-nested-table,
+        .checkbox-nested-table * {
+          font-family: 'Poppins', sans-serif !important;
+          font-weight: 450 !important;
+        }
+        
+        /* Для headers можна залишити medium */
+        .checkbox-nested-table thead th {
+          font-weight: 500 !important;
+        }
+        
         /* Стилі для вкладеної таблиці чекбоксів */
         .checkbox-nested-table {
           width: 100%;
@@ -670,12 +687,14 @@ const Table2: React.FC = () => {
         )}
       </div>
       <div
-        className={`overflow-x-auto border border-border rounded-xl m-2 custom-scroll`}
+        className={`overflow-x-auto font-poppins border border-border rounded-xl m-2 custom-scroll`}
       >
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
-              <tr className={`border-border bg-tableHeader border-b`}>
+              <tr
+                className={`border-border bg-tableHeader text-textTableValues border-b`}
+              >
                 {displayColumns.map((column, index) =>
                   column.type === 'filler' ? (
                     <th
