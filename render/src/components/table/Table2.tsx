@@ -119,7 +119,7 @@ const CheckboxColumnWrapper: React.FC<{
   columns,
 }) => {
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
@@ -162,7 +162,7 @@ const DaysColumnWrapper: React.FC<{
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
@@ -194,7 +194,7 @@ const DaysColumnWrapper: React.FC<{
 // Wrapper компонент для filler колонки
 const FillerColumnWrapper: React.FC = () => {
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
@@ -239,7 +239,7 @@ const NumberColumnWrapper: React.FC<{
   columns,
 }) => {
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
@@ -297,7 +297,7 @@ const TagsColumnWrapper: React.FC<{
   columns,
 }) => {
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
@@ -357,7 +357,7 @@ const NotesColumnWrapper: React.FC<{
   columns,
 }) => {
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
@@ -415,7 +415,7 @@ const MultiCheckboxColumnWrapper: React.FC<{
   columns,
 }) => {
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
@@ -475,7 +475,7 @@ const TodoColumnWrapper: React.FC<{
   columns,
 }) => {
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
@@ -531,7 +531,7 @@ const TaskTableColumnWrapper: React.FC<{
   columns,
 }) => {
   return (
-    <table className="checkbox-nested-table">
+    <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
