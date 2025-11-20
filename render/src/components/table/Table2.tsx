@@ -38,7 +38,7 @@ const ColumnHeaderContent: React.FC<{
 
   return (
     <div
-      className={`flex items-center justify-between group cursor-pointer px-3 py-3 ${column.nameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
+      className={`font-poppins flex items-center justify-between group cursor-pointer px-3 py-3 text-left text-sm font-medium ${column.nameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
       onClick={() => column.id !== 'days' && setShowMenu(true)}
     >
       <div
