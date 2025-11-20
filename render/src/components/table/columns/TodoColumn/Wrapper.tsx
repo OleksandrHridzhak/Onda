@@ -1,7 +1,7 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { TodoCell } from '../cells/TodoCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../shared/ColumnHeaderContent';
+import { TodoCell } from './index';
+import { DAYS } from '../../TableLogic';
 
 interface TodoColumnWrapperProps {
   column: any;

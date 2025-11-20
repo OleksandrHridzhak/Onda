@@ -1,9 +1,9 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { MultiCheckboxCell } from '../cells/MultiCheckboxCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../shared/ColumnHeaderContent';
+import { CheckboxCell } from './index';
+import { DAYS } from '../../TableLogic';
 
-interface MultiCheckboxColumnWrapperProps {
+interface CheckboxColumnWrapperProps {
   column: any;
   tableData: any;
   columnIndex: number;
@@ -15,9 +15,7 @@ interface MultiCheckboxColumnWrapperProps {
   columns: any[];
 }
 
-export const MultiCheckboxColumnWrapper: React.FC<
-  MultiCheckboxColumnWrapperProps
-> = ({
+export const CheckboxColumnWrapper: React.FC<CheckboxColumnWrapperProps> = ({
   column,
   tableData,
   columnIndex,
@@ -49,14 +47,13 @@ export const MultiCheckboxColumnWrapper: React.FC<
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <MultiCheckboxCell
-                value={tableData[day]?.[column.id] || ''}
+            <td>
+              <CheckboxCell
+                checked={tableData[day]?.[column.id] || false}
                 onChange={(newValue) =>
                   handleCellChange(day, column.id, newValue)
                 }
-                options={column.options || []}
-                tagColors={column.tagColors || {}}
+                color={column.CheckboxColor || '#3b82f6'}
               />
             </td>
           </tr>

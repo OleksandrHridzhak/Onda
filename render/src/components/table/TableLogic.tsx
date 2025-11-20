@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { CheckboxCell } from './cells/CheckboxCell';
-import { NumberCell } from './cells/NumberCell';
-import { TagsCell } from './cells/TagsCell';
-import { NotesCell } from './cells/NotesCell';
-import { MultiCheckboxCell } from './cells/MultiCheckboxCell';
-import { TodoCell } from './cells/TodoCell';
-import { TaskTableCell } from './cells/TaskTableCell';
+import { CheckboxCell } from './columns/CheckboxColumn';
+import { NumberCell } from './columns/NumberColumn';
+import { TagsCell } from './columns/TagsColumn';
+import { NotesCell } from './columns/NotesColumn';
+import { MultiCheckboxCell } from './columns/MultiCheckboxColumn';
+import { TodoCell } from './columns/TodoColumn';
+import { TaskTableCell } from './columns/TaskTableColumn';
 import { useSelector } from 'react-redux';
 import { settingsService } from '../../services/settingsDB';
 import { useColumnsData, DAYS } from './hooks/useColumnsData';

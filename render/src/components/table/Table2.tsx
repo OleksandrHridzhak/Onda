@@ -19,7 +19,7 @@ import {
   MultiCheckboxColumnWrapper,
   TodoColumnWrapper,
   TaskTableColumnWrapper,
-} from './columnWrappers';
+} from './columns';
 
 const Table2: React.FC = () => {
   const {

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { TagsCell } from '../cells/TagsCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../shared/ColumnHeaderContent';
+import { MultiCheckboxCell } from './index';
+import { DAYS } from '../../TableLogic';
 
-interface TagsColumnWrapperProps {
+interface MultiCheckboxColumnWrapperProps {
   column: any;
   tableData: any;
   columnIndex: number;
@@ -15,7 +15,9 @@ interface TagsColumnWrapperProps {
   columns: any[];
 }
 
-export const TagsColumnWrapper: React.FC<TagsColumnWrapperProps> = ({
+export const MultiCheckboxColumnWrapper: React.FC<
+  MultiCheckboxColumnWrapperProps
+> = ({
   column,
   tableData,
   columnIndex,
@@ -48,7 +50,7 @@ export const TagsColumnWrapper: React.FC<TagsColumnWrapperProps> = ({
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <TagsCell
+              <MultiCheckboxCell
                 value={tableData[day]?.[column.id] || ''}
                 onChange={(newValue) =>
                   handleCellChange(day, column.id, newValue)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DAYS } from '../TableLogic';
+import { DAYS } from '../../TableLogic';
 
 interface DaysColumnWrapperProps {
   column: any;

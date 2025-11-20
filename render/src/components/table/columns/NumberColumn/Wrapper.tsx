@@ -1,28 +1,26 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { TaskTableCell } from '../cells/TaskTableCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../shared/ColumnHeaderContent';
+import { NumberCell } from './index';
+import { DAYS } from '../../TableLogic';
 
-interface TaskTableColumnWrapperProps {
+interface NumberColumnWrapperProps {
   column: any;
   tableData: any;
   columnIndex: number;
   darkMode: boolean;
   handleCellChange: any;
-  handleChangeOptions: any;
   columnMenuLogic: any;
   handleMoveColumn: any;
   handleChangeWidth: any;
   columns: any[];
 }
 
-export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
+export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
   column,
   tableData,
   columnIndex,
   darkMode,
   handleCellChange,
-  handleChangeOptions,
   columnMenuLogic,
   handleMoveColumn,
   handleChangeWidth,
@@ -44,18 +42,21 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
         </tr>
       </thead>
       <tbody className="bg-tableBodyBg">
-        <tr>
-          <td
-            className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
-            style={{ verticalAlign: 'top' }}
-            rowSpan={DAYS.length}
+        {DAYS.map((day, idx) => (
+          <tr
+            key={day}
+            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <TaskTableCell
-              column={column}
-              onChangeOptions={handleChangeOptions}
-            />
-          </td>
-        </tr>
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
+              <NumberCell
+                value={tableData[day]?.[column.id] || ''}
+                onChange={(newValue) =>
+                  handleCellChange(day, column.id, newValue)
+                }
+              />
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

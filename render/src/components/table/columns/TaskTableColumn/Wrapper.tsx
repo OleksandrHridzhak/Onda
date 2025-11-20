@@ -1,26 +1,28 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { NumberCell } from '../cells/NumberCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../shared/ColumnHeaderContent';
+import { TaskTableCell } from './index';
+import { DAYS } from '../../TableLogic';
 
-interface NumberColumnWrapperProps {
+interface TaskTableColumnWrapperProps {
   column: any;
   tableData: any;
   columnIndex: number;
   darkMode: boolean;
   handleCellChange: any;
+  handleChangeOptions: any;
   columnMenuLogic: any;
   handleMoveColumn: any;
   handleChangeWidth: any;
   columns: any[];
 }
 
-export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
+export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
   column,
   tableData,
   columnIndex,
   darkMode,
   handleCellChange,
+  handleChangeOptions,
   columnMenuLogic,
   handleMoveColumn,
   handleChangeWidth,
@@ -42,21 +44,18 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
         </tr>
       </thead>
       <tbody className="bg-tableBodyBg">
-        {DAYS.map((day, idx) => (
-          <tr
-            key={day}
-            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
+        <tr>
+          <td
+            className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
+            style={{ verticalAlign: 'top' }}
+            rowSpan={DAYS.length}
           >
-            <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <NumberCell
-                value={tableData[day]?.[column.id] || ''}
-                onChange={(newValue) =>
-                  handleCellChange(day, column.id, newValue)
-                }
-              />
-            </td>
-          </tr>
-        ))}
+            <TaskTableCell
+              column={column}
+              onChangeOptions={handleChangeOptions}
+            />
+          </td>
+        </tr>
       </tbody>
     </table>
   );

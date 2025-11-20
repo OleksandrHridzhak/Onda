@@ -1,7 +1,7 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { NotesCell } from '../cells/NotesCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../shared/ColumnHeaderContent';
+import { NotesCell } from './index';
+import { DAYS } from '../../TableLogic';
 
 interface NotesColumnWrapperProps {
   column: any;
