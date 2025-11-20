@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PlannerHeader from '../planerHeader/PlannerHeader';
 import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
-import ColumnHeader from './ColumnHeader';
+import ColumnMenu from './columnMenu/ColumnMenu';
+import { getIconComponent } from '../utils/icons';
 import { LoadingScreen } from './LoadingScreen';
 import { CheckboxCell } from './cells/CheckboxCell';
 import { NumberCell } from './cells/NumberCell';
@@ -18,6 +19,82 @@ import {
 } from './TableLogic';
 import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
 import { useSelector } from 'react-redux';
+
+// Компонент для рендеру вмісту заголовка колонки (без <th> обгортки)
+const ColumnHeaderContent: React.FC<{
+  column: any;
+  columnMenuLogic: any;
+  handleMoveColumn: any;
+  handleChangeWidth: any;
+  columns: any[];
+}> = ({ column, columnMenuLogic, handleMoveColumn, handleChangeWidth, columns }) => {
+  const [showMenu, setShowMenu] = useState(false);
+  const isEmptyHeader =
+    !column.emojiIcon && (column.nameVisible === false || !column.name);
+
+  const handleClose = (): void => {
+    setShowMenu(false);
+  };
+
+  return (
+    <div
+      className={`flex items-center justify-between group cursor-pointer px-3 py-3 ${column.nameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
+      onClick={() => column.id !== 'days' && setShowMenu(true)}
+    >
+      <div
+        className={`flex items-center ${column.nameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
+      >
+        {column.emojiIcon && (
+          <span className={column.nameVisible !== false ? 'mr-1' : ''}>
+            {getIconComponent(column.emojiIcon, 16)}
+          </span>
+        )}
+        {column.nameVisible !== false && column.name && (
+          <span className={`truncate block text-textTableValues max-w-full`}>
+            {column.name}
+          </span>
+        )}
+        {isEmptyHeader && <span className="opacity-0">∅</span>}
+      </div>
+      {showMenu && (
+        <ColumnMenu
+          column={column}
+          onClose={handleClose}
+          handleDeleteColumn={columnMenuLogic.handleDeleteColumn}
+          handleClearColumn={columnMenuLogic.handleClearColumn}
+          onRename={columnMenuLogic.handleRename}
+          onChangeIcon={columnMenuLogic.handleChangeIcon}
+          onChangeDescription={columnMenuLogic.handleChangeDescription}
+          onToggleTitleVisibility={(id: string, visible: boolean) =>
+            columnMenuLogic.handleToggleTitleVisibility(id, visible)
+          }
+          onChangeOptions={(
+            id: string,
+            options: string[],
+            tagColors: Record<string, string>,
+            doneTags?: string[],
+          ) =>
+            columnMenuLogic.handleChangeOptions(
+              id,
+              options,
+              tagColors,
+              doneTags,
+            )
+          }
+          onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+          onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+          onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
+          canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
+          canMoveDown={
+            column.id !== 'days' &&
+            columns.indexOf(column) < columns.length - 1
+          }
+          onChangeWidth={handleChangeWidth}
+        />
+      )}
+    </div>
+  );
+};
 
 // Wrapper компонент для чекбокс колонки
 const CheckboxColumnWrapper: React.FC<{
@@ -46,38 +123,12 @@ const CheckboxColumnWrapper: React.FC<{
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
-            <ColumnHeader
+            <ColumnHeaderContent
               column={column}
-              onRename={columnMenuLogic.handleRename}
-              onRemove={columnMenuLogic.handleDeleteColumn}
-              onClearColumn={columnMenuLogic.handleClearColumn}
-              onChangeIcon={columnMenuLogic.handleChangeIcon}
-              onChangeDescription={columnMenuLogic.handleChangeDescription}
-              onToggleTitleVisibility={(id: string, visible: boolean) =>
-                columnMenuLogic.handleToggleTitleVisibility(id, visible)
-              }
-              onChangeOptions={(
-                id: string,
-                options: string[],
-                tagColors: Record<string, string>,
-                doneTags?: string[],
-              ) =>
-                columnMenuLogic.handleChangeOptions(
-                  id,
-                  options,
-                  tagColors,
-                  doneTags,
-                )
-              }
-              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
-              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
-              canMoveDown={
-                column.id !== 'days' &&
-                columns.indexOf(column) < columns.length - 1
-              }
-              onChangeWidth={handleChangeWidth}
+              columnMenuLogic={columnMenuLogic}
+              handleMoveColumn={handleMoveColumn}
+              handleChangeWidth={handleChangeWidth}
+              columns={columns}
             />
           </th>
         </tr>
@@ -192,38 +243,12 @@ const NumberColumnWrapper: React.FC<{
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
-            <ColumnHeader
+            <ColumnHeaderContent
               column={column}
-              onRename={columnMenuLogic.handleRename}
-              onRemove={columnMenuLogic.handleDeleteColumn}
-              onClearColumn={columnMenuLogic.handleClearColumn}
-              onChangeIcon={columnMenuLogic.handleChangeIcon}
-              onChangeDescription={columnMenuLogic.handleChangeDescription}
-              onToggleTitleVisibility={(id: string, visible: boolean) =>
-                columnMenuLogic.handleToggleTitleVisibility(id, visible)
-              }
-              onChangeOptions={(
-                id: string,
-                options: string[],
-                tagColors: Record<string, string>,
-                doneTags?: string[],
-              ) =>
-                columnMenuLogic.handleChangeOptions(
-                  id,
-                  options,
-                  tagColors,
-                  doneTags,
-                )
-              }
-              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
-              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
-              canMoveDown={
-                column.id !== 'days' &&
-                columns.indexOf(column) < columns.length - 1
-              }
-              onChangeWidth={handleChangeWidth}
+              columnMenuLogic={columnMenuLogic}
+              handleMoveColumn={handleMoveColumn}
+              handleChangeWidth={handleChangeWidth}
+              columns={columns}
             />
           </th>
         </tr>
@@ -276,38 +301,12 @@ const TagsColumnWrapper: React.FC<{
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
-            <ColumnHeader
+            <ColumnHeaderContent
               column={column}
-              onRename={columnMenuLogic.handleRename}
-              onRemove={columnMenuLogic.handleDeleteColumn}
-              onClearColumn={columnMenuLogic.handleClearColumn}
-              onChangeIcon={columnMenuLogic.handleChangeIcon}
-              onChangeDescription={columnMenuLogic.handleChangeDescription}
-              onToggleTitleVisibility={(id: string, visible: boolean) =>
-                columnMenuLogic.handleToggleTitleVisibility(id, visible)
-              }
-              onChangeOptions={(
-                id: string,
-                options: string[],
-                tagColors: Record<string, string>,
-                doneTags?: string[],
-              ) =>
-                columnMenuLogic.handleChangeOptions(
-                  id,
-                  options,
-                  tagColors,
-                  doneTags,
-                )
-              }
-              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
-              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
-              canMoveDown={
-                column.id !== 'days' &&
-                columns.indexOf(column) < columns.length - 1
-              }
-              onChangeWidth={handleChangeWidth}
+              columnMenuLogic={columnMenuLogic}
+              handleMoveColumn={handleMoveColumn}
+              handleChangeWidth={handleChangeWidth}
+              columns={columns}
             />
           </th>
         </tr>
@@ -362,38 +361,12 @@ const NotesColumnWrapper: React.FC<{
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
-            <ColumnHeader
+            <ColumnHeaderContent
               column={column}
-              onRename={columnMenuLogic.handleRename}
-              onRemove={columnMenuLogic.handleDeleteColumn}
-              onClearColumn={columnMenuLogic.handleClearColumn}
-              onChangeIcon={columnMenuLogic.handleChangeIcon}
-              onChangeDescription={columnMenuLogic.handleChangeDescription}
-              onToggleTitleVisibility={(id: string, visible: boolean) =>
-                columnMenuLogic.handleToggleTitleVisibility(id, visible)
-              }
-              onChangeOptions={(
-                id: string,
-                options: string[],
-                tagColors: Record<string, string>,
-                doneTags?: string[],
-              ) =>
-                columnMenuLogic.handleChangeOptions(
-                  id,
-                  options,
-                  tagColors,
-                  doneTags,
-                )
-              }
-              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
-              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
-              canMoveDown={
-                column.id !== 'days' &&
-                columns.indexOf(column) < columns.length - 1
-              }
-              onChangeWidth={handleChangeWidth}
+              columnMenuLogic={columnMenuLogic}
+              handleMoveColumn={handleMoveColumn}
+              handleChangeWidth={handleChangeWidth}
+              columns={columns}
             />
           </th>
         </tr>
@@ -446,38 +419,12 @@ const MultiCheckboxColumnWrapper: React.FC<{
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
-            <ColumnHeader
+            <ColumnHeaderContent
               column={column}
-              onRename={columnMenuLogic.handleRename}
-              onRemove={columnMenuLogic.handleDeleteColumn}
-              onClearColumn={columnMenuLogic.handleClearColumn}
-              onChangeIcon={columnMenuLogic.handleChangeIcon}
-              onChangeDescription={columnMenuLogic.handleChangeDescription}
-              onToggleTitleVisibility={(id: string, visible: boolean) =>
-                columnMenuLogic.handleToggleTitleVisibility(id, visible)
-              }
-              onChangeOptions={(
-                id: string,
-                options: string[],
-                tagColors: Record<string, string>,
-                doneTags?: string[],
-              ) =>
-                columnMenuLogic.handleChangeOptions(
-                  id,
-                  options,
-                  tagColors,
-                  doneTags,
-                )
-              }
-              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
-              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
-              canMoveDown={
-                column.id !== 'days' &&
-                columns.indexOf(column) < columns.length - 1
-              }
-              onChangeWidth={handleChangeWidth}
+              columnMenuLogic={columnMenuLogic}
+              handleMoveColumn={handleMoveColumn}
+              handleChangeWidth={handleChangeWidth}
+              columns={columns}
             />
           </th>
         </tr>
@@ -532,38 +479,12 @@ const TodoColumnWrapper: React.FC<{
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
-            <ColumnHeader
+            <ColumnHeaderContent
               column={column}
-              onRename={columnMenuLogic.handleRename}
-              onRemove={columnMenuLogic.handleDeleteColumn}
-              onClearColumn={columnMenuLogic.handleClearColumn}
-              onChangeIcon={columnMenuLogic.handleChangeIcon}
-              onChangeDescription={columnMenuLogic.handleChangeDescription}
-              onToggleTitleVisibility={(id: string, visible: boolean) =>
-                columnMenuLogic.handleToggleTitleVisibility(id, visible)
-              }
-              onChangeOptions={(
-                id: string,
-                options: string[],
-                tagColors: Record<string, string>,
-                doneTags?: string[],
-              ) =>
-                columnMenuLogic.handleChangeOptions(
-                  id,
-                  options,
-                  tagColors,
-                  doneTags,
-                )
-              }
-              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
-              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
-              canMoveDown={
-                column.id !== 'days' &&
-                columns.indexOf(column) < columns.length - 1
-              }
-              onChangeWidth={handleChangeWidth}
+              columnMenuLogic={columnMenuLogic}
+              handleMoveColumn={handleMoveColumn}
+              handleChangeWidth={handleChangeWidth}
+              columns={columns}
             />
           </th>
         </tr>
@@ -614,38 +535,12 @@ const TaskTableColumnWrapper: React.FC<{
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
-            <ColumnHeader
+            <ColumnHeaderContent
               column={column}
-              onRename={columnMenuLogic.handleRename}
-              onRemove={columnMenuLogic.handleDeleteColumn}
-              onClearColumn={columnMenuLogic.handleClearColumn}
-              onChangeIcon={columnMenuLogic.handleChangeIcon}
-              onChangeDescription={columnMenuLogic.handleChangeDescription}
-              onToggleTitleVisibility={(id: string, visible: boolean) =>
-                columnMenuLogic.handleToggleTitleVisibility(id, visible)
-              }
-              onChangeOptions={(
-                id: string,
-                options: string[],
-                tagColors: Record<string, string>,
-                doneTags?: string[],
-              ) =>
-                columnMenuLogic.handleChangeOptions(
-                  id,
-                  options,
-                  tagColors,
-                  doneTags,
-                )
-              }
-              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
-              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
-              canMoveDown={
-                column.id !== 'days' &&
-                columns.indexOf(column) < columns.length - 1
-              }
-              onChangeWidth={handleChangeWidth}
+              columnMenuLogic={columnMenuLogic}
+              handleMoveColumn={handleMoveColumn}
+              handleChangeWidth={handleChangeWidth}
+              columns={columns}
             />
           </th>
         </tr>
