@@ -264,7 +264,7 @@ const NumberColumnWrapper: React.FC<{
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td>
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
               <NumberCell
                 value={tableData[day]?.[column.id] || ''}
                 onChange={(newValue) =>
@@ -322,7 +322,7 @@ const TagsColumnWrapper: React.FC<{
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td>
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
               <TagsCell
                 value={tableData[day]?.[column.id] || ''}
                 onChange={(newValue) =>
@@ -382,7 +382,7 @@ const NotesColumnWrapper: React.FC<{
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td>
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
               <NotesCell
                 value={tableData[day]?.[column.id] || ''}
                 onChange={(newValue) =>
@@ -440,7 +440,7 @@ const MultiCheckboxColumnWrapper: React.FC<{
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td>
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
               <MultiCheckboxCell
                 value={tableData[day]?.[column.id] || ''}
                 onChange={(newValue) =>
@@ -494,9 +494,9 @@ const TodoColumnWrapper: React.FC<{
           </th>
         </tr>
       </thead>
-      <tbody className="bg-tableBodyBg font-poppins">
+      <tbody className="bg-tableBodyBg">
         <tr>
-          <td className="todo-cell" rowSpan={DAYS.length}>
+          <td className="px-2 py-3 text-sm text-textTableRealValues todo-cell" style={{ verticalAlign: 'top' }} rowSpan={DAYS.length}>
             <TodoCell
               value={column.tasks || []}
               onChange={(newValue) =>
@@ -552,7 +552,7 @@ const TaskTableColumnWrapper: React.FC<{
       </thead>
       <tbody className="bg-tableBodyBg">
         <tr>
-          <td className="todo-cell" rowSpan={DAYS.length}>
+          <td className="px-2 py-3 text-sm text-textTableRealValues todo-cell" style={{ verticalAlign: 'top' }} rowSpan={DAYS.length}>
             <TaskTableCell
               column={column}
               onChangeOptions={handleChangeOptions}
