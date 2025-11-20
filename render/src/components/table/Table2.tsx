@@ -4,12 +4,17 @@ import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
 import ColumnHeader from './ColumnHeader';
 import { LoadingScreen } from './LoadingScreen';
 import { CheckboxCell } from './cells/CheckboxCell';
+import { NumberCell } from './cells/NumberCell';
+import { TagsCell } from './cells/TagsCell';
+import { NotesCell } from './cells/NotesCell';
+import { MultiCheckboxCell } from './cells/MultiCheckboxCell';
+import { TodoCell } from './cells/TodoCell';
+import { TaskTableCell } from './cells/TaskTableCell';
 import {
   useTableLogic,
   DAYS,
   getWidthStyle,
   calculateSummary,
-  RenderCell,
 } from './TableLogic';
 import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
 import { useSelector } from 'react-redux';
@@ -155,6 +160,505 @@ const FillerColumnWrapper: React.FC = () => {
             <td style={{ height: '60px' }} />
           </tr>
         ))}
+      </tbody>
+    </table>
+  );
+};
+
+// Wrapper компонент для numberbox колонки
+const NumberColumnWrapper: React.FC<{
+  column: any;
+  tableData: any;
+  columnIndex: number;
+  darkMode: boolean;
+  handleCellChange: any;
+  columnMenuLogic: any;
+  handleMoveColumn: any;
+  handleChangeWidth: any;
+  columns: any[];
+}> = ({
+  column,
+  tableData,
+  columnIndex,
+  darkMode,
+  handleCellChange,
+  columnMenuLogic,
+  handleMoveColumn,
+  handleChangeWidth,
+  columns,
+}) => {
+  return (
+    <table className="checkbox-nested-table">
+      <thead className="bg-tableHeader">
+        <tr>
+          <th className="border-b border-border">
+            <ColumnHeader
+              column={column}
+              onRename={columnMenuLogic.handleRename}
+              onRemove={columnMenuLogic.handleDeleteColumn}
+              onClearColumn={columnMenuLogic.handleClearColumn}
+              onChangeIcon={columnMenuLogic.handleChangeIcon}
+              onChangeDescription={columnMenuLogic.handleChangeDescription}
+              onToggleTitleVisibility={(id: string, visible: boolean) =>
+                columnMenuLogic.handleToggleTitleVisibility(id, visible)
+              }
+              onChangeOptions={(
+                id: string,
+                options: string[],
+                tagColors: Record<string, string>,
+                doneTags?: string[],
+              ) =>
+                columnMenuLogic.handleChangeOptions(
+                  id,
+                  options,
+                  tagColors,
+                  doneTags,
+                )
+              }
+              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
+              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
+              canMoveDown={
+                column.id !== 'days' &&
+                columns.indexOf(column) < columns.length - 1
+              }
+              onChangeWidth={handleChangeWidth}
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-tableBodyBg">
+        {DAYS.map((day, idx) => (
+          <tr
+            key={day}
+            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
+          >
+            <td>
+              <NumberCell
+                value={tableData[day]?.[column.id] || ''}
+                onChange={(newValue) =>
+                  handleCellChange(day, column.id, newValue)
+                }
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+// Wrapper компонент для multi-select (tags) колонки
+const TagsColumnWrapper: React.FC<{
+  column: any;
+  tableData: any;
+  columnIndex: number;
+  darkMode: boolean;
+  handleCellChange: any;
+  columnMenuLogic: any;
+  handleMoveColumn: any;
+  handleChangeWidth: any;
+  columns: any[];
+}> = ({
+  column,
+  tableData,
+  columnIndex,
+  darkMode,
+  handleCellChange,
+  columnMenuLogic,
+  handleMoveColumn,
+  handleChangeWidth,
+  columns,
+}) => {
+  return (
+    <table className="checkbox-nested-table">
+      <thead className="bg-tableHeader">
+        <tr>
+          <th className="border-b border-border">
+            <ColumnHeader
+              column={column}
+              onRename={columnMenuLogic.handleRename}
+              onRemove={columnMenuLogic.handleDeleteColumn}
+              onClearColumn={columnMenuLogic.handleClearColumn}
+              onChangeIcon={columnMenuLogic.handleChangeIcon}
+              onChangeDescription={columnMenuLogic.handleChangeDescription}
+              onToggleTitleVisibility={(id: string, visible: boolean) =>
+                columnMenuLogic.handleToggleTitleVisibility(id, visible)
+              }
+              onChangeOptions={(
+                id: string,
+                options: string[],
+                tagColors: Record<string, string>,
+                doneTags?: string[],
+              ) =>
+                columnMenuLogic.handleChangeOptions(
+                  id,
+                  options,
+                  tagColors,
+                  doneTags,
+                )
+              }
+              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
+              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
+              canMoveDown={
+                column.id !== 'days' &&
+                columns.indexOf(column) < columns.length - 1
+              }
+              onChangeWidth={handleChangeWidth}
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-tableBodyBg">
+        {DAYS.map((day, idx) => (
+          <tr
+            key={day}
+            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
+          >
+            <td>
+              <TagsCell
+                value={tableData[day]?.[column.id] || ''}
+                onChange={(newValue) =>
+                  handleCellChange(day, column.id, newValue)
+                }
+                options={column.options || []}
+                tagColors={column.tagColors || {}}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+// Wrapper компонент для text (notes) колонки
+const NotesColumnWrapper: React.FC<{
+  column: any;
+  tableData: any;
+  columnIndex: number;
+  darkMode: boolean;
+  handleCellChange: any;
+  columnMenuLogic: any;
+  handleMoveColumn: any;
+  handleChangeWidth: any;
+  columns: any[];
+}> = ({
+  column,
+  tableData,
+  columnIndex,
+  darkMode,
+  handleCellChange,
+  columnMenuLogic,
+  handleMoveColumn,
+  handleChangeWidth,
+  columns,
+}) => {
+  return (
+    <table className="checkbox-nested-table">
+      <thead className="bg-tableHeader">
+        <tr>
+          <th className="border-b border-border">
+            <ColumnHeader
+              column={column}
+              onRename={columnMenuLogic.handleRename}
+              onRemove={columnMenuLogic.handleDeleteColumn}
+              onClearColumn={columnMenuLogic.handleClearColumn}
+              onChangeIcon={columnMenuLogic.handleChangeIcon}
+              onChangeDescription={columnMenuLogic.handleChangeDescription}
+              onToggleTitleVisibility={(id: string, visible: boolean) =>
+                columnMenuLogic.handleToggleTitleVisibility(id, visible)
+              }
+              onChangeOptions={(
+                id: string,
+                options: string[],
+                tagColors: Record<string, string>,
+                doneTags?: string[],
+              ) =>
+                columnMenuLogic.handleChangeOptions(
+                  id,
+                  options,
+                  tagColors,
+                  doneTags,
+                )
+              }
+              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
+              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
+              canMoveDown={
+                column.id !== 'days' &&
+                columns.indexOf(column) < columns.length - 1
+              }
+              onChangeWidth={handleChangeWidth}
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-tableBodyBg">
+        {DAYS.map((day, idx) => (
+          <tr
+            key={day}
+            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
+          >
+            <td>
+              <NotesCell
+                value={tableData[day]?.[column.id] || ''}
+                onChange={(newValue) =>
+                  handleCellChange(day, column.id, newValue)
+                }
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+// Wrapper компонент для multicheckbox колонки
+const MultiCheckboxColumnWrapper: React.FC<{
+  column: any;
+  tableData: any;
+  columnIndex: number;
+  darkMode: boolean;
+  handleCellChange: any;
+  columnMenuLogic: any;
+  handleMoveColumn: any;
+  handleChangeWidth: any;
+  columns: any[];
+}> = ({
+  column,
+  tableData,
+  columnIndex,
+  darkMode,
+  handleCellChange,
+  columnMenuLogic,
+  handleMoveColumn,
+  handleChangeWidth,
+  columns,
+}) => {
+  return (
+    <table className="checkbox-nested-table">
+      <thead className="bg-tableHeader">
+        <tr>
+          <th className="border-b border-border">
+            <ColumnHeader
+              column={column}
+              onRename={columnMenuLogic.handleRename}
+              onRemove={columnMenuLogic.handleDeleteColumn}
+              onClearColumn={columnMenuLogic.handleClearColumn}
+              onChangeIcon={columnMenuLogic.handleChangeIcon}
+              onChangeDescription={columnMenuLogic.handleChangeDescription}
+              onToggleTitleVisibility={(id: string, visible: boolean) =>
+                columnMenuLogic.handleToggleTitleVisibility(id, visible)
+              }
+              onChangeOptions={(
+                id: string,
+                options: string[],
+                tagColors: Record<string, string>,
+                doneTags?: string[],
+              ) =>
+                columnMenuLogic.handleChangeOptions(
+                  id,
+                  options,
+                  tagColors,
+                  doneTags,
+                )
+              }
+              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
+              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
+              canMoveDown={
+                column.id !== 'days' &&
+                columns.indexOf(column) < columns.length - 1
+              }
+              onChangeWidth={handleChangeWidth}
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-tableBodyBg">
+        {DAYS.map((day, idx) => (
+          <tr
+            key={day}
+            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
+          >
+            <td>
+              <MultiCheckboxCell
+                value={tableData[day]?.[column.id] || ''}
+                onChange={(newValue) =>
+                  handleCellChange(day, column.id, newValue)
+                }
+                options={column.options || []}
+                tagColors={column.tagColors || {}}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+// Wrapper компонент для todo колонки
+const TodoColumnWrapper: React.FC<{
+  column: any;
+  tableData: any;
+  columnIndex: number;
+  darkMode: boolean;
+  handleCellChange: any;
+  columnMenuLogic: any;
+  handleMoveColumn: any;
+  handleChangeWidth: any;
+  columns: any[];
+}> = ({
+  column,
+  tableData,
+  columnIndex,
+  darkMode,
+  handleCellChange,
+  columnMenuLogic,
+  handleMoveColumn,
+  handleChangeWidth,
+  columns,
+}) => {
+  return (
+    <table className="checkbox-nested-table">
+      <thead className="bg-tableHeader">
+        <tr>
+          <th className="border-b border-border">
+            <ColumnHeader
+              column={column}
+              onRename={columnMenuLogic.handleRename}
+              onRemove={columnMenuLogic.handleDeleteColumn}
+              onClearColumn={columnMenuLogic.handleClearColumn}
+              onChangeIcon={columnMenuLogic.handleChangeIcon}
+              onChangeDescription={columnMenuLogic.handleChangeDescription}
+              onToggleTitleVisibility={(id: string, visible: boolean) =>
+                columnMenuLogic.handleToggleTitleVisibility(id, visible)
+              }
+              onChangeOptions={(
+                id: string,
+                options: string[],
+                tagColors: Record<string, string>,
+                doneTags?: string[],
+              ) =>
+                columnMenuLogic.handleChangeOptions(
+                  id,
+                  options,
+                  tagColors,
+                  doneTags,
+                )
+              }
+              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
+              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
+              canMoveDown={
+                column.id !== 'days' &&
+                columns.indexOf(column) < columns.length - 1
+              }
+              onChangeWidth={handleChangeWidth}
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-tableBodyBg">
+        <tr>
+          <td className="todo-cell" rowSpan={DAYS.length}>
+            <TodoCell
+              value={column.tasks || []}
+              onChange={(newValue) =>
+                handleCellChange('global', column.id, newValue)
+              }
+              column={column}
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};
+
+// Wrapper компонент для tasktable колонки
+const TaskTableColumnWrapper: React.FC<{
+  column: any;
+  tableData: any;
+  columnIndex: number;
+  darkMode: boolean;
+  handleCellChange: any;
+  handleChangeOptions: any;
+  columnMenuLogic: any;
+  handleMoveColumn: any;
+  handleChangeWidth: any;
+  columns: any[];
+}> = ({
+  column,
+  tableData,
+  columnIndex,
+  darkMode,
+  handleCellChange,
+  handleChangeOptions,
+  columnMenuLogic,
+  handleMoveColumn,
+  handleChangeWidth,
+  columns,
+}) => {
+  return (
+    <table className="checkbox-nested-table">
+      <thead className="bg-tableHeader">
+        <tr>
+          <th className="border-b border-border">
+            <ColumnHeader
+              column={column}
+              onRename={columnMenuLogic.handleRename}
+              onRemove={columnMenuLogic.handleDeleteColumn}
+              onClearColumn={columnMenuLogic.handleClearColumn}
+              onChangeIcon={columnMenuLogic.handleChangeIcon}
+              onChangeDescription={columnMenuLogic.handleChangeDescription}
+              onToggleTitleVisibility={(id: string, visible: boolean) =>
+                columnMenuLogic.handleToggleTitleVisibility(id, visible)
+              }
+              onChangeOptions={(
+                id: string,
+                options: string[],
+                tagColors: Record<string, string>,
+                doneTags?: string[],
+              ) =>
+                columnMenuLogic.handleChangeOptions(
+                  id,
+                  options,
+                  tagColors,
+                  doneTags,
+                )
+              }
+              onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+              onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+              onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
+              canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
+              canMoveDown={
+                column.id !== 'days' &&
+                columns.indexOf(column) < columns.length - 1
+              }
+              onChangeWidth={handleChangeWidth}
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-tableBodyBg">
+        <tr>
+          <td className="todo-cell" rowSpan={DAYS.length}>
+            <TaskTableCell
+              column={column}
+              onChangeOptions={handleChangeOptions}
+            />
+          </td>
+        </tr>
       </tbody>
     </table>
   );
@@ -323,80 +827,143 @@ const Table2: React.FC = () => {
                         columns={columns}
                       />
                     </th>
-                  ) : (
-                    <ColumnHeader
+                  ) : column.type === 'numberbox' ? (
+                    <th
                       key={column.id}
-                      column={column as any}
-                      onRename={columnMenuLogic.handleRename}
-                      onRemove={columnMenuLogic.handleDeleteColumn}
-                      onClearColumn={columnMenuLogic.handleClearColumn}
-                      onChangeIcon={columnMenuLogic.handleChangeIcon}
-                      onChangeDescription={
-                        columnMenuLogic.handleChangeDescription
-                      }
-                      onToggleTitleVisibility={(id: string, visible: boolean) =>
-                        columnMenuLogic.handleToggleTitleVisibility(id, visible)
-                      }
-                      onChangeOptions={(
-                        id: string,
-                        options: string[],
-                        tagColors: Record<string, string>,
-                        doneTags?: string[],
-                      ) =>
-                        columnMenuLogic.handleChangeOptions(
-                          id,
-                          options,
-                          tagColors,
-                          doneTags,
-                        )
-                      }
-                      onChangeCheckboxColor={
-                        columnMenuLogic.handleChangeCheckboxColor
-                      }
-                      onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-                      onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-                      canMoveUp={
-                        column.id !== 'days' && columns.indexOf(column) > 1
-                      }
-                      canMoveDown={
-                        column.id !== 'days' &&
-                        columns.indexOf(column) < columns.length - 1
-                      }
-                      onChangeWidth={handleChangeWidth}
-                    />
-                  ),
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {DAYS.map((day, idx) => (
-                <tr
-                  key={day}
-                  className={`
-                    bg-tableBodyBg
-                    ${idx !== DAYS.length - 1 ? `border-border border-b` : ''}
-                  `}
-                >
-                  {displayColumns.map((column, index) =>
-                    column.type === 'checkbox' ||
-                    column.type === 'days' ||
-                    column.type === 'filler' ? null : (
-                      <RenderCell
-                        key={column.id}
-                        day={day}
+                      style={{
+                        ...getWidthStyle(column),
+                        padding: 0,
+                        verticalAlign: 'top',
+                      }}
+                      className="border-r border-border"
+                    >
+                      <NumberColumnWrapper
                         column={column}
-                        columnIndex={index}
-                        rowIndex={idx}
                         tableData={tableData}
+                        columnIndex={index}
+                        darkMode={darkMode}
+                        handleCellChange={handleCellChange}
+                        columnMenuLogic={columnMenuLogic}
+                        handleMoveColumn={handleMoveColumn}
+                        handleChangeWidth={handleChangeWidth}
+                        columns={columns}
+                      />
+                    </th>
+                  ) : column.type === 'multi-select' ? (
+                    <th
+                      key={column.id}
+                      style={{
+                        ...getWidthStyle(column),
+                        padding: 0,
+                        verticalAlign: 'top',
+                      }}
+                      className="border-r border-border"
+                    >
+                      <TagsColumnWrapper
+                        column={column}
+                        tableData={tableData}
+                        columnIndex={index}
+                        darkMode={darkMode}
+                        handleCellChange={handleCellChange}
+                        columnMenuLogic={columnMenuLogic}
+                        handleMoveColumn={handleMoveColumn}
+                        handleChangeWidth={handleChangeWidth}
+                        columns={columns}
+                      />
+                    </th>
+                  ) : column.type === 'text' ? (
+                    <th
+                      key={column.id}
+                      style={{
+                        ...getWidthStyle(column),
+                        padding: 0,
+                        verticalAlign: 'top',
+                      }}
+                      className="border-r border-border"
+                    >
+                      <NotesColumnWrapper
+                        column={column}
+                        tableData={tableData}
+                        columnIndex={index}
+                        darkMode={darkMode}
+                        handleCellChange={handleCellChange}
+                        columnMenuLogic={columnMenuLogic}
+                        handleMoveColumn={handleMoveColumn}
+                        handleChangeWidth={handleChangeWidth}
+                        columns={columns}
+                      />
+                    </th>
+                  ) : column.type === 'multicheckbox' ? (
+                    <th
+                      key={column.id}
+                      style={{
+                        ...getWidthStyle(column),
+                        padding: 0,
+                        verticalAlign: 'top',
+                      }}
+                      className="border-r border-border"
+                    >
+                      <MultiCheckboxColumnWrapper
+                        column={column}
+                        tableData={tableData}
+                        columnIndex={index}
+                        darkMode={darkMode}
+                        handleCellChange={handleCellChange}
+                        columnMenuLogic={columnMenuLogic}
+                        handleMoveColumn={handleMoveColumn}
+                        handleChangeWidth={handleChangeWidth}
+                        columns={columns}
+                      />
+                    </th>
+                  ) : column.type === 'todo' ? (
+                    <th
+                      key={column.id}
+                      style={{
+                        ...getWidthStyle(column),
+                        padding: 0,
+                        verticalAlign: 'top',
+                      }}
+                      className="border-r border-border"
+                    >
+                      <TodoColumnWrapper
+                        column={column}
+                        tableData={tableData}
+                        columnIndex={index}
+                        darkMode={darkMode}
+                        handleCellChange={handleCellChange}
+                        columnMenuLogic={columnMenuLogic}
+                        handleMoveColumn={handleMoveColumn}
+                        handleChangeWidth={handleChangeWidth}
+                        columns={columns}
+                      />
+                    </th>
+                  ) : column.type === 'tasktable' ? (
+                    <th
+                      key={column.id}
+                      style={{
+                        ...getWidthStyle(column),
+                        padding: 0,
+                        verticalAlign: 'top',
+                      }}
+                      className="border-r border-border"
+                    >
+                      <TaskTableColumnWrapper
+                        column={column}
+                        tableData={tableData}
+                        columnIndex={index}
                         darkMode={darkMode}
                         handleCellChange={handleCellChange}
                         handleChangeOptions={handleChangeOptions}
+                        columnMenuLogic={columnMenuLogic}
+                        handleMoveColumn={handleMoveColumn}
+                        handleChangeWidth={handleChangeWidth}
+                        columns={columns}
                       />
-                    ),
-                  )}
-                </tr>
-              ))}
-            </tbody>
+                    </th>
+                  ) : null,
+                )}
+              </tr>
+            </thead>
             {showSummaryRow && (
               <tfoot>
                 <tr className={`border-t bg-tableBodyBg border-border`}>
