@@ -2,37 +2,134 @@ import React from 'react';
 import { ColumnHeaderContent } from './ColumnHeaderContent';
 import { TodoCell } from '../cells/TodoCell';
 import { DAYS } from '../TableLogic';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateColumnNested, updateCommonColumnProperties, swapColumnsPosition, deleteColumn } from '../../../store/tableSlice/tableSlice';
 
 interface TodoColumnWrapperProps {
-  column: any;
-  tableData: any;
-  columnIndex: number;
-  darkMode: boolean;
-  handleCellChange: any;
-  columnMenuLogic: any;
-  handleMoveColumn: any;
-  handleChangeWidth: any;
-  columns: any[];
+  columnId: string;
 }
 
 export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
-  column,
-  tableData,
-  columnIndex,
-  darkMode,
-  handleCellChange,
-  columnMenuLogic,
-  handleMoveColumn,
-  handleChangeWidth,
-  columns,
+  columnId,
 }) => {
+  const dispatch = useDispatch();
+  const columnData: Record<string, any> = useSelector(
+    (state: Record<string, any>) => state.tableData.columns[columnId] || {},
+  );
+  const columnOrder: string[] = useSelector(
+    (state: Record<string, any>) => state.tableData?.columnOrder ?? [],
+  );
+  const allColumns = useSelector(
+    (state: Record<string, any>) => state.tableData?.columns ?? {},
+  );
+
+  const handleCellChange = (newValue: any) => {
+    dispatch(
+      updateColumnNested({
+        columnId,
+        path: ['tasks'],
+        value: newValue,
+      })
+    );
+  };
+
+  const handleMoveColumn = (id: string, direction: string) => {
+    const mappedDirection = direction === 'up' ? 'left' : 'right';
+    dispatch(swapColumnsPosition({ id, direction: mappedDirection }));
+  };
+
+  const handleChangeWidth = (id: string, width: number) => {
+    dispatch(
+      updateCommonColumnProperties({
+        columnId: id,
+        properties: { Width: width },
+      })
+    );
+  };
+
+  const columnMenuLogic = {
+    handleDeleteColumn: (id: string) => {
+      dispatch(deleteColumn({ columnId: id }));
+    },
+    handleClearColumn: () => {
+      // Clear all tasks in the todo column
+      dispatch(
+        updateColumnNested({
+          columnId,
+          path: ['tasks'],
+          value: [],
+        })
+      );
+    },
+    handleRename: (id: string, newName: string) => {
+      dispatch(
+        updateCommonColumnProperties({
+          columnId: id,
+          properties: { Name: newName },
+        })
+      );
+    },
+    handleChangeIcon: (id: string, newIcon: string) => {
+      dispatch(
+        updateCommonColumnProperties({
+          columnId: id,
+          properties: { EmojiIcon: newIcon },
+        })
+      );
+    },
+    handleChangeDescription: (id: string, description: string) => {
+      dispatch(
+        updateCommonColumnProperties({
+          columnId: id,
+          properties: { Description: description },
+        })
+      );
+    },
+    handleToggleTitleVisibility: (id: string, visible: boolean) => {
+      dispatch(
+        updateCommonColumnProperties({
+          columnId: id,
+          properties: { NameVisible: visible },
+        })
+      );
+    },
+    handleChangeOptions: (
+      id: string,
+      options: string[],
+      tagColors: Record<string, string>,
+      doneTags?: string[]
+    ) => {
+      dispatch(
+        updateCommonColumnProperties({
+          columnId: id,
+          properties: { options, tagColors, doneTags },
+        })
+      );
+    },
+    handleChangeCheckboxColor: (id: string, color: string) => {
+      dispatch(
+        updateColumnNested({
+          columnId: id,
+          path: ['CheckboxColor'],
+          value: color,
+        })
+      );
+    },
+  };
+
+  // Build columns array for ColumnHeaderContent
+  const columns = columnOrder.map((id) => ({
+    id,
+    ...allColumns[id],
+  }));
+
   return (
     <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
             <ColumnHeaderContent
-              column={column}
+              column={{ id: columnId, ...columnData }}
               columnMenuLogic={columnMenuLogic}
               handleMoveColumn={handleMoveColumn}
               handleChangeWidth={handleChangeWidth}
@@ -49,11 +146,15 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
             rowSpan={DAYS.length}
           >
             <TodoCell
-              value={column.tasks || []}
-              onChange={(newValue) =>
-                handleCellChange('global', column.id, newValue)
-              }
-              column={column}
+              value={columnData.uniqueProperties?.tasks || []}
+              onChange={handleCellChange}
+              column={{ 
+                id: columnId, 
+                type: columnData.Type || 'todo',
+                ...columnData,
+                options: columnData.uniqueProperties?.options || columnData.options,
+                tagColors: columnData.uniqueProperties?.tagColors || columnData.tagColors
+              }}
             />
           </td>
         </tr>

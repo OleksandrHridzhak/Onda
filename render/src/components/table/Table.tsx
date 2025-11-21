@@ -2,8 +2,7 @@ import React from 'react';
 import PlannerHeader from '../planerHeader/PlannerHeader';
 import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
 import { LoadingScreen } from './LoadingScreen';
-import { useTableLogic, getWidthStyle, calculateSummary } from './TableLogic';
-import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
+import { useTableLogic } from './TableLogic';
 import { useSelector } from 'react-redux';
 import {
   CheckboxColumnWrapper,
@@ -33,8 +32,7 @@ const Table: React.FC = () => {
   const columnsData = useSelector(
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
-  const { theme, mode } = useSelector((state: any) => state.theme);
-  const darkMode = false;
+  const { mode } = useSelector((state: any) => state.theme);
 
   console.log('columnOrder:', columnOrder);
   console.log('columnsData:', columnsData);
