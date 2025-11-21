@@ -3,7 +3,8 @@ import PlannerHeader from '../planerHeader/PlannerHeader';
 import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
 import { LoadingScreen } from './LoadingScreen';
 import { useTableLogic } from './TableLogic';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { createNewColumn } from '../../store/tableSlice/tableSlice';
 import {
   CheckboxColumnWrapper,
   DaysColumnWrapper,
@@ -18,12 +19,12 @@ import {
 import TableItemWrapper from './TableItemWrapper';
 
 const Table: React.FC = () => {
+  const dispatch = useDispatch();
   const {
     columns,
     showColumnSelector,
     setShowColumnSelector,
     loading,
-    handleAddColumn,
   } = useTableLogic();
 
   const columnOrder: string[] = useSelector(
@@ -33,6 +34,11 @@ const Table: React.FC = () => {
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
   const { mode } = useSelector((state: any) => state.theme);
+
+  const handleAddColumn = (columnType: string) => {
+    dispatch(createNewColumn({ columnType }));
+    setShowColumnSelector(false);
+  };
 
   console.log('columnOrder:', columnOrder);
   console.log('columnsData:', columnsData);
@@ -123,10 +129,7 @@ const Table: React.FC = () => {
         {showColumnSelector && (
           <div className="absolute right-0 z-50">
             <ColumnTypeSelector
-              onSelect={(type) => {
-                handleAddColumn(type);
-                setShowColumnSelector(false);
-              }}
+              onSelect={handleAddColumn}
               onCancel={() => setShowColumnSelector(false)}
               darkMode={mode === 'dark' ? true : false}
             />
