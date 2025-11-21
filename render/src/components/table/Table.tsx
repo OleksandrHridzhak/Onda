@@ -1,69 +1,59 @@
 import React from 'react';
 import PlannerHeader from '../planerHeader/PlannerHeader';
 import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
-import ColumnHeader from './ColumnHeader';
 import { LoadingScreen } from './LoadingScreen';
-// removed unused/incorrect imports
-
-import {
-  useTableLogic,
-  DAYS,
-  getWidthStyle,
-  calculateSummary,
-  RenderCell,
-} from './TableLogic';
+import { useTableLogic, getWidthStyle, calculateSummary } from './TableLogic';
 import { useColumnMenuLogic } from './columnMenu/ColumnMenuLogic';
 import { useSelector } from 'react-redux';
+import {
+  CheckboxColumnWrapper,
+  DaysColumnWrapper,
+  FillerColumnWrapper,
+  NumberColumnWrapper,
+  TagsColumnWrapper,
+  NotesColumnWrapper,
+  MultiCheckboxColumnWrapper,
+  TodoColumnWrapper,
+  TaskTableColumnWrapper,
+} from './columnWrappers';
+import TableItemWrapper from './TableItemWrapper';
 
 const Table: React.FC = () => {
   const {
     columns,
-    setColumns,
-    tableData,
-    setTableData,
     showColumnSelector,
     setShowColumnSelector,
     loading,
-    showSummaryRow,
     handleAddColumn,
-    handleCellChange,
-    handleAddTask,
-    handleMoveColumn,
-    handleChangeWidth,
-    handleChangeOptions,
   } = useTableLogic();
 
   const columnOrder: string[] = useSelector(
-    (state: Record<string, any>) => state.table?.columnOrder ?? [],
+    (state: Record<string, any>) => state.tableData?.columnOrder ?? [],
   );
-
-  const columnMenuLogic = useColumnMenuLogic(columns, setColumns, setTableData);
+  const columnsData = useSelector(
+    (state: Record<string, any>) => state.tableData?.columns ?? {},
+  );
   const { theme, mode } = useSelector((state: any) => state.theme);
   const darkMode = false;
 
-  const displayColumns = [
-    ...columns,
-    {
-      id: 'filler',
-      type: 'filler',
-      name: '',
-      description: '',
-      emojiIcon: '',
-      nameVisible: false,
-      width: 0,
-      setEmojiIcon: () => false,
-      setWidth: () => false,
-      setNameVisible: () => false,
-      setName: () => false,
-      setDescription: () => false,
-      update: () => false,
-      toJSON: () => ({}),
-    } as any,
-  ];
+  console.log('columnOrder:', columnOrder);
+  console.log('columnsData:', columnsData);
 
   if (loading) {
     return <LoadingScreen darkMode={mode === 'dark' ? true : false} />;
   }
+
+  const componentsMap: Record<string, React.FC<any>> = {
+    days: DaysColumnWrapper,
+    checkbox: CheckboxColumnWrapper,
+    numberbox: NumberColumnWrapper,
+    'multi-select': TagsColumnWrapper,
+    text: NotesColumnWrapper,
+    multicheckbox: MultiCheckboxColumnWrapper,
+    todo: TodoColumnWrapper,
+    tasktable: TaskTableColumnWrapper,
+  };
+
   return (
     <div
       className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
@@ -80,7 +70,53 @@ const Table: React.FC = () => {
         table {
           table-layout: fixed;
         }
+        
+        /* Примусово застосовуємо Poppins */
+        .checkbox-nested-table,
+        .checkbox-nested-table * {
+          font-family: 'Poppins', sans-serif !important;
+          font-weight: 450 !important;
+        }
+        
+        /* Для headers можна залишити medium */
+        .checkbox-nested-table thead th {
+          font-weight: 500 !important;
+        }
+        
+        /* Стилі для вкладеної таблиці чекбоксів */
+        .checkbox-nested-table {
+          width: 100%;
+          border-collapse: collapse;
+          border-spacing: 0;
+        }
+        .checkbox-nested-table thead th {
+          height: 52px;
+          padding: 0;
+          border: none;
+          box-sizing: border-box;
+          border-bottom: 1px solid var(--border);
+        }
+        .checkbox-nested-table tbody td {
+          height: 60px;
+          padding: 0;
+          border: none;
+          box-sizing: border-box;
+        }
+        .checkbox-nested-table thead th > div {
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+        /* Забираємо border-bottom з ColumnHeader щоб не було подвійного */
+        .checkbox-nested-table thead th .border-b {
+          border-bottom: none !important;
+        }
       `}</style>
+      {/*
+
+      PlanerHeader section*
+      
+      */}
       <div className="p-4 relative">
         <PlannerHeader
           setShowColumnSelector={setShowColumnSelector}
@@ -99,87 +135,69 @@ const Table: React.FC = () => {
           </div>
         )}
       </div>
+      {/*
+
+      Main table section*
+
+      */}
       <div
-        className={`overflow-x-auto border border-border rounded-xl m-2 custom-scroll`}
+        className={`overflow-x-auto font-poppins border border-border rounded-xl m-2 custom-scroll`}
       >
         <div className="overflow-x-auto custom-scroll">
           <table className="w-full">
             <thead>
-              <tr className={`border-border bg-tableHeader border-b`}>
-                {displayColumns.map((column) =>
-                  column.type === 'filler' ? (
-                    <th key={column.id} style={getWidthStyle(column)} />
-                  ) : (
-                    <ColumnHeader
-                      key={column.id}
-                      column={column as any}
-                      onRename={columnMenuLogic.handleRename}
-                      onRemove={columnMenuLogic.handleDeleteColumn}
-                      onClearColumn={columnMenuLogic.handleClearColumn}
-                      onChangeIcon={columnMenuLogic.handleChangeIcon}
-                      onChangeDescription={
-                        columnMenuLogic.handleChangeDescription
-                      }
-                      onToggleTitleVisibility={(id: string, visible: boolean) =>
-                        columnMenuLogic.handleToggleTitleVisibility(id, visible)
-                      }
-                      onChangeOptions={(
-                        id: string,
-                        options: string[],
-                        tagColors: Record<string, string>,
-                        doneTags?: string[],
-                      ) =>
-                        columnMenuLogic.handleChangeOptions(
-                          id,
-                          options,
-                          tagColors,
-                          doneTags,
-                        )
-                      }
-                      onChangeCheckboxColor={
-                        columnMenuLogic.handleChangeCheckboxColor
-                      }
-                      onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-                      onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-                      canMoveUp={
-                        column.id !== 'days' && columns.indexOf(column) > 1
-                      }
-                      canMoveDown={
-                        column.id !== 'days' &&
-                        columns.indexOf(column) < columns.length - 1
-                      }
-                      onChangeWidth={handleChangeWidth}
-                    />
-                  ),
-                )}
+              <tr
+                className={`border-border bg-tableHeader text-textTableValues border-b`}
+              >
+                <TableItemWrapper
+                  key={'days-column'}
+                  column={columns.find((col) => col.id === 'days')!}
+                  className="border-r border-border"
+                >
+                  <DaysColumnWrapper
+                    column={columns.find((col) => col.id === 'days')!}
+                  />
+                </TableItemWrapper>
+
+                {columnOrder.map((columnId: string) => {
+                  const columnData = columnsData[columnId];
+                  if (!columnData) return null;
+
+                  const columnType = columnData.Type?.toLowerCase();
+                  const Component = componentsMap[columnType];
+
+                  // Створюємо об'єкт колонки для TableItemWrapper
+                  const column = {
+                    id: columnId,
+                    type: columnType,
+                    width: columnData.Width,
+                  };
+
+                  if (Component) {
+                    return (
+                      <TableItemWrapper
+                        key={columnId}
+                        column={column}
+                        className="border-r border-border"
+                      >
+                        <Component columnId={columnId} />
+                      </TableItemWrapper>
+                    );
+                  }
+                  return null;
+                })}
+                <TableItemWrapper
+                  key={'filler'}
+                  column={{ id: 'filler', type: 'filler', width: 0 }}
+                >
+                  <FillerColumnWrapper />
+                </TableItemWrapper>
               </tr>
             </thead>
-            <tbody>
-              {DAYS.map((day, idx) => (
-                <tr
-                  key={day}
-                  className={`
-                    bg-tableBodyBg
-                    ${idx !== DAYS.length - 1 ? `border-border border-b` : ''}
-                  `}
-                >
-                  {displayColumns.map((column, index) => (
-                    <RenderCell
-                      key={column.id}
-                      day={day}
-                      column={column}
-                      columnIndex={index}
-                      rowIndex={idx}
-                      tableData={tableData}
-                      darkMode={darkMode}
-                      handleCellChange={handleCellChange}
-                      handleChangeOptions={handleChangeOptions}
-                    />
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-            {showSummaryRow && (
+
+            {/* Table footer with stats */}
+
+            {/* showSummaryRow && (
               <tfoot>
                 <tr className={`border-t bg-tableBodyBg border-border`}>
                   {displayColumns.map((column) => {
@@ -205,7 +223,7 @@ const Table: React.FC = () => {
                   })}
                 </tr>
               </tfoot>
-            )}
+            )*/}
           </table>
         </div>
       </div>

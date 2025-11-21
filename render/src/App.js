@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import { settingsService } from './services/settingsDB';
 import Sidebar from './components/Sidebar';
-import Table from './components/table/Table2';
+import Table from './components/table/Table';
 import MenuWin from './components/MenuWin';
 import Calendar from './components/calendar/Calendar';
 import Settings from './components/settings/Settings';

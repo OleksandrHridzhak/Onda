@@ -1,10 +1,22 @@
-import crypto from 'crypto';
 import {
   COLUMN_EMOJI_ICON,
   COLUMN_NAME_VISIBLE,
   COLUMN_WIDTHS,
   COLUMN_NAMES,
 } from './constants';
+
+// Функція для генерації унікального ID у браузері
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback для старих браузерів
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
 
 const basicColumnTemplate = (type) => ({
   Name: COLUMN_NAMES[type],
@@ -14,7 +26,7 @@ const basicColumnTemplate = (type) => ({
 });
 
 const createTodoColumn = () => {
-  const id = crypto.randomUUID();
+  const id = generateId();
   const column = {
     ...basicColumnTemplate('TODO'),
     uniqueProperties: {
@@ -27,7 +39,7 @@ const createTodoColumn = () => {
 };
 
 const createCheckboxColumn = () => {
-  const id = crypto.randomUUID();
+  const id = generateId();
   const column = {
     ...basicColumnTemplate('CHECKBOX'),
     uniqueProperties: {
@@ -47,7 +59,7 @@ const createCheckboxColumn = () => {
 };
 
 const createNumberboxColumn = () => {
-  const id = crypto.randomUUID();
+  const id = generateId();
   const column = {
     ...basicColumnTemplate('NUMBERBOX'),
     uniqueProperties: {
@@ -66,7 +78,7 @@ const createNumberboxColumn = () => {
 };
 
 const createTextColumn = () => {
-  const id = crypto.randomUUID();
+  const id = generateId();
   const column = {
     ...basicColumnTemplate('TEXT'),
     uniqueProperties: {
@@ -85,7 +97,7 @@ const createTextColumn = () => {
 };
 
 const createMultiSelectColumn = () => {
-  const id = crypto.randomUUID();
+  const id = generateId();
   const column = {
     ...basicColumnTemplate('MULTI_SELECT'),
     uniqueProperties: {
@@ -106,7 +118,7 @@ const createMultiSelectColumn = () => {
 };
 
 const createMulticheckboxColumn = () => {
-  const id = crypto.randomUUID();
+  const id = generateId();
   const column = {
     ...basicColumnTemplate('MULTICHECKBOX'),
     uniqueProperties: {
@@ -127,7 +139,7 @@ const createMulticheckboxColumn = () => {
 };
 
 const createTasktableColumn = () => {
-  const id = crypto.randomUUID();
+  const id = generateId();
   const column = {
     ...basicColumnTemplate('TASKTABLE'),
     uniqueProperties: {

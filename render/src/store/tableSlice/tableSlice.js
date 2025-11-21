@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { columnsFactory } from './columnsFactory';
+import { Check } from 'lucide-react';
 
 const tableSlice = createSlice({
   name: 'tableData',
@@ -7,6 +8,7 @@ const tableSlice = createSlice({
     columns: {
       f9e8d7c6: {
         Name: 'Checkbox',
+        Type: 'Checkbox',
         EmojiIcon: '☑️',
         NameVisible: true,
         Width: 120,

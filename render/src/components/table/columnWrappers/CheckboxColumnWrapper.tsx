@@ -2,41 +2,30 @@ import React from 'react';
 import { ColumnHeaderContent } from './ColumnHeaderContent';
 import { CheckboxCell } from '../cells/CheckboxCell';
 import { DAYS } from '../TableLogic';
+import { useSelector } from 'react-redux';
 
 interface CheckboxColumnWrapperProps {
-  column: any;
-  tableData: any;
-  columnIndex: number;
-  darkMode: boolean;
-  handleCellChange: any;
-  columnMenuLogic: any;
-  handleMoveColumn: any;
-  handleChangeWidth: any;
-  columns: any[];
+  columnId: string;
 }
 
 export const CheckboxColumnWrapper: React.FC<CheckboxColumnWrapperProps> = ({
-  column,
-  tableData,
-  columnIndex,
-  darkMode,
-  handleCellChange,
-  columnMenuLogic,
-  handleMoveColumn,
-  handleChangeWidth,
-  columns,
+  columnId,
 }) => {
+  const columnData: Record<string, any> = useSelector(
+    (state: Record<string, any>) => state.tableData.columns[columnId] || {},
+  );
+
   return (
     <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
             <ColumnHeaderContent
-              column={column}
-              columnMenuLogic={columnMenuLogic}
-              handleMoveColumn={handleMoveColumn}
-              handleChangeWidth={handleChangeWidth}
-              columns={columns}
+              column={columnData}
+              columnMenuLogic={() => {}}
+              handleMoveColumn={() => {}}
+              handleChangeWidth={() => {}}
+              columns={[]}
             />
           </th>
         </tr>
@@ -49,11 +38,9 @@ export const CheckboxColumnWrapper: React.FC<CheckboxColumnWrapperProps> = ({
           >
             <td>
               <CheckboxCell
-                checked={tableData[day]?.[column.id] || false}
-                onChange={(newValue) =>
-                  handleCellChange(day, column.id, newValue)
-                }
-                color={column.CheckboxColor || '#3b82f6'}
+                checked={columnData.uniqueProperties?.Days?.[day] || false}
+                onChange={() => console.log('hello')}
+                color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
               />
             </td>
           </tr>
