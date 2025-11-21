@@ -141,7 +141,19 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
   const columns = columnOrder.map((id) => ({
     id,
     ...allColumns[id],
+    name: allColumns[id]?.Name,
+    emojiIcon: allColumns[id]?.EmojiIcon,
+    nameVisible: allColumns[id]?.NameVisible,
   }));
+
+  // Map column data properties for ColumnHeaderContent
+  const columnForHeader = {
+    id: columnId,
+    ...columnData,
+    name: columnData.Name,
+    emojiIcon: columnData.EmojiIcon,
+    nameVisible: columnData.NameVisible,
+  };
 
   return (
     <table className="checkbox-nested-table font-poppins">
@@ -149,7 +161,7 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
         <tr>
           <th className="border-b border-border">
             <ColumnHeaderContent
-              column={{ id: columnId, ...columnData }}
+              column={columnForHeader}
               columnMenuLogic={columnMenuLogic}
               handleMoveColumn={handleMoveColumn}
               handleChangeWidth={handleChangeWidth}
