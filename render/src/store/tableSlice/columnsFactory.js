@@ -20,6 +20,7 @@ const generateId = () => {
 
 const basicColumnTemplate = (type) => ({
   Name: COLUMN_NAMES[type],
+  Type: type,
   EmojiIcon: COLUMN_EMOJI_ICON[type],
   NameVisible: COLUMN_NAME_VISIBLE[type],
   Width: COLUMN_WIDTHS[type],

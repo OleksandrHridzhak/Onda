@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { columnsFactory } from './columnsFactory';
-import { Check } from 'lucide-react';
 
 const tableSlice = createSlice({
   name: 'tableData',
@@ -82,5 +81,13 @@ const tableSlice = createSlice({
     },
   },
 });
+
+export const {
+  createNewColumn,
+  deleteColumn,
+  updateColumnNested,
+  updateCommonColumnProperties,
+  swapColumnsPosition,
+} = tableSlice.actions;
 
 export default tableSlice.reducer;
