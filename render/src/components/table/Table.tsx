@@ -3,6 +3,8 @@ import PlannerHeader from '../planerHeader/PlannerHeader';
 import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
 import ColumnHeader from './ColumnHeader';
 import { LoadingScreen } from './LoadingScreen';
+// removed unused/incorrect imports
+
 import {
   useTableLogic,
   DAYS,
@@ -30,6 +32,10 @@ const Table: React.FC = () => {
     handleChangeWidth,
     handleChangeOptions,
   } = useTableLogic();
+
+  const columnOrder: string[] = useSelector(
+    (state: Record<string, any>) => state.table?.columnOrder ?? [],
+  );
 
   const columnMenuLogic = useColumnMenuLogic(columns, setColumns, setTableData);
   const { theme, mode } = useSelector((state: any) => state.theme);
