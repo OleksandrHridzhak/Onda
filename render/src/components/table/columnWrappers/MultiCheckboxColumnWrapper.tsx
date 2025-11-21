@@ -29,7 +29,7 @@ export const MultiCheckboxColumnWrapper: React.FC<
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['Values', day],
+        path: ['Days', day],
         value: newValue,
       })
     );
@@ -59,7 +59,7 @@ export const MultiCheckboxColumnWrapper: React.FC<
         dispatch(
           updateColumnNested({
             columnId,
-            path: ['Values', day],
+            path: ['Days', day],
             value: '',
           })
         );
@@ -103,10 +103,17 @@ export const MultiCheckboxColumnWrapper: React.FC<
       tagColors: Record<string, string>,
       doneTags?: string[]
     ) => {
+      const targetColumn = allColumns[id];
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { options, tagColors, doneTags },
+          properties: { 
+            uniqueProperties: {
+              ...targetColumn?.uniqueProperties,
+              Options: options,
+              OptionsColors: tagColors
+            }
+          },
         })
       );
     },
@@ -150,10 +157,10 @@ export const MultiCheckboxColumnWrapper: React.FC<
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
               <MultiCheckboxCell
-                value={columnData.uniqueProperties?.Values?.[day] || ''}
+                value={columnData.uniqueProperties?.Days?.[day] || ''}
                 onChange={(newValue) => handleCellChange(day, newValue)}
-                options={columnData.uniqueProperties?.options || []}
-                tagColors={columnData.uniqueProperties?.tagColors || {}}
+                options={columnData.uniqueProperties?.Options || []}
+                tagColors={columnData.uniqueProperties?.OptionsColors || {}}
               />
             </td>
           </tr>

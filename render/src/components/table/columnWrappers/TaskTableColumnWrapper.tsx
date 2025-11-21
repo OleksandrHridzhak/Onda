@@ -27,7 +27,14 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
     dispatch(
       updateCommonColumnProperties({
         columnId: id,
-        properties: { options, tagColors, doneTags },
+        properties: { 
+          uniqueProperties: {
+            ...columnData.uniqueProperties,
+            Options: options,
+            OptionsColors: tagColors,
+            DoneTags: doneTags || []
+          }
+        },
       })
     );
   };
@@ -55,7 +62,14 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
       dispatch(
         updateCommonColumnProperties({
           columnId,
-          properties: { options: [], tagColors: {}, doneTags: [] },
+          properties: { 
+            uniqueProperties: {
+              ...columnData.uniqueProperties,
+              Options: [],
+              OptionsColors: {},
+              DoneTags: []
+            }
+          },
         })
       );
     },
@@ -97,10 +111,18 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
       tagColors: Record<string, string>,
       doneTags?: string[]
     ) => {
+      const targetColumn = allColumns[id];
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { options, tagColors, doneTags },
+          properties: { 
+            uniqueProperties: {
+              ...targetColumn?.uniqueProperties,
+              Options: options,
+              OptionsColors: tagColors,
+              DoneTags: doneTags || []
+            }
+          },
         })
       );
     },
@@ -147,9 +169,9 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
               column={{ 
                 id: columnId, 
                 ...columnData,
-                tagColors: columnData.uniqueProperties?.tagColors || columnData.tagColors || {},
-                options: columnData.uniqueProperties?.options || columnData.options || [],
-                doneTags: columnData.uniqueProperties?.doneTags || columnData.doneTags || []
+                tagColors: columnData.uniqueProperties?.OptionsColors || {},
+                options: columnData.uniqueProperties?.Options || [],
+                doneTags: columnData.uniqueProperties?.DoneTags || []
               }}
               onChangeOptions={handleChangeOptions}
             />

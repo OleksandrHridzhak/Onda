@@ -27,7 +27,7 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['Values', day],
+        path: ['Days', day],
         value: newValue,
       })
     );
@@ -57,7 +57,7 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
         dispatch(
           updateColumnNested({
             columnId,
-            path: ['Values', day],
+            path: ['Days', day],
             value: '',
           })
         );
@@ -148,7 +148,7 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
               <NotesCell
-                value={columnData.uniqueProperties?.Values?.[day] || ''}
+                value={columnData.uniqueProperties?.Days?.[day] || ''}
                 onChange={(newValue) => handleCellChange(day, newValue)}
               />
             </td>

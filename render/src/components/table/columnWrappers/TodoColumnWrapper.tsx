@@ -27,7 +27,7 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['tasks'],
+        path: ['Chosen', 'global'],
         value: newValue,
       })
     );
@@ -56,7 +56,7 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
       dispatch(
         updateColumnNested({
           columnId,
-          path: ['tasks'],
+          path: ['Chosen', 'global'],
           value: [],
         })
       );
@@ -99,10 +99,17 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
       tagColors: Record<string, string>,
       doneTags?: string[]
     ) => {
+      const targetColumn = allColumns[id];
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { options, tagColors, doneTags },
+          properties: { 
+            uniqueProperties: {
+              ...targetColumn?.uniqueProperties,
+              Categorys: options,
+              CategoryColors: tagColors
+            }
+          },
         })
       );
     },
@@ -146,14 +153,14 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
             rowSpan={DAYS.length}
           >
             <TodoCell
-              value={columnData.uniqueProperties?.tasks || []}
+              value={columnData.uniqueProperties?.Chosen?.global || []}
               onChange={handleCellChange}
               column={{ 
                 id: columnId, 
                 type: columnData.Type || 'todo',
                 ...columnData,
-                options: columnData.uniqueProperties?.options || columnData.options,
-                tagColors: columnData.uniqueProperties?.tagColors || columnData.tagColors
+                options: columnData.uniqueProperties?.Categorys || columnData.options,
+                tagColors: columnData.uniqueProperties?.CategoryColors || columnData.tagColors
               }}
             />
           </td>
