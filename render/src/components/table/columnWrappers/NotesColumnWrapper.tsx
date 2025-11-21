@@ -124,17 +124,21 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
     id,
     ...allColumns[id],
     name: allColumns[id]?.Name,
+    type: allColumns[id]?.Type?.toLowerCase(),
     emojiIcon: allColumns[id]?.EmojiIcon,
     nameVisible: allColumns[id]?.NameVisible,
   }));
 
-  // Map column data properties for ColumnHeaderContent
+  // Map column data properties for ColumnHeaderContent and ColumnMenu
   const columnForHeader = {
     id: columnId,
     ...columnData,
     name: columnData.Name,
+    type: columnData.Type?.toLowerCase(),
     emojiIcon: columnData.EmojiIcon,
     nameVisible: columnData.NameVisible,
+    width: columnData.Width,
+    description: columnData.Description,
   };
 
   return (
