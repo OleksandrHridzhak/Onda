@@ -4,6 +4,7 @@ import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
 import { LoadingScreen } from './LoadingScreen';
 import { useTableLogic } from './TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
+import type { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import {
   createNewColumn,
   loadColumnsFromDB,
@@ -21,8 +22,11 @@ import {
 } from './columnWrappers';
 import TableItemWrapper from './TableItemWrapper';
 
+// Type for the Redux dispatch that supports thunks
+type AppDispatch = ThunkDispatch<Record<string, unknown>, unknown, AnyAction>;
+
 const Table: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const {
     columns,
     showColumnSelector,
@@ -47,7 +51,7 @@ const Table: React.FC = () => {
   // Load columns from IndexedDB when component mounts
   useEffect(() => {
     if (!reduxLoaded && reduxStatus === 'idle') {
-      dispatch(loadColumnsFromDB() as any);
+      dispatch(loadColumnsFromDB());
     }
   }, [dispatch, reduxLoaded, reduxStatus]);
 

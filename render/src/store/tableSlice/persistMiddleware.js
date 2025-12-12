@@ -1,57 +1,9 @@
+import { convertToDBFormat } from './columnConverters';
 import {
   updateColumn as updateColumnInDB,
   deleteColumn as deleteColumnFromDB,
   updateColumnsOrder,
 } from '../../services/columnsDB';
-
-// Helper function to convert Redux format to IndexedDB format
-const convertToDBFormat = (columnId, reduxColumn) => {
-  const dbColumn = {
-    id: columnId,
-    type: reduxColumn.Type?.toLowerCase() || '',
-    name: reduxColumn.Name || '',
-    emojiIcon: reduxColumn.EmojiIcon || 'Star',
-    nameVisible:
-      reduxColumn.NameVisible !== undefined ? reduxColumn.NameVisible : true,
-    width: reduxColumn.Width || 100,
-    description: reduxColumn.Description || '',
-  };
-
-  const up = reduxColumn.uniqueProperties || {};
-
-  if (up.Days) {
-    dbColumn.days = up.Days;
-  }
-  if (up.CheckboxColor) {
-    dbColumn.checkboxColor = up.CheckboxColor;
-  }
-  if (up.Options) {
-    dbColumn.options = up.Options;
-  }
-  if (up.Tags) {
-    dbColumn.options = up.Tags;
-  }
-  if (up.Categorys) {
-    dbColumn.options = up.Categorys;
-  }
-  if (up.TagsColors) {
-    dbColumn.tagColors = up.TagsColors;
-  }
-  if (up.OptionsColors) {
-    dbColumn.tagColors = up.OptionsColors;
-  }
-  if (up.CategoryColors) {
-    dbColumn.tagColors = up.CategoryColors;
-  }
-  if (up.DoneTags) {
-    dbColumn.doneTags = up.DoneTags;
-  }
-  if (up.Chosen?.global) {
-    dbColumn.tasks = up.Chosen.global;
-  }
-
-  return dbColumn;
-};
 
 // Debounce function to prevent too many DB writes
 const debounceMap = new Map();
@@ -103,11 +55,11 @@ export const tablePersistMiddleware = (store) => (next) => (action) => {
     }
 
     case 'tableData/createNewColumn': {
-      // For synchronous createNewColumn, save immediately
-      const newColumnId = Object.keys(state.tableData.columns).find(
-        (id) => !state.tableData.columnOrder.slice(0, -1).includes(id)
-      );
-      if (newColumnId) {
+      // Get the last added column ID from columnOrder (it's always added at the end)
+      const columnOrder = state.tableData.columnOrder;
+      const newColumnId = columnOrder.length > 0 ? columnOrder[columnOrder.length - 1] : null;
+      
+      if (newColumnId && state.tableData.columns[newColumnId]) {
         const columnData = state.tableData.columns[newColumnId];
         (async () => {
           try {

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { columnsFactory } from './columnsFactory';
+import { convertToReduxFormat, convertToDBFormat } from './columnConverters';
 import {
   getAllColumns,
   addColumn as addColumnToDB,
@@ -8,103 +9,6 @@ import {
   getColumnsOrder,
   updateColumnsOrder,
 } from '../../services/columnsDB';
-
-// Helper function to convert IndexedDB format to Redux format
-const convertToReduxFormat = (dbColumn) => {
-  const baseProps = {
-    Name: dbColumn.name || '',
-    Type: dbColumn.type?.toUpperCase() || '',
-    EmojiIcon: dbColumn.emojiIcon || 'Star',
-    NameVisible: dbColumn.nameVisible !== undefined ? dbColumn.nameVisible : true,
-    Width: dbColumn.width || 100,
-    Description: dbColumn.description || '',
-  };
-
-  // Build uniqueProperties based on column type
-  const uniqueProperties = {};
-  
-  if (dbColumn.days) {
-    uniqueProperties.Days = dbColumn.days;
-  }
-  if (dbColumn.checkboxColor) {
-    uniqueProperties.CheckboxColor = dbColumn.checkboxColor;
-  }
-  if (dbColumn.options) {
-    uniqueProperties.Options = dbColumn.options;
-  }
-  if (dbColumn.tagColors) {
-    uniqueProperties.TagsColors = dbColumn.tagColors;
-    uniqueProperties.OptionsColors = dbColumn.tagColors;
-  }
-  if (dbColumn.doneTags) {
-    uniqueProperties.DoneTags = dbColumn.doneTags;
-  }
-  if (dbColumn.tasks) {
-    uniqueProperties.Chosen = { global: dbColumn.tasks };
-  }
-  // For multi-select, also add Tags
-  if (dbColumn.type === 'multi-select' && dbColumn.options) {
-    uniqueProperties.Tags = dbColumn.options;
-  }
-  // For todo, add Categorys
-  if (dbColumn.type === 'todo' && dbColumn.options) {
-    uniqueProperties.Categorys = dbColumn.options;
-    uniqueProperties.CategoryColors = dbColumn.tagColors || {};
-  }
-
-  return {
-    ...baseProps,
-    uniqueProperties,
-  };
-};
-
-// Helper function to convert Redux format to IndexedDB format
-const convertToDBFormat = (columnId, reduxColumn) => {
-  const dbColumn = {
-    id: columnId,
-    type: reduxColumn.Type?.toLowerCase() || '',
-    name: reduxColumn.Name || '',
-    emojiIcon: reduxColumn.EmojiIcon || 'Star',
-    nameVisible: reduxColumn.NameVisible !== undefined ? reduxColumn.NameVisible : true,
-    width: reduxColumn.Width || 100,
-    description: reduxColumn.Description || '',
-  };
-
-  const up = reduxColumn.uniqueProperties || {};
-  
-  if (up.Days) {
-    dbColumn.days = up.Days;
-  }
-  if (up.CheckboxColor) {
-    dbColumn.checkboxColor = up.CheckboxColor;
-  }
-  if (up.Options) {
-    dbColumn.options = up.Options;
-  }
-  if (up.Tags) {
-    dbColumn.options = up.Tags;
-  }
-  if (up.Categorys) {
-    dbColumn.options = up.Categorys;
-  }
-  if (up.TagsColors) {
-    dbColumn.tagColors = up.TagsColors;
-  }
-  if (up.OptionsColors) {
-    dbColumn.tagColors = up.OptionsColors;
-  }
-  if (up.CategoryColors) {
-    dbColumn.tagColors = up.CategoryColors;
-  }
-  if (up.DoneTags) {
-    dbColumn.doneTags = up.DoneTags;
-  }
-  if (up.Chosen?.global) {
-    dbColumn.tasks = up.Chosen.global;
-  }
-
-  return dbColumn;
-};
 
 // Async thunk for loading columns from IndexedDB
 export const loadColumnsFromDB = createAsyncThunk(
