@@ -4,6 +4,7 @@ import themeReducer from './slices/themeSlice';
 import newThemeReducer from './slices/newThemeSlice';
 import tableReducer from './table/tableSlice';
 import tableDataReducer from './tableSlice/tableSlice';
+import { tablePersistMiddleware } from './tableSlice/persistMiddleware';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,8 @@ export const store = configureStore({
     tableData: tableDataReducer,
     newTheme: newThemeReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(tablePersistMiddleware),
 });
 
 export default store;
