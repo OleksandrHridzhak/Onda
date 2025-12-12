@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PlannerHeader from '../planerHeader/PlannerHeader';
 import ColumnTypeSelector from '../planerHeader/ColumnTypeSelector';
 import { LoadingScreen } from './LoadingScreen';
 import { useTableLogic } from './TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
-import { createNewColumn } from '../../store/tableSlice/tableSlice';
+import type { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
+import {
+  createNewColumn,
+  loadColumnsFromDB,
+} from '../../store/tableSlice/tableSlice';
 import {
   CheckboxColumnWrapper,
   DaysColumnWrapper,
@@ -18,13 +22,16 @@ import {
 } from './columnWrappers';
 import TableItemWrapper from './TableItemWrapper';
 
+// Type for the Redux dispatch that supports thunks
+type AppDispatch = ThunkDispatch<Record<string, unknown>, unknown, AnyAction>;
+
 const Table: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const {
     columns,
     showColumnSelector,
     setShowColumnSelector,
-    loading,
+    loading: tableLogicLoading,
   } = useTableLogic();
 
   const columnOrder: string[] = useSelector(
@@ -34,6 +41,19 @@ const Table: React.FC = () => {
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
   const { mode } = useSelector((state: any) => state.theme);
+  const reduxLoaded = useSelector(
+    (state: Record<string, any>) => state.tableData?.loaded ?? false,
+  );
+  const reduxStatus = useSelector(
+    (state: Record<string, any>) => state.tableData?.status ?? 'idle',
+  );
+
+  // Load columns from IndexedDB when component mounts
+  useEffect(() => {
+    if (!reduxLoaded && reduxStatus === 'idle') {
+      dispatch(loadColumnsFromDB());
+    }
+  }, [dispatch, reduxLoaded, reduxStatus]);
 
   const handleAddColumn = (columnType: string) => {
     dispatch(createNewColumn({ columnType }));
@@ -43,7 +63,10 @@ const Table: React.FC = () => {
   console.log('columnOrder:', columnOrder);
   console.log('columnsData:', columnsData);
 
-  if (loading) {
+  // Show loading screen while loading from IndexedDB
+  const isLoading = tableLogicLoading || (!reduxLoaded && reduxStatus === 'loading');
+
+  if (isLoading) {
     return <LoadingScreen darkMode={mode === 'dark' ? true : false} />;
   }
 
