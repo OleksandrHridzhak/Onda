@@ -35,7 +35,7 @@ const PlannerHeader: React.FC<PlannerHeaderProps> = ({
     });
 
   return (
-    <div className={`bg-background`}>
+    <div className={`bg-background p-4 relative`}>
       {layout?.length > 0 ? (
         <div className="flex flex-wrap justify-between items-center  px-2 md:pt-10 md:pb-9">
           <TimeWidget />
