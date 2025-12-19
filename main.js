@@ -5,9 +5,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-
-
-
 let mainWindow;
 
 function createWindow() {
@@ -28,7 +25,6 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:3000');
   } else {
-    mainWindow.loadFile(join(__dirname, './render/build/index.html'));
     mainWindow.loadFile(join(__dirname, './render/build/index.html'));
   }
 }

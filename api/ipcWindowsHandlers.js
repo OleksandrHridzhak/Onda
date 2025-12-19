@@ -1,5 +1,6 @@
-const { app, Notification} = require('electron');
-module.exports = {
+import { app, Notification} from 'electron';
+
+const ipcWindowsHandlers = {
   init(ipcMain, mainWindow) {
     // Window close handler
     ipcMain.handle('window-close', () => {
@@ -34,3 +35,6 @@ module.exports = {
     });
   },
 };
+
+  
+export { ipcWindowsHandlers as init };
