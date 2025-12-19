@@ -45,8 +45,7 @@ if (!gotTheLock) {
 
   app.whenReady().then(() => {
     createWindow();
-    init(ipcMain, mainWindow);
-    init(ipcMain, mainWindow);
+    init.init(ipcMain, mainWindow);
   });
 
   app.on('activate', () => {
