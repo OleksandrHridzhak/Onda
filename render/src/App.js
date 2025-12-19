@@ -9,10 +9,10 @@ import {
 } from 'react-router-dom';
 import { settingsService } from './services/settingsDB';
 import Sidebar from './components/Sidebar';
-import Table from './components/table/Table';
+import Table from './components/TableScreen/TableScreen';
 import MenuWin from './components/MenuWin';
-import Calendar from './components/calendar/Calendar';
-import Settings from './components/settings/Settings';
+import Calendar from './components/CalendarScreen/Calendar';
+import Settings from './components/SettingsScreen/Settings';
 
 const routes = ['/', '/calendar', '/settings'];
 

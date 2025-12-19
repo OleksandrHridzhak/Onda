@@ -1,0 +1,53 @@
+/* Styles extracted from Table.tsx */
+.todo-cell {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+.todo-cell > div {
+  height: 100%;
+}
+table {
+  table-layout: fixed;
+}
+
+/* Примусово застосовуємо Poppins */
+.checkbox-nested-table,
+.checkbox-nested-table * {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 450 !important;
+}
+
+/* Для headers можна залишити medium */
+.checkbox-nested-table thead th {
+  font-weight: 500 !important;
+}
+
+/* Стилі для вкладеної таблиці чекбоксів */
+.checkbox-nested-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.checkbox-nested-table thead th {
+  height: 52px;
+  padding: 0;
+  border: none;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--border);
+}
+.checkbox-nested-table tbody td {
+  height: 60px;
+  padding: 0;
+  border: none;
+  box-sizing: border-box;
+}
+.checkbox-nested-table thead th > div {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+/* Забираємо border-bottom з ColumnHeader щоб не було подвійного */
+.checkbox-nested-table thead th .border-b {
+  border-bottom: none !important;
+}
