@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { TaskTableCell } from '../cells/TaskTableCell';
+import { MultiCheckboxCell } from '../cells/MultiCheckboxCell';
 import { DAYS } from '../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -10,13 +10,13 @@ import {
   deleteColumn,
 } from '../../../store/tableSlice/tableSlice';
 
-interface TaskTableColumnWrapperProps {
+interface MultiCheckboxColumnProps {
   columnId: string;
 }
 
-export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
-  columnId,
-}) => {
+export const MultiCheckboxColumn: React.FC<
+  MultiCheckboxColumnProps
+> = ({ columnId }) => {
   const dispatch = useDispatch();
   const columnData: Record<string, any> = useSelector(
     (state: Record<string, any>) => state.tableData.columns[columnId] || {},
@@ -28,23 +28,12 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
 
-  const handleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
+  const handleCellChange = (day: string, newValue: string) => {
     dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties: {
-          uniqueProperties: {
-            ...columnData.uniqueProperties,
-            Options: options,
-            OptionsColors: tagColors,
-            DoneTags: doneTags || [],
-          },
-        },
+      updateColumnNested({
+        columnId,
+        path: ['Days', day],
+        value: newValue,
       }),
     );
   };
@@ -68,20 +57,16 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all options/tasks in the task table column
-      dispatch(
-        updateCommonColumnProperties({
-          columnId,
-          properties: {
-            uniqueProperties: {
-              ...columnData.uniqueProperties,
-              Options: [],
-              OptionsColors: {},
-              DoneTags: [],
-            },
-          },
-        }),
-      );
+      // Clear all days in the multicheckbox column
+      DAYS.forEach((day) => {
+        dispatch(
+          updateColumnNested({
+            columnId,
+            path: ['Days', day],
+            value: '',
+          }),
+        );
+      });
     },
     handleRename: (id: string, newName: string) => {
       dispatch(
@@ -130,7 +115,6 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
               ...targetColumn?.uniqueProperties,
               Options: options,
               OptionsColors: tagColors,
-              DoneTags: doneTags || [],
             },
           },
         }),
@@ -169,7 +153,6 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
     description: columnData.Description,
     options: columnData.uniqueProperties?.Options,
     tagColors: columnData.uniqueProperties?.OptionsColors,
-    doneTags: columnData.uniqueProperties?.DoneTags,
   };
 
   return (
@@ -188,24 +171,21 @@ export const TaskTableColumnWrapper: React.FC<TaskTableColumnWrapperProps> = ({
         </tr>
       </thead>
       <tbody className="bg-tableBodyBg">
-        <tr>
-          <td
-            className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
-            style={{ verticalAlign: 'top' }}
-            rowSpan={DAYS.length}
+        {DAYS.map((day, idx) => (
+          <tr
+            key={day}
+            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <TaskTableCell
-              column={{
-                id: columnId,
-                ...columnData,
-                tagColors: columnData.uniqueProperties?.OptionsColors || {},
-                options: columnData.uniqueProperties?.Options || [],
-                doneTags: columnData.uniqueProperties?.DoneTags || [],
-              }}
-              onChangeOptions={handleChangeOptions}
-            />
-          </td>
-        </tr>
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
+              <MultiCheckboxCell
+                value={columnData.uniqueProperties?.Days?.[day] || ''}
+                onChange={(newValue) => handleCellChange(day, newValue)}
+                options={columnData.uniqueProperties?.Options || []}
+                tagColors={columnData.uniqueProperties?.OptionsColors || {}}
+              />
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

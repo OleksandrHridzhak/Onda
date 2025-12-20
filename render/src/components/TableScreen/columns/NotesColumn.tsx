@@ -10,11 +10,11 @@ import {
   deleteColumn,
 } from '../../../store/tableSlice/tableSlice';
 
-interface NotesColumnWrapperProps {
+interface NotesColumnProps {
   columnId: string;
 }
 
-export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
+export const NotesColumn: React.FC<NotesColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();

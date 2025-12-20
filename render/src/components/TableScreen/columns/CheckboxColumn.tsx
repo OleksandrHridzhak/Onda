@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { MultiCheckboxCell } from '../cells/MultiCheckboxCell';
+import { CheckboxCell } from '../cells/CheckboxCell';
 import { DAYS } from '../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -10,13 +10,13 @@ import {
   deleteColumn,
 } from '../../../store/tableSlice/tableSlice';
 
-interface MultiCheckboxColumnWrapperProps {
+interface CheckboxColumnProps {
   columnId: string;
 }
 
-export const MultiCheckboxColumnWrapper: React.FC<
-  MultiCheckboxColumnWrapperProps
-> = ({ columnId }) => {
+export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({
+  columnId,
+}) => {
   const dispatch = useDispatch();
   const columnData: Record<string, any> = useSelector(
     (state: Record<string, any>) => state.tableData.columns[columnId] || {},
@@ -28,7 +28,7 @@ export const MultiCheckboxColumnWrapper: React.FC<
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
 
-  const handleCellChange = (day: string, newValue: string) => {
+  const handleCheckboxChange = (day: string, newValue: boolean) => {
     dispatch(
       updateColumnNested({
         columnId,
@@ -57,13 +57,13 @@ export const MultiCheckboxColumnWrapper: React.FC<
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all days in the multicheckbox column
+      // Clear all days in the checkbox column
       DAYS.forEach((day) => {
         dispatch(
           updateColumnNested({
             columnId,
             path: ['Days', day],
-            value: '',
+            value: false,
           }),
         );
       });
@@ -106,17 +106,10 @@ export const MultiCheckboxColumnWrapper: React.FC<
       tagColors: Record<string, string>,
       doneTags?: string[],
     ) => {
-      const targetColumn = allColumns[id];
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: {
-            uniqueProperties: {
-              ...targetColumn?.uniqueProperties,
-              Options: options,
-              OptionsColors: tagColors,
-            },
-          },
+          properties: { options, tagColors, doneTags },
         }),
       );
     },
@@ -151,8 +144,7 @@ export const MultiCheckboxColumnWrapper: React.FC<
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
-    options: columnData.uniqueProperties?.Options,
-    tagColors: columnData.uniqueProperties?.OptionsColors,
+    checkboxColor: columnData.uniqueProperties?.CheckboxColor,
   };
 
   return (
@@ -176,12 +168,11 @@ export const MultiCheckboxColumnWrapper: React.FC<
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <MultiCheckboxCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
-                onChange={(newValue) => handleCellChange(day, newValue)}
-                options={columnData.uniqueProperties?.Options || []}
-                tagColors={columnData.uniqueProperties?.OptionsColors || {}}
+            <td>
+              <CheckboxCell
+                checked={columnData.uniqueProperties?.Days?.[day] || false}
+                onChange={(newValue) => handleCheckboxChange(day, newValue)}
+                color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
               />
             </td>
           </tr>

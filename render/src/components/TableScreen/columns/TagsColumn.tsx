@@ -10,11 +10,11 @@ import {
   deleteColumn,
 } from '../../../store/tableSlice/tableSlice';
 
-interface TagsColumnWrapperProps {
+interface TagsColumnProps {
   columnId: string;
 }
 
-export const TagsColumnWrapper: React.FC<TagsColumnWrapperProps> = ({
+export const TagsColumn: React.FC<TagsColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { CheckboxCell } from '../cells/CheckboxCell';
+import { NumberCell } from '../cells/NumberCell';
 import { DAYS } from '../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -10,11 +10,11 @@ import {
   deleteColumn,
 } from '../../../store/tableSlice/tableSlice';
 
-interface CheckboxColumnWrapperProps {
+interface NumberColumnProps {
   columnId: string;
 }
 
-export const CheckboxColumnWrapper: React.FC<CheckboxColumnWrapperProps> = ({
+export const NumberColumn: React.FC<NumberColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export const CheckboxColumnWrapper: React.FC<CheckboxColumnWrapperProps> = ({
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
 
-  const handleCheckboxChange = (day: string, newValue: boolean) => {
+  const handleCellChange = (day: string, newValue: string) => {
     dispatch(
       updateColumnNested({
         columnId,
@@ -57,13 +57,13 @@ export const CheckboxColumnWrapper: React.FC<CheckboxColumnWrapperProps> = ({
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all days in the checkbox column
+      // Clear all days in the number column
       DAYS.forEach((day) => {
         dispatch(
           updateColumnNested({
             columnId,
             path: ['Days', day],
-            value: false,
+            value: '',
           }),
         );
       });
@@ -144,7 +144,6 @@ export const CheckboxColumnWrapper: React.FC<CheckboxColumnWrapperProps> = ({
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
-    checkboxColor: columnData.uniqueProperties?.CheckboxColor,
   };
 
   return (
@@ -168,11 +167,10 @@ export const CheckboxColumnWrapper: React.FC<CheckboxColumnWrapperProps> = ({
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td>
-              <CheckboxCell
-                checked={columnData.uniqueProperties?.Days?.[day] || false}
-                onChange={(newValue) => handleCheckboxChange(day, newValue)}
-                color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
+              <NumberCell
+                value={columnData.uniqueProperties?.Days?.[day] || ''}
+                onChange={(newValue) => handleCellChange(day, newValue)}
               />
             </td>
           </tr>

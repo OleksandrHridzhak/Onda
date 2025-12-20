@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { NumberCell } from '../cells/NumberCell';
+import { TaskTableCell } from '../cells/TaskTableCell';
 import { DAYS } from '../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -10,11 +10,11 @@ import {
   deleteColumn,
 } from '../../../store/tableSlice/tableSlice';
 
-interface NumberColumnWrapperProps {
+interface TaskTableColumnProps {
   columnId: string;
 }
 
-export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
+export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();
@@ -28,12 +28,23 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
 
-  const handleCellChange = (day: string, newValue: string) => {
+  const handleChangeOptions = (
+    id: string,
+    options: string[],
+    tagColors: Record<string, string>,
+    doneTags?: string[],
+  ) => {
     dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Days', day],
-        value: newValue,
+      updateCommonColumnProperties({
+        columnId: id,
+        properties: {
+          uniqueProperties: {
+            ...columnData.uniqueProperties,
+            Options: options,
+            OptionsColors: tagColors,
+            DoneTags: doneTags || [],
+          },
+        },
       }),
     );
   };
@@ -57,16 +68,20 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all days in the number column
-      DAYS.forEach((day) => {
-        dispatch(
-          updateColumnNested({
-            columnId,
-            path: ['Days', day],
-            value: '',
-          }),
-        );
-      });
+      // Clear all options/tasks in the task table column
+      dispatch(
+        updateCommonColumnProperties({
+          columnId,
+          properties: {
+            uniqueProperties: {
+              ...columnData.uniqueProperties,
+              Options: [],
+              OptionsColors: {},
+              DoneTags: [],
+            },
+          },
+        }),
+      );
     },
     handleRename: (id: string, newName: string) => {
       dispatch(
@@ -106,10 +121,18 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
       tagColors: Record<string, string>,
       doneTags?: string[],
     ) => {
+      const targetColumn = allColumns[id];
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { options, tagColors, doneTags },
+          properties: {
+            uniqueProperties: {
+              ...targetColumn?.uniqueProperties,
+              Options: options,
+              OptionsColors: tagColors,
+              DoneTags: doneTags || [],
+            },
+          },
         }),
       );
     },
@@ -144,6 +167,9 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
+    options: columnData.uniqueProperties?.Options,
+    tagColors: columnData.uniqueProperties?.OptionsColors,
+    doneTags: columnData.uniqueProperties?.DoneTags,
   };
 
   return (
@@ -162,19 +188,24 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
         </tr>
       </thead>
       <tbody className="bg-tableBodyBg">
-        {DAYS.map((day, idx) => (
-          <tr
-            key={day}
-            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
+        <tr>
+          <td
+            className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
+            style={{ verticalAlign: 'top' }}
+            rowSpan={DAYS.length}
           >
-            <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <NumberCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
-                onChange={(newValue) => handleCellChange(day, newValue)}
-              />
-            </td>
-          </tr>
-        ))}
+            <TaskTableCell
+              column={{
+                id: columnId,
+                ...columnData,
+                tagColors: columnData.uniqueProperties?.OptionsColors || {},
+                options: columnData.uniqueProperties?.Options || [],
+                doneTags: columnData.uniqueProperties?.DoneTags || [],
+              }}
+              onChangeOptions={handleChangeOptions}
+            />
+          </td>
+        </tr>
       </tbody>
     </table>
   );

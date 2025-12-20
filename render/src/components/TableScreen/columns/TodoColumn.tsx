@@ -10,11 +10,11 @@ import {
   deleteColumn,
 } from '../../../store/tableSlice/tableSlice';
 
-interface TodoColumnWrapperProps {
+interface TodoColumnProps {
   columnId: string;
 }
 
-export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
+export const TodoColumn: React.FC<TodoColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();
