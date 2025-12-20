@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import {
   getCheckBoxColorOptions,
   CheckBoxColorOption,
-} from '../../../../utils/colorOptions';
+} from '../../../../../utils/colorOptions';
 
 interface RootState {
   theme: {

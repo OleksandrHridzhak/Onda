@@ -1,14 +1,14 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { NumberCell } from '../cells/NumberCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { NumberCell } from './NumberCell';
+import { DAYS } from '../../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   updateColumnNested,
   updateCommonColumnProperties,
   swapColumnsPosition,
   deleteColumn,
-} from '../../../store/tableSlice/tableSlice';
+} from '../../../../store/tableSlice/tableSlice';
 
 interface NumberColumnProps {
   columnId: string;

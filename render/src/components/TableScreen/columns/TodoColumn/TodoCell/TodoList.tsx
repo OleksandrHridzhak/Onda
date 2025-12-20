@@ -1,6 +1,6 @@
 import React from 'react';
 import { Edit2, Trash2, Check } from 'lucide-react';
-import { getColorOptions } from '../../../utils/colorOptions';
+import { getColorOptions } from '../../../../utils/colorOptions';
 import {
   handleToggleTodo,
   handleDeleteTodo,

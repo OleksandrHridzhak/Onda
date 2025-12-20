@@ -1,20 +1,20 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { TagsCell } from '../cells/TagsCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { TaskTableCell } from './TaskTableCell';
+import { DAYS } from '../../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   updateColumnNested,
   updateCommonColumnProperties,
   swapColumnsPosition,
   deleteColumn,
-} from '../../../store/tableSlice/tableSlice';
+} from '../../../../store/tableSlice/tableSlice';
 
-interface TagsColumnProps {
+interface TaskTableColumnProps {
   columnId: string;
 }
 
-export const TagsColumn: React.FC<TagsColumnProps> = ({
+export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();
@@ -28,12 +28,23 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
 
-  const handleCellChange = (day: string, newValue: string) => {
+  const handleChangeOptions = (
+    id: string,
+    options: string[],
+    tagColors: Record<string, string>,
+    doneTags?: string[],
+  ) => {
     dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Days', day],
-        value: newValue,
+      updateCommonColumnProperties({
+        columnId: id,
+        properties: {
+          uniqueProperties: {
+            ...columnData.uniqueProperties,
+            Options: options,
+            OptionsColors: tagColors,
+            DoneTags: doneTags || [],
+          },
+        },
       }),
     );
   };
@@ -57,16 +68,20 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all days in the tags column
-      DAYS.forEach((day) => {
-        dispatch(
-          updateColumnNested({
-            columnId,
-            path: ['Days', day],
-            value: '',
-          }),
-        );
-      });
+      // Clear all options/tasks in the task table column
+      dispatch(
+        updateCommonColumnProperties({
+          columnId,
+          properties: {
+            uniqueProperties: {
+              ...columnData.uniqueProperties,
+              Options: [],
+              OptionsColors: {},
+              DoneTags: [],
+            },
+          },
+        }),
+      );
     },
     handleRename: (id: string, newName: string) => {
       dispatch(
@@ -113,8 +128,9 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({
           properties: {
             uniqueProperties: {
               ...targetColumn?.uniqueProperties,
-              Tags: options,
-              TagsColors: tagColors,
+              Options: options,
+              OptionsColors: tagColors,
+              DoneTags: doneTags || [],
             },
           },
         }),
@@ -151,8 +167,9 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
-    options: columnData.uniqueProperties?.Tags,
-    tagColors: columnData.uniqueProperties?.TagsColors,
+    options: columnData.uniqueProperties?.Options,
+    tagColors: columnData.uniqueProperties?.OptionsColors,
+    doneTags: columnData.uniqueProperties?.DoneTags,
   };
 
   return (
@@ -171,21 +188,24 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({
         </tr>
       </thead>
       <tbody className="bg-tableBodyBg">
-        {DAYS.map((day, idx) => (
-          <tr
-            key={day}
-            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
+        <tr>
+          <td
+            className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
+            style={{ verticalAlign: 'top' }}
+            rowSpan={DAYS.length}
           >
-            <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <TagsCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
-                onChange={(newValue) => handleCellChange(day, newValue)}
-                options={columnData.uniqueProperties?.Tags || []}
-                tagColors={columnData.uniqueProperties?.TagsColors || {}}
-              />
-            </td>
-          </tr>
-        ))}
+            <TaskTableCell
+              column={{
+                id: columnId,
+                ...columnData,
+                tagColors: columnData.uniqueProperties?.OptionsColors || {},
+                options: columnData.uniqueProperties?.Options || [],
+                doneTags: columnData.uniqueProperties?.DoneTags || [],
+              }}
+              onChangeOptions={handleChangeOptions}
+            />
+          </td>
+        </tr>
       </tbody>
     </table>
   );

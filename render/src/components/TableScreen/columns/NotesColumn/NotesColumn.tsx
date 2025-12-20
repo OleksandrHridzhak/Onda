@@ -1,20 +1,20 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { CheckboxCell } from '../cells/CheckboxCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { NotesCell } from './NotesCell';
+import { DAYS } from '../../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   updateColumnNested,
   updateCommonColumnProperties,
   swapColumnsPosition,
   deleteColumn,
-} from '../../../store/tableSlice/tableSlice';
+} from '../../../../store/tableSlice/tableSlice';
 
-interface CheckboxColumnProps {
+interface NotesColumnProps {
   columnId: string;
 }
 
-export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({
+export const NotesColumn: React.FC<NotesColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
 
-  const handleCheckboxChange = (day: string, newValue: boolean) => {
+  const handleCellChange = (day: string, newValue: string) => {
     dispatch(
       updateColumnNested({
         columnId,
@@ -57,13 +57,13 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all days in the checkbox column
+      // Clear all days in the notes column
       DAYS.forEach((day) => {
         dispatch(
           updateColumnNested({
             columnId,
             path: ['Days', day],
-            value: false,
+            value: '',
           }),
         );
       });
@@ -144,7 +144,6 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
-    checkboxColor: columnData.uniqueProperties?.CheckboxColor,
   };
 
   return (
@@ -168,11 +167,10 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td>
-              <CheckboxCell
-                checked={columnData.uniqueProperties?.Days?.[day] || false}
-                onChange={(newValue) => handleCheckboxChange(day, newValue)}
-                color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
+              <NotesCell
+                value={columnData.uniqueProperties?.Days?.[day] || ''}
+                onChange={(newValue) => handleCellChange(day, newValue)}
               />
             </td>
           </tr>
