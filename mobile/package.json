@@ -1,0 +1,20 @@
+{
+  "name": "onda-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Onda mobile app built with Capacitor",
+  "scripts": {
+    "build:web": "cd ../render && CI=false npm run build",
+    "cap:sync": "npx cap sync android",
+    "mobile:dev": "npm run build:web && npx cap sync android && npx cap run android",
+    "mobile:build": "npm run build:web && npx cap sync android && cd android && ./gradlew assembleDebug && echo 'APK file: mobile/android/app/build/outputs/apk/debug/app-debug.apk'",
+    "mobile:usb": "npm run build:web && npx cap sync android && npx cap run android --target"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.2.0",
+    "@capacitor/core": "^7.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.2.0"
+  }
+}
