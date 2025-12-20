@@ -27,7 +27,11 @@
     "test": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
-    "prepare": "husky"
+    "prepare": "husky",
+    "mobile:sync": "npm run build && cd ../mobile && npm run sync",
+    "mobile:dev": "set CI=false&& npm run mobile:sync && cd ../mobile && npm run run",
+    "mobile:build": "set CI=false&& npm run mobile:sync && cd ../mobile && npm run build:apk",
+    "mobile:open": "cd ../mobile && npm run open"
   },
   "eslintConfig": {
     "extends": [
@@ -59,6 +63,6 @@
     "lint-staged": "^16.1.2",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.9.3"
+    "typescript": "~4.9.5"
   }
 }
