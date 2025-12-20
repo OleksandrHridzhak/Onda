@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@capacitor/android": "^7.2.0",
+    "@capacitor/core": "^7.2.0",
     "@reduxjs/toolkit": "^2.7.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -27,7 +29,11 @@
     "test": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
-    "prepare": "husky"
+    "prepare": "husky",
+    "cap:sync": "npx cap sync android",
+    "mobile:dev": "CI=false npm run build && npx cap sync android && npx cap run android",
+    "mobile:build": "CI=false npm run build && npx cap sync android && cd android && ./gradlew assembleDebug && echo 'APK file: android/app/build/outputs/apk/debug/app-debug.apk'",
+    "mobile:usb": "CI=false npm run build && npx cap sync android && npx cap run android --target"
   },
   "eslintConfig": {
     "extends": [
@@ -48,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.2.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19.2.2",
