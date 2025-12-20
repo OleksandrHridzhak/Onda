@@ -51,7 +51,7 @@ npm run start
 
 ## Mobile Development (Android)
 
-Onda supports mobile deployment via Capacitor for Android.
+Onda supports mobile deployment via Capacitor for Android. Mobile-specific code is in the `mobile/` directory.
 
 ### Requirements for Mobile Development
 
@@ -60,12 +60,21 @@ Onda supports mobile deployment via Capacitor for Android.
 - Android SDK (API level 22+)
 - USB debugging enabled on device (for testing on physical device)
 
-### Mobile Commands
+### Installation
 
-All mobile commands should be run from the `render` directory:
+1. Install mobile dependencies:
 
 ```bash
-cd render
+cd mobile
+npm install
+```
+
+### Mobile Commands
+
+All mobile commands should be run from the `mobile` directory:
+
+```bash
+cd mobile
 ```
 
 #### Development Mode
@@ -78,7 +87,7 @@ npm run mobile:dev
 
 This command:
 
-1. Builds the React app
+1. Builds the React app (from render/)
 2. Syncs with Capacitor
 3. Opens the app on an Android emulator or connected device
 
@@ -91,7 +100,7 @@ npm run mobile:build
 ```
 
 The APK will be located at:
-`render/android/app/build/outputs/apk/debug/app-debug.apk`
+`mobile/android/app/build/outputs/apk/debug/app-debug.apk`
 
 #### USB Testing
 

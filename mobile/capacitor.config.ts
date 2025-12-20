@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.onda.app',
   appName: 'Onda',
-  webDir: 'build',
+  webDir: '../render/build',
   server: {
     androidScheme: 'https',
   },
