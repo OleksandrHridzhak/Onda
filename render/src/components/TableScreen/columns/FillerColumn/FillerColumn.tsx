@@ -1,7 +1,7 @@
 import React from 'react';
-import { DAYS } from '../TableLogic';
+import { DAYS } from '../../TableLogic';
 
-export const FillerColumnWrapper: React.FC = () => {
+export const FillerColumn: React.FC = () => {
   return (
     <table className="checkbox-nested-table font-poppins">
       <thead className="bg-tableHeader">

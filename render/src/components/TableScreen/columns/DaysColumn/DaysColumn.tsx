@@ -1,11 +1,11 @@
 import React from 'react';
-import { DAYS } from '../TableLogic';
+import { DAYS } from '../../TableLogic';
 
-interface DaysColumnWrapperProps {
+interface DaysColumnProps {
   column: any;
 }
 
-export const DaysColumnWrapper: React.FC<DaysColumnWrapperProps> = ({
+export const DaysColumn: React.FC<DaysColumnProps> = ({
   column,
 }) => {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });

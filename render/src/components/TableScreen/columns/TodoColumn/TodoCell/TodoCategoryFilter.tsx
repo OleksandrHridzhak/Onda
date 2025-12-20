@@ -1,5 +1,5 @@
 import React from 'react';
-import { getColorOptions } from '../../../utils/colorOptions';
+import { getColorOptions } from '../../../../utils/colorOptions';
 
 interface TodoCategoryFilterProps {
   column: {

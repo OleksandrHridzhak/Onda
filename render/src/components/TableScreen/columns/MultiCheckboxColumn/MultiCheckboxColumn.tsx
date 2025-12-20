@@ -1,22 +1,22 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { TodoCell } from '../cells/TodoCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { MultiCheckboxCell } from './MultiCheckboxCell';
+import { DAYS } from '../../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   updateColumnNested,
   updateCommonColumnProperties,
   swapColumnsPosition,
   deleteColumn,
-} from '../../../store/tableSlice/tableSlice';
+} from '../../../../store/tableSlice/tableSlice';
 
-interface TodoColumnWrapperProps {
+interface MultiCheckboxColumnProps {
   columnId: string;
 }
 
-export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
-  columnId,
-}) => {
+export const MultiCheckboxColumn: React.FC<
+  MultiCheckboxColumnProps
+> = ({ columnId }) => {
   const dispatch = useDispatch();
   const columnData: Record<string, any> = useSelector(
     (state: Record<string, any>) => state.tableData.columns[columnId] || {},
@@ -28,11 +28,11 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
 
-  const handleCellChange = (newValue: any) => {
+  const handleCellChange = (day: string, newValue: string) => {
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['Chosen', 'global'],
+        path: ['Days', day],
         value: newValue,
       }),
     );
@@ -57,14 +57,16 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all tasks in the todo column
-      dispatch(
-        updateColumnNested({
-          columnId,
-          path: ['Chosen', 'global'],
-          value: [],
-        }),
-      );
+      // Clear all days in the multicheckbox column
+      DAYS.forEach((day) => {
+        dispatch(
+          updateColumnNested({
+            columnId,
+            path: ['Days', day],
+            value: '',
+          }),
+        );
+      });
     },
     handleRename: (id: string, newName: string) => {
       dispatch(
@@ -111,8 +113,8 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
           properties: {
             uniqueProperties: {
               ...targetColumn?.uniqueProperties,
-              Categorys: options,
-              CategoryColors: tagColors,
+              Options: options,
+              OptionsColors: tagColors,
             },
           },
         }),
@@ -149,9 +151,8 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
-    options: columnData.uniqueProperties?.Categorys,
-    tagColors: columnData.uniqueProperties?.CategoryColors,
-    Chosen: columnData.uniqueProperties?.Chosen,
+    options: columnData.uniqueProperties?.Options,
+    tagColors: columnData.uniqueProperties?.OptionsColors,
   };
 
   return (
@@ -170,28 +171,21 @@ export const TodoColumnWrapper: React.FC<TodoColumnWrapperProps> = ({
         </tr>
       </thead>
       <tbody className="bg-tableBodyBg">
-        <tr>
-          <td
-            className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
-            style={{ verticalAlign: 'top' }}
-            rowSpan={DAYS.length}
+        {DAYS.map((day, idx) => (
+          <tr
+            key={day}
+            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <TodoCell
-              value={columnData.uniqueProperties?.Chosen?.global || []}
-              onChange={handleCellChange}
-              column={{
-                id: columnId,
-                type: columnData.Type || 'todo',
-                ...columnData,
-                options:
-                  columnData.uniqueProperties?.Categorys || columnData.options,
-                tagColors:
-                  columnData.uniqueProperties?.CategoryColors ||
-                  columnData.tagColors,
-              }}
-            />
-          </td>
-        </tr>
+            <td className="px-2 py-3 text-sm text-textTableRealValues">
+              <MultiCheckboxCell
+                value={columnData.uniqueProperties?.Days?.[day] || ''}
+                onChange={(newValue) => handleCellChange(day, newValue)}
+                options={columnData.uniqueProperties?.Options || []}
+                tagColors={columnData.uniqueProperties?.OptionsColors || {}}
+              />
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

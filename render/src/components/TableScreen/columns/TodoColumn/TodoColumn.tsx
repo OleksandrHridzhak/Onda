@@ -1,20 +1,20 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { NotesCell } from '../cells/NotesCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { TodoCell } from './TodoCell';
+import { DAYS } from '../../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   updateColumnNested,
   updateCommonColumnProperties,
   swapColumnsPosition,
   deleteColumn,
-} from '../../../store/tableSlice/tableSlice';
+} from '../../../../store/tableSlice/tableSlice';
 
-interface NotesColumnWrapperProps {
+interface TodoColumnProps {
   columnId: string;
 }
 
-export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
+export const TodoColumn: React.FC<TodoColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();
@@ -28,11 +28,11 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
     (state: Record<string, any>) => state.tableData?.columns ?? {},
   );
 
-  const handleCellChange = (day: string, newValue: string) => {
+  const handleCellChange = (newValue: any) => {
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['Days', day],
+        path: ['Chosen', 'global'],
         value: newValue,
       }),
     );
@@ -57,16 +57,14 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all days in the notes column
-      DAYS.forEach((day) => {
-        dispatch(
-          updateColumnNested({
-            columnId,
-            path: ['Days', day],
-            value: '',
-          }),
-        );
-      });
+      // Clear all tasks in the todo column
+      dispatch(
+        updateColumnNested({
+          columnId,
+          path: ['Chosen', 'global'],
+          value: [],
+        }),
+      );
     },
     handleRename: (id: string, newName: string) => {
       dispatch(
@@ -106,10 +104,17 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
       tagColors: Record<string, string>,
       doneTags?: string[],
     ) => {
+      const targetColumn = allColumns[id];
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { options, tagColors, doneTags },
+          properties: {
+            uniqueProperties: {
+              ...targetColumn?.uniqueProperties,
+              Categorys: options,
+              CategoryColors: tagColors,
+            },
+          },
         }),
       );
     },
@@ -144,6 +149,9 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
+    options: columnData.uniqueProperties?.Categorys,
+    tagColors: columnData.uniqueProperties?.CategoryColors,
+    Chosen: columnData.uniqueProperties?.Chosen,
   };
 
   return (
@@ -162,19 +170,28 @@ export const NotesColumnWrapper: React.FC<NotesColumnWrapperProps> = ({
         </tr>
       </thead>
       <tbody className="bg-tableBodyBg">
-        {DAYS.map((day, idx) => (
-          <tr
-            key={day}
-            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
+        <tr>
+          <td
+            className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
+            style={{ verticalAlign: 'top' }}
+            rowSpan={DAYS.length}
           >
-            <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <NotesCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
-                onChange={(newValue) => handleCellChange(day, newValue)}
-              />
-            </td>
-          </tr>
-        ))}
+            <TodoCell
+              value={columnData.uniqueProperties?.Chosen?.global || []}
+              onChange={handleCellChange}
+              column={{
+                id: columnId,
+                type: columnData.Type || 'todo',
+                ...columnData,
+                options:
+                  columnData.uniqueProperties?.Categorys || columnData.options,
+                tagColors:
+                  columnData.uniqueProperties?.CategoryColors ||
+                  columnData.tagColors,
+              }}
+            />
+          </td>
+        </tr>
       </tbody>
     </table>
   );

@@ -1,20 +1,20 @@
 import React from 'react';
-import { ColumnHeaderContent } from './ColumnHeaderContent';
-import { NumberCell } from '../cells/NumberCell';
-import { DAYS } from '../TableLogic';
+import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { TagsCell } from './TagsCell';
+import { DAYS } from '../../TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   updateColumnNested,
   updateCommonColumnProperties,
   swapColumnsPosition,
   deleteColumn,
-} from '../../../store/tableSlice/tableSlice';
+} from '../../../../store/tableSlice/tableSlice';
 
-interface NumberColumnWrapperProps {
+interface TagsColumnProps {
   columnId: string;
 }
 
-export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
+export const TagsColumn: React.FC<TagsColumnProps> = ({
   columnId,
 }) => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
       dispatch(deleteColumn({ columnId: id }));
     },
     handleClearColumn: () => {
-      // Clear all days in the number column
+      // Clear all days in the tags column
       DAYS.forEach((day) => {
         dispatch(
           updateColumnNested({
@@ -106,10 +106,17 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
       tagColors: Record<string, string>,
       doneTags?: string[],
     ) => {
+      const targetColumn = allColumns[id];
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { options, tagColors, doneTags },
+          properties: {
+            uniqueProperties: {
+              ...targetColumn?.uniqueProperties,
+              Tags: options,
+              TagsColors: tagColors,
+            },
+          },
         }),
       );
     },
@@ -144,6 +151,8 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
+    options: columnData.uniqueProperties?.Tags,
+    tagColors: columnData.uniqueProperties?.TagsColors,
   };
 
   return (
@@ -168,9 +177,11 @@ export const NumberColumnWrapper: React.FC<NumberColumnWrapperProps> = ({
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <NumberCell
+              <TagsCell
                 value={columnData.uniqueProperties?.Days?.[day] || ''}
                 onChange={(newValue) => handleCellChange(day, newValue)}
+                options={columnData.uniqueProperties?.Tags || []}
+                tagColors={columnData.uniqueProperties?.TagsColors || {}}
               />
             </td>
           </tr>

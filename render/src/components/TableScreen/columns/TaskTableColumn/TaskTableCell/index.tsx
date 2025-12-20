@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getColorOptions } from '../../../utils/colorOptions';
+import { getColorOptions } from '../../../../utils/colorOptions';
 import { useTaskState } from './hooks/useTaskState';
 import { handleToggleTask } from './logic';
 

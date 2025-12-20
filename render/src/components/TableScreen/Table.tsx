@@ -1,15 +1,15 @@
 import React from 'react';
 import {
-  CheckboxColumnWrapper,
-  DaysColumnWrapper,
-  FillerColumnWrapper,
-  NumberColumnWrapper,
-  TagsColumnWrapper,
-  NotesColumnWrapper,
-  MultiCheckboxColumnWrapper,
-  TodoColumnWrapper,
-  TaskTableColumnWrapper,
-} from './columnWrappers';
+  CheckboxColumn,
+  DaysColumn,
+  FillerColumn,
+  NumberColumn,
+  TagsColumn,
+  NotesColumn,
+  MultiCheckboxColumn,
+  TodoColumn,
+  TaskTableColumn,
+} from './columns';
 import TableItemWrapper from './TableItemWrapper';
 import './Table.css';
 import { useSelector } from 'react-redux';
@@ -23,14 +23,14 @@ const Table: React.FC = () => {
   );
 
   const componentsMap: Record<string, React.FC<any>> = {
-    days: DaysColumnWrapper,
-    checkbox: CheckboxColumnWrapper,
-    numberbox: NumberColumnWrapper,
-    'multi-select': TagsColumnWrapper,
-    text: NotesColumnWrapper,
-    multicheckbox: MultiCheckboxColumnWrapper,
-    todo: TodoColumnWrapper,
-    tasktable: TaskTableColumnWrapper,
+    days: DaysColumn,
+    checkbox: CheckboxColumn,
+    numberbox: NumberColumn,
+    'multi-select': TagsColumn,
+    text: NotesColumn,
+    multicheckbox: MultiCheckboxColumn,
+    todo: TodoColumn,
+    tasktable: TaskTableColumn,
   };
 
   // Find days column id and data (fallback to default if missing)
@@ -60,7 +60,7 @@ const Table: React.FC = () => {
                 column={daysColumn}
                 className="border-r border-border"
               >
-                <DaysColumnWrapper column={daysColumn} />
+                <DaysColumn column={daysColumn} />
               </TableItemWrapper>
 
               {columnOrder.map((columnId: string) => {
@@ -94,7 +94,7 @@ const Table: React.FC = () => {
                 key={'filler'}
                 column={{ id: 'filler', type: 'filler', width: 0 }}
               >
-                <FillerColumnWrapper />
+                <FillerColumn />
               </TableItemWrapper>
             </tr>
           </thead>
