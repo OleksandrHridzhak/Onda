@@ -30,7 +30,7 @@ table {
   border-spacing: 0;
 }
 .checkbox-nested-table thead th {
-  height: 52px;
+  height: 45px;
   padding: 0;
   border: none;
   box-sizing: border-box;
@@ -38,7 +38,6 @@ table {
 }
 .checkbox-nested-table tbody td {
   height: 60px;
-  padding: 0;
   border: none;
   box-sizing: border-box;
 }

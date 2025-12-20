@@ -27,7 +27,7 @@ export const DaysColumnWrapper: React.FC<DaysColumnWrapperProps> = ({
             key={day}
             className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
           >
-            <td className="px-4 py-3 text-sm font-medium text-textTableValues whitespace-nowrap">
+            <td className="text-left px-4 py-3 text-sm font-medium text-textTableValues  ">
               {day}
               {day === today && (
                 <span className="ml-2 inline-block w-2 h-2 bg-blue-500 rounded-full"></span>

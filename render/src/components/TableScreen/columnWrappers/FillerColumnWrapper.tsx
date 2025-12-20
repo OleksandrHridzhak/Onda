@@ -7,7 +7,7 @@ export const FillerColumnWrapper: React.FC = () => {
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">
-            <div style={{ height: '51.5px' }} />
+            <div />
           </th>
         </tr>
       </thead>
