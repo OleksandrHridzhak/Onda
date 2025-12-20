@@ -3,25 +3,19 @@ import PlannerHeader from '../TableScreen/planerHeader/PlannerHeader';
 import { LoadingScreen } from './LoadingScreen';
 import { useTableLogic } from '../TableScreen/TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
-import type { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
-import {
-  createNewColumn,
-  loadColumnsFromDB,
-} from '../../store/tableSlice/tableSlice';
+import { store } from '../../store';
+import { loadColumnsFromDB } from '../../store/tableSlice/tableSlice';
 import Table from '../TableScreen/Table';
 
-// Type for the Redux dispatch that supports thunks
-type AppDispatch = ThunkDispatch<Record<string, unknown>, unknown, AnyAction>;
+// Type for the Redux dispatch inferred from the store
+type AppDispatch = typeof store.dispatch;
 
 const TableScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    showColumnSelector,
-    setShowColumnSelector,
-    loading: tableLogicLoading,
-  } = useTableLogic();
+  const tableLogic = useTableLogic();
 
   const { mode } = useSelector((state: any) => state.theme);
+
   const reduxLoaded = useSelector(
     (state: Record<string, any>) => state.tableData?.loaded ?? false,
   );
@@ -36,17 +30,12 @@ const TableScreen: React.FC = () => {
     }
   }, [dispatch, reduxLoaded, reduxStatus]);
 
-  const handleAddColumn = (columnType: string) => {
-    dispatch(createNewColumn({ columnType }));
-    setShowColumnSelector(false);
-  };
-
   // Show loading screen while loading from IndexedDB
   const isLoading =
-    tableLogicLoading || (!reduxLoaded && reduxStatus === 'loading');
+    tableLogic.loading || (!reduxLoaded && reduxStatus === 'loading');
 
   if (isLoading) {
-    return <LoadingScreen darkMode={mode === 'dark' ? true : false} />;
+    return <LoadingScreen darkMode={mode === 'dark'} />;
   }
 
   return (
@@ -54,9 +43,8 @@ const TableScreen: React.FC = () => {
       className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
     >
       <PlannerHeader
-        setShowColumnSelector={setShowColumnSelector}
-        showColumnSelector={showColumnSelector}
-        handleAddColumn={handleAddColumn}
+        setShowColumnSelector={tableLogic.setShowColumnSelector}
+        showColumnSelector={tableLogic.showColumnSelector}
       />
       <Table />
     </div>

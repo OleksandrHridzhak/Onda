@@ -1,4 +1,7 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { store } from '../../../store';
+import { createNewColumn } from '../../../store/tableSlice/tableSlice';
 import PomodoroWidget from './widgets/PomodoroWidget';
 import TimelineWidget from './widgets/TimelineWidget';
 import { TimeWidget } from './widgets/TimeWidget';
@@ -10,7 +13,6 @@ interface PlannerHeaderProps {
   layout?: string[];
   showColumnSelector: boolean;
   setShowColumnSelector: (show: boolean) => void;
-  handleAddColumn: (columnType: string) => void;
 }
 
 const PlannerHeader: React.FC<PlannerHeaderProps> = ({
@@ -18,8 +20,13 @@ const PlannerHeader: React.FC<PlannerHeaderProps> = ({
   layout = ['TimelineWidget', 'PomodoroWidget'],
   showColumnSelector,
   setShowColumnSelector,
-  handleAddColumn,
 }) => {
+  const dispatch = useDispatch<typeof store.dispatch>();
+
+  const handleAddColumn = (columnType: string) => {
+    dispatch(createNewColumn({ columnType }));
+    setShowColumnSelector(false);
+  };
   const widgetComponents: Record<
     string,
     React.ComponentType<{ darkTheme?: boolean }>
