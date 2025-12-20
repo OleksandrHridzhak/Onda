@@ -1,0 +1,27 @@
+# Capacitor
+.capacitor
+
+# Android
+android/app/build
+android/app/.cxx
+android/build
+android/.gradle
+android/.idea
+android/local.properties
+android/app/google-services.json
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
