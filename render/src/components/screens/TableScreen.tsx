@@ -14,7 +14,7 @@ const TableScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const tableLogic = useTableLogic();
 
-  const { mode } = useSelector((state: any) => state.theme);
+  const { themeMode } = useSelector((state: any) => state.newTheme);
 
   const reduxLoaded = useSelector(
     (state: Record<string, any>) => state.tableData?.loaded ?? false,
@@ -35,7 +35,7 @@ const TableScreen: React.FC = () => {
     tableLogic.loading || (!reduxLoaded && reduxStatus === 'loading');
 
   if (isLoading) {
-    return <LoadingScreen darkMode={mode === 'dark'} />;
+    return <LoadingScreen darkMode={themeMode === 'dark'} />;
   }
 
   return (

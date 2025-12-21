@@ -5,14 +5,14 @@ import {
 } from '../../../../../utils/colorOptions';
 
 interface RootState {
-  theme: {
-    mode: string;
+  newTheme: {
+    themeMode: string;
   };
 }
 
 export const useCheckboxColor = (color: string): CheckBoxColorOption => {
-  const { mode } = useSelector((state: RootState) => state.theme);
-  const darkMode = mode === 'dark';
+  const { themeMode } = useSelector((state: RootState) => state.newTheme);
+  const darkMode = themeMode === 'dark';
   const colorOptions = getCheckBoxColorOptions({ darkMode });
 
   return colorOptions[color] || colorOptions.green;

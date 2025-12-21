@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import themeReducer from './store/slices/themeSlice';
+import newThemeReducer from './store/slices/newThemeSlice';
 
 const AllTheProviders = ({ children, store }) => {
   return <Provider store={store}>{children}</Provider>;
@@ -11,7 +11,7 @@ const AllTheProviders = ({ children, store }) => {
 const customRender = (ui, options) => {
   const store = configureStore({
     reducer: {
-      theme: themeReducer,
+      theme: newThemeReducer,
     },
   });
   return render(ui, {
