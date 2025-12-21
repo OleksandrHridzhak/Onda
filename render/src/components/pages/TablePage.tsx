@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PlannerHeader from '../features/PlanerHeader/PlannerHeader';
+import PlannerHeader from '../features/PlannerHeader/PlannerHeader';
 import { LoadingScreen } from '../shared/LoadingScreen';
 import { useTableLogic } from '../features/Table/TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
