@@ -195,7 +195,7 @@ export const handleSave = async (
     }
 
     const isMultiOption = [
-      'multi-select',
+      'multiselect',
       'todo',
       'multicheckbox',
       'tasktable',

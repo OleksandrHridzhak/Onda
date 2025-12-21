@@ -150,7 +150,7 @@ export const useColumnOperations = (
             doneTags: [...(taskCol.doneTags || [])],
           });
         } else if ('days' in instance) {
-          // DayBasedColumn (checkbox, numberbox, text, multi-select, multicheckbox)
+          // DayBasedColumn (checkbox, numberbox, text, multiselect, multicheckbox)
           console.log('Clearing days for DayBasedColumn');
           const dayCol = instance as any;
           Object.keys(dayCol.days).forEach((day) => {

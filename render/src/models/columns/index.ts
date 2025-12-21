@@ -21,47 +21,47 @@ export { MultiCheckboxColumn };
 export { TaskTableColumn };
 
 export function ColumnFactory(json: Record<string, any>): BaseColumn {
-	const type = json.type;
+  const type = json.type;
 
-	switch (type) {
-		case 'checkbox':
-			return CheckBoxColumn.fromJSON(json);
-		case 'numberbox':
-		case 'numberBox':
-			return NumberBoxColumn.fromJSON(json);
-		case 'text':
-		case 'textBox':
-			return TextBoxColumn.fromJSON(json);
-		case 'todo':
-			return TodoColumn.fromJSON(json);
-		case 'multi-select':
-			return MultiSelectColumn.fromJSON(json);
-		case 'multicheckbox':
-			return MultiCheckboxColumn.fromJSON(json);
-		case 'tasktable':
-			return TaskTableColumn.fromJSON(json);
-		default:
-			throw new Error(`Unknown column type: ${type}`);
-	}
+  switch (type) {
+    case 'checkbox':
+      return CheckBoxColumn.fromJSON(json);
+    case 'numberbox':
+    case 'numberBox':
+      return NumberBoxColumn.fromJSON(json);
+    case 'text':
+    case 'textBox':
+      return TextBoxColumn.fromJSON(json);
+    case 'todo':
+      return TodoColumn.fromJSON(json);
+    case 'multiselect':
+      return MultiSelectColumn.fromJSON(json);
+    case 'multicheckbox':
+      return MultiCheckboxColumn.fromJSON(json);
+    case 'tasktable':
+      return TaskTableColumn.fromJSON(json);
+    default:
+      throw new Error(`Unknown column type: ${type}`);
+  }
 }
 
 export function createColumn(type: string): BaseColumn {
-	switch (type) {
-		case 'checkbox':
-			return new CheckBoxColumn();
-		case 'numberbox':
-			return new NumberBoxColumn();
-		case 'text':
-			return new TextBoxColumn();
-		case 'todo':
-			return new TodoColumn();
-		case 'multi-select':
-			return new MultiSelectColumn();
-		case 'multicheckbox':
-			return new MultiCheckboxColumn();
-		case 'tasktable':
-			return new TaskTableColumn();
-		default:
-			throw new Error(`Unknown column type: ${type}`);
-	}
+  switch (type) {
+    case 'checkbox':
+      return new CheckBoxColumn();
+    case 'numberbox':
+      return new NumberBoxColumn();
+    case 'text':
+      return new TextBoxColumn();
+    case 'todo':
+      return new TodoColumn();
+    case 'multiselect':
+      return new MultiSelectColumn();
+    case 'multicheckbox':
+      return new MultiCheckboxColumn();
+    case 'tasktable':
+      return new TaskTableColumn();
+    default:
+      throw new Error(`Unknown column type: ${type}`);
+  }
 }

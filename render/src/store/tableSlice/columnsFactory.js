@@ -100,7 +100,7 @@ const createTextColumn = () => {
 const createMultiSelectColumn = () => {
   const id = generateId();
   const column = {
-    ...basicColumnTemplate('MULTI_SELECT'),
+    ...basicColumnTemplate('MULTISELECT'),
     uniqueProperties: {
       Days: {
         Monday: '',
@@ -163,7 +163,7 @@ export const columnsFactory = (columnType) => {
       return createNumberboxColumn();
     case 'text':
       return createTextColumn();
-    case 'multi-select':
+    case 'multiselect':
       return createMultiSelectColumn();
     case 'multicheckbox':
       return createMulticheckboxColumn();

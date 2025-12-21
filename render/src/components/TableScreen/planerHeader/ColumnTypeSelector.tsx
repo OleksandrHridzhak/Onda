@@ -64,7 +64,7 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
       hoverColor: darkMode ? 'hover:bg-green-800' : 'hover:bg-green-100',
     },
     {
-      id: 'multi-select',
+      id: 'multiselect',
       label: 'Tags',
       icon: (
         <Tag

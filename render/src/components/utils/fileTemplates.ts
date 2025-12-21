@@ -69,7 +69,7 @@ interface ColumnTemplates {
   checkbox: CheckboxColumnTemplate;
   numberbox: NumberboxColumnTemplate;
   text: TextColumnTemplate;
-  'multi-select': MultiSelectColumnTemplate;
+  multiselect: MultiSelectColumnTemplate;
   multicheckbox: MulticheckboxColumnTemplate;
   tasktable: TasktableColumnTemplate;
 }
@@ -162,7 +162,7 @@ const getColumnTemplates = (): ColumnTemplates => ({
     },
     Width: 130,
   },
-  'multi-select': {
+  multiselect: {
     EmojiIcon: 'Star',
     NameVisible: true,
     Options: ['Option 1', 'Option 2'],

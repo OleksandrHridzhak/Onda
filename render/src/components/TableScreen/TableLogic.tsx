@@ -116,10 +116,7 @@ export const calculateSummary = (
       (sum, day) => sum + (parseFloat(tableData[day]?.[column.id]) || 0),
       0,
     );
-  } else if (
-    column.type === 'multi-select' ||
-    column.type === 'multicheckbox'
-  ) {
+  } else if (column.type === 'multiselect' || column.type === 'multicheckbox') {
     return DAYS.reduce((sum, day) => {
       const tags = tableData[day]?.[column.id];
       if (typeof tags === 'string' && tags.trim() !== '') {
@@ -172,7 +169,7 @@ export const RenderCell: React.FC<RenderCellProps> = ({
   const cellComponents = {
     checkbox: CheckboxCell,
     numberbox: NumberCell,
-    'multi-select': TagsCell,
+    multiselect: TagsCell,
     text: NotesCell,
     multicheckbox: MultiCheckboxCell,
     todo: TodoCell,
@@ -226,7 +223,7 @@ export const RenderCell: React.FC<RenderCellProps> = ({
       checked: !!tableData[day]?.[column.id],
       color: column.checkboxColor || 'green',
     }),
-    ...(column.type === 'multi-select' || column.type === 'multicheckbox'
+    ...(column.type === 'multiselect' || column.type === 'multicheckbox'
       ? { options: column.options || [], tagColors: column.tagColors || {} }
       : {}),
     ...(column.type === 'tasktable' && {

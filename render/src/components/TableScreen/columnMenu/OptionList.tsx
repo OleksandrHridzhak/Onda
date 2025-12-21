@@ -37,7 +37,7 @@ export const OptionsList: React.FC<OptionsListProps> = ({
       <label className={`block text-sm font-medium text-textTableValues mb-1`}>
         {columnType === 'tasktable'
           ? 'Tasks'
-          : columnType === 'multi-select'
+          : columnType === 'multiselect'
             ? 'Tags'
             : columnType === 'todo'
               ? 'Categories'

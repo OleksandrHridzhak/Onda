@@ -227,7 +227,7 @@ const initializeTableData = (
             const dayValue = 'days' in col && col.days ? col.days[day] : '';
 
             dayData[col.id] =
-              col.type === 'multi-select' || col.type === 'multicheckbox'
+              col.type === 'multiselect' || col.type === 'multicheckbox'
                 ? typeof dayValue === 'string'
                   ? dayValue
                   : ''

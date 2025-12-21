@@ -204,7 +204,7 @@ export const useTableHandlers = (
   );
 
   /**
-   * Змінює options для multi-select, multicheckbox, tasktable
+   * Змінює options для multiselect, multicheckbox, tasktable
    */
   const handleChangeOptions = useCallback(
     async (

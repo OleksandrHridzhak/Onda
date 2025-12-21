@@ -198,7 +198,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
               </TransparentBtn>
             </div>
           </div>
-          {['multi-select', 'todo', 'multicheckbox', 'tasktable'].includes(
+          {['multiselect', 'todo', 'multicheckbox', 'tasktable'].includes(
             column.type,
           ) && (
             <OptionsList

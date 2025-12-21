@@ -3,7 +3,7 @@ export const COLUMN_WIDTHS = {
   CHECKBOX: 50,
   NUMBERBOX: 60,
   TEXT: 130,
-  MULTI_SELECT: 90,
+  MULTISELECT: 90,
   MULTICHECKBOX: 50,
   TASKTABLE: 150,
 };
@@ -13,7 +13,7 @@ export const COLUMN_NAME_VISIBLE = {
   CHECKBOX: false,
   NUMBERBOX: false,
   TEXT: true,
-  MULTI_SELECT: true,
+  MULTISELECT: true,
   MULTICHECKBOX: false,
   TASKTABLE: true,
 };
@@ -23,7 +23,7 @@ export const COLUMN_EMOJI_ICON = {
   CHECKBOX: 'Star',
   NUMBERBOX: 'Star',
   TEXT: 'Star',
-  MULTI_SELECT: 'Star',
+  MULTISELECT: 'Star',
   MULTICHECKBOX: 'Circle',
   TASKTABLE: 'ListTodo',
 };
@@ -33,7 +33,7 @@ export const COLUMN_NAMES = {
   CHECKBOX: 'Checkbox',
   NUMBERBOX: 'Numberbox',
   TEXT: 'Text',
-  MULTI_SELECT: 'MultiSelect',
+  MULTISELECT: 'MultiSelect',
   MULTICHECKBOX: 'Multicheckbox',
   TASKTABLE: 'Tasktable',
 };

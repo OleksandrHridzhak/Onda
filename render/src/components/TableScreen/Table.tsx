@@ -26,7 +26,7 @@ const Table: React.FC = () => {
     days: DaysColumn,
     checkbox: CheckboxColumn,
     numberbox: NumberColumn,
-    'multi-select': TagsColumn,
+    multiselect: TagsColumn,
     text: NotesColumn,
     multicheckbox: MultiCheckboxColumn,
     todo: TodoColumn,
