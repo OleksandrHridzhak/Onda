@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import './App.css';
+import './styles/App.css';
 import {
   HashRouter as Router,
   Routes,
@@ -8,7 +8,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import { settingsService } from './services/settingsDB';
-import Sidebar from './components/Sidebar';
+import Sidebar from './components/layout/Sidebar';
 import Table from './components/pages/TablePage';
 import MenuWin from './components/layout/MenuWin';
 import Calendar from './components/pages/CalendarPage';
