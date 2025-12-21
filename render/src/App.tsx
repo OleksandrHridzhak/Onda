@@ -32,7 +32,8 @@ function MainContent() {
     }
   }, []);
 
-  const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
+  const isElectron =
+    typeof globalThis !== 'undefined' && !!globalThis.electronAPI;
 
   return (
     <div className={`flex-1 flex flex-col bg-background overflow-x-auto`}>
@@ -72,10 +73,10 @@ function App() {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    globalThis.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      globalThis.removeEventListener('keydown', handleKeyDown);
     };
   }, [navigate, location.pathname]);
 
