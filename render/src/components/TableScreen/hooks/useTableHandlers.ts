@@ -1,15 +1,15 @@
 import { useCallback } from 'react';
 import { addColumn, updateColumnsOrder } from '../../../services/columnsDB';
-import { createColumn } from '../../../models/columns/index';
 import { useColumnOperations } from './useColumnOperations';
 import { DAYS } from './useColumnsData';
-import { BaseColumn } from '../../../models/columns/BaseColumn';
+import { ColumnData } from '../../../types/column.types';
+import { createColumn } from '../../../utils/columnFactory';
 
 const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
 
-type Column = BaseColumn;
+type Column = ColumnData;
 
 /**
  * Хук для обробників операцій таблиці
@@ -34,22 +34,18 @@ export const useTableHandlers = (
   const handleAddColumn = useCallback(
     async (type: string): Promise<void> => {
       try {
-        const newColumnInstance = createColumn(type);
-        const columnJson = newColumnInstance.toJSON();
+        const newColumn = createColumn(type);
 
-        const result = await addColumn(columnJson);
+        const result = await addColumn(newColumn);
 
         if (result.status) {
-          // Використовуємо екземпляр напряму
-          newColumnInstance.name = 'New Column';
-
-          setColumns((prev) => [...prev, newColumnInstance]);
+          setColumns((prev) => [...prev, newColumn]);
 
           // Оновлюємо порядок колонок
           const newOrder = columns
             .filter((c) => c.id !== 'days')
             .map((c) => c.id);
-          newOrder.push(newColumnInstance.id);
+          newOrder.push(newColumn.id);
           await updateColumnsOrder(newOrder);
 
           // Додаємо порожні дані для нових днів (крім todo/tasktable)
@@ -61,7 +57,7 @@ export const useTableHandlers = (
                   ...acc,
                   [day]: {
                     ...prev[day],
-                    [newColumnInstance.id]: '',
+                    [newColumn.id]: '',
                   },
                 }),
                 {},

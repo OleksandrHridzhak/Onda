@@ -17,23 +17,9 @@ import {
 } from './columnMenuHandlers';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
 
-import { BaseColumn } from '../../../models/columns/BaseColumn';
+import { ColumnData } from '../../../types/column.types';
 
-type Column =
-  | BaseColumn
-  | {
-      id: string;
-      type: string;
-      name: string;
-      description?: string;
-      emojiIcon?: string;
-      nameVisible?: boolean;
-      width?: number;
-      options?: string[];
-      doneTags?: string[];
-      tagColors?: Record<string, string>;
-      checkboxColor?: string;
-    };
+type Column = ColumnData;
 
 interface ColumnMenuProps {
   column: Column;

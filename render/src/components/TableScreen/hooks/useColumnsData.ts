@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAllColumns, getColumnsOrder } from '../../../services/columnsDB';
 import { settingsService } from '../../../services/settingsDB';
-import { deserializeColumns } from '../../../models/columns/columnHelpers';
-import { BaseColumn } from '../../../models/columns/BaseColumn';
+import { ColumnData } from '../../../types/column.types';
 
 const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
@@ -29,10 +28,10 @@ export const DAYS = [
 ];
 
 /**
- * Хук для завантаження та управління даними колонок
+ * Hook for loading and managing column data
  */
 export const useColumnsData = () => {
-  const [columns, setColumns] = useState<BaseColumn[]>([]);
+  const [columns, setColumns] = useState<ColumnData[]>([]);
   const [tableData, setTableData] = useState<
     Record<string, Record<string, unknown>>
   >({});
@@ -44,7 +43,7 @@ export const useColumnsData = () => {
       try {
         setLoading(true);
 
-        // Завантажуємо дані
+        // Load data
         const [columnsData, settingsResult, columnOrderData] =
           await Promise.all([
             getAllColumns(),
@@ -52,8 +51,8 @@ export const useColumnsData = () => {
             getColumnsOrder(),
           ]);
 
-        // Створюємо колонку "Day"
-        const dayColumn = {
+        // Create "Day" column
+        const dayColumn: ColumnData = {
           id: 'days',
           type: 'days',
           name: 'Day',
@@ -61,32 +60,16 @@ export const useColumnsData = () => {
           nameVisible: true,
           width: 120,
           description: '',
-          setEmojiIcon: () => false,
-          setWidth: () => false,
-          setNameVisible: () => false,
-          setName: () => false,
-          setDescription: () => false,
-          update: () => false,
-          toJSON: () => ({
-            id: 'days',
-            type: 'days',
-            name: 'Day',
-            emojiIcon: '',
-            nameVisible: true,
-            width: 120,
-            description: '',
-          }),
-        } as BaseColumn;
+        };
 
-        let fetchedColumns: BaseColumn[] = [dayColumn];
+        let fetchedColumns: ColumnData[] = [dayColumn];
 
-        // Використовуємо екземпляри класів напряму
+        // Use data from IndexedDB directly
         if (columnsData && columnsData.length > 0) {
-          const columnInstances = deserializeColumns(columnsData);
-          fetchedColumns = [dayColumn, ...columnInstances];
+          fetchedColumns = [dayColumn, ...(columnsData as ColumnData[])];
         }
 
-        // Застосовуємо порядок колонок
+        // Apply column order
         fetchedColumns = applyColumnOrder(
           fetchedColumns,
           columnOrderData,
@@ -96,7 +79,7 @@ export const useColumnsData = () => {
         setColumns(fetchedColumns);
         setColumnOrder(fetchedColumns.map((col) => col.id));
 
-        // Оновлюємо налаштування з новим порядком
+        // Update settings with new order
         if (settingsResult.status === 'Settings fetched') {
           const newSettings = {
             ...settingsResult.data,
@@ -108,13 +91,13 @@ export const useColumnsData = () => {
           await settingsService.updateSettings(newSettings);
         }
 
-        // Ініціалізуємо дані таблиці
+        // Initialize table data
         const initialTableData = initializeTableData(fetchedColumns);
         setTableData(initialTableData);
       } catch (err) {
         handleError('Error fetching data:', err);
-        // Fallback до порожньої таблиці
-        const dayColumn = {
+        // Fallback to empty table
+        const dayColumn: ColumnData = {
           id: 'days',
           type: 'days',
           name: 'Day',
@@ -122,22 +105,7 @@ export const useColumnsData = () => {
           nameVisible: true,
           width: 120,
           description: '',
-          setEmojiIcon: () => false,
-          setWidth: () => false,
-          setNameVisible: () => false,
-          setName: () => false,
-          setDescription: () => false,
-          update: () => false,
-          toJSON: () => ({
-            id: 'days',
-            type: 'days',
-            name: 'Day',
-            emojiIcon: '',
-            nameVisible: true,
-            width: 120,
-            description: '',
-          }),
-        } as BaseColumn;
+        };
         setColumns([dayColumn]);
         setTableData(DAYS.reduce((acc, day) => ({ ...acc, [day]: {} }), {}));
       } finally {
@@ -160,14 +128,14 @@ export const useColumnsData = () => {
 };
 
 /**
- * Застосовує порядок колонок
+ * Applies column order
  */
 const applyColumnOrder = (
-  columns: BaseColumn[],
+  columns: ColumnData[],
   columnOrderData: string[],
   settingsResult: Settings,
-): BaseColumn[] => {
-  const dayColumn = columns[0]; // 'days' завжди перший
+): ColumnData[] => {
+  const dayColumn = columns[0]; // 'days' is always first
 
   if (columnOrderData && columnOrderData.length > 0) {
     const orderedColumns = [dayColumn];
@@ -176,7 +144,7 @@ const applyColumnOrder = (
       if (col && col.id !== 'days') orderedColumns.push(col);
     });
 
-    // Додаємо колонки які не в порядку
+    // Add columns not in order
     columns.forEach((column) => {
       if (
         column.id !== 'days' &&
@@ -194,7 +162,7 @@ const applyColumnOrder = (
   ) {
     const orderedColumns = settingsResult.data.table.columnOrder
       .map((columnId) => columns.find((col) => col.id === columnId))
-      .filter((col): col is BaseColumn => col !== undefined);
+      .filter((col): col is ColumnData => col !== undefined);
 
     columns.forEach((column) => {
       if (!orderedColumns.some((col) => col.id === column.id)) {
@@ -209,10 +177,10 @@ const applyColumnOrder = (
 };
 
 /**
- * Ініціалізує дані таблиці з колонок
+ * Initializes table data from columns
  */
 const initializeTableData = (
-  columns: BaseColumn[],
+  columns: ColumnData[],
 ): Record<string, Record<string, unknown>> => {
   return DAYS.reduce(
     (acc, day) => {
@@ -223,7 +191,7 @@ const initializeTableData = (
             col.type !== 'tasktable' &&
             col.type !== 'todo'
           ) {
-            // Беремо дані з days
+            // Get data from days
             const dayValue = 'days' in col && col.days ? col.days[day] : '';
 
             dayData[col.id] =

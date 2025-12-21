@@ -1,63 +1,55 @@
 import { useCallback } from 'react';
 import { deleteColumn, updateColumn } from '../../../services/columnsDB';
-
-interface Column {
-  id: string;
-  type?: string;
-  name?: string;
-  options?: string[];
-  tagColors?: Record<string, string>;
-  doneTags?: string[];
-  toJSON: () => unknown;
-  setEmojiIcon?: (icon: string) => void;
-  setDescription?: (description: string) => void;
-  setNameVisible?: (visible: boolean) => void;
-  setCheckboxColor?: (color: string) => void;
-  [key: string]: unknown;
-}
+import { ColumnData } from '../../../types/column.types';
 
 interface UpdateResult {
   status: string;
-  data?: Column;
+  data?: ColumnData;
   error?: string;
 }
 
 /**
- * Хук для логіки меню колонок
- * Спрощена версія - використовує методи класів замість ручного маніпулювання об'єктами
+ * Hook for column menu logic
+ * Works with plain objects without class methods
  */
 export const useColumnMenuLogic = (
-  columns: Column[],
-  setColumns: React.Dispatch<React.SetStateAction<Column[]>>,
+  columns: ColumnData[],
+  setColumns: React.Dispatch<React.SetStateAction<ColumnData[]>>,
 ) => {
-  // Загальна функція оновлення колонки
+  // General column update function
   const updateColumnInstance = useCallback(
     async (
       columnId: string,
-      updateFn: (column: Column) => void,
+      updateFn: (column: ColumnData) => void,
     ): Promise<UpdateResult> => {
-      let updatedColumn: Column | undefined;
+      let updatedColumn: ColumnData | undefined;
 
       setColumns((prev) => {
-        const column = prev.find((col) => col.id === columnId);
-        if (!column) return prev;
+        const columnIndex = prev.findIndex((col) => col.id === columnId);
+        if (columnIndex === -1) return prev;
 
-        // Викликаємо функцію оновлення (використовує методи класу)
+        // Create column copy
+        const column = { ...prev[columnIndex] };
+
+        // Call update function
         updateFn(column);
         updatedColumn = column;
 
-        return prev.map((col) => (col.id === columnId ? column : col));
+        // Return new array with updated column
+        const newColumns = [...prev];
+        newColumns[columnIndex] = column;
+        return newColumns;
       });
 
       try {
         if (!updatedColumn) {
           return { status: 'Error', error: 'Column not found' };
         }
-        await updateColumn(updatedColumn.toJSON());
+        await updateColumn(updatedColumn);
         return { status: 'Success', data: updatedColumn };
       } catch (err) {
         console.error('Update failed:', err);
-        // Відкат через повторне завантаження
+        // Rollback by reloading
         setColumns((prev) => [...prev]);
         return { status: 'Error', error: (err as Error).message };
       }
@@ -65,7 +57,7 @@ export const useColumnMenuLogic = (
     [setColumns],
   );
 
-  // Видалення колонки
+  // Delete column
   const handleDeleteColumn = useCallback(
     async (columnId: string): Promise<UpdateResult> => {
       try {
@@ -82,7 +74,7 @@ export const useColumnMenuLogic = (
     [setColumns],
   );
 
-  // Перейменування - використовує метод update() базового класу
+  // Rename column
   const handleRename = useCallback(
     async (columnId: string, newName: string): Promise<UpdateResult> => {
       return await updateColumnInstance(columnId, (column) => {
@@ -92,43 +84,37 @@ export const useColumnMenuLogic = (
     [updateColumnInstance],
   );
 
-  // Зміна іконки
+  // Change icon
   const handleChangeIcon = useCallback(
     (columnId: string, newIcon: string): Promise<UpdateResult> => {
       return updateColumnInstance(columnId, (column) => {
-        if (column.setEmojiIcon) {
-          column.setEmojiIcon(newIcon);
-        }
+        column.emojiIcon = newIcon;
       });
     },
     [updateColumnInstance],
   );
 
-  // Зміна опису
+  // Change description
   const handleChangeDescription = useCallback(
     async (columnId: string, newDescription: string): Promise<UpdateResult> => {
       return await updateColumnInstance(columnId, (column) => {
-        if (column.setDescription) {
-          column.setDescription(newDescription);
-        }
+        column.description = newDescription;
       });
     },
     [updateColumnInstance],
   );
 
-  // Перемикання видимості заголовку
+  // Toggle title visibility
   const handleToggleTitleVisibility = useCallback(
     (columnId: string, showTitle: boolean): Promise<UpdateResult> => {
       return updateColumnInstance(columnId, (column) => {
-        if (column.setNameVisible) {
-          column.setNameVisible(showTitle);
-        }
+        column.nameVisible = showTitle;
       });
     },
     [updateColumnInstance],
   );
 
-  // Зміна опцій (для колонок з options)
+  // Change options (for columns with options)
   const handleChangeOptions = useCallback(
     (
       columnId: string,
@@ -137,25 +123,24 @@ export const useColumnMenuLogic = (
       doneTags: string[] = [],
     ): Promise<UpdateResult> => {
       return updateColumnInstance(columnId, (column) => {
-        // Перевірка чи є методи для роботи з опціями
-        if (column.options !== undefined) {
-          column.options = options;
-          column.tagColors = tagColors;
+        if ('options' in column) {
+          (column as any).options = options;
+          (column as any).tagColors = tagColors;
         }
-        if (column.doneTags !== undefined) {
-          column.doneTags = doneTags;
+        if ('doneTags' in column) {
+          (column as any).doneTags = doneTags;
         }
       });
     },
     [updateColumnInstance],
   );
 
-  // Зміна кольору чекбоксу
+  // Change checkbox color
   const handleChangeCheckboxColor = useCallback(
     (columnId: string, color: string): Promise<UpdateResult> => {
       return updateColumnInstance(columnId, (column) => {
-        if (column.setCheckboxColor) {
-          column.setCheckboxColor(color);
+        if ('checkboxColor' in column) {
+          (column as any).checkboxColor = color;
         }
       });
     },

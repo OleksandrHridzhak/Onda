@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { updateColumn } from '../../../services/columnsDB';
-import { BaseColumn } from '../../../models/columns/BaseColumn';
+import { ColumnData } from '../../../types/column.types';
 
 const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
 
-type Column = BaseColumn;
+type Column = ColumnData;
 
 interface UpdateResult {
   status: string;
@@ -36,16 +36,17 @@ export const useColumnOperations = (
       }
 
       try {
-        // Викликаємо функцію оновлення на екземплярі
-        updateFn(column);
-        await updateColumn(column.toJSON());
+        // Створюємо копію колонки та оновлюємо
+        const updatedColumn = { ...column };
+        updateFn(updatedColumn);
+        await updateColumn(updatedColumn);
 
         // Оновлюємо стан
         setColumns((prev) =>
-          prev.map((col) => (col.id === columnId ? column : col)),
+          prev.map((col) => (col.id === columnId ? updatedColumn : col)),
         );
 
-        return { status: 'Success', data: column };
+        return { status: 'Success', data: updatedColumn };
       } catch (err) {
         handleError('Failed to update column:', err);
         return { status: 'Error', error: (err as Error).message };

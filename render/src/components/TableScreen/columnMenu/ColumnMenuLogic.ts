@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import { deleteColumn } from '../../../services/columnsDB';
 import { useColumnOperations } from '../hooks/useColumnOperations';
 import { DAYS } from '../hooks/useColumnsData';
-import { BaseColumn } from '../../../models/columns/BaseColumn';
+import { ColumnData } from '../../../types/column.types';
 
 const handleError = (message: string, error: unknown): void => {
   console.error(message, error);
 };
 
-type Column = BaseColumn;
+type Column = ColumnData;
 
 interface UpdateResult {
   status: string;
