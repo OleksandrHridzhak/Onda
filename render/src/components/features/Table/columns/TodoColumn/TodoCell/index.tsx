@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getColorOptions } from '../../../../../utils/colorOptions';
+import { getColorOptions } from '../../../../../../utils/colorOptions';
 import { useTodoState } from './hooks/useTodoState';
 import { filterTodos } from './logic';
 import { TodoInput } from './TodoInput';

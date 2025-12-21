@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ColumnMenu from '../columnMenu/ColumnMenu';
-import { getIconComponent } from '../../../utils/icons';
+import { getIconComponent } from '../../../../utils/icons';
 
 interface ColumnHeaderContentProps {
   column: any;

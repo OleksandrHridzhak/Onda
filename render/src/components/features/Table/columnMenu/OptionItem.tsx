@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import { getColorOptions } from '../../../utils/colorOptions';
+import { getColorOptions } from '../../../../utils/colorOptions';
 
 interface OptionItemProps {
   option: string;

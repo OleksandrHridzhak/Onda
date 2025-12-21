@@ -1,5 +1,5 @@
 import { dbPromise } from './indexedDB.js';
-import { getSettingsTemplate } from '../components/utils/fileTemplates.ts';
+import { getSettingsTemplate } from '../utils/fileTemplates.js';
 
 const handleError = (err, message) => ({
   status: message,

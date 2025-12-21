@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect, useRef } from 'react';
 import { X, ArrowRight, ArrowLeft } from 'lucide-react';
-import { icons } from '../../../utils/icons';
+import { icons } from '../../../../utils/icons';
 import { BubbleBtn } from '../../../shared/BubbleBtn';
 import { IconSelector } from './IconSelector';
 import { TransparentBtn } from '../../../shared/TransparentBtn';

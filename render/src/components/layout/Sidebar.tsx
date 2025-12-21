@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleThemeMode } from '../store/slices/newThemeSlice';
-import { sideBarItems } from './utils/constants';
+import { toggleThemeMode } from '../../store/slices/newThemeSlice';
+import { sideBarItems } from '../../utils/constants';
 
 interface RootState {
   newTheme: {

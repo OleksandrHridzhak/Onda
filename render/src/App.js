@@ -10,7 +10,7 @@ import {
 import { settingsService } from './services/settingsDB';
 import Sidebar from './components/Sidebar';
 import Table from './components/pages/TablePage';
-import MenuWin from './components/MenuWin';
+import MenuWin from './components/layout/MenuWin';
 import Calendar from './components/pages/CalendarPage';
 import Settings from './components/pages/SettingsPage';
 

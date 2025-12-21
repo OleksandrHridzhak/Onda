@@ -1,5 +1,5 @@
 import { openDB } from 'idb';
-import { getColumnTemplates } from '../components/utils/fileTemplates';
+import { getColumnTemplates } from '../utils/fileTemplates';
 
 const initialWeekBody = [
   {
