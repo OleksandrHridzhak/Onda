@@ -35,7 +35,7 @@ export const useCircleCanvas = (
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const scale = window.devicePixelRatio || 1;
+    const scale = globalThis.devicePixelRatio || 1;
     const size = 32;
     canvas.width = size * scale;
     canvas.height = size * scale;

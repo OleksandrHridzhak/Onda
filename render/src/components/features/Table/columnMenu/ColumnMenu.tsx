@@ -254,7 +254,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 onClick={(e) => {
                   e.stopPropagation();
                   if (
-                    window.confirm(
+                    globalThis.confirm(
                       `Are you sure you want to delete "${column.description || 'this column'}"? This action cannot be undone.`,
                     )
                   ) {

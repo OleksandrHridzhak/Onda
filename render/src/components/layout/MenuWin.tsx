@@ -37,21 +37,21 @@ const MenuWin: React.FC<MenuWinProps> = ({ currentPage = '/' }) => {
       className={`w-full flex items-center justify-end gap-1 drag ${getContainerClass()}`}
     >
       <button
-        onClick={() => window.electronAPI?.minimizeWindow()}
+        onClick={() => globalThis.electronAPI?.minimizeWindow()}
         className={getButtonClass()}
         aria-label="Minimize window"
       >
         <Minus size={16} />
       </button>
       <button
-        onClick={() => window.electronAPI?.maximizeWindow()}
+        onClick={() => globalThis.electronAPI?.maximizeWindow()}
         className={getButtonClass()}
         aria-label="Maximize window"
       >
         <Square size={16} />
       </button>
       <button
-        onClick={() => window.electronAPI?.closeWindow()}
+        onClick={() => globalThis.electronAPI?.closeWindow()}
         className={getButtonClass()}
         aria-label="Close window"
       >

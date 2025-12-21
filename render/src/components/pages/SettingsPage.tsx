@@ -161,7 +161,7 @@ export default function SettingsDashboard(): React.ReactElement {
             (newSettings as Partial<ThemeSettings>).autoThemeSettings
               ?.enabled !== undefined)
         ) {
-          window.location.reload();
+          globalThis.location.reload();
         }
         break;
       case 'table':

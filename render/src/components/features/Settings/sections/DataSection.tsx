@@ -58,7 +58,7 @@ export default function DataSection(): React.ReactElement {
           if (importResult.status === 'success') {
             setStatus('✅ Import successful! Reloading...');
             setTimeout(() => {
-              window.location.reload();
+              globalThis.location.reload();
             }, 1000);
           } else {
             setStatus(`❌ Import failed: ${importResult.message}`);
@@ -86,7 +86,7 @@ export default function DataSection(): React.ReactElement {
 
       if (result.status === 'success') {
         setTimeout(() => {
-          window.location.reload();
+          globalThis.location.reload();
         }, 1000);
       } else {
         setTimeout(() => setStatus(''), 3000);
