@@ -1,4 +1,3 @@
-import { convertToDBFormat } from './columnConverters';
 import {
   updateColumn as updateColumnInDB,
   deleteColumn as deleteColumnFromDB,
@@ -17,7 +16,7 @@ const debounce = (key, fn, delay = 300) => {
     setTimeout(() => {
       fn();
       debounceMap.delete(key);
-    }, delay)
+    }, delay),
   );
 };
 
@@ -43,8 +42,7 @@ export const tablePersistMiddleware = (store) => (next) => (action) => {
         // Debounce to prevent too many writes
         debounce(`column-${columnId}`, async () => {
           try {
-            const dbFormat = convertToDBFormat(columnId, columnData);
-            await updateColumnInDB(dbFormat);
+            await updateColumnInDB({ id: columnId, ...columnData });
             console.log('Column saved to IndexedDB:', columnId);
           } catch (error) {
             console.error('Error saving column to IndexedDB:', error);
@@ -57,14 +55,14 @@ export const tablePersistMiddleware = (store) => (next) => (action) => {
     case 'tableData/createNewColumn': {
       // Get the last added column ID from columnOrder (it's always added at the end)
       const columnOrder = state.tableData.columnOrder;
-      const newColumnId = columnOrder.length > 0 ? columnOrder[columnOrder.length - 1] : null;
-      
+      const newColumnId =
+        columnOrder.length > 0 ? columnOrder[columnOrder.length - 1] : null;
+
       if (newColumnId && state.tableData.columns[newColumnId]) {
         const columnData = state.tableData.columns[newColumnId];
         (async () => {
           try {
-            const dbFormat = convertToDBFormat(newColumnId, columnData);
-            await updateColumnInDB(dbFormat);
+            await updateColumnInDB({ id: newColumnId, ...columnData });
             await updateColumnsOrder(state.tableData.columnOrder);
             console.log('New column saved to IndexedDB:', newColumnId);
           } catch (error) {

@@ -109,12 +109,14 @@ export default function SettingsDashboard(): React.ReactElement {
     settingsService
       .getSettings()
       .then(({ data }) => {
-        setSettings((prev) => ({
-          ...prev,
-          ...data,
-          header: data.header ?? prev.header,
-          calendar: data.calendar ?? prev.calendar,
-        }));
+        if (data) {
+          setSettings((prev) => ({
+            ...prev,
+            ...data,
+            header: data.header ?? prev.header,
+            calendar: data.calendar ?? prev.calendar,
+          }));
+        }
       })
       .catch(console.error);
   }, []);

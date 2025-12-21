@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { columnsFactory } from './columnsFactory';
-import { convertToReduxFormat, convertToDBFormat } from './columnConverters';
 import {
   getAllColumns,
   addColumn as addColumnToDB,
@@ -19,13 +18,13 @@ export const loadColumnsFromDB = createAsyncThunk(
         getAllColumns(),
         getColumnsOrder(),
       ]);
-      
+
       const columns = {};
       const columnOrder = [];
 
       if (columnsData && columnsData.length > 0) {
         columnsData.forEach((col) => {
-          columns[col.id] = convertToReduxFormat(col);
+          columns[col.id] = col;
         });
 
         // Apply column order if available
@@ -51,7 +50,7 @@ export const loadColumnsFromDB = createAsyncThunk(
       console.error('Error loading columns from DB:', error);
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 // Async thunk for saving a single column to IndexedDB
@@ -59,14 +58,13 @@ export const saveColumnToDB = createAsyncThunk(
   'tableData/saveColumnToDB',
   async ({ columnId, columnData }, { rejectWithValue }) => {
     try {
-      const dbFormat = convertToDBFormat(columnId, columnData);
-      await updateColumnInDB(dbFormat);
+      await updateColumnInDB({ id: columnId, ...columnData });
       return { columnId, success: true };
     } catch (error) {
       console.error('Error saving column to DB:', error);
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 // Async thunk for creating a new column
@@ -77,26 +75,25 @@ export const createNewColumnAsync = createAsyncThunk(
       const newColumn = columnsFactory(columnType);
       const columnId = Object.keys(newColumn)[0];
       const columnData = newColumn[columnId];
-      
+
       // Save to IndexedDB
-      const dbFormat = convertToDBFormat(columnId, columnData);
-      const result = await addColumnToDB(dbFormat);
-      
+      const result = await addColumnToDB({ id: columnId, ...columnData });
+
       if (!result.status) {
         throw new Error(result.message || 'Failed to save column');
       }
-      
+
       // Update column order
       const state = getState();
       const newOrder = [...state.tableData.columnOrder, columnId];
       await updateColumnsOrder(newOrder);
-      
+
       return { columnId, columnData };
     } catch (error) {
       console.error('Error creating column:', error);
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 // Async thunk for deleting a column
@@ -105,18 +102,20 @@ export const deleteColumnAsync = createAsyncThunk(
   async ({ columnId }, { getState, rejectWithValue }) => {
     try {
       await deleteColumnFromDB(columnId);
-      
+
       // Update column order
       const state = getState();
-      const newOrder = state.tableData.columnOrder.filter((id) => id !== columnId);
+      const newOrder = state.tableData.columnOrder.filter(
+        (id) => id !== columnId,
+      );
       await updateColumnsOrder(newOrder);
-      
+
       return { columnId };
     } catch (error) {
       console.error('Error deleting column:', error);
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 // Async thunk for updating column order
@@ -130,7 +129,7 @@ export const updateColumnOrderAsync = createAsyncThunk(
       console.error('Error updating column order:', error);
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 const tableSlice = createSlice({
@@ -157,14 +156,14 @@ const tableSlice = createSlice({
     },
     updateColumnNested: (state, action) => {
       const { columnId, path, value } = action.payload;
-      
+
       if (!state.columns[columnId]) return;
-      
+
       // Ensure uniqueProperties exists
       if (!state.columns[columnId].uniqueProperties) {
         state.columns[columnId].uniqueProperties = {};
       }
-      
+
       let obj = state.columns[columnId].uniqueProperties;
 
       for (let i = 0; i < path.length - 1; i++) {
@@ -179,7 +178,7 @@ const tableSlice = createSlice({
     updateCommonColumnProperties: (state, action) => {
       const { columnId, properties } = action.payload;
       if (!state.columns[columnId]) return;
-      
+
       state.columns[columnId] = {
         ...state.columns[columnId],
         ...properties,

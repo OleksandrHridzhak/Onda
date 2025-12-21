@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  getAllColumns,
-  migrateColumnsFromWeeks,
-  getColumnsOrder,
-} from '../../../services/columnsDB';
+import { getAllColumns, getColumnsOrder } from '../../../services/columnsDB';
 import { settingsService } from '../../../services/settingsDB';
 import { deserializeColumns } from '../../../models/columns/columnHelpers';
 import { BaseColumn } from '../../../models/columns/BaseColumn';
@@ -47,9 +43,6 @@ export const useColumnsData = () => {
     const fetchData = async (): Promise<void> => {
       try {
         setLoading(true);
-
-        // Міграція старих даних
-        await migrateColumnsFromWeeks();
 
         // Завантажуємо дані
         const [columnsData, settingsResult, columnOrderData] =
