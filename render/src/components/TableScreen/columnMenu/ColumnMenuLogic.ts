@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { deleteColumn } from '../../../services/columnsDB';
 import { useColumnOperations } from '../hooks/useColumnOperations';
-import { DAYS } from '../hooks/useColumnsData';
+import { DAYS } from '../TableLogic';
 import { ColumnData } from '../../../types/column.types';
 
 const handleError = (message: string, error: unknown): void => {
