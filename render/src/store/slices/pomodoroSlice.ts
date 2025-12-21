@@ -1,6 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
+interface PomodoroState {
+  time: number;
+  isRunning: boolean;
+  isEnded: boolean;
+  isPaused: boolean;
+  initialMinutes: number | null;
+  notifyEnabled: boolean;
+  lastUpdateTime: number | null; // Timestamp of the last update
+}
+
+const initialState: PomodoroState = {
   time: 1500, // 25 minutes in seconds
   isRunning: false,
   isEnded: false,

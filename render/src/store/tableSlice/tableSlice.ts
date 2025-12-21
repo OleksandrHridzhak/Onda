@@ -10,53 +10,61 @@ import {
 } from '../../services/columnsDB';
 
 // Async thunk for loading columns from IndexedDB
-export const loadColumnsFromDB = createAsyncThunk(
-  'tableData/loadColumnsFromDB',
-  async (_, { rejectWithValue }) => {
-    try {
-      const [columnsData, columnOrderData] = await Promise.all([
-        getAllColumns(),
-        getColumnsOrder(),
-      ]);
+export const loadColumnsFromDB = createAsyncThunk<
+  { columns: Record<string, any>; columnOrder: string[] },
+  void,
+  { rejectValue: string }
+>('tableData/loadColumnsFromDB', async (_, { rejectWithValue }) => {
+  try {
+    const [columnsData, columnOrderData] = await Promise.all([
+      getAllColumns(),
+      getColumnsOrder(),
+    ]);
 
-      const columns = {};
-      const columnOrder = [];
+    const columns = {};
+    const columnOrder = [];
 
-      if (columnsData && columnsData.length > 0) {
-        columnsData.forEach((col) => {
-          columns[col.id] = col;
+    if (columnsData && columnsData.length > 0) {
+      columnsData.forEach((col) => {
+        columns[col.id] = col;
+      });
+
+      // Apply column order if available
+      if (columnOrderData && columnOrderData.length > 0) {
+        columnOrderData.forEach((id) => {
+          if (columns[id]) {
+            columnOrder.push(id);
+          }
         });
-
-        // Apply column order if available
-        if (columnOrderData && columnOrderData.length > 0) {
-          columnOrderData.forEach((id) => {
-            if (columns[id]) {
-              columnOrder.push(id);
-            }
-          });
-          // Add any columns not in order
-          Object.keys(columns).forEach((id) => {
-            if (!columnOrder.includes(id)) {
-              columnOrder.push(id);
-            }
-          });
-        } else {
-          columnOrder.push(...Object.keys(columns));
-        }
+        // Add any columns not in order
+        Object.keys(columns).forEach((id) => {
+          if (!columnOrder.includes(id)) {
+            columnOrder.push(id);
+          }
+        });
+      } else {
+        columnOrder.push(...Object.keys(columns));
       }
-
-      return { columns, columnOrder };
-    } catch (error) {
-      console.error('Error loading columns from DB:', error);
-      return rejectWithValue(error.message);
     }
-  },
-);
+
+    return { columns, columnOrder };
+  } catch (error) {
+    console.error('Error loading columns from DB:', error);
+    return rejectWithValue(error.message);
+  }
+});
 
 // Async thunk for saving a single column to IndexedDB
-export const saveColumnToDB = createAsyncThunk(
+export const saveColumnToDB = createAsyncThunk<
+  { columnId: string; success: true },
+  { columnId: string; columnData: any },
+  { rejectValue: string }
+>(
   'tableData/saveColumnToDB',
-  async ({ columnId, columnData }, { rejectWithValue }) => {
+  async (
+    { columnId, columnData }: { columnId: string; columnData: any },
+    { rejectWithValue },
+  ) => {
     try {
       await updateColumnInDB({ id: columnId, ...columnData });
       return { columnId, success: true };
@@ -68,9 +76,16 @@ export const saveColumnToDB = createAsyncThunk(
 );
 
 // Async thunk for creating a new column
-export const createNewColumnAsync = createAsyncThunk(
+export const createNewColumnAsync = createAsyncThunk<
+  { columnId: string; columnData: any },
+  { columnType: string },
+  { state: any; rejectValue: string }
+>(
   'tableData/createNewColumnAsync',
-  async ({ columnType }, { getState, rejectWithValue }) => {
+  async (
+    { columnType }: { columnType: string },
+    { getState, rejectWithValue },
+  ) => {
     try {
       const newColumn = columnsFactory(columnType);
       const columnId = Object.keys(newColumn)[0];
@@ -97,9 +112,13 @@ export const createNewColumnAsync = createAsyncThunk(
 );
 
 // Async thunk for deleting a column
-export const deleteColumnAsync = createAsyncThunk(
+export const deleteColumnAsync = createAsyncThunk<
+  { columnId: string },
+  { columnId: string },
+  { state: any; rejectValue: string }
+>(
   'tableData/deleteColumnAsync',
-  async ({ columnId }, { getState, rejectWithValue }) => {
+  async ({ columnId }: { columnId: string }, { getState, rejectWithValue }) => {
     try {
       await deleteColumnFromDB(columnId);
 
@@ -119,9 +138,13 @@ export const deleteColumnAsync = createAsyncThunk(
 );
 
 // Async thunk for updating column order
-export const updateColumnOrderAsync = createAsyncThunk(
+export const updateColumnOrderAsync = createAsyncThunk<
+  { newOrder: string[] },
+  { newOrder: string[] },
+  { rejectValue: string }
+>(
   'tableData/updateColumnOrderAsync',
-  async ({ newOrder }, { rejectWithValue }) => {
+  async ({ newOrder }: { newOrder: string[] }, { rejectWithValue }) => {
     try {
       await updateColumnsOrder(newOrder);
       return { newOrder };
