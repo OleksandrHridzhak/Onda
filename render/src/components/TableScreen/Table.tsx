@@ -10,7 +10,7 @@ import {
   TodoColumn,
   TaskTableColumn,
 } from './columns';
-import TableItemWrapper from './TableItemWrapper';
+import TableItemWrapper from './columns/TableItemWrapper';
 import './Table.css';
 import { useSelector } from 'react-redux';
 

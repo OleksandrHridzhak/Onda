@@ -1,5 +1,5 @@
 import React from 'react';
-import { getWidthStyle } from './TableLogic';
+import { getWidthStyle } from '../TableLogic';
 
 type Props = {
   column: any;
