@@ -16,7 +16,7 @@ filesToFix.forEach(filePath => {
     let content = fs.readFileSync(fullPath, 'utf8');
     
     // Replace VERSION_21 with VERSION_17
-    const updated = content.replace(/JavaVersion\.VERSION_21/g, 'JavaVersion.VERSION_17');
+    const updated = content.replaceAll(/JavaVersion\.VERSION_21/g, 'JavaVersion.VERSION_17');
     
     if (content !== updated) {
       fs.writeFileSync(fullPath, updated, 'utf8');

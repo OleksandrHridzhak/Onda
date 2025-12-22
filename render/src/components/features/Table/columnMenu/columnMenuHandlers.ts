@@ -238,7 +238,7 @@ export const handleWidthChange = (
   column: Column,
   e: React.ChangeEvent<HTMLInputElement>,
 ): void => {
-  const newWidth = parseInt(e.target.value, 10);
+  const newWidth = Number.parseInt(e.target.value, 10);
   dispatch({ type: 'SET_WIDTH', payload: newWidth });
   if (onChangeWidth) {
     onChangeWidth(column.id, newWidth);

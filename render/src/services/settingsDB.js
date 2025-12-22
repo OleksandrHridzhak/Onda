@@ -103,7 +103,6 @@ export const settingsService = {
       await store.put({ id: 1, ...settings });
       await tx.done;
 
-      //updateThemeBasedOnTime();
       return { status: 'Theme updated' };
     } catch (err) {
       return handleError(err, 'Error updating theme');
@@ -122,7 +121,6 @@ export const settingsService = {
       await store.put({ id: 1, ...settings });
       await tx.done;
 
-      //updateThemeBasedOnTime();
       return { status: 'Theme updated' };
     } catch (err) {
       return handleError(err, 'Error updating theme');

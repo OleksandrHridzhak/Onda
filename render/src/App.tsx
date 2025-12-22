@@ -7,7 +7,6 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { settingsService } from './services/settingsDB';
 import Sidebar from './components/layout/Sidebar';
 import Table from './components/pages/TablePage';
 import MenuWin from './components/layout/MenuWin';
@@ -25,10 +24,10 @@ function MainContent() {
     const savedColor = localStorage.getItem('colorScheme');
 
     if (savedTheme) {
-      document.documentElement.setAttribute('data-theme-mode', savedTheme);
+      document.documentElement.dataset.themeMode = savedTheme;
     }
     if (savedColor) {
-      document.documentElement.setAttribute('data-color-scheme', savedColor);
+      document.documentElement.dataset.colorScheme = savedColor;
     }
   }, []);
 

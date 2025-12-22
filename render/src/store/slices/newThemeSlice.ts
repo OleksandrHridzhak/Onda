@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ThemeState {
   colorScheme: string;
-  themeMode: 'light' | 'dark' | string;
+  themeMode: 'light' | 'dark';
 }
 
 export const initialState: ThemeState = {
@@ -18,15 +18,12 @@ const newThemeSlice = createSlice({
       const nextMode = state.themeMode === 'light' ? 'dark' : 'light';
       state.themeMode = nextMode;
       localStorage.setItem('themeMode', nextMode);
-      document.documentElement.setAttribute('data-theme-mode', nextMode);
+      document.documentElement.dataset.themeMode = nextMode;
     },
     setColorScheme: (state, action: PayloadAction<string>) => {
       state.colorScheme = action.payload;
       localStorage.setItem('colorScheme', action.payload);
-      document.documentElement.setAttribute(
-        'data-color-scheme',
-        action.payload,
-      );
+      document.documentElement.dataset.colorScheme = action.payload;
     },
   },
 });

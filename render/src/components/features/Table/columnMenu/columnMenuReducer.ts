@@ -58,7 +58,7 @@ export const initialState = (column: Column): MenuState => ({
   checkboxColor: column.checkboxColor || 'green',
   newOption: '',
   Chosen: column.Chosen,
-  width: column.width ? parseInt(String(column.width)) : 0,
+  width: column.width ? Number.parseInt(String(column.width)) : 0,
   isIconSectionExpanded: false,
   isColorMenuOpen: {},
   isSaving: false,
@@ -85,7 +85,7 @@ export const reducer = (state: MenuState, action: MenuAction): MenuState => {
         ...state,
         width:
           typeof action.payload === 'string'
-            ? parseInt(action.payload) || 0
+            ? Number.parseInt(action.payload) || 0
             : action.payload,
       };
     case 'TOGGLE_ICON_SECTION':
@@ -123,7 +123,7 @@ export const reducer = (state: MenuState, action: MenuAction): MenuState => {
         };
       }
       return state;
-    case 'REMOVE_OPTION':
+    case 'REMOVE_OPTION': {
       const isInOptions = state.options.includes(action.payload);
       const isInDoneTags = state.doneTags.includes(action.payload);
       if (isInOptions) {
@@ -143,7 +143,8 @@ export const reducer = (state: MenuState, action: MenuAction): MenuState => {
         return { ...state, doneTags: newDoneTags, optionColors: newColors };
       }
       return state;
-    case 'EDIT_OPTION':
+    }
+    case 'EDIT_OPTION': {
       const { oldOption, newOption } = action.payload;
       const isInOptionsEdit = state.options.includes(oldOption);
       const isInDoneTagsEdit = state.doneTags.includes(oldOption);
@@ -169,12 +170,14 @@ export const reducer = (state: MenuState, action: MenuAction): MenuState => {
         return { ...state, doneTags: newDoneTags, optionColors: newColors };
       }
       return state;
-    case 'CHANGE_OPTION_COLOR':
+    }
+    case 'CHANGE_OPTION_COLOR': {
       const { option, color } = action.payload;
       return {
         ...state,
         optionColors: { ...state.optionColors, [option]: color },
       };
+    }
     case 'SET_SAVING':
       return { ...state, isSaving: action.payload };
     case 'RESET':

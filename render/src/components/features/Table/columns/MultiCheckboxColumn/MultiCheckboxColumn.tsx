@@ -37,7 +37,6 @@ export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
 
   const {
     columnData,
-    allColumns,
     dispatch,
     handleMoveColumn,
     handleChangeWidth,

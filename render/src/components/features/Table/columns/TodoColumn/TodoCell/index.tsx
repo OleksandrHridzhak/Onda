@@ -36,7 +36,7 @@ export const TodoCell: React.FC<TodoCellProps> = ({
   onChange,
 }) => {
   const { themeMode } = useSelector((state: RootState) => state.newTheme);
-  const darkMode = themeMode === 'dark' ? true : false;
+  const darkMode = themeMode === 'dark';
   const colorOptions = getColorOptions({ darkMode });
 
   const {

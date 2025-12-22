@@ -15,7 +15,7 @@ const MenuWin: React.FC<MenuWinProps> = ({ currentPage = '/' }) => {
   const themeMode = useSelector((state: RootState) => state.newTheme.themeMode);
 
   const getContainerClass = (): string => {
-    if (!(themeMode === 'dark')) return '';
+    if (themeMode !== 'dark') return '';
 
     if (currentPage === '/settings' || currentPage === '/calendar') {
       return ' bg-gray-800';

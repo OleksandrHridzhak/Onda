@@ -67,12 +67,7 @@ export const TodoList: React.FC<TodoListProps> = ({
           <div className="flex items-center flex-1 min-w-0 w-full">
             <button
               onClick={() =>
-                handleToggleTodo(
-                  todos.findIndex((t) => t === todo),
-                  todos,
-                  setTodos,
-                  onChange,
-                )
+                handleToggleTodo(todos.indexOf(todo), todos, setTodos, onChange)
               }
               className={`mr-2 p-1 rounded-full z-20 ${
                 todo.completed
@@ -86,8 +81,7 @@ export const TodoList: React.FC<TodoListProps> = ({
             >
               <Check size={14} />
             </button>
-            {isEditing &&
-            editingIndex === todos.findIndex((t) => t === todo) ? (
+            {isEditing && editingIndex === todos.indexOf(todo) ? (
               <div className="flex flex-col gap-2 flex-1">
                 <input
                   type="text"
@@ -175,7 +169,7 @@ export const TodoList: React.FC<TodoListProps> = ({
                   e.preventDefault();
                   e.stopPropagation();
                   handleEditTodo(
-                    todos.findIndex((t) => t === todo),
+                    todos.indexOf(todo),
                     todos,
                     setIsEditing,
                     setEditingIndex,
@@ -196,7 +190,7 @@ export const TodoList: React.FC<TodoListProps> = ({
                   e.preventDefault();
                   e.stopPropagation();
                   handleDeleteTodo(
-                    todos.findIndex((t) => t === todo),
+                    todos.indexOf(todo),
                     todos,
                     setTodos,
                     onChange,
