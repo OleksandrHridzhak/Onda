@@ -35,9 +35,9 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   return (
     <div
       role="button"
-      tabIndex={0}
+      tabIndex={-1}
       className="fixed inset-0 z-[9999] flex items-center justify-center"
-      onClick={onClose}
+      onMouseDown={onClose}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
           e.preventDefault();
@@ -53,7 +53,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
       <div
         className={`relative z-10 w-full max-w-md mx-4 rounded-xl shadow-2xl
           ${darkMode ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'}`}
-        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div

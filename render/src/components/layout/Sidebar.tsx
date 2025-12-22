@@ -66,14 +66,17 @@ const Sidebar: React.FC = () => {
           {sideBarItems.map((item) => {
             const Icon = item.icon;
             return (
-              <Link key={item.name} to={item.path}>
+              <Link
+                key={item.name}
+                to={item.path}
+                onClick={() => setActive(item.name as ActivePage)}
+              >
                 <li
                   className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${
                     active === item.name
                       ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText'
                       : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'
                   }`}
-                  onClick={() => setActive(item.name as ActivePage)}
                 >
                   <Icon
                     className={`w-6 h-6 transition-colors duration-300 ${
