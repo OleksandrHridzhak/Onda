@@ -27,8 +27,17 @@ export const ColumnHeaderContent: React.FC<ColumnHeaderContentProps> = ({
 
   return (
     <div
+      role="button"
+      tabIndex={column.id !== 'days' ? 0 : -1}
       className={`font-poppins flex items-center justify-between group cursor-pointer px-3 py-3 text-left text-sm font-medium ${column.nameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
       onClick={() => column.id !== 'days' && setShowMenu(true)}
+      onKeyDown={(e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && column.id !== 'days') {
+          e.preventDefault();
+          setShowMenu(true);
+        }
+      }}
+      aria-label={column.name || 'Column settings'}
     >
       <div
         className={`flex items-center ${column.nameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}

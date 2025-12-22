@@ -69,6 +69,8 @@ export const TagsCell: React.FC<TagsCellProps> = ({
             return (
               <div
                 key={option}
+                role="button"
+                tabIndex={0}
                 className={`px-3 py-2 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-blue-50'} cursor-pointer text-sm whitespace-nowrap`}
                 onClick={() => {
                   handleTagChange(
@@ -78,6 +80,18 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                     onChange,
                   );
                   setIsOpen(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleTagChange(
+                      option,
+                      selectedTags,
+                      setSelectedTags,
+                      onChange,
+                    );
+                    setIsOpen(false);
+                  }
                 }}
               >
                 <div className="flex items-center">

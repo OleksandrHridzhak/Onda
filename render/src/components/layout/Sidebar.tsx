@@ -88,8 +88,17 @@ const Sidebar: React.FC = () => {
             );
           })}
           <li
+            role="button"
+            tabIndex={0}
             className={`p-2 rounded-xl transition-all duration-300 cursor-pointer`}
             onClick={toggleTheme}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTheme();
+              }
+            }}
+            aria-label="Toggle theme"
           >
             {themeMode === 'dark' ? (
               <Moon

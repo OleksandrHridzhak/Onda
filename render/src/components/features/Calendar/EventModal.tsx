@@ -107,9 +107,10 @@ export default function EventModal({
                 </label>
                 <div className="flex gap-3">
                   {Object.entries(colorMap).map(([hex, name]) => (
-                    <div
+                    <button
                       key={hex}
-                      className={`w-6 h-6 rounded-full cursor-pointer ${
+                      type="button"
+                      className={`w-6 h-6 rounded-full cursor-pointer border-none p-0 ${
                         newEvent.color === hex
                           ? 'ring-2 ring-offset-2 ring-border'
                           : ''
@@ -117,6 +118,7 @@ export default function EventModal({
                       style={{ backgroundColor: hex }}
                       onClick={() => setNewEvent({ ...newEvent, color: hex })}
                       title={name}
+                      aria-label={`Select ${name} color`}
                     />
                   ))}
                 </div>

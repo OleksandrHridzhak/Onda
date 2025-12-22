@@ -60,6 +60,8 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
             {incompleteTasks.map((task, index) => (
               <div
                 key={index}
+                role="button"
+                tabIndex={0}
                 onClick={() =>
                   handleToggleTask(
                     task,
@@ -72,9 +74,25 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
                     column,
                   )
                 }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleToggleTask(
+                      task,
+                      false,
+                      incompleteTasks,
+                      completedTasks,
+                      setIncompleteTasks,
+                      setCompletedTasks,
+                      onChangeOptions,
+                      column,
+                    );
+                  }
+                }}
                 className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer
                   ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}
                   hover:opacity-80 transition-opacity flex items-center gap-1`}
+                aria-label={`Mark task "${task}" as complete`}
               >
                 {task}
               </div>
@@ -96,6 +114,8 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
               return (
                 <div
                   key={index}
+                  role="button"
+                  tabIndex={0}
                   onClick={() =>
                     handleToggleTask(
                       task,
@@ -108,6 +128,22 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
                       column,
                     )
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleToggleTask(
+                        task,
+                        true,
+                        incompleteTasks,
+                        completedTasks,
+                        setIncompleteTasks,
+                        setCompletedTasks,
+                        onChangeOptions,
+                        column,
+                      );
+                    }
+                  }}
+                  aria-label={`Mark task "${task}" as incomplete`}
                   className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer line-through 
                     ${colorOption.bg} ${colorOption.text}
                     hover:opacity-100 transition-opacity flex items-center gap-1`}

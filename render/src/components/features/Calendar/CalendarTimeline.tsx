@@ -123,12 +123,21 @@ export default function CalendarTimeline({
                     {hours.map((hour) => (
                       <div
                         key={hour}
+                        role="button"
+                        tabIndex={0}
                         className={`absolute w-full border-t border-border hover:bg-hoverBg cursor-pointer z-10`}
                         style={{
                           top: `${hour * slotHeight}px`,
                           height: `${slotHeight}px`,
                         }}
                         onClick={() => handleTimeSlotClick(dayIndex, hour)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleTimeSlotClick(dayIndex, hour);
+                          }
+                        }}
+                        aria-label={`Create event at ${hour}:00`}
                       />
                     ))}
                     {getEventsForDay(day).map((event) => {
@@ -142,12 +151,21 @@ export default function CalendarTimeline({
                       return (
                         <div
                           key={`${event.id}-${event.date}`}
+                          role="button"
+                          tabIndex={0}
                           className={`absolute z-30 left-2 right-2 rounded-xl p-2 text-white text-xs shadow-md cursor-pointer ${
                             isShortEvent ? 'short-event' : ''
                           }`}
                           style={getEventStyle(event)}
                           onClick={() => handleEditEvent(event)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleEditEvent(event);
+                            }
+                          }}
                           title={`${event.title} (${event.startTime} - ${event.endTime})`}
+                          aria-label={`Edit event: ${event.title}`}
                         >
                           <div className="flex text-ellipsis overflow-hidden justify-between items-start">
                             <div>
