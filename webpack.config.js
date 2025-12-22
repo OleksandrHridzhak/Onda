@@ -14,7 +14,7 @@ const commonConfig = {
 const mainConfig = {
   ...commonConfig, // Копіюємо спільні налаштування
   target: 'electron-main',
-  entry: './main.js',
+  entry: './src/electron/main.js',
   output: {
     path: path.resolve(__dirname),
     filename: 'main.bundle.js',
@@ -25,7 +25,7 @@ const mainConfig = {
 const preloadConfig = {
   ...commonConfig, // Копіюємо спільні налаштування
   target: 'electron-preload',
-  entry: './preload.js',
+  entry: './src/electron/preload.js',
   output: {
     path: path.resolve(__dirname),
     filename: 'preload.bundle.js',
