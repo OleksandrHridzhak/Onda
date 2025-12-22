@@ -54,12 +54,11 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <h2 className="text-xl font-semibold">{title}</h2>
           <button
             onClick={onClose}
-            className={`p-1 rounded-lg transition-colors
-              ${
-                darkMode
-                  ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-200'
-                  : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
-              }`}
+            className={`p-1 rounded-lg transition-colors ${
+              darkMode
+                ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-200'
+                : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+            }`}
           >
             <X size={20} />
           </button>
@@ -79,27 +78,25 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         >
           <button
             onClick={onClose}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors
-              ${
-                darkMode
-                  ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              darkMode
+                ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           >
             {cancelText}
           </button>
           <button
             onClick={handleConfirm}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors
-              ${
-                variant === 'danger'
-                  ? darkMode
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-red-500 text-white hover:bg-red-600'
-                  : darkMode
-                    ? 'bg-yellow-600 text-white hover:bg-yellow-700'
-                    : 'bg-yellow-500 text-white hover:bg-yellow-600'
-              }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              variant === 'danger'
+                ? darkMode
+                  ? 'bg-red-600 text-white hover:bg-red-700'
+                  : 'bg-red-500 text-white hover:bg-red-600'
+                : darkMode
+                  ? 'bg-yellow-600 text-white hover:bg-yellow-700'
+                  : 'bg-yellow-500 text-white hover:bg-yellow-600'
+            }`}
           >
             {confirmText}
           </button>

@@ -102,7 +102,7 @@ const PomodoroWidget: React.FC = () => {
     <div
       className={`w-[150px] h-[50px] ml-2 justify-center px-2 rounded-xl flex flex-col items-center space-y-2 border bg-tableBodyBg border-border text-textTableValues`}
     >
-      {isEnded ? (
+      {isEnded && (
         <div className="flex flex-row items-center space-x-2">
           <div className="font-medium">{initialMinutes} ended!</div>
           <button
@@ -112,7 +112,8 @@ const PomodoroWidget: React.FC = () => {
             <X className="h-5 w-5" />
           </button>
         </div>
-      ) : isRunning || isPaused ? (
+      )}
+      {!isEnded && (isRunning || isPaused) && (
         <div className="flex flex-row items-center justify-between w-full">
           <div className={`text-lg pl-1 font-poppins text-textTableValues`}>
             {formatTime(time)}
@@ -136,7 +137,8 @@ const PomodoroWidget: React.FC = () => {
             </button>
           </div>
         </div>
-      ) : (
+      )}
+      {!isEnded && !isRunning && !isPaused && (
         <div className="flex items-center space-x-1">
           <span className={`text-textTableValues px-2 py-1`}>
             <Clock className="h-5 w-5" />

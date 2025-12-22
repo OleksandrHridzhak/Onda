@@ -32,16 +32,17 @@ export const OptionsList: React.FC<OptionsListProps> = ({
   darkMode,
   toggleColorMenu,
 }) => {
+  const getLabelText = () => {
+    if (columnType === 'tasktable') return 'Tasks';
+    if (columnType === 'multiselect') return 'Tags';
+    if (columnType === 'todo') return 'Categories';
+    return 'Checkboxes';
+  };
+
   return (
     <div className="mb-4">
       <label className={`block text-sm font-medium text-textTableValues mb-1`}>
-        {columnType === 'tasktable'
-          ? 'Tasks'
-          : columnType === 'multiselect'
-            ? 'Tags'
-            : columnType === 'todo'
-              ? 'Categories'
-              : 'Checkboxes'}
+        {getLabelText()}
       </label>
       <div className="space-y-2">
         <div className="flex items-center gap-2 mb-2">

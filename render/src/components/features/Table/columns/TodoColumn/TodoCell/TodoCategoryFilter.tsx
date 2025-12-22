@@ -42,24 +42,30 @@ export const TodoCategoryFilter: React.FC<TodoCategoryFilterProps> = ({
       >
         All Todos
       </button>
-      {column.options.map((category) => (
-        <button
-          key={category}
-          onClick={() => {
-            setSelectedFilterCategory(category);
-            setNewCategory(category);
-          }}
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            selectedFilterCategory === category
-              ? `${colorOptions.find((c) => c.name === column.tagColors[category])?.bg} ${colorOptions.find((c) => c.name === column.tagColors[category])?.text}`
-              : darkMode
-                ? 'bg-gray-600 text-gray-200'
-                : 'bg-gray-200 text-gray-700'
-          }`}
-        >
-          {category}
-        </button>
-      ))}
+      {column.options.map((category) => {
+        const colorOption = colorOptions.find(
+          (c) => c.name === column.tagColors[category],
+        );
+        const categoryClasses =
+          selectedFilterCategory === category
+            ? `${colorOption?.bg} ${colorOption?.text}`
+            : darkMode
+              ? 'bg-gray-600 text-gray-200'
+              : 'bg-gray-200 text-gray-700';
+
+        return (
+          <button
+            key={category}
+            onClick={() => {
+              setSelectedFilterCategory(category);
+              setNewCategory(category);
+            }}
+            className={`px-2 py-1 rounded-full text-xs font-medium ${categoryClasses}`}
+          >
+            {category}
+          </button>
+        );
+      })}
     </div>
   );
 };

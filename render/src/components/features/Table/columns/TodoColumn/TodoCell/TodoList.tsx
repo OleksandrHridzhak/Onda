@@ -148,17 +148,20 @@ export const TodoList: React.FC<TodoListProps> = ({
                 >
                   {todo.text}
                 </div>
-                {todo.category && column?.tagColors?.[todo.category] && (
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      colorOptions.find(
-                        (c) => c.name === column.tagColors[todo.category],
-                      )?.bg
-                    } ${colorOptions.find((c) => c.name === column.tagColors[todo.category])?.text}`}
-                  >
-                    {todo.category}
-                  </span>
-                )}
+                {todo.category &&
+                  column?.tagColors?.[todo.category] &&
+                  (() => {
+                    const categoryColor = colorOptions.find(
+                      (c) => c.name === column.tagColors[todo.category],
+                    );
+                    return (
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${categoryColor?.bg} ${categoryColor?.text}`}
+                      >
+                        {todo.category}
+                      </span>
+                    );
+                  })()}
               </div>
             )}
           </div>
