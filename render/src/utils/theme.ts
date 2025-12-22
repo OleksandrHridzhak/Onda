@@ -36,7 +36,6 @@ interface Theme {
 
 interface Themes {
   standard: Theme;
-  nature: Theme;
   [key: string]: Theme;
 }
 
@@ -97,64 +96,6 @@ const themes: Themes = {
       settingsSectionSelectorBg: 'bg-gray-700',
       bubbleBtn: {
         standard: 'bg-blue-500 hover:bg-blue-600 text-white',
-        delete: 'bg-red-400 hover:bg-red-500 text-white',
-        clear: 'bg-gray-700 hover:bg-gray-600 text-gray-300',
-      },
-    },
-  },
-  nature: {
-    light: {
-      background: 'bg-green-50',
-      border: 'border-green-200',
-      text: 'text-green-800',
-      textAccent: 'text-green-700',
-      textTableValues: 'text-gray-700',
-      textTableRealValues: 'text-gray-600',
-      linkActive: 'bg-green-600 scale-110 shadow-md text-white',
-      linkInactive: 'text-green-700 hover:scale-105 hover:bg-green-100',
-      iconActive: 'text-white',
-      iconInactive: 'text-green-700',
-      toggleIcon: 'text-green-600',
-      hover: 'hover:bg-green-100',
-      sidebarToggleHover: 'hover:bg-green-100',
-      tableHeader: 'bg-green-100 border-green-200',
-      tableHeaderText: 'text-gray-700',
-      tableBodyBg: 'bg-white',
-      tableSummaryText: 'text-green-800',
-      scrollbarTrack: 'rgba(220, 252, 231, 0.2)',
-      scrollbarThumb: 'rgba(134, 239, 172, 0.5)',
-      scrollbarThumbHover: 'rgba(34, 197, 94, 0.7)',
-      settingsSectionSelectorBg: 'bg-green-100',
-      bubbleBtn: {
-        standard: 'bg-green-600 hover:bg-green-700 text-white',
-        delete: 'bg-red-500 hover:bg-red-600 text-white',
-        clear: 'bg-gray-100 hover:bg-gray-200 text-gray-600',
-      },
-    },
-    dark: {
-      background: 'bg-green-900',
-      border: 'border-green-700',
-      text: 'text-green-200',
-      textAccent: 'text-green-300',
-      textTableValues: 'text-gray-300',
-      textTableRealValues: 'text-gray-400',
-      linkActive: 'bg-green-700 text-white',
-      linkInactive: 'text-green-300 hover:scale-105 hover:bg-green-800',
-      iconActive: 'text-white',
-      iconInactive: 'text-green-300',
-      toggleIcon: 'text-green-400',
-      hover: 'hover:bg-green-800',
-      sidebarToggleHover: 'hover:bg-green-800',
-      tableHeader: 'bg-green-800 border-green-600',
-      tableHeaderText: 'text-gray-300',
-      tableBodyBg: 'bg-green-900',
-      tableSummaryText: 'text-green-200',
-      scrollbarTrack: 'rgba(22, 101, 52, 0.5)',
-      scrollbarThumb: 'rgba(134, 239, 172, 0.7)',
-      scrollbarThumbHover: 'rgba(34, 197, 94, 0.9)',
-      settingsSectionSelectorBg: 'bg-green-800',
-      bubbleBtn: {
-        standard: 'bg-green-500 hover:bg-green-600 text-white',
         delete: 'bg-red-400 hover:bg-red-500 text-white',
         clear: 'bg-gray-700 hover:bg-gray-600 text-gray-300',
       },
