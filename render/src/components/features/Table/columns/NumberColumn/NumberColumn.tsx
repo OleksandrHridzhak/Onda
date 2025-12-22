@@ -34,7 +34,7 @@ export const NumberColumn: React.FC<NumberColumnProps> = ({ columnId }) => {
   };
 
   return (
-    <table className="checkbox-nested-table font-poppins">
+    <table className="checkbox-nested-table column-numberbox font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">

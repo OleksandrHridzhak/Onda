@@ -34,7 +34,7 @@ export const NotesColumn: React.FC<NotesColumnProps> = ({ columnId }) => {
   };
 
   return (
-    <table className="checkbox-nested-table font-poppins">
+    <table className="checkbox-nested-table column-text font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">

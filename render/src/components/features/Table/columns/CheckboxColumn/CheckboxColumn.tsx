@@ -39,7 +39,7 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
   };
 
   return (
-    <table className="checkbox-nested-table font-poppins">
+    <table className="checkbox-nested-table column-checkbox font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">

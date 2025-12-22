@@ -13,6 +13,7 @@ import {
 import TableItemWrapper from './columns/TableItemWrapper';
 import './Table.css';
 import { useSelector } from 'react-redux';
+import { useRowHeightSync } from './hooks/useRowHeightSync';
 
 const Table: React.FC = () => {
   const columnOrder: string[] = useSelector(
@@ -44,6 +45,9 @@ const Table: React.FC = () => {
     type: 'days',
     width: daysColumnData?.Width || 120,
   };
+
+  // Sync row heights across all table columns
+  useRowHeightSync([columnsData, columnOrder]);
 
   return (
     <div

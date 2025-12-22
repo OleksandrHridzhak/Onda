@@ -9,7 +9,7 @@ export const DaysColumn: React.FC<DaysColumnProps> = ({ column }) => {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 
   return (
-    <table className="checkbox-nested-table font-poppins">
+    <table className="checkbox-nested-table column-days font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">

@@ -66,7 +66,7 @@ export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
   };
 
   return (
-    <table className="checkbox-nested-table font-poppins">
+    <table className="checkbox-nested-table column-multicheckbox font-poppins">
       <thead className="bg-tableHeader">
         <tr>
           <th className="border-b border-border">

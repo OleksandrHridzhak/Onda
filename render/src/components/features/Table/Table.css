@@ -32,10 +32,20 @@ table {
   border-bottom: 1px solid var(--border);
 }
 .checkbox-nested-table tbody td {
-  height: 60px;
   border: none;
   box-sizing: border-box;
+  vertical-align: top;
 }
+
+/* Центрування по вертикалі для checkbox, numberbox, textbox, multicheckbox та days колонок */
+.checkbox-nested-table.column-checkbox tbody td,
+.checkbox-nested-table.column-numberbox tbody td,
+.checkbox-nested-table.column-text tbody td,
+.checkbox-nested-table.column-multicheckbox tbody td,
+.checkbox-nested-table.column-days tbody td {
+  vertical-align: middle;
+}
+
 .checkbox-nested-table thead th > div {
   height: 100%;
   display: flex;
