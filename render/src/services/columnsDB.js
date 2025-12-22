@@ -41,7 +41,13 @@ export async function addColumn(columnData) {
     // Генеруємо id якщо його немає
     if (!columnData.id) {
       columnData.id =
-        Date.now().toString() + Math.random().toString(36).substr(2, 9);
+        globalThis.crypto?.randomUUID?.() ||
+        Date.now().toString(36) +
+          '-' +
+          Array.from(globalThis.crypto.getRandomValues(new Uint8Array(6)))
+            .map((b) => b.toString(16).padStart(2, '0'))
+            .join('')
+            .substr(0, 9);
     }
 
     await db.put('columns', columnData);

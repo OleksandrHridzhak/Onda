@@ -21,6 +21,7 @@ export default [
         ...globals.browser,
         ...globals.node,
         ...globals.es2021,
+        globalThis: 'readonly',
       },
     },
     plugins: {
@@ -56,6 +57,7 @@ export default [
         ...globals.browser,
         ...globals.node,
         ...globals.es2021,
+        globalThis: 'readonly',
       },
     },
     plugins: {
