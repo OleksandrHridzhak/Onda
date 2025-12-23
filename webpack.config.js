@@ -1,7 +1,5 @@
-// webpack.config.js
 const path = require('node:path');
 
-// Спільні налаштування для обох
 const commonConfig = {
   mode: 'production',
   node: {
@@ -10,9 +8,8 @@ const commonConfig = {
   },
 };
 
-// 1. Конфіг для Main
 const mainConfig = {
-  ...commonConfig, // Копіюємо спільні налаштування
+  ...commonConfig,
   target: 'electron-main',
   entry: './main.js',
   output: {
@@ -21,9 +18,8 @@ const mainConfig = {
   },
 };
 
-// 2. Конфіг для Preload
 const preloadConfig = {
-  ...commonConfig, // Копіюємо спільні налаштування
+  ...commonConfig,
   target: 'electron-preload',
   entry: './preload.js',
   output: {
@@ -32,5 +28,4 @@ const preloadConfig = {
   },
 };
 
-// 3. Експортуємо обидва
 module.exports = [mainConfig, preloadConfig];
