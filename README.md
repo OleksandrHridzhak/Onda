@@ -1,4 +1,4 @@
-# Onda
+# Onda 🌊
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OleksandrHridzhak_Onda&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=OleksandrHridzhak_Onda)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=OleksandrHridzhak_Onda&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=OleksandrHridzhak_Onda)
