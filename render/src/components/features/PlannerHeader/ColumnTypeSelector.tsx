@@ -161,11 +161,8 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
 
 const styles = `
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fade-in {
-    animation: fadeIn 0.15s ease-out forwards;
+    from { opacity: 0; }
+    to { opacity: 1;  }
   }
 `;
 

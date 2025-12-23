@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PlannerHeader from '../features/PlannerHeader/PlannerHeader';
+import PlannerHeader from '../features/PlannerHeader';
 import { LoadingScreen } from '../shared/LoadingScreen';
 import { useTableLogic } from '../features/Table/TableLogic';
 import { useSelector, useDispatch } from 'react-redux';
@@ -42,10 +42,7 @@ const TableScreen: React.FC = () => {
     <div
       className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
     >
-      <PlannerHeader
-        setShowColumnSelector={tableLogic.setShowColumnSelector}
-        showColumnSelector={tableLogic.showColumnSelector}
-      />
+      <PlannerHeader />
       <Table />
     </div>
   );

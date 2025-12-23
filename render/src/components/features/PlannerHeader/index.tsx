@@ -1,32 +1,21 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { store } from '../../../store';
-import { createNewColumn } from '../../../store/tableSlice/tableSlice';
 import PomodoroWidget from './widgets/PomodoroWidget';
 import TimelineWidget from './widgets/TimelineWidget';
 import { TimeWidget } from './widgets/TimeWidget';
-import ColumnTypeSelector from './ColumnTypeSelector';
-import { AddNewColumnBtn } from './widgets/AddNewColumnBtn';
 
 interface PlannerHeaderProps {
   darkTheme?: boolean;
   layout?: string[];
-  showColumnSelector: boolean;
-  setShowColumnSelector: (show: boolean) => void;
 }
 
 const PlannerHeader: React.FC<PlannerHeaderProps> = ({
   darkTheme = false,
   layout = ['TimelineWidget', 'PomodoroWidget'],
-  showColumnSelector,
-  setShowColumnSelector,
 }) => {
   const dispatch = useDispatch<typeof store.dispatch>();
 
-  const handleAddColumn = (columnType: string) => {
-    dispatch(createNewColumn({ columnType }));
-    setShowColumnSelector(false);
-  };
   const widgetComponents: Record<
     string,
     React.ComponentType<{ darkTheme?: boolean }>
@@ -48,26 +37,11 @@ const PlannerHeader: React.FC<PlannerHeaderProps> = ({
           <TimeWidget />
           <div className="hidden md:flex flex-wrap items-center">
             {renderWidgets(layout)}
-            <div className="flex justify-center">
-              <AddNewColumnBtn
-                setShowColumnSelector={setShowColumnSelector}
-                showColumnSelector={showColumnSelector}
-              />
-            </div>
           </div>
         </div>
       ) : (
         <div className="flex justify-center items-center px-2 pt-10 pb-9">
           <TimeWidget />
-        </div>
-      )}
-      {showColumnSelector && (
-        <div className="absolute right-0 z-50">
-          <ColumnTypeSelector
-            onSelect={handleAddColumn}
-            onCancel={() => setShowColumnSelector(false)}
-            darkMode={darkTheme === true ? true : false}
-          />
         </div>
       )}
     </div>

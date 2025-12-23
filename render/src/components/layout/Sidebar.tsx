@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Plus } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleThemeMode } from '../../store/slices/newThemeSlice';
+import { createNewColumn } from '../../store/tableSlice/tableSlice';
+import ColumnTypeSelector from '../features/PlannerHeader/ColumnTypeSelector';
 import { sideBarItems } from '../../utils/constants';
 
 interface RootState {
@@ -18,6 +20,7 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
 
   const themeMode = useSelector((state: RootState) => state.newTheme.themeMode);
+  const [showColumnSelector, setShowColumnSelector] = useState(false);
 
   const deriveActive = (path: string): ActivePage => {
     if (path.startsWith('/calendar')) return 'calendar';
@@ -90,6 +93,40 @@ const Sidebar: React.FC = () => {
               </Link>
             );
           })}
+
+          {/* Add new table column button + type selector */}
+          <li
+            role="button"
+            tabIndex={0}
+            className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg`}
+            onClick={() => setShowColumnSelector(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setShowColumnSelector(true);
+              }
+            }}
+            aria-label="Open add column selector"
+            title="Add column"
+          >
+            <Plus
+              className={`w-6 h-6 transition-colors duration-300 text-iconInactive`}
+              strokeWidth={1.5}
+            />
+          </li>
+
+          {showColumnSelector && (
+            <div className="absolute left-12 z-50">
+              <ColumnTypeSelector
+                onSelect={(type: string) => {
+                  dispatch(createNewColumn({ columnType: type }));
+                  setShowColumnSelector(false);
+                }}
+                onCancel={() => setShowColumnSelector(false)}
+                darkMode={themeMode === 'dark'}
+              />
+            </div>
+          )}
           <li
             role="button"
             tabIndex={0}
