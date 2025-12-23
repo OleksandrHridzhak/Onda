@@ -1,20 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Settings,
-  LayoutGrid,
-  CalendarDays,
-  Table,
-  Eye,
-  Download,
-  X,
-} from 'lucide-react';
-import TableSection from '../features/Settings/sections/TableSection';
+import { Settings, Download, X } from 'lucide-react';
 import FullCloseSection from '../features/Settings/sections/FullCloseSection';
-import UISection from '../features/Settings/sections/UiSection';
 import DataSection from '../features/Settings/sections/DataSection';
-import HeaderSection from '../features/Settings/sections/HeaderSection';
-import CalendarSection from '../features/Settings/sections/CalendarSection';
 import { settingsService } from '../../services/settingsDB';
 
 interface ThemeSettings {
@@ -125,91 +113,7 @@ export default function SettingsDashboard(): React.ReactElement {
     localStorage.setItem('activeSection', activeSection);
   }, [activeSection]);
 
-  const handleSettingsChange = async (
-    section: keyof AppSettings,
-    newSettings:
-      | Partial<ThemeSettings>
-      | Partial<TableSettings>
-      | Partial<UiSettings>
-      | Partial<HeaderSettings>
-      | Partial<CalendarSettings>,
-  ): Promise<void> => {
-    const updatedSettings = {
-      ...settings,
-      [section]:
-        section === 'theme' && 'autoThemeSettings' in newSettings
-          ? {
-              ...settings.theme,
-              ...newSettings,
-              autoThemeSettings: {
-                ...settings.theme.autoThemeSettings,
-                ...(newSettings as Partial<ThemeSettings>).autoThemeSettings,
-              },
-            }
-          : { ...settings[section], ...newSettings },
-    };
-
-    setSettings(updatedSettings);
-
-    switch (section) {
-      case 'theme':
-        await settingsService.updateTheme(updatedSettings.theme);
-        if (
-          'darkMode' in newSettings ||
-          'accentColor' in newSettings ||
-          ('autoThemeSettings' in newSettings &&
-            (newSettings as Partial<ThemeSettings>).autoThemeSettings
-              ?.enabled !== undefined)
-        ) {
-          globalThis.location.reload();
-        }
-        break;
-      case 'table':
-        await settingsService.updateSettingsSection(newSettings, 'table');
-        break;
-      case 'ui':
-        await settingsService.updateSettingsSection(newSettings, 'ui');
-        break;
-      case 'header':
-        await settingsService.updateSettingsSection(newSettings, 'header');
-        break;
-      case 'calendar':
-        await settingsService.updateSettings(updatedSettings);
-        break;
-      default:
-        break;
-    }
-  };
-
   const sections: Section[] = [
-    {
-      id: 'table',
-      name: 'Table',
-      icon: <Table className="w-4 h-4" />,
-      component: (
-        <TableSection
-          settings={settings.table}
-          onTableChange={(newTable) => handleSettingsChange('table', newTable)}
-        />
-      ),
-    },
-    {
-      id: 'ui',
-      name: 'Interface',
-      icon: <Eye className="w-4 h-4" />,
-      component: (
-        <UISection
-          settings={settings}
-          onThemeChange={(newTheme) => handleSettingsChange('theme', newTheme)}
-          onAutoThemeChange={(newAutoThemeSettings) =>
-            handleSettingsChange('theme', {
-              autoThemeSettings:
-                newAutoThemeSettings as ThemeSettings['autoThemeSettings'],
-            })
-          }
-        />
-      ),
-    },
     {
       id: 'data',
       name: 'Data',
@@ -221,32 +125,6 @@ export default function SettingsDashboard(): React.ReactElement {
       name: 'System',
       icon: <X className="w-4 h-4" />,
       component: <FullCloseSection />,
-    },
-    {
-      id: 'header',
-      name: 'Header',
-      icon: <LayoutGrid className="w-4 h-4" />,
-      component: (
-        <HeaderSection
-          settings={settings}
-          onHeaderChange={(newHeader) =>
-            handleSettingsChange('header', newHeader)
-          }
-        />
-      ),
-    },
-    {
-      id: 'calendar',
-      name: 'Calendar',
-      icon: <CalendarDays className="w-4 h-4" />,
-      component: (
-        <CalendarSection
-          settings={settings}
-          onCalendarChange={(newCalendar) =>
-            handleSettingsChange('calendar', newCalendar)
-          }
-        />
-      ),
     },
   ];
 
