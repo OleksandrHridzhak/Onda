@@ -1,4 +1,5 @@
 # Onda
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OleksandrHridzhak_Onda&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=OleksandrHridzhak_Onda)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=OleksandrHridzhak_Onda&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=OleksandrHridzhak_Onda)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=OleksandrHridzhak_Onda&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=OleksandrHridzhak_Onda)
@@ -6,11 +7,16 @@
 
 [![Stack](https://skillicons.dev/icons?i=react,electron,ts,js,nodejs,html,css,figma)](https://skillicons.dev)
 
+
+
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img style="width: 49%;" alt="743shots_so" src="https://github.com/user-attachments/assets/6ec0d886-1055-48e2-9c2a-94194ad98133" />
   <img style="width: 49%;" alt="541shots_so" src="https://github.com/user-attachments/assets/80c037a8-e67b-4b43-ac22-3bae4c7c58a7" />
 </div>
 
+| Resource &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Version | Link &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| :--- | :---: | :--- |
+| **Onda - Windows** | 2.1 | [Download on Gumroad](https://davibes.gumroad.com/l/onda) |
 
 
 ---
