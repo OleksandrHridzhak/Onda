@@ -29,10 +29,6 @@ export const useTableLogic = () => {
     setShowColumnSelector,
   };
 };
-
-/**
- * Повертає стилі ширини для колонки
- */
 export const getWidthStyle = (column: any): React.CSSProperties => {
   return { width: `${column.width}px`, minWidth: `${column.width}px` };
 };

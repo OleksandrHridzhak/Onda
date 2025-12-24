@@ -100,11 +100,13 @@ const Sidebar: React.FC = () => {
           <li
             role="button"
             tabIndex={0}
-            className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${
-              showColumnSelector
-                ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText'
-                : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'
-            } ${active === 'settings' ? 'opacity-50 cursor-not-allowed hover:scale-100 hover:bg-transparent' : ''}`}
+            className={`transition-all duration-300 ease-in-out transform p-2.5 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primaryColor/30 ${
+              active === 'settings'
+                ? 'opacity-50 cursor-not-allowed bg-primaryColor text-linkInactiveText hover:scale-100 hover:bg-gray'
+                : showColumnSelector
+                  ? 'bg-primaryColor text-white scale-105 shadow-xl ring-1 ring-primaryColor/30'
+                  : 'bg-primaryColor text-white hover:scale-105 shadow-md'
+            }`}
             onClick={() => {
               if (active === 'settings') return;
               if (active === 'calendar') {
@@ -138,7 +140,7 @@ const Sidebar: React.FC = () => {
             }
           >
             <Plus
-              className={`w-6 h-6 transition-colors duration-300 ${showColumnSelector ? 'text-iconActive' : 'text-iconInactive'}`}
+              className={`w-6 h-6 md:w-7 md:h-7 transition-transform duration-300 ${showColumnSelector ? 'text-white' : 'text-white'}`}
               strokeWidth={1.5}
             />
           </li>
