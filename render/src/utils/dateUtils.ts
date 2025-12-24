@@ -4,12 +4,14 @@
 
 /**
  * Get the Monday of the week for a given date
+ * Returns a new Date object without mutating the input
  */
 export const getMonday = (date: Date): Date => {
   const d = new Date(date);
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(d.setDate(diff));
+  d.setDate(diff);
+  return d;
 };
 
 /**

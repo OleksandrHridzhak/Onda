@@ -78,7 +78,7 @@ export const MobileTodayView: React.FC = () => {
         }),
       );
     },
-    [selectedDayName], // dispatch is stable, no need to include it
+    [dispatch, selectedDayName], // dispatch is stable but included for ESLint
   );
 
   // Handler for Todo column changes
@@ -92,7 +92,7 @@ export const MobileTodayView: React.FC = () => {
         }),
       );
     },
-    [], // dispatch is stable
+    [dispatch], // dispatch is stable but included for ESLint
   );
 
   // Handler for TaskTable column changes - curried version to avoid inline functions
@@ -119,7 +119,7 @@ export const MobileTodayView: React.FC = () => {
         );
       };
     },
-    [], // dispatch is stable
+    [dispatch], // dispatch is stable but included for ESLint
   );
 
   const renderCell = useCallback(
