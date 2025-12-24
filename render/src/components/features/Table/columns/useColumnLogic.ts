@@ -150,13 +150,16 @@ export const useColumnLogic = ({
 
   const columnForHeader = {
     id: columnId,
-    ...columnData,
     name: columnData.Name,
     type: columnData.Type?.toLowerCase(),
     emojiIcon: columnData.EmojiIcon,
     nameVisible: columnData.NameVisible,
     width: columnData.Width,
     description: columnData.Description,
+    checkboxColor: columnData.CheckboxColor,
+    options: columnData.uniqueProperties?.Options || [],
+    tagColors: columnData.uniqueProperties?.OptionsColors || {},
+    doneTags: columnData.uniqueProperties?.DoneTags || [],
   };
 
   return {
