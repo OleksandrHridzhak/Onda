@@ -136,7 +136,7 @@ export default function SettingsDashboard(): React.ReactElement {
       className={`font-poppins flex flex-col h-full custom-scroll bg-background`}
     >
       <div
-        className={`sticky top-0 z-10 bg-background border-border border-b px-8 py-6`}
+        className={`sticky top-0 z-10 bg-tableBodyBg border-border border-b px-8 py-6`}
       >
         <h1
           className={`text-xl font-medium text-textTableValues flex items-center`}
