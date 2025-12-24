@@ -241,7 +241,7 @@ export const MobileTodayView: React.FC = () => {
             </button>
           </div>
 
-          {/* Days row */}
+          {/* Days row - 7 columns for Mon-Sun */}
           <div className="w-full">
             <div className="grid grid-cols-7 gap-2">
               {weekDays.map((d) => {
