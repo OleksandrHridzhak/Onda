@@ -87,6 +87,10 @@ export const MobileTodayView: React.FC = () => {
     setSelectedDate(newDate);
   }, [selectedDate]);
 
+  const handleTodayClick = useCallback(() => {
+    setSelectedDate(new Date());
+  }, []);
+
   const handleCellChange = useCallback(
     (columnId: string, value: any) => {
       dispatch(
@@ -232,9 +236,13 @@ export const MobileTodayView: React.FC = () => {
               <ChevronLeft size={20} />
             </button>
 
-            <h2 className="text-sm font-medium text-text text-center">
+            <button
+              onClick={handleTodayClick}
+              className="text-sm font-medium text-text text-center px-3 py-1 rounded-lg hover:bg-hoverBg transition-colors active:scale-95"
+              aria-label="Go to today"
+            >
               {formattedDate}
-            </h2>
+            </button>
 
             <button
               onClick={handleNextWeek}
@@ -317,7 +325,7 @@ export const MobileTodayView: React.FC = () => {
             return (
               <div
                 key={cardKey}
-                className="bg-tableBodyBg border border-border rounded-lg p-3 flex items-center justify-between transition-shadow hover:shadow-sm"
+                className="bg-tableBodyBg border border-border rounded-lg p-3 flex items-center justify-between transition-all hover:shadow-sm"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {columnData.EmojiIcon && (
@@ -330,7 +338,7 @@ export const MobileTodayView: React.FC = () => {
                   </h3>
                 </div>
 
-                <div className="ml-3 flex items-center justify-end gap-2">
+                <div className="ml-3 flex items-center justify-end gap-2 flex-shrink-0">
                   <div className="min-w-[48px] flex items-center justify-center">
                     {renderCell(columnId, columnType, columnData)}
                   </div>
@@ -352,16 +360,16 @@ export const MobileTodayView: React.FC = () => {
           return (
             <div
               key={cardKey}
-              className="bg-tableBodyBg border border-border rounded-lg p-4 transition-shadow hover:shadow-sm"
+              className="bg-tableBodyBg border border-border rounded-lg p-4 transition-all hover:shadow-sm"
             >
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-text flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-text flex items-center gap-2 flex-1 min-w-0">
                   {columnData.EmojiIcon && (
-                    <span className="inline-flex items-center">
+                    <span className="inline-flex items-center flex-shrink-0">
                       {getIconComponent(columnData.EmojiIcon, 18)}
                     </span>
                   )}
-                  <span>{columnData.Name || columnType}</span>
+                  <span className="truncate">{columnData.Name || columnType}</span>
                 </h3>
                 <button
                   aria-label={`Open settings for ${columnData.Name || columnType}`}
@@ -369,7 +377,7 @@ export const MobileTodayView: React.FC = () => {
                     e.stopPropagation();
                     setOpenColumnMenu(columnId);
                   }}
-                  className="p-2 rounded-md text-textTableValues hover:bg-hoverBg transition-colors active:scale-95"
+                  className="p-2 rounded-md text-textTableValues hover:bg-hoverBg transition-colors active:scale-95 flex-shrink-0"
                 >
                   <MoreVertical size={18} />
                 </button>
