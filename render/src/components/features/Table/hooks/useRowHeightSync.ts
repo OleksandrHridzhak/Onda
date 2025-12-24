@@ -26,6 +26,9 @@ export const useRowHeightSync = (dependencies: any[]) => {
         ...tables.map((tbody) => tbody.querySelectorAll('tr').length),
       );
 
+      // Collect max heights per row so we can compute total height for single-row tables
+      const maxHeights: number[] = [];
+
       // For each row index, find and apply maximum height
       for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
         const rows: HTMLElement[] = [];
@@ -46,8 +49,23 @@ export const useRowHeightSync = (dependencies: any[]) => {
           rows.forEach((row) => {
             row.style.height = `${maxHeight}px`;
           });
+          maxHeights.push(maxHeight);
+        } else {
+          maxHeights.push(0);
         }
       }
+
+      // Sum max heights to get combined height for single-row tables (todo/tasktable)
+      const totalHeight = maxHeights.reduce((a, b) => a + b, 0);
+
+      // Apply total height to any single-row table so its single row matches the combined height
+      Array.from(allTables).forEach((tbody) => {
+        const rows = tbody.querySelectorAll('tr');
+        if (rows.length === 1) {
+          const row = rows[0] as HTMLElement;
+          row.style.height = `${totalHeight}px`;
+        }
+      });
     };
 
     // Trigger sync when data changes
