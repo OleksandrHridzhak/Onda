@@ -33,6 +33,9 @@ export const MobileTodayView: React.FC = () => {
     null,
   );
 
+  // Use ref for today's date string to avoid recalculation on every render
+  const todayDateString = React.useRef(new Date().toDateString()).current;
+
   // Memoized calculations
   const weekStart = useMemo(() => getMonday(selectedDate), [selectedDate]);
   const weekDays = useMemo(() => getWeekDays(weekStart), [weekStart]);
@@ -47,7 +50,6 @@ export const MobileTodayView: React.FC = () => {
     () => formatDateDisplay(selectedDate),
     [selectedDate],
   );
-  const todayDateString = useMemo(() => new Date().toDateString(), []);
 
   // Week navigation handlers
   const handlePreviousWeek = useCallback(() => {
@@ -76,7 +78,7 @@ export const MobileTodayView: React.FC = () => {
         }),
       );
     },
-    [dispatch, selectedDayName],
+    [selectedDayName], // dispatch is stable, no need to include it
   );
 
   // Handler for Todo column changes
@@ -90,33 +92,34 @@ export const MobileTodayView: React.FC = () => {
         }),
       );
     },
-    [dispatch],
+    [], // dispatch is stable
   );
 
-  // Handler for TaskTable column changes
-  const handleTaskTableChange = useCallback(
-    (
-      columnId: string,
-      columnData: any,
-      incomplete: string[],
-      tagColors: Record<string, string>,
-      completed: string[],
-    ) => {
-      dispatch(
-        updateCommonColumnProperties({
-          columnId,
-          properties: {
-            uniqueProperties: {
-              ...columnData.uniqueProperties,
-              Options: incomplete,
-              OptionsColors: tagColors,
-              DoneTags: completed,
+  // Handler for TaskTable column changes - curried version to avoid inline functions
+  const createTaskTableHandler = useCallback(
+    (columnId: string, columnData: any) => {
+      return (
+        id: string,
+        incomplete: string[],
+        tagColors: Record<string, string>,
+        completed: string[],
+      ) => {
+        dispatch(
+          updateCommonColumnProperties({
+            columnId: id,
+            properties: {
+              uniqueProperties: {
+                ...columnData.uniqueProperties,
+                Options: incomplete,
+                OptionsColors: tagColors,
+                DoneTags: completed,
+              },
             },
-          },
-        }),
-      );
+          }),
+        );
+      };
     },
-    [dispatch],
+    [], // dispatch is stable
   );
 
   const renderCell = useCallback(
@@ -195,15 +198,7 @@ export const MobileTodayView: React.FC = () => {
                 doneTags: columnData.uniqueProperties?.DoneTags || [],
                 tagColors: columnData.uniqueProperties?.OptionsColors || {},
               }}
-              onChangeOptions={(id, incomplete, tagColors, completed) =>
-                handleTaskTableChange(
-                  id,
-                  columnData,
-                  incomplete,
-                  tagColors,
-                  completed,
-                )
-              }
+              onChangeOptions={createTaskTableHandler(columnId, columnData)}
             />
           );
 
@@ -211,7 +206,7 @@ export const MobileTodayView: React.FC = () => {
           return <span className="text-gray-400">-</span>;
       }
     },
-    [dispatch, handleCellChange, handleTodoChange, handleTaskTableChange, selectedDayName],
+    [handleCellChange, handleTodoChange, createTaskTableHandler, selectedDayName],
   );
 
   return (
