@@ -17,9 +17,7 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
     id: string,
     options: string[],
     tagColors: Record<string, string>,
-    _doneTags?: string[],
   ) => {
-    void _doneTags;
     dispatch(
       updateCommonColumnProperties({
         columnId: id,

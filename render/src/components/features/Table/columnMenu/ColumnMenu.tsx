@@ -229,10 +229,6 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
               }
               optionColors={state.optionColors}
               darkMode={darkMode}
-              isColorMenuOpen={state.isColorMenuOpen}
-              toggleColorMenu={(option) =>
-                dispatch({ type: 'TOGGLE_COLOR_MENU', payload: option })
-              }
             />
           )}
           {column.type === 'checkbox' && (
@@ -242,7 +238,6 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 dispatch({ type: 'SET_CHECKBOX_COLOR', payload: color })
               }
               darkMode={darkMode}
-              isColorMenuOpen={state.isColorMenuOpen.checkbox}
               toggleColorMenu={() =>
                 dispatch({ type: 'TOGGLE_COLOR_MENU', payload: 'checkbox' })
               }

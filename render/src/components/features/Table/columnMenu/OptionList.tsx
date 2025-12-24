@@ -14,8 +14,6 @@ interface OptionsListProps {
   handleColorChange: (option: string, color: string) => void;
   optionColors: Record<string, string>;
   darkMode: boolean;
-  isColorMenuOpen?: Record<string, boolean>;
-  toggleColorMenu: (option: string) => void;
 }
 
 export const OptionsList: React.FC<OptionsListProps> = ({
@@ -30,9 +28,7 @@ export const OptionsList: React.FC<OptionsListProps> = ({
   handleColorChange,
   optionColors,
   darkMode,
-  toggleColorMenu: _toggleColorMenu,
 }) => {
-  void _toggleColorMenu;
   const getLabelText = () => {
     if (columnType === 'tasktable') return 'Tasks';
     if (columnType === 'multiselect') return 'Tags';

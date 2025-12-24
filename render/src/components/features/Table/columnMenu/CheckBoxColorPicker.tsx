@@ -5,7 +5,6 @@ interface CheckboxColorPickerProps {
   checkboxColor: string;
   setCheckboxColor: (color: string) => void;
   darkMode: boolean;
-  isColorMenuOpen: boolean;
   toggleColorMenu: () => void;
 }
 
@@ -13,10 +12,8 @@ export const CheckboxColorPicker: React.FC<CheckboxColorPickerProps> = ({
   checkboxColor,
   setCheckboxColor,
   darkMode,
-  isColorMenuOpen: _isColorMenuOpen,
   toggleColorMenu,
 }) => {
-  void _isColorMenuOpen;
   return (
     <div className="mb-4">
       <label className={`block text-sm font-medium text-textTableValues mb-1`}>

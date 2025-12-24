@@ -27,9 +27,7 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
     id: string,
     options: string[],
     tagColors: Record<string, string>,
-    _doneTags?: string[],
   ) => {
-    void _doneTags;
     dispatch(
       updateCommonColumnProperties({
         columnId: id,
