@@ -243,7 +243,7 @@ export const MobileTodayView: React.FC = () => {
 
           {/* Days row */}
           <div className="w-full">
-            <div className="flex gap-2 items-center overflow-x-auto pb-2 scrollbar-hide">
+            <div className="grid grid-cols-7 gap-2">
               {weekDays.map((d) => {
                 const short = d.toLocaleDateString('en-US', {
                   weekday: 'short',
@@ -255,7 +255,7 @@ export const MobileTodayView: React.FC = () => {
                   <button
                     key={d.toDateString()}
                     onClick={() => setSelectedDate(new Date(d))}
-                    className={`flex flex-col items-center justify-center border min-w-[48px] px-5 py-4 rounded-full text-xs transition-all active:scale-95 ${
+                    className={`flex flex-col items-center justify-center border px-2 py-3 rounded-full text-xs transition-all active:scale-95 ${
                       isActive
                         ? 'bg-primaryColor text-white border-primaryColor shadow-md'
                         : isToday
@@ -275,7 +275,7 @@ export const MobileTodayView: React.FC = () => {
       </div>
 
       {/* Spacer for fixed header - adjusted to match actual header height */}
-      <div className="h-32 md:h-0" />
+      <div className="h-28 md:h-0" />
 
       {/* Empty state when no columns */}
       {columnOrder.length === 0 && (
