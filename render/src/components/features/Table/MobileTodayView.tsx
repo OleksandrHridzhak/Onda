@@ -14,7 +14,11 @@ import {
 } from '../../../store/tableSlice/tableSlice';
 import { MobileColumnMenu } from './MobileColumnMenu';
 import { getIconComponent } from '../../../utils/icons';
-import { getMonday, getWeekDays, formatDateDisplay } from '../../../utils/dateUtils';
+import {
+  getMonday,
+  getWeekDays,
+  formatDateDisplay,
+} from '../../../utils/dateUtils';
 
 export const MobileTodayView: React.FC = () => {
   const dispatch = useDispatch();
@@ -173,8 +177,7 @@ export const MobileTodayView: React.FC = () => {
           );
 
         case 'todo':
-          const globalTodos =
-            columnData.uniqueProperties?.Chosen?.global || [];
+          const globalTodos = columnData.uniqueProperties?.Chosen?.global || [];
 
           return (
             <TodoCell
@@ -206,7 +209,12 @@ export const MobileTodayView: React.FC = () => {
           return <span className="text-gray-400">-</span>;
       }
     },
-    [handleCellChange, handleTodoChange, createTaskTableHandler, selectedDayName],
+    [
+      handleCellChange,
+      handleTodoChange,
+      createTaskTableHandler,
+      selectedDayName,
+    ],
   );
 
   return (
@@ -215,29 +223,13 @@ export const MobileTodayView: React.FC = () => {
       <div className="fixed top-0 left-0 right-0 z-40 bg-[var(--background)] border-b border-border md:relative md:top-0 md:border-b-0 md:bg-transparent">
         <div className="max-w-6xl mx-auto px-4 py-3">
           {/* Current date display with week navigation */}
-          <div className="flex items-center justify-between mb-3">
-            <button
-              onClick={handlePreviousWeek}
-              className="p-2 rounded-lg text-textTableValues hover:bg-hoverBg transition-colors active:scale-95"
-              aria-label="Previous week"
-            >
-              <ChevronLeft size={20} />
-            </button>
-
+          <div className="flex items-center justify-center mb-3">
             <button
               onClick={handleTodayClick}
               className="text-sm font-medium text-text text-center px-3 py-1 rounded-lg hover:bg-hoverBg transition-colors active:scale-95"
               aria-label="Go to today"
             >
               {formattedDate}
-            </button>
-
-            <button
-              onClick={handleNextWeek}
-              className="p-2 rounded-lg text-textTableValues hover:bg-hoverBg transition-colors active:scale-95"
-              aria-label="Next week"
-            >
-              <ChevronRight size={20} />
             </button>
           </div>
 
@@ -357,7 +349,9 @@ export const MobileTodayView: React.FC = () => {
                       {getIconComponent(columnData.EmojiIcon, 18)}
                     </span>
                   )}
-                  <span className="truncate">{columnData.Name || columnType}</span>
+                  <span className="truncate">
+                    {columnData.Name || columnType}
+                  </span>
                 </h3>
                 <button
                   aria-label={`Open settings for ${columnData.Name || columnType}`}
