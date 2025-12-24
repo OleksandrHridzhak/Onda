@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSelector, useDispatch } from 'react-redux';
 import {
   updateColumnNested,

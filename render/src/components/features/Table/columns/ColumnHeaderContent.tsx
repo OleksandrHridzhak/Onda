@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import ColumnMenu from '../columnMenu/ColumnMenu';
 import { getIconComponent } from '../../../../utils/icons';

@@ -30,8 +30,9 @@ export const OptionsList: React.FC<OptionsListProps> = ({
   handleColorChange,
   optionColors,
   darkMode,
-  toggleColorMenu,
+  toggleColorMenu: _toggleColorMenu,
 }) => {
+  void _toggleColorMenu;
   const getLabelText = () => {
     if (columnType === 'tasktable') return 'Tasks';
     if (columnType === 'multiselect') return 'Tags';

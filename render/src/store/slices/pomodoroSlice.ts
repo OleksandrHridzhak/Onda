@@ -44,7 +44,7 @@ const pomodoroSlice = createSlice({
     setNotifyEnabled: (state, action) => {
       state.notifyEnabled = action.payload;
     },
-    resetTimer: (state) => {
+    resetTimer: () => {
       return initialState;
     },
     updateTime: (state) => {

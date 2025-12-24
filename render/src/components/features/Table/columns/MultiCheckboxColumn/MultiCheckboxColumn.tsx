@@ -19,8 +19,9 @@ export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
     id: string,
     options: string[],
     tagColors: Record<string, string>,
-    doneTags?: string[],
+    _doneTags?: string[],
   ) => {
+    void _doneTags;
     dispatch(
       updateCommonColumnProperties({
         columnId: id,

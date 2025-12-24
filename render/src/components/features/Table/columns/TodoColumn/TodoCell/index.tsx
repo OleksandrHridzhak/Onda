@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getColorOptions } from '../../../../../../utils/colorOptions';
 import { useTodoState } from './hooks/useTodoState';
 import { filterTodos } from './logic';
 import { TodoInput } from './TodoInput';
@@ -37,8 +36,6 @@ export const TodoCell: React.FC<TodoCellProps> = ({
 }) => {
   const { themeMode } = useSelector((state: RootState) => state.newTheme);
   const darkMode = themeMode === 'dark';
-  const colorOptions = getColorOptions({ darkMode });
-
   const {
     todos,
     setTodos,

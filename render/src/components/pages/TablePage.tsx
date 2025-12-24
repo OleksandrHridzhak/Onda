@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from 'react';
 import PlannerHeader from '../features/PlannerHeader';
 import { LoadingScreen } from '../shared/LoadingScreen';

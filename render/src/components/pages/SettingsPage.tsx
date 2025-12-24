@@ -64,7 +64,7 @@ export default function SettingsDashboard(): React.ReactElement {
   const [activeSection, setActiveSection] = useState(() => {
     return localStorage.getItem('activeSection') || 'table';
   });
-  const [settings, setSettings] = useState<AppSettings>({
+  const [, setSettings] = useState<AppSettings>({
     theme: {
       accentColor: 'standard',
       darkMode: true,

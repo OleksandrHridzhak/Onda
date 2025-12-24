@@ -1,6 +1,4 @@
 import { openDB } from 'idb';
-import { getColumnTemplates } from '../utils/fileTemplates';
-
 // Ініціалізація бази даних
 export const dbPromise = openDB('ondaDB', 2, {
   upgrade(db, oldVersion) {

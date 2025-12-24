@@ -27,8 +27,9 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
     id: string,
     options: string[],
     tagColors: Record<string, string>,
-    doneTags?: string[],
+    _doneTags?: string[],
   ) => {
+    void _doneTags;
     dispatch(
       updateCommonColumnProperties({
         columnId: id,
@@ -57,7 +58,9 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
     customHandleChangeOptions,
   });
 
-  const handleCellChange = (newValue: any) => {
+  const handleCellChange = (
+    newValue: Array<{ text: string; completed: boolean; category?: string }>,
+  ) => {
     dispatch(
       updateColumnNested({
         columnId,

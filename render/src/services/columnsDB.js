@@ -1,4 +1,3 @@
-/* global globalThis:readonly */
 import { dbPromise } from './indexedDB';
 
 // Нові функції для роботи з окремими колонками
