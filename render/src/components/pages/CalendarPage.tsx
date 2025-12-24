@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import EventModal from '../features/Calendar/EventModal';
 import CalendarHeader from '../features/Calendar/CalendarHeader';
 import CalendarTimeline from '../features/Calendar/CalendarTimeline';
@@ -57,15 +57,11 @@ export default function Calendar(): React.ReactElement {
   } = layout;
 
   const {
-    events,
-    isLoading,
-    error,
     showEventModal,
     setShowEventModal,
     newEvent,
     setNewEvent,
     editingEventId,
-    setEditingEventId,
     createOrUpdateEvent,
     deleteEvent,
     validateTime,
@@ -104,6 +100,23 @@ export default function Calendar(): React.ReactElement {
   const handleDeleteEvent = async (eventId: string): Promise<void> => {
     await deleteEvent(eventId);
   };
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent)?.detail;
+      const date = detail?.date ? new Date(detail.date) : new Date();
+      openNewEventAt(date);
+    };
+    window.addEventListener(
+      'open-calendar-new-event',
+      handler as EventListener,
+    );
+    return () =>
+      window.removeEventListener(
+        'open-calendar-new-event',
+        handler as EventListener,
+      );
+  }, [openNewEventAt]);
 
   return (
     <div className={`font-poppins min-h-screen bg-tableHeader`}>
@@ -159,9 +172,6 @@ export default function Calendar(): React.ReactElement {
         goToPrevious={goToPrevious}
         goToCurrent={goToCurrent}
         goToNext={goToNext}
-        setNewEvent={setNewEvent}
-        setEditingEventId={setEditingEventId}
-        setShowEventModal={setShowEventModal}
       />
 
       <CalendarTimeline

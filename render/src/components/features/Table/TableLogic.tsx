@@ -34,7 +34,5 @@ export const useTableLogic = () => {
  * Повертає стилі ширини для колонки
  */
 export const getWidthStyle = (column: any): React.CSSProperties => {
-  if (column.type === 'days') return { width: '120px', minWidth: '120px' };
-  if (column.type === 'filler') return { width: 'auto', minWidth: '0px' };
   return { width: `${column.width}px`, minWidth: `${column.width}px` };
 };

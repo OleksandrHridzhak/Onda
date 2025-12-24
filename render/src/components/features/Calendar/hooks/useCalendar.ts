@@ -27,7 +27,7 @@ export interface NewEvent {
 export function useCalendar() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<unknown>(null);
 
   const [showEventModal, setShowEventModal] = useState<boolean>(false);
   const [editingEventId, setEditingEventId] = useState<string | null>(null);

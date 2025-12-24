@@ -109,7 +109,6 @@ export function useCalendarLayout(events: CalendarEvent[] = []) {
       getWeekNumber(new Date(event.date));
 
     events.forEach((event) => {
-      const eventDate = new Date(event.date);
       const dayIndex = day.getDay();
 
       if (!event.isRepeating) {

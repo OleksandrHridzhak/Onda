@@ -1,5 +1,5 @@
 {
-  "watch": ["*.ts", "*.js", "main.bundle.js", "preload.bundle.js"],
+  "watch": ["*.ts", "*.js", "main.bundle.js", "preload.bundle.js", "*.tsx"],
   "ignore": ["*.json"],
   "exec": "electron ."
 }

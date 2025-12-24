@@ -43,7 +43,7 @@ const Table: React.FC = () => {
     id: daysColumnId || 'days',
     name: daysColumnData?.Name || 'Days',
     type: 'days',
-    width: daysColumnData?.Width || 120,
+    width: daysColumnData?.Width || 135,
   };
 
   // Sync row heights across all table columns
@@ -96,7 +96,7 @@ const Table: React.FC = () => {
 
               <TableItemWrapper
                 key={'filler'}
-                column={{ id: 'filler', type: 'filler', width: 0 }}
+                column={{ id: 'filler', type: 'filler', width: 'auto' }}
               >
                 <FillerColumn />
               </TableItemWrapper>

@@ -3,20 +3,8 @@ import {
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
-  Plus,
   ChevronDown,
 } from 'lucide-react';
-import { BubbleBtn } from '../../shared/BubbleBtn';
-
-interface NewEvent {
-  title: string;
-  startTime: string;
-  endTime: string;
-  color: string;
-  isRepeating: boolean;
-  repeatDays: number[];
-  repeatFrequency: string;
-}
 
 interface CalendarHeaderProps {
   viewMode: string;
@@ -28,9 +16,6 @@ interface CalendarHeaderProps {
   goToPrevious: () => void;
   goToCurrent: () => void;
   goToNext: () => void;
-  setNewEvent: (event: NewEvent) => void;
-  setEditingEventId: (id: string | null) => void;
-  setShowEventModal: (show: boolean) => void;
 }
 
 export default function CalendarHeader({
@@ -43,9 +28,6 @@ export default function CalendarHeader({
   goToPrevious,
   goToCurrent,
   goToNext,
-  setNewEvent,
-  setEditingEventId,
-  setShowEventModal,
 }: CalendarHeaderProps): React.ReactElement {
   return (
     <div
@@ -114,24 +96,6 @@ export default function CalendarHeader({
               <ChevronDown size={16} />
             </div>
           </div>
-          <BubbleBtn
-            onClick={() => {
-              setNewEvent({
-                title: '',
-                startTime: '09:00',
-                endTime: '10:00',
-                color: '#2563eb',
-                isRepeating: false,
-                repeatDays: [],
-                repeatFrequency: 'weekly',
-              });
-              setEditingEventId(null);
-              setShowEventModal(true);
-            }}
-          >
-            <Plus size={16} className="mr-2" />
-            New Event
-          </BubbleBtn>
         </div>
       </div>
     </div>

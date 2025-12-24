@@ -68,24 +68,26 @@ const Sidebar: React.FC = () => {
         >
           {sideBarItems.map((item) => {
             const Icon = item.icon;
+            const isActive = !showColumnSelector && active === item.name;
             return (
               <Link
                 key={item.name}
                 to={item.path}
-                onClick={() => setActive(item.name as ActivePage)}
+                onClick={() => {
+                  setActive(item.name as ActivePage);
+                  setShowColumnSelector(false);
+                }}
               >
                 <li
                   className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${
-                    active === item.name
+                    isActive
                       ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText'
                       : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'
                   }`}
                 >
                   <Icon
                     className={`w-6 h-6 transition-colors duration-300 ${
-                      active === item.name
-                        ? 'text-iconActive'
-                        : 'text-iconInactive'
+                      isActive ? 'text-iconActive' : 'text-iconInactive'
                     } `}
                     strokeWidth={1.5}
                   />
@@ -98,19 +100,45 @@ const Sidebar: React.FC = () => {
           <li
             role="button"
             tabIndex={0}
-            className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg`}
-            onClick={() => setShowColumnSelector(true)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
+            className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${
+              showColumnSelector
+                ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText'
+                : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'
+            } ${active === 'settings' ? 'opacity-50 cursor-not-allowed hover:scale-100 hover:bg-transparent' : ''}`}
+            onClick={() => {
+              if (active === 'settings') return;
+              if (active === 'calendar') {
+                window.dispatchEvent(
+                  new CustomEvent('open-calendar-new-event'),
+                );
+                setShowColumnSelector(false);
+              } else {
                 setShowColumnSelector(true);
               }
             }}
+            onKeyDown={(e) => {
+              if (active === 'settings') return;
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (active === 'calendar') {
+                  window.dispatchEvent(
+                    new CustomEvent('open-calendar-new-event'),
+                  );
+                  setShowColumnSelector(false);
+                } else {
+                  setShowColumnSelector(true);
+                }
+              }
+            }}
             aria-label="Open add column selector"
-            title="Add column"
+            aria-pressed={showColumnSelector}
+            aria-disabled={active === 'settings'}
+            title={
+              active === 'settings' ? 'Disabled in Settings' : 'Add column'
+            }
           >
             <Plus
-              className={`w-6 h-6 transition-colors duration-300 text-iconInactive`}
+              className={`w-6 h-6 transition-colors duration-300 ${showColumnSelector ? 'text-iconActive' : 'text-iconInactive'}`}
               strokeWidth={1.5}
             />
           </li>

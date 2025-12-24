@@ -1,3 +1,4 @@
+/* global globalThis:readonly */
 import { dbPromise } from './indexedDB';
 
 // Нові функції для роботи з окремими колонками
@@ -40,14 +41,19 @@ export async function addColumn(columnData) {
 
     // Генеруємо id якщо його немає
     if (!columnData.id) {
-      columnData.id =
-        globalThis.crypto?.randomUUID?.() ||
-        Date.now().toString(36) +
-          '-' +
-          Array.from(globalThis.crypto.getRandomValues(new Uint8Array(6)))
-            .map((b) => b.toString(16).padStart(2, '0'))
-            .join('')
-            .substr(0, 9);
+      const hasCrypto = typeof globalThis !== 'undefined' && globalThis.crypto;
+      const uuid =
+        hasCrypto && globalThis.crypto.randomUUID
+          ? globalThis.crypto.randomUUID()
+          : null;
+      const randPart =
+        hasCrypto && globalThis.crypto.getRandomValues
+          ? Array.from(globalThis.crypto.getRandomValues(new Uint8Array(6)))
+              .map((b) => b.toString(16).padStart(2, '0'))
+              .join('')
+              .substr(0, 9)
+          : Date.now().toString(36).slice(-9);
+      columnData.id = uuid || `${Date.now().toString(36)}-${randPart}`;
     }
 
     await db.put('columns', columnData);

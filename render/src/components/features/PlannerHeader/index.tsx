@@ -1,6 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { store } from '../../../store';
 import PomodoroWidget from './widgets/PomodoroWidget';
 import TimelineWidget from './widgets/TimelineWidget';
 import { TimeWidget } from './widgets/TimeWidget';
@@ -14,8 +12,6 @@ const PlannerHeader: React.FC<PlannerHeaderProps> = ({
   darkTheme = false,
   layout = ['TimelineWidget', 'PomodoroWidget'],
 }) => {
-  const dispatch = useDispatch<typeof store.dispatch>();
-
   const widgetComponents: Record<
     string,
     React.ComponentType<{ darkTheme?: boolean }>
