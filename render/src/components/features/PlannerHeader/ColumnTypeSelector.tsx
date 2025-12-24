@@ -38,11 +38,13 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
         'Checklist-style column for tasks with categories and quick add.',
       icon: (
         <ListTodo
-          className={`w-5 h-5 ${darkMode ? 'text-red-400' : 'text-red-600'}`}
+          className={`w-5 h-5 ${darkMode ? 'text-red-200' : 'text-red-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-red-900' : 'bg-red-50',
-      hoverColor: darkMode ? 'hover:bg-red-800' : 'hover:bg-red-100',
+      bgColor: darkMode ? 'bg-red-800 bg-opacity-40' : 'bg-red-200',
+      hoverColor: darkMode
+        ? 'hover:bg-red-700 hover:bg-opacity-50'
+        : 'hover:bg-red-300',
     },
     {
       id: 'checkbox',
@@ -50,11 +52,13 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
       description: 'Simple on/off checkbox for marking items done.',
       icon: (
         <CheckSquare
-          className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}
+          className={`w-5 h-5 ${darkMode ? 'text-blue-200' : 'text-blue-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-blue-900' : 'bg-blue-50',
-      hoverColor: darkMode ? 'hover:bg-blue-800' : 'hover:bg-blue-100',
+      bgColor: darkMode ? 'bg-blue-800 bg-opacity-40' : 'bg-blue-200',
+      hoverColor: darkMode
+        ? 'hover:bg-blue-700 hover:bg-opacity-50'
+        : 'hover:bg-blue-300',
     },
     {
       id: 'numberbox',
@@ -62,11 +66,13 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
       description: 'Numeric input for counts, scores or measurements.',
       icon: (
         <Hash
-          className={`w-5 h-5 ${darkMode ? 'text-green-400' : 'text-green-600'}`}
+          className={`w-5 h-5 ${darkMode ? 'text-green-200' : 'text-green-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-green-900' : 'bg-green-50',
-      hoverColor: darkMode ? 'hover:bg-green-800' : 'hover:bg-green-100',
+      bgColor: darkMode ? 'bg-green-800 bg-opacity-40' : 'bg-green-200',
+      hoverColor: darkMode
+        ? 'hover:bg-green-700 hover:bg-opacity-50'
+        : 'hover:bg-green-300',
     },
     {
       id: 'multiselect',
@@ -74,11 +80,13 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
       description: 'Tag-based multi-select for categorizing items.',
       icon: (
         <Tag
-          className={`w-5 h-5 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}
+          className={`w-5 h-5 ${darkMode ? 'text-purple-200' : 'text-purple-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-purple-900' : 'bg-purple-50',
-      hoverColor: darkMode ? 'hover:bg-purple-800' : 'hover:bg-purple-100',
+      bgColor: darkMode ? 'bg-purple-800 bg-opacity-40' : 'bg-purple-200',
+      hoverColor: darkMode
+        ? 'hover:bg-purple-700 hover:bg-opacity-50'
+        : 'hover:bg-purple-300',
     },
 
     {
@@ -87,11 +95,13 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
       description: 'Free-form text field for notes and descriptions.',
       icon: (
         <Type
-          className={`w-5 h-5 ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}
+          className={`w-5 h-5 ${darkMode ? 'text-amber-200' : 'text-amber-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-amber-900' : 'bg-amber-50',
-      hoverColor: darkMode ? 'hover:bg-amber-800' : 'hover:bg-amber-100',
+      bgColor: darkMode ? 'bg-amber-800 bg-opacity-40' : 'bg-amber-200',
+      hoverColor: darkMode
+        ? 'hover:bg-amber-700 hover:bg-opacity-50'
+        : 'hover:bg-amber-300',
     },
     {
       id: 'multicheckbox',
@@ -99,11 +109,13 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
       description: 'Multiple checkbox options for subtasks or choices.',
       icon: (
         <Circle
-          className={`w-5 h-5 ${darkMode ? 'text-teal-400' : 'text-teal-600'}`}
+          className={`w-5 h-5 ${darkMode ? 'text-teal-200' : 'text-teal-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-teal-900' : 'bg-teal-50',
-      hoverColor: darkMode ? 'hover:bg-teal-800' : 'hover:bg-teal-100',
+      bgColor: darkMode ? 'bg-teal-800 bg-opacity-40' : 'bg-teal-200',
+      hoverColor: darkMode
+        ? 'hover:bg-teal-700 hover:bg-opacity-50'
+        : 'hover:bg-teal-300',
     },
     {
       id: 'tasktable',
@@ -111,11 +123,13 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
       description: 'Nested task table for managing tasks inside a row.',
       icon: (
         <Table
-          className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
+          className={`w-5 h-5 ${darkMode ? 'text-gray-200' : 'text-gray-600'}`}
         />
       ),
-      bgColor: darkMode ? 'bg-gray-800' : 'bg-gray-50',
-      hoverColor: darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100',
+      bgColor: darkMode ? 'bg-gray-800 bg-opacity-36' : 'bg-gray-200',
+      hoverColor: darkMode
+        ? 'hover:bg-gray-700 hover:bg-opacity-50'
+        : 'hover:bg-gray-300',
     },
   ];
 
@@ -134,7 +148,7 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
     >
       {/* Panel occupies full viewport except left sidebar on md+ */}
       <div
-        className={`relative w-full h-full ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-100'} z-50 border md:border-l-0 overflow-auto animate-fade-in`}
+        className={`relative w-full h-full  ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-100'} z-50 border md:border-l-0 animate-fade-in`}
       >
         <div
           className={`p-4 border-b ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-100 bg-white'} flex justify-between items-center sticky top-0 z-10`}
@@ -156,7 +170,7 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
         </div>
 
         <div
-          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 h-[calc(100%-64px)] overflow-auto`}
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 h-[calc(100%-64px)] overflow-auto ${darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'} md:hide-scrollbar`}
         >
           {columnTypes.map((type) => (
             <button
@@ -165,7 +179,7 @@ const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
               className={`w-full h-full flex flex-col items-start justify-start gap-4 p-6 transition-all duration-200 ${type.bgColor} ${type.hoverColor} rounded-lg`}
             >
               <div
-                className={`p-3 rounded-lg ${darkMode ? 'bg-opacity-70' : ''} ${type.bgColor.replace(darkMode ? '900' : '50', darkMode ? '800' : '100')}`}
+                className={`p-3 rounded-lg ${darkMode ? type.bgColor : type.bgColor.replace('200', '100')}`}
               >
                 {type.icon}
               </div>

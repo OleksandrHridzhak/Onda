@@ -120,3 +120,20 @@
 .custom-scroll-thin-dark::-webkit-scrollbar-thumb:hover {
   background: rgba(107, 114, 128, 0.9);
 }
+
+/* Hide scrollbar utilities */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.hide-scrollbar-y {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar-y::-webkit-scrollbar {
+  display: none;
+}
