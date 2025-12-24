@@ -81,13 +81,13 @@ export default function CalendarTimeline({
         >
           <div className="flex">
             <div
-              className={`w-20 flex-shrink-0 sticky left-0 bg-background z-10`}
+              className={`w-14 sm:w-20 flex-shrink-0 sticky left-0 bg-background z-10`}
             >
               <div className="h-16" />
               {hours.map((hour) => (
                 <div
                   key={hour}
-                  className={`h-[80px] flex items-start justify-end pr-3 text-sm text-textTableValues -translate-y-2.5`}
+                  className={`h-[60px] sm:h-[80px] flex items-start justify-end pr-2 sm:pr-3 text-xs sm:text-sm text-textTableValues -translate-y-2.5`}
                 >
                   {formatTime(hour)}
                 </div>
@@ -111,7 +111,7 @@ export default function CalendarTimeline({
                         day.toDateString() === new Date().toDateString()
                           ? 'bg-primaryColor text-white'
                           : 'text-text'
-                      } rounded-full w-6 h-6 flex items-center justify-center mx-auto`}
+                      } rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center mx-auto text-xs sm:text-sm`}
                     >
                       {day.getDate()}
                     </div>

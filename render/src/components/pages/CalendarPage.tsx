@@ -119,7 +119,9 @@ export default function Calendar(): React.ReactElement {
   }, [openNewEventAt]);
 
   return (
-    <div className={`font-poppins min-h-screen bg-tableHeader`}>
+    <div
+      className={`font-poppins min-h-screen bg-tableHeader overflow-y-hidden`}
+    >
       <style>{`
         .custom-checkbox {
           position: relative;

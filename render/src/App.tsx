@@ -35,7 +35,9 @@ function MainContent() {
     typeof globalThis !== 'undefined' && !!globalThis.electronAPI;
 
   return (
-    <div className={`flex-1 flex flex-col bg-background overflow-x-auto`}>
+    <div
+      className={`flex-1 flex flex-col bg-background overflow-x-auto overflow-y-hidden`}
+    >
       {isElectron && <MenuWin currentPage={location.pathname} />}
       <Routes>
         <Route path="/" element={<Table />} />
