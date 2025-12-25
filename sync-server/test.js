@@ -5,7 +5,7 @@
  * Tests all API endpoints with various scenarios
  */
 
-const testSecretKey = 'test-key-12345';
+const testSecretKey = 'TEST-KEY-FOR-INTEGRATION-TESTS-ONLY';
 const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
 
 const colors = {

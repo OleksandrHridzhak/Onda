@@ -240,8 +240,12 @@ class SyncService {
       // Import server data into local database
       await importData(serverData);
 
-      // Update local version
-      this.localVersion = serverData.version || this.localVersion + 1;
+      // Update local version - use server version if available, otherwise increment local
+      if (serverData.version && typeof serverData.version === 'number') {
+        this.localVersion = serverData.version;
+      } else {
+        this.localVersion = this.localVersion + 1;
+      }
       this.lastSyncTime = new Date().toISOString();
 
       return { status: 'success', message: 'Data merged successfully' };

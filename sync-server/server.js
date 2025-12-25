@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// In-memory storage for simplicity (можна замінити на файлову систему або базу даних)
+// In-memory storage (can be replaced with a database if needed)
 const syncData = new Map();
 const DATA_DIR = join(__dirname, 'data');
 
@@ -47,7 +47,7 @@ const saveData = async (secretKey, data) => {
   }
 };
 
-// Middleware для перевірки secret key
+// Middleware to verify secret key
 const authenticateKey = (req, res, next) => {
   const secretKey = req.headers['x-secret-key'];
   if (!secretKey || secretKey.length < 8) {
@@ -127,7 +127,7 @@ app.post('/sync/push', authenticateKey, async (req, res) => {
     }
 
     // Simple conflict resolution: last write wins
-    // В production можна додати більш складну логіку конфліктів
+    // In production, more sophisticated conflict logic can be added
     const newVersion = serverData.version + 1;
     serverData = {
       content: clientData,
