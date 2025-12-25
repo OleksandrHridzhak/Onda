@@ -41,9 +41,20 @@ export function useCalendarLayout(events: CalendarEvent[] = []) {
   }, [currentWeekStart]);
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
-  const slotHeight = 80;
+  const [slotHeight, setSlotHeight] = useState<number>(() => {
+    if (typeof window === 'undefined') return 80;
+    return window.innerWidth < 640 ? 60 : 80;
+  });
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const update = () => setSlotHeight(window.innerWidth < 640 ? 60 : 80);
+    window.addEventListener('resize', update);
+    // Run once to ensure initial value
+    update();
+    return () => window.removeEventListener('resize', update);
+  }, []);
 
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   useEffect(() => {

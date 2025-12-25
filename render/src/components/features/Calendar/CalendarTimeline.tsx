@@ -87,7 +87,11 @@ export default function CalendarTimeline({
               {hours.map((hour) => (
                 <div
                   key={hour}
-                  className={`h-[60px] sm:h-[80px] flex items-start justify-end pr-2 sm:pr-3 text-xs sm:text-sm text-textTableValues -translate-y-2.5`}
+                  className={`flex items-center justify-end pr-2 sm:pr-3 text-xs sm:text-sm text-textTableValues`}
+                  style={{
+                    height: `${slotHeight}px`,
+                    lineHeight: `${slotHeight}px`,
+                  }}
                 >
                   {formatTime(hour)}
                 </div>
