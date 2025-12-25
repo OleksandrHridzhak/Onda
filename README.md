@@ -65,6 +65,43 @@ npm run start
 
 ---
 
+## Sync Feature 🔄
+
+Onda now supports cross-device synchronization! Keep your data in sync across all your devices using a secure secret key.
+
+### Key Features
+
+- **Local-First**: All changes saved locally immediately, sync happens in background
+- **Automatic Sync**: Background sync every 5 minutes
+- **Secure**: Protected by your secret key (minimum 8 characters)
+- **Simple Setup**: Easy configuration in Settings
+- **Works Offline**: Sync resumes automatically when connection returns
+
+### Quick Setup
+
+1. **Deploy Sync Server** (one-time setup)
+   - Use local server for testing: `cd sync-server && npm install && npm start`
+   - Or deploy to cloud (Render.com, Railway, Fly.io) - see [Deployment Guide](./docs/SYNC_DEPLOYMENT.md)
+
+2. **Configure Onda App**
+   - Go to Settings → Sync
+   - Generate or enter secret key
+   - Enter server URL
+   - Test connection
+   - Save and sync!
+
+3. **Setup Other Devices**
+   - Use same secret key and server URL
+   - Data syncs automatically
+
+### Documentation
+
+- 📖 [User Guide](./docs/SYNC_USER_GUIDE.md) - How to use sync
+- 🚀 [Deployment Guide](./docs/SYNC_DEPLOYMENT.md) - How to deploy server
+- 💡 [Sync Server README](./sync-server/README.md) - Server API reference
+
+---
+
 ## Mobile Development (Android)
 
 Onda supports mobile deployment via Capacitor for Android.
