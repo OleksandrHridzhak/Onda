@@ -35,7 +35,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
     <div className="relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="px-0 py-0 rounded-md cursor-pointer flex items-center justify-between h-full w-full bg-transparent hover:bg-transparent transition-colors"
+        className="px-2 py-1 md:px-0 md:py-0 rounded-md cursor-pointer flex items-center justify-between h-full w-full min-h-[2.5rem] md:min-h-[2rem] bg-transparent hover:bg-transparent transition-colors"
       >
         {selectedTags.length > 0 ? (
           <div className="flex flex-wrap gap-1">
@@ -55,13 +55,13 @@ export const TagsCell: React.FC<TagsCellProps> = ({
             })}
           </div>
         ) : (
-          <div className="h-full w-full min-h-[2rem]"></div>
+          <div className="h-full w-full min-h-[2.5rem] md:min-h-[2rem]"></div>
         )}
       </div>
       {/* Dropdown menu */}
       {isOpen && (
         <div
-          className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-md shadow-lg max-h-48 overflow-auto`}
+          className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'} rounded-md shadow-lg max-h-48 overflow-auto`}
         >
           {(options || []).map((option) => {
             const color = tagColors[option] || 'blue';
@@ -71,7 +71,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                 key={option}
                 role="button"
                 tabIndex={0}
-                className={`px-3 py-2 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-blue-50'} cursor-pointer text-sm whitespace-nowrap`}
+                className={`px-3 py-2 ${darkMode ? 'hover:bg-gray-700 text-gray-200' : 'hover:bg-blue-50 text-gray-800'} cursor-pointer text-sm whitespace-nowrap`}
                 onClick={() => {
                   handleTagChange(
                     option,

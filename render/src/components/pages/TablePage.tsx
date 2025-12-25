@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PlannerHeader from '../features/PlannerHeader';
 import { LoadingScreen } from '../shared/LoadingScreen';
 import { useTableLogic } from '../features/Table/TableLogic';
@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { store } from '../../store';
 import { loadColumnsFromDB } from '../../store/tableSlice/tableSlice';
 import Table from '../features/Table/Table';
+import { MobileTodayView } from '../features/Table/MobileTodayView';
 
 // Type for the Redux dispatch inferred from the store
 type AppDispatch = typeof store.dispatch;
@@ -30,6 +31,15 @@ const TableScreen: React.FC = () => {
     }
   }, [dispatch, reduxLoaded, reduxStatus]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   // Show loading screen while loading from IndexedDB
   const isLoading =
     tableLogic.loading || (!reduxLoaded && reduxStatus === 'loading');
@@ -42,8 +52,13 @@ const TableScreen: React.FC = () => {
     <div
       className={`font-poppins relative w-full max-w-6xl mx-auto bg-background`}
     >
-      <PlannerHeader />
-      <Table />
+      {!isMobile && (
+        <div>
+          <PlannerHeader />
+        </div>
+      )}
+
+      {isMobile ? <MobileTodayView /> : <Table />}
     </div>
   );
 };

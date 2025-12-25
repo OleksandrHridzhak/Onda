@@ -82,7 +82,8 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
 
   return (
     <div
-      className={`fixed z-50 cursor-default inset-0 flex items-center justify-center bg-black bg-opacity-50 text-text`}
+      className={`fixed z-[99999] cursor-default inset-0 flex items-center justify-center bg-black bg-opacity-50 text-text`}
+      style={{ WebkitTapHighlightColor: 'transparent' }}
     >
       <div
         className={`w-full max-w-md rounded-2xl bg-background border-border border shadow-md p-4`}

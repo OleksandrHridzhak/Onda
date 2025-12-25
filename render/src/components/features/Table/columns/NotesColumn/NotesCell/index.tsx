@@ -26,7 +26,7 @@ export const NotesCell: React.FC<NotesCellProps> = ({ value, onChange }) => {
         onChange={(e) => setTempValue(e.target.value)}
         onBlur={handleSave}
         onKeyDown={handleKeyDown}
-        className="w-full px-2 py-1 text-sm bg-transparent font-poppins rounded-md focus:outline-none resize-none"
+        className="w-full px-2 py-1 text-sm bg-transparent font-poppins rounded-md focus:outline-none resize-none text-textTableValues"
         rows={1}
         autoFocus
       />
@@ -42,7 +42,7 @@ export const NotesCell: React.FC<NotesCellProps> = ({ value, onChange }) => {
           startEditing(value, setIsEditing, setTempValue);
         }
       }}
-      className="w-full min-h-8 px-2 py-1 rounded-md cursor-text text-sm flex items-center group transition-colors"
+      className="w-full min-h-8 px-2 py-1 rounded-md cursor-text text-sm flex items-center group transition-colors text-textTableValues"
       aria-label="Edit note"
     >
       <div className="flex-1 min-w-0 overflow-hidden overflow-ellipsis whitespace-nowrap">
