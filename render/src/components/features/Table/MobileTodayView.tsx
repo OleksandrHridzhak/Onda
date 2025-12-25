@@ -55,19 +55,6 @@ export const MobileTodayView: React.FC = () => {
     [selectedDate],
   );
 
-  // Week navigation handlers
-  const handlePreviousWeek = useCallback(() => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(newDate.getDate() - 7);
-    setSelectedDate(newDate);
-  }, [selectedDate]);
-
-  const handleNextWeek = useCallback(() => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(newDate.getDate() + 7);
-    setSelectedDate(newDate);
-  }, [selectedDate]);
-
   const handleTodayClick = useCallback(() => {
     setSelectedDate(new Date());
   }, []);
@@ -220,7 +207,7 @@ export const MobileTodayView: React.FC = () => {
   return (
     <div className="font-poppins p-3 bg-[var(--background)] min-h-screen h-screen overflow-y-auto pb-28 md:pb-0">
       {/* Fixed week selector header (mobile) */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-[var(--background)] border-b border-border md:relative md:top-0 md:border-b-0 md:bg-transparent">
+      <div className=" top-0 left-0 right-0 mb-2 z-40 bg-[var(--background)]  border-border md:relative md:top-0 md:border-b-0 md:bg-transparent">
         <div className="max-w-6xl mx-auto px-4 py-3">
           {/* Current date display with week navigation */}
           <div className="flex items-center justify-center mb-3">
@@ -266,9 +253,6 @@ export const MobileTodayView: React.FC = () => {
         </div>
       </div>
 
-      {/* Spacer for fixed header - adjusted to match actual header height */}
-      <div className="h-28 md:h-0" />
-
       {/* Empty state when no columns */}
       {columnOrder.length === 0 && (
         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -309,7 +293,7 @@ export const MobileTodayView: React.FC = () => {
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {columnData.EmojiIcon && (
-                    <span className="flex-shrink-0 inline-flex items-center">
+                    <span className="flex-shrink-0 text-text inline-flex items-center">
                       {getIconComponent(columnData.EmojiIcon, 18)}
                     </span>
                   )}
