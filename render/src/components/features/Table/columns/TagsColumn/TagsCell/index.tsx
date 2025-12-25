@@ -35,7 +35,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
     <div className="relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="px-0 py-0 rounded-md cursor-pointer flex items-center justify-between h-full w-full bg-transparent hover:bg-transparent transition-colors"
+        className="px-2 py-1 md:px-0 md:py-0 rounded-md cursor-pointer flex items-center justify-between h-full w-full min-h-[2.5rem] md:min-h-[2rem] bg-transparent hover:bg-transparent transition-colors"
       >
         {selectedTags.length > 0 ? (
           <div className="flex flex-wrap gap-1">
@@ -55,7 +55,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
             })}
           </div>
         ) : (
-          <div className="h-full w-full min-h-[2rem]"></div>
+          <div className="h-full w-full min-h-[2.5rem] md:min-h-[2rem]"></div>
         )}
       </div>
       {/* Dropdown menu */}

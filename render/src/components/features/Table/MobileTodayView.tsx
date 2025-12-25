@@ -319,7 +319,9 @@ export const MobileTodayView: React.FC = () => {
                 </div>
 
                 <div className="ml-3 flex items-center justify-end gap-2 flex-shrink-0">
-                  <div className="min-w-[48px] flex items-center justify-center">
+                  <div
+                    className={`${['multiselect', 'multicheckbox'].includes(columnType) ? 'min-w-[96px] md:min-w-[48px]' : 'min-w-[48px]'} flex items-center justify-center`}
+                  >
                     {renderCell(columnId, columnType, columnData)}
                   </div>
                   <button
