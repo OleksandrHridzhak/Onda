@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Settings, Download, X } from 'lucide-react';
+import { Settings, Download, X, Cloud } from 'lucide-react';
 import FullCloseSection from '../features/Settings/sections/FullCloseSection';
 import DataSection from '../features/Settings/sections/DataSection';
+import SyncSection from '../features/Settings/sections/SyncSection';
 import { settingsService } from '../../services/settingsDB';
 
 interface ThemeSettings {
@@ -119,6 +120,12 @@ export default function SettingsDashboard(): React.ReactElement {
       name: 'Data',
       icon: <Download className="w-4 h-4" />,
       component: <DataSection />,
+    },
+    {
+      id: 'sync',
+      name: 'Sync',
+      icon: <Cloud className="w-4 h-4" />,
+      component: <SyncSection />,
     },
     {
       id: 'fullClose',

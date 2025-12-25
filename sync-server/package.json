@@ -1,0 +1,18 @@
+{
+  "name": "onda-sync-server",
+  "version": "1.0.0",
+  "description": "Lightweight sync server for Onda app",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["sync", "backend", "onda"],
+  "author": "Oleksandr Hridzhak",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
