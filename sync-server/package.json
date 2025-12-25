@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "node test.js"
   },
   "keywords": ["sync", "backend", "onda"],
   "author": "Oleksandr Hridzhak",
