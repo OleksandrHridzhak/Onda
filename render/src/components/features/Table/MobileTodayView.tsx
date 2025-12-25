@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { ChevronLeft, ChevronRight, MoreVertical } from 'lucide-react';
 import { CheckboxCell } from './columns/CheckboxColumn/CheckboxCell';
 import { NumberCell } from './columns/NumberColumn/NumberCell';
 import { NotesCell } from './columns/NotesColumn/NotesCell';
@@ -13,6 +14,11 @@ import {
 } from '../../../store/tableSlice/tableSlice';
 import { MobileColumnMenu } from './MobileColumnMenu';
 import { getIconComponent } from '../../../utils/icons';
+import {
+  getMonday,
+  getWeekDays,
+  formatDateDisplay,
+} from '../../../utils/dateUtils';
 
 export const MobileTodayView: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,175 +32,197 @@ export const MobileTodayView: React.FC = () => {
   // Selected day state (defaults to today)
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
 
-  function getMonday(date: Date): Date {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff));
-  }
-
-  function getWeekDays(startDate: Date): Date[] {
-    const days: Date[] = [];
-    const date = new Date(startDate);
-    for (let i = 0; i < 7; i++) {
-      days.push(new Date(date));
-      date.setDate(date.getDate() + 1);
-    }
-    return days;
-  }
-
-  const weekStart = getMonday(selectedDate);
-  const weekDays = getWeekDays(weekStart);
-  const selectedDayName = selectedDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-  });
-  const formatSelectedDate = selectedDate.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  const todayDateString = new Date().toDateString();
-
   // Column menu state (for mobile): which column's menu is open
   const [openColumnMenu, setOpenColumnMenu] = React.useState<string | null>(
     null,
   );
 
-  const handleCellChange = (columnId: string, value: any) => {
-    dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Days', selectedDayName],
-        value,
+  // Use ref for today's date string to avoid recalculation on every render
+  const todayDateString = React.useRef(new Date().toDateString()).current;
+
+  // Memoized calculations
+  const weekStart = useMemo(() => getMonday(selectedDate), [selectedDate]);
+  const weekDays = useMemo(() => getWeekDays(weekStart), [weekStart]);
+  const selectedDayName = useMemo(
+    () =>
+      selectedDate.toLocaleDateString('en-US', {
+        weekday: 'long',
       }),
-    );
-  };
+    [selectedDate],
+  );
+  const formattedDate = useMemo(
+    () => formatDateDisplay(selectedDate),
+    [selectedDate],
+  );
 
-  const renderCell = (
-    columnId: string,
-    columnType: string,
-    columnData: any,
-  ) => {
-    const cellValue = columnData.uniqueProperties?.Days?.[selectedDayName];
+  const handleTodayClick = useCallback(() => {
+    setSelectedDate(new Date());
+  }, []);
 
-    switch (columnType) {
-      case 'checkbox':
-        return (
-          <CheckboxCell
-            checked={cellValue || false}
-            onChange={(newValue) => handleCellChange(columnId, newValue)}
-            color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
-          />
-        );
+  const handleCellChange = useCallback(
+    (columnId: string, value: any) => {
+      dispatch(
+        updateColumnNested({
+          columnId,
+          path: ['Days', selectedDayName],
+          value,
+        }),
+      );
+    },
+    [dispatch, selectedDayName], // dispatch is stable but included for ESLint
+  );
 
-      case 'numberbox':
-        return (
-          <NumberCell
-            value={cellValue || ''}
-            onChange={(newValue) => handleCellChange(columnId, newValue)}
-          />
-        );
+  // Handler for Todo column changes
+  const handleTodoChange = useCallback(
+    (columnId: string, newValue: any) => {
+      dispatch(
+        updateColumnNested({
+          columnId,
+          path: ['Chosen', 'global'],
+          value: newValue,
+        }),
+      );
+    },
+    [dispatch], // dispatch is stable but included for ESLint
+  );
 
-      case 'text':
-        return (
-          <NotesCell
-            value={cellValue || ''}
-            onChange={(newValue) => handleCellChange(columnId, newValue)}
-          />
-        );
-
-      case 'multiselect':
-        return (
-          <TagsCell
-            value={cellValue || ''}
-            onChange={(newValue) => handleCellChange(columnId, newValue)}
-            options={columnData.uniqueProperties?.Tags || []}
-            tagColors={columnData.uniqueProperties?.TagsColors || {}}
-          />
-        );
-
-      case 'multicheckbox':
-        return (
-          <MultiCheckboxCell
-            value={cellValue || ''}
-            onChange={(newValue) => handleCellChange(columnId, newValue)}
-            options={columnData.uniqueProperties?.Options || []}
-            tagColors={columnData.uniqueProperties?.TagsColors || {}}
-          />
-        );
-
-      case 'todo':
-        const globalTodos = columnData.uniqueProperties?.Chosen?.global || [];
-        const handleTodoChange = (newValue: any) => {
-          dispatch(
-            updateColumnNested({
-              columnId,
-              path: ['Chosen', 'global'],
-              value: newValue,
-            }),
-          );
-        };
-
-        return (
-          <TodoCell
-            value={globalTodos}
-            column={{
-              id: columnId,
-              type: 'todo',
-              options: columnData.uniqueProperties?.Categorys || [],
-              tagColors: columnData.uniqueProperties?.CategoryColors || {},
-            }}
-            onChange={handleTodoChange}
-          />
-        );
-
-      case 'tasktable':
-        const handleTaskTableChange = (
-          id: string,
-          incomplete: string[],
-          tagColors: Record<string, string>,
-          completed: string[],
-        ) => {
-          dispatch(
-            updateCommonColumnProperties({
-              columnId: id,
-              properties: {
-                uniqueProperties: {
-                  ...columnData.uniqueProperties,
-                  Options: incomplete,
-                  OptionsColors: tagColors,
-                  DoneTags: completed,
-                },
+  // Handler for TaskTable column changes - curried version to avoid inline functions
+  const createTaskTableHandler = useCallback(
+    (columnId: string, columnData: any) => {
+      return (
+        id: string,
+        incomplete: string[],
+        tagColors: Record<string, string>,
+        completed: string[],
+      ) => {
+        dispatch(
+          updateCommonColumnProperties({
+            columnId: id,
+            properties: {
+              uniqueProperties: {
+                ...columnData.uniqueProperties,
+                Options: incomplete,
+                OptionsColors: tagColors,
+                DoneTags: completed,
               },
-            }),
-          );
-        };
-
-        return (
-          <TaskTableCell
-            column={{
-              id: columnId,
-              options: columnData.uniqueProperties?.Options || [],
-              doneTags: columnData.uniqueProperties?.DoneTags || [],
-              tagColors: columnData.uniqueProperties?.OptionsColors || {},
-            }}
-            onChangeOptions={handleTaskTableChange}
-          />
+            },
+          }),
         );
+      };
+    },
+    [dispatch], // dispatch is stable but included for ESLint
+  );
 
-      default:
-        return <span className="text-gray-400">-</span>;
-    }
-  };
+  const renderCell = useCallback(
+    (columnId: string, columnType: string, columnData: any) => {
+      const cellValue = columnData.uniqueProperties?.Days?.[selectedDayName];
+
+      switch (columnType) {
+        case 'checkbox':
+          return (
+            <CheckboxCell
+              checked={cellValue || false}
+              onChange={(newValue) => handleCellChange(columnId, newValue)}
+              color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
+            />
+          );
+
+        case 'numberbox':
+          return (
+            <NumberCell
+              value={cellValue || ''}
+              onChange={(newValue) => handleCellChange(columnId, newValue)}
+            />
+          );
+
+        case 'text':
+          return (
+            <NotesCell
+              value={cellValue || ''}
+              onChange={(newValue) => handleCellChange(columnId, newValue)}
+            />
+          );
+
+        case 'multiselect':
+          return (
+            <TagsCell
+              value={cellValue || ''}
+              onChange={(newValue) => handleCellChange(columnId, newValue)}
+              options={columnData.uniqueProperties?.Tags || []}
+              tagColors={columnData.uniqueProperties?.TagsColors || {}}
+            />
+          );
+
+        case 'multicheckbox':
+          return (
+            <MultiCheckboxCell
+              value={cellValue || ''}
+              onChange={(newValue) => handleCellChange(columnId, newValue)}
+              options={columnData.uniqueProperties?.Options || []}
+              tagColors={columnData.uniqueProperties?.TagsColors || {}}
+            />
+          );
+
+        case 'todo':
+          const globalTodos = columnData.uniqueProperties?.Chosen?.global || [];
+
+          return (
+            <TodoCell
+              value={globalTodos}
+              column={{
+                id: columnId,
+                type: 'todo',
+                options: columnData.uniqueProperties?.Categorys || [],
+                tagColors: columnData.uniqueProperties?.CategoryColors || {},
+              }}
+              onChange={(newValue) => handleTodoChange(columnId, newValue)}
+            />
+          );
+
+        case 'tasktable':
+          return (
+            <TaskTableCell
+              column={{
+                id: columnId,
+                options: columnData.uniqueProperties?.Options || [],
+                doneTags: columnData.uniqueProperties?.DoneTags || [],
+                tagColors: columnData.uniqueProperties?.OptionsColors || {},
+              }}
+              onChangeOptions={createTaskTableHandler(columnId, columnData)}
+            />
+          );
+
+        default:
+          return <span className="text-gray-400">-</span>;
+      }
+    },
+    [
+      handleCellChange,
+      handleTodoChange,
+      createTaskTableHandler,
+      selectedDayName,
+    ],
+  );
 
   return (
     <div className="font-poppins p-3 bg-[var(--background)] min-h-screen h-screen overflow-y-auto pb-28 md:pb-0">
       {/* Fixed week selector header (mobile) */}
-      <div className="fixed top-0 left-0 right-0 z-40 h-22 bg-[var(--background)] border-b border-border md:relative md:top-0 md:border-b-0 md:bg-transparent">
-        <div className="max-w-6xl mx-auto px-4 py-2 h-full flex flex-col justify-center">
-          {/* Days row */}
-          <div className="mt-2 w-full">
-            <div className="flex gap-2 items-center overflow-x-auto pb-1">
+      <div className=" top-0 left-0 right-0 mb-2 z-40 bg-[var(--background)]  border-border md:relative md:top-0 md:border-b-0 md:bg-transparent">
+        <div className="max-w-6xl mx-auto px-4 py-3">
+          {/* Current date display with week navigation */}
+          <div className="flex items-center justify-center mb-3">
+            <button
+              onClick={handleTodayClick}
+              className="text-sm font-medium text-text text-center px-3 py-1 rounded-lg hover:bg-hoverBg transition-colors active:scale-95"
+              aria-label="Go to today"
+            >
+              {formattedDate}
+            </button>
+          </div>
+
+          {/* Days row - 7 columns for Mon-Sun */}
+          <div className="w-full">
+            <div className="grid grid-cols-7 gap-2">
               {weekDays.map((d) => {
                 const short = d.toLocaleDateString('en-US', {
                   weekday: 'short',
@@ -206,14 +234,15 @@ export const MobileTodayView: React.FC = () => {
                   <button
                     key={d.toDateString()}
                     onClick={() => setSelectedDate(new Date(d))}
-                    className={`flex flex-col items-center justify-center border border-transparent min-w-[44px] px-5 py-4 rounded-full text-xs transition-all ${
+                    className={`flex flex-col items-center justify-center border px-2 py-3 rounded-full text-xs transition-all active:scale-95 ${
                       isActive
-                        ? 'bg-primaryColor text-white '
+                        ? 'bg-primaryColor text-white border-primaryColor shadow-md'
                         : isToday
-                          ? 'bg-tableHeader text-textTableValues border border-visible border-primaryColor/30'
-                          : 'bg-tableHeader text-textTableValues'
+                          ? 'bg-tableHeader text-textTableValues border-primaryColor/30'
+                          : 'bg-tableHeader text-textTableValues border-transparent'
                     }`}
                     aria-pressed={isActive}
+                    aria-label={`Select ${short}`}
                   >
                     <span className="font-medium">{short}</span>
                   </button>
@@ -224,8 +253,15 @@ export const MobileTodayView: React.FC = () => {
         </div>
       </div>
 
-      {/* Spacer for fixed header */}
-      <div className="h-14 md:h-0" />
+      {/* Empty state when no columns */}
+      {columnOrder.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-textTableValues text-sm mb-2">No columns yet</p>
+          <p className="text-textTableValues text-xs">
+            Add columns to start tracking your tasks
+          </p>
+        </div>
+      )}
 
       {/* Columns as cards */}
       <div className="space-y-3 relative z-0">
@@ -253,32 +289,34 @@ export const MobileTodayView: React.FC = () => {
             return (
               <div
                 key={cardKey}
-                className="bg-tableBodyBg border border-border rounded-lg p-2 flex items-center justify-between"
+                className="bg-tableBodyBg border border-border rounded-lg p-3 flex items-center justify-between transition-all hover:shadow-sm"
               >
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-text truncate flex items-center">
-                    {columnData.EmojiIcon && (
-                      <span className="mr-2 inline-flex items-center">
-                        {getIconComponent(columnData.EmojiIcon, 16)}
-                      </span>
-                    )}
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  {columnData.EmojiIcon && (
+                    <span className="flex-shrink-0 text-text inline-flex items-center">
+                      {getIconComponent(columnData.EmojiIcon, 18)}
+                    </span>
+                  )}
+                  <h3 className="text-sm font-medium text-text truncate">
                     {columnData.Name || columnType}
                   </h3>
                 </div>
 
-                <div className="ml-2 flex items-center justify-end gap-2">
-                  <div className="min-w-[48px]">
+                <div className="ml-3 flex items-center justify-end gap-2 flex-shrink-0">
+                  <div
+                    className={`${['multiselect', 'multicheckbox'].includes(columnType) ? 'min-w-[96px] md:min-w-[48px]' : 'min-w-[48px]'} flex items-center justify-center`}
+                  >
                     {renderCell(columnId, columnType, columnData)}
                   </div>
                   <button
-                    aria-label="Open column settings"
+                    aria-label={`Open settings for ${columnData.Name || columnType}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       setOpenColumnMenu(columnId);
                     }}
-                    className="p-1 rounded-md text-textTableValues hover:bg-hoverBg transition-colors"
+                    className="p-2 rounded-md text-textTableValues hover:bg-hoverBg transition-colors active:scale-95"
                   >
-                    ⋯
+                    <MoreVertical size={18} />
                   </button>
                 </div>
               </div>
@@ -288,26 +326,28 @@ export const MobileTodayView: React.FC = () => {
           return (
             <div
               key={cardKey}
-              className="bg-tableBodyBg border border-border rounded-lg p-4 "
+              className="bg-tableBodyBg border border-border rounded-lg p-4 transition-all hover:shadow-sm"
             >
-              <div className="mb-2 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-text flex items-center">
+              <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-text flex items-center gap-2 flex-1 min-w-0">
                   {columnData.EmojiIcon && (
-                    <span className="mr-2 inline-flex items-center">
-                      {getIconComponent(columnData.EmojiIcon, 16)}
+                    <span className="inline-flex items-center flex-shrink-0">
+                      {getIconComponent(columnData.EmojiIcon, 18)}
                     </span>
                   )}
-                  {columnData.Name || columnType}
+                  <span className="truncate">
+                    {columnData.Name || columnType}
+                  </span>
                 </h3>
                 <button
-                  aria-label="Open column settings"
+                  aria-label={`Open settings for ${columnData.Name || columnType}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpenColumnMenu(columnId);
                   }}
-                  className="p-1 rounded-md text-textTableValues hover:bg-hoverBg transition-colors"
+                  className="p-2 rounded-md text-textTableValues hover:bg-hoverBg transition-colors active:scale-95 flex-shrink-0"
                 >
-                  ⋯
+                  <MoreVertical size={18} />
                 </button>
               </div>
               <div className="w-full">
