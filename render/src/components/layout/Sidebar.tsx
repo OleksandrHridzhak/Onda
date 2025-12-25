@@ -140,7 +140,7 @@ const Sidebar: React.FC = () => {
             }
           >
             <Plus
-              className={`w-6 h-6 md:w-7 md:h-7 transition-transform duration-300 ${showColumnSelector ? 'text-white' : 'text-white'}`}
+              className={`w-6 h-6 md:w-7 md:h-7 transition-transform duration-300`}
               strokeWidth={1.5}
             />
           </li>
