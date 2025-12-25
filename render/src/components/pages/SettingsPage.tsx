@@ -136,23 +136,61 @@ export default function SettingsDashboard(): React.ReactElement {
       className={`font-poppins flex flex-col h-full custom-scroll bg-background`}
     >
       <div
-        className={`sticky top-0 z-10 bg-tableBodyBg border-border border-b px-8 py-6`}
+        className={`sticky top-0 z-20 bg-tableBodyBg border-b border-border`}
       >
-        <h1
-          className={`text-xl font-medium text-textTableValues flex items-center`}
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
+            <div
+              className={`hidden sm:flex p-2 sm:p-3 rounded-2xl bg-hoverBg items-center justify-center`}
+            >
+              <Settings className="w-5 h-5 text-primaryColor" />
+            </div>
+            <h1 className="text-lg sm:text-xl font-medium text-text leading-tight truncate">
+              Settings
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile sections nav (tabs) - visible only on small screens */}
+      <div className="md:hidden bg-tableBodyBg border-b border-border">
+        <nav
+          role="tablist"
+          aria-label="Settings sections"
+          className="flex gap-2 overflow-x-auto px-4 py-2"
         >
-          <Settings className="w-5 h-5 mr-2" />
-          Settings
-        </h1>
+          {sections.map((section) => (
+            <button
+              key={section.id}
+              onClick={() => setActiveSection(section.id)}
+              role="tab"
+              aria-selected={activeSection === section.id}
+              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap ${
+                activeSection === section.id
+                  ? 'bg-settingsSectionSelectorBg text-text'
+                  : 'text-textTableValues'
+              }`}
+            >
+              {section.icon}
+              <span className="ml-2 text-sm">{section.name}</span>
+            </button>
+          ))}
+        </nav>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className={`w-64 border-r border-border p-4`}>
-          <nav className="space-y-1">
+        <div className={`hidden md:block w-64 border-r border-border p-4`}>
+          <nav
+            className="space-y-1"
+            role="tablist"
+            aria-label="Settings sections"
+          >
             {sections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
+                role="tab"
+                aria-selected={activeSection === section.id}
                 className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                   activeSection === section.id
                     ? `bg-settingsSectionSelectorBg text-text`
@@ -167,7 +205,7 @@ export default function SettingsDashboard(): React.ReactElement {
         </div>
 
         <div
-          className={`flex-1 overflow-y-auto p-6 ${
+          className={`flex-1 overflow-y-auto p-4 md:p-6 ${
             darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'
           }`}
         >
