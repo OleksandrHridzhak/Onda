@@ -67,7 +67,12 @@ const Table: React.FC = () => {
                 <DaysColumn column={daysColumn} />
               </TableItemWrapper>
 
-              {columnOrder.map((columnId: string) => {
+              {columnOrder
+                .filter((columnId: string) => {
+                  const columnData = columnsData[columnId];
+                  return columnData && componentsMap[columnData.Type?.toLowerCase()];
+                }) // Filter out missing columns and unsupported types
+                .map((columnId: string) => {
                 const columnData = columnsData[columnId];
                 if (!columnData) return null;
 

@@ -271,7 +271,9 @@ export const MobileTodayView: React.FC = () => {
             onClose={() => setOpenColumnMenu(null)}
           />
         )}
-        {columnOrder.map((columnId: string) => {
+        {columnOrder
+          .filter((columnId: string) => columnsData[columnId]) // Filter out missing columns to prevent empty blocks
+          .map((columnId: string) => {
           const columnData = columnsData[columnId];
           if (!columnData) return null;
           const cardKey = `${columnId}-${selectedDayName}`;

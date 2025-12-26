@@ -35,18 +35,22 @@ export const NotesCell: React.FC<NotesCellProps> = ({ value, onChange }) => {
     <div
       role="button"
       tabIndex={0}
-      onClick={() => startEditing(value, setIsEditing, setTempValue)}
+      onClick={(e) => {
+        e.stopPropagation();
+        startEditing(value, setIsEditing, setTempValue);
+      }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           startEditing(value, setIsEditing, setTempValue);
         }
       }}
-      className="w-full min-h-8 px-2 py-1 rounded-md cursor-text text-sm flex items-center group transition-colors text-textTableValues"
+      className="w-full min-h-8 px-2 py-1 rounded-md cursor-text text-sm flex items-center group transition-colors text-textTableValues hover:bg-hoverBg active:bg-hoverBg"
       aria-label="Edit note"
+      style={{ userSelect: 'none', pointerEvents: 'auto' }}
     >
       <div className="flex-1 min-w-0 overflow-hidden overflow-ellipsis whitespace-nowrap">
-        {value}
+        {value || <span className="text-textTableValues opacity-40">Click to edit</span>}
       </div>
     </div>
   );
