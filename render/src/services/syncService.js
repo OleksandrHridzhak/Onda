@@ -1,4 +1,9 @@
 import { dbPromise, exportData, importData } from './indexedDB.js';
+import {
+  DEFAULT_SYNC_SERVER_URL,
+  SYNC_DEBOUNCE_DELAY,
+  SYNC_AUTO_INTERVAL,
+} from './syncConstants.js';
 
 /**
  * Sync Service - handles synchronization with remote server
@@ -14,7 +19,7 @@ class SyncService {
     this.localVersion = 0;
     this.lastSyncTime = null;
     this.debouncedSyncTimeout = null;
-    this.debounceDelay = 1000; // 1 second delay after last change
+    this.debounceDelay = SYNC_DEBOUNCE_DELAY;
   }
 
   /**
@@ -31,7 +36,7 @@ class SyncService {
 
         // Start automatic sync if enabled
         if (config.autoSync) {
-          this.startAutoSync(config.syncInterval || 300000); // Default 5 minutes
+          this.startAutoSync(config.syncInterval || SYNC_AUTO_INTERVAL);
         }
 
         // Pull data on initialization (app open)
@@ -263,7 +268,7 @@ class SyncService {
   /**
    * Start automatic sync at specified interval
    */
-  startAutoSync(intervalMs = 300000) {
+  startAutoSync(intervalMs = SYNC_AUTO_INTERVAL) {
     if (this.syncInterval) {
       clearInterval(this.syncInterval);
     }

@@ -10,14 +10,17 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Configuration constants
+const MIN_SECRET_KEY_LENGTH = 8;
+const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const MAX_REQUESTS = 60; // 60 requests per minute
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // Simple rate limiting to prevent abuse
 const rateLimitMap = new Map();
-const RATE_LIMIT_WINDOW = 60000; // 1 minute
-const MAX_REQUESTS = 60; // 60 requests per minute
 
 const rateLimiter = (req, res, next) => {
   const key = req.headers['x-secret-key'] || req.ip;
@@ -86,7 +89,7 @@ const saveData = async (secretKey, data) => {
 // Middleware to verify secret key
 const authenticateKey = (req, res, next) => {
   const secretKey = req.headers['x-secret-key'];
-  if (!secretKey || secretKey.length < 8) {
+  if (!secretKey || secretKey.length < MIN_SECRET_KEY_LENGTH) {
     return res.status(401).json({ error: 'Invalid or missing secret key' });
   }
   req.secretKey = secretKey;

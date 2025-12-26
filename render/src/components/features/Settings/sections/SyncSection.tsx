@@ -3,14 +3,20 @@ import { Cloud, RefreshCw, Check, X, Wifi, WifiOff, Zap } from 'lucide-react';
 import { syncService } from '../../../../services/syncService';
 import SettingsTemplate from '../SettingsTemplate';
 import { BubbleBtn } from '../../../shared/BubbleBtn';
+import {
+  DEFAULT_SYNC_SERVER_URL,
+  SYNC_AUTO_INTERVAL,
+  SYNC_STATUS_UPDATE_INTERVAL,
+  GENERATED_SECRET_KEY_LENGTH,
+} from '../../../../services/syncConstants';
 
 export default function SyncSection() {
   const [syncConfig, setSyncConfig] = useState({
     enabled: false,
-    serverUrl: 'http://localhost:3001',
+    serverUrl: DEFAULT_SYNC_SERVER_URL,
     secretKey: '',
     autoSync: true,
-    syncInterval: 300000,
+    syncInterval: SYNC_AUTO_INTERVAL,
   });
 
   const [syncStatus, setSyncStatus] = useState(null);
@@ -23,7 +29,7 @@ export default function SyncSection() {
     updateSyncStatus();
 
     // Update status every 2 seconds
-    const interval = setInterval(updateSyncStatus, 2000);
+    const interval = setInterval(updateSyncStatus, SYNC_STATUS_UPDATE_INTERVAL);
     return () => clearInterval(interval);
   }, []);
 
@@ -32,10 +38,10 @@ export default function SyncSection() {
     if (config) {
       setSyncConfig({
         enabled: config.enabled || false,
-        serverUrl: config.serverUrl || 'http://localhost:3001',
+        serverUrl: config.serverUrl || DEFAULT_SYNC_SERVER_URL,
         secretKey: config.secretKey || '',
         autoSync: config.autoSync !== false,
-        syncInterval: config.syncInterval || 300000,
+        syncInterval: config.syncInterval || SYNC_AUTO_INTERVAL,
       });
     }
   };
@@ -94,7 +100,7 @@ export default function SyncSection() {
     const chars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let key = '';
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < GENERATED_SECRET_KEY_LENGTH; i++) {
       key += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     setSyncConfig({ ...syncConfig, secretKey: key });
