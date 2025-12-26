@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Cloud, RefreshCw, Check, X, Wifi, WifiOff } from 'lucide-react';
-import { syncService } from '../../../services/syncService';
+import { syncService } from '../../../../services/syncService';
 
 export default function SyncSection() {
   const [syncConfig, setSyncConfig] = useState({
@@ -242,8 +242,7 @@ export default function SyncSection() {
                 : 'Never'}
             </p>
             <p>
-              Auto Sync:{' '}
-              {syncStatus.autoSyncActive ? 'Active ✓' : 'Inactive'}
+              Auto Sync: {syncStatus.autoSyncActive ? 'Active ✓' : 'Inactive'}
             </p>
           </div>
         </div>
