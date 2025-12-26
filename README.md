@@ -49,7 +49,7 @@ cd Onda
 npm install
 ```
 
-3. Install backend dependencies:
+3. Install frontend dependencies:
 
 ```bash
 cd /render
