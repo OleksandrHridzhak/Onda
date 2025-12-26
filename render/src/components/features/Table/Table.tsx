@@ -68,15 +68,15 @@ const Table: React.FC = () => {
               </TableItemWrapper>
 
               {columnOrder
-                .filter((columnId: string) => {
-                  const columnData = columnsData[columnId];
-                  return columnData && componentsMap[columnData.Type?.toLowerCase()];
-                }) // Filter out missing columns and unsupported types
                 .map((columnId: string) => {
-                const columnData = columnsData[columnId];
-                if (!columnData) return null;
-
-                const columnType = columnData.Type?.toLowerCase();
+                  const columnData = columnsData[columnId];
+                  const columnType = columnData?.Type?.toLowerCase();
+                  return { columnId, columnData, columnType };
+                })
+                .filter(({ columnData, columnType }) => 
+                  columnData && componentsMap[columnType]
+                ) // Filter out missing columns and unsupported types
+                .map(({ columnId, columnData, columnType }) => {
                 const Component = componentsMap[columnType];
 
                 const column = {
@@ -85,18 +85,15 @@ const Table: React.FC = () => {
                   width: columnData.Width,
                 };
 
-                if (Component) {
-                  return (
-                    <TableItemWrapper
-                      key={columnId}
-                      column={column}
-                      className="border-r border-border"
-                    >
-                      <Component columnId={columnId} />
-                    </TableItemWrapper>
-                  );
-                }
-                return null;
+                return (
+                  <TableItemWrapper
+                    key={columnId}
+                    column={column}
+                    className="border-r border-border"
+                  >
+                    <Component columnId={columnId} />
+                  </TableItemWrapper>
+                );
               })}
 
               <TableItemWrapper

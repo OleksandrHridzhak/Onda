@@ -45,9 +45,8 @@ export const NotesCell: React.FC<NotesCellProps> = ({ value, onChange }) => {
           startEditing(value, setIsEditing, setTempValue);
         }
       }}
-      className="w-full min-h-8 px-2 py-1 rounded-md cursor-text text-sm flex items-center group transition-colors text-textTableValues hover:bg-hoverBg active:bg-hoverBg"
+      className="w-full min-h-8 px-2 py-1 rounded-md cursor-text text-sm flex items-center group transition-colors text-textTableValues hover:bg-hoverBg active:bg-hoverBg select-none pointer-events-auto"
       aria-label="Edit note"
-      style={{ userSelect: 'none', pointerEvents: 'auto' }}
     >
       <div className="flex-1 min-w-0 overflow-hidden overflow-ellipsis whitespace-nowrap">
         {value || <span className="text-textTableValues opacity-40">Click to edit</span>}
