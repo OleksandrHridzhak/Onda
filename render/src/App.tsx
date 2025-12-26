@@ -33,6 +33,28 @@ function MainContent() {
 
     // Initialize sync service on app startup
     syncService.initialize().catch(console.error);
+
+    // Pull data when app becomes visible (returns from tray or regains focus)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('App became visible, triggering sync...');
+        syncService.sync().catch(console.error);
+      }
+    };
+
+    // Pull data when window regains focus
+    const handleFocus = () => {
+      console.log('Window focused, triggering sync...');
+      syncService.sync().catch(console.error);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, []);
 
   const isElectron =

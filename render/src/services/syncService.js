@@ -13,6 +13,8 @@ class SyncService {
     this.secretKey = null;
     this.localVersion = 0;
     this.lastSyncTime = null;
+    this.debouncedSyncTimeout = null;
+    this.debounceDelay = 1000; // 1 second delay after last change
   }
 
   /**
@@ -31,6 +33,9 @@ class SyncService {
         if (config.autoSync) {
           this.startAutoSync(config.syncInterval || 300000); // Default 5 minutes
         }
+
+        // Pull data on initialization (app open)
+        await this.sync();
 
         console.log('Sync service initialized');
         return true;
@@ -279,6 +284,38 @@ class SyncService {
       clearInterval(this.syncInterval);
       this.syncInterval = null;
       console.log('Auto-sync stopped');
+    }
+  }
+
+  /**
+   * Trigger debounced sync - syncs after user stops making changes
+   * This creates a Notion-like experience where changes sync automatically
+   */
+  triggerDebouncedSync() {
+    // Clear any existing timeout
+    if (this.debouncedSyncTimeout) {
+      clearTimeout(this.debouncedSyncTimeout);
+    }
+
+    // Only debounce if sync is enabled
+    if (!this.syncUrl || !this.secretKey) {
+      return;
+    }
+
+    // Set new timeout - sync after user stops editing for debounceDelay ms
+    this.debouncedSyncTimeout = setTimeout(() => {
+      console.log('Debounced sync triggered');
+      this.sync().catch(console.error);
+    }, this.debounceDelay);
+  }
+
+  /**
+   * Cancel any pending debounced sync
+   */
+  cancelDebouncedSync() {
+    if (this.debouncedSyncTimeout) {
+      clearTimeout(this.debouncedSyncTimeout);
+      this.debouncedSyncTimeout = null;
     }
   }
 
