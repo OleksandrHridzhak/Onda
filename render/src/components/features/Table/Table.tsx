@@ -74,7 +74,7 @@ const Table: React.FC = () => {
                   return { columnId, columnData, columnType };
                 })
                 .filter(({ columnData, columnType }) => 
-                  columnData && componentsMap[columnType]
+                  columnData && columnType && componentsMap[columnType]
                 ) // Filter out missing columns and unsupported types
                 .map(({ columnId, columnData, columnType }) => {
                 const Component = componentsMap[columnType];
