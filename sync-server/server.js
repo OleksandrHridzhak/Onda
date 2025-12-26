@@ -1,11 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import fs from 'fs/promises';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { MongoClient } from 'mongodb';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,6 +9,46 @@ const PORT = process.env.PORT || 3001;
 const MIN_SECRET_KEY_LENGTH = 8;
 const RATE_LIMIT_WINDOW = 60000; // 1 minute
 const MAX_REQUESTS = 60; // 60 requests per minute
+
+// MongoDB configuration
+// Set MONGODB_URI environment variable with your MongoDB Atlas connection string
+// Example: mongodb+srv://username:password@cluster.mongodb.net/onda-sync?retryWrites=true&w=majority
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
+const DB_NAME = 'onda-sync';
+const COLLECTION_NAME = 'sync-data';
+
+let mongoClient = null;
+let db = null;
+let collection = null;
+
+// Initialize MongoDB connection
+async function initMongoDB() {
+  if (!MONGODB_URI) {
+    console.error('❌ ERROR: MONGODB_URI environment variable is not set!');
+    console.error('   Please set MONGODB_URI to your MongoDB Atlas connection string.');
+    console.error('   Example: export MONGODB_URI="mongodb+srv://user:pass@cluster.mongodb.net/onda-sync"');
+    process.exit(1);
+  }
+
+  try {
+    console.log('🔄 Connecting to MongoDB...');
+    mongoClient = new MongoClient(MONGODB_URI);
+    await mongoClient.connect();
+    db = mongoClient.db(DB_NAME);
+    collection = db.collection(COLLECTION_NAME);
+    
+    // Create index on secretKey for faster queries
+    await collection.createIndex({ secretKey: 1 }, { unique: true });
+    
+    console.log('✅ Connected to MongoDB Atlas successfully');
+    console.log(`   Database: ${DB_NAME}`);
+    console.log(`   Collection: ${COLLECTION_NAME}`);
+  } catch (error) {
+    console.error('❌ Failed to connect to MongoDB:', error.message);
+    console.error('   Please check your MONGODB_URI connection string.');
+    process.exit(1);
+  }
+}
 
 // Middleware
 app.use(cors());
@@ -53,39 +88,6 @@ const rateLimiter = (req, res, next) => {
 // Apply rate limiting to all routes
 app.use(rateLimiter);
 
-// In-memory storage (can be replaced with a database if needed)
-const syncData = new Map();
-const DATA_DIR = join(__dirname, 'data');
-
-// Ensure data directory exists
-await fs.mkdir(DATA_DIR, { recursive: true });
-
-// Helper function to get data file path
-const getDataPath = (secretKey) => join(DATA_DIR, `${secretKey}.json`);
-
-// Load existing data from file if exists
-const loadData = async (secretKey) => {
-  try {
-    const dataPath = getDataPath(secretKey);
-    const data = await fs.readFile(dataPath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    return null;
-  }
-};
-
-// Save data to file
-const saveData = async (secretKey, data) => {
-  try {
-    const dataPath = getDataPath(secretKey);
-    await fs.writeFile(dataPath, JSON.stringify(data, null, 2), 'utf-8');
-    return true;
-  } catch (error) {
-    console.error('Error saving data:', error);
-    return false;
-  }
-};
-
 // Middleware to verify secret key
 const authenticateKey = (req, res, next) => {
   const secretKey = req.headers['x-secret-key'];
@@ -98,24 +100,21 @@ const authenticateKey = (req, res, next) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const isMongoConnected = mongoClient && mongoClient.topology && mongoClient.topology.isConnected();
+  res.json({ 
+    status: isMongoConnected ? 'ok' : 'degraded',
+    mongodb: isMongoConnected ? 'connected' : 'disconnected',
+    timestamp: new Date().toISOString() 
+  });
 });
 
 // Get sync data - pull from server
 app.get('/sync/data', authenticateKey, async (req, res) => {
   try {
     const { secretKey } = req;
-    let data = syncData.get(secretKey);
+    const doc = await collection.findOne({ secretKey });
 
-    // If not in memory, try loading from file
-    if (!data) {
-      data = await loadData(secretKey);
-      if (data) {
-        syncData.set(secretKey, data);
-      }
-    }
-
-    if (!data) {
+    if (!doc) {
       return res.json({
         exists: false,
         message: 'No data found for this key',
@@ -124,9 +123,9 @@ app.get('/sync/data', authenticateKey, async (req, res) => {
 
     res.json({
       exists: true,
-      data: data.content,
-      lastSync: data.lastSync,
-      version: data.version,
+      data: doc.content,
+      lastSync: doc.lastSync,
+      version: doc.version,
     });
   } catch (error) {
     console.error('Error getting sync data:', error);
@@ -145,22 +144,25 @@ app.post('/sync/push', authenticateKey, async (req, res) => {
     }
 
     // Get current server data
-    let serverData = syncData.get(secretKey) || (await loadData(secretKey));
+    const serverData = await collection.findOne({ secretKey });
 
     // If no server data exists, this is the first sync
     if (!serverData) {
-      serverData = {
+      const newDoc = {
+        secretKey,
         content: clientData,
         lastSync: new Date().toISOString(),
         version: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
-      syncData.set(secretKey, serverData);
-      await saveData(secretKey, serverData);
+      
+      await collection.insertOne(newDoc);
 
       return res.json({
         success: true,
-        version: serverData.version,
-        lastSync: serverData.lastSync,
+        version: 1,
+        lastSync: newDoc.lastSync,
         message: 'Initial sync completed',
       });
     }
@@ -168,20 +170,23 @@ app.post('/sync/push', authenticateKey, async (req, res) => {
     // Simple conflict resolution: last write wins
     // In production, more sophisticated conflict logic can be added
     const newVersion = serverData.version + 1;
-    serverData = {
+    const updateData = {
       content: clientData,
       lastSync: new Date().toISOString(),
       version: newVersion,
       previousVersion: serverData.version,
+      updatedAt: new Date(),
     };
 
-    syncData.set(secretKey, serverData);
-    await saveData(secretKey, serverData);
+    await collection.updateOne(
+      { secretKey },
+      { $set: updateData }
+    );
 
     res.json({
       success: true,
       version: newVersion,
-      lastSync: serverData.lastSync,
+      lastSync: updateData.lastSync,
       message: 'Sync completed',
     });
   } catch (error) {
@@ -196,7 +201,7 @@ app.post('/sync/pull', authenticateKey, async (req, res) => {
     const { secretKey } = req;
     const { clientVersion, clientLastSync } = req.body;
 
-    let serverData = syncData.get(secretKey) || (await loadData(secretKey));
+    const serverData = await collection.findOne({ secretKey });
 
     if (!serverData) {
       return res.json({
@@ -223,17 +228,10 @@ app.post('/sync/pull', authenticateKey, async (req, res) => {
 });
 
 // Delete sync data (for testing or account cleanup)
-// Note: Rate limiting is applied globally via app.use(rateLimiter) middleware
 app.delete('/sync/data', authenticateKey, async (req, res) => {
   try {
     const { secretKey } = req;
-    syncData.delete(secretKey);
-
-    try {
-      await fs.unlink(getDataPath(secretKey));
-    } catch (error) {
-      // File might not exist, ignore error
-    }
+    await collection.deleteOne({ secretKey });
 
     res.json({ success: true, message: 'Data deleted' });
   } catch (error) {
@@ -242,8 +240,32 @@ app.delete('/sync/data', authenticateKey, async (req, res) => {
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🌊 Onda Sync Server running on port ${PORT}`);
-  console.log(`   Health check: http://localhost:${PORT}/health`);
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('\n🛑 Shutting down gracefully...');
+  if (mongoClient) {
+    await mongoClient.close();
+    console.log('✅ MongoDB connection closed');
+  }
+  process.exit(0);
 });
+
+process.on('SIGTERM', async () => {
+  console.log('\n🛑 Shutting down gracefully...');
+  if (mongoClient) {
+    await mongoClient.close();
+    console.log('✅ MongoDB connection closed');
+  }
+  process.exit(0);
+});
+
+// Initialize and start server
+(async () => {
+  await initMongoDB();
+  
+  app.listen(PORT, () => {
+    console.log(`🌊 Onda Sync Server running on port ${PORT}`);
+    console.log(`   Health check: http://localhost:${PORT}/health`);
+    console.log(`   Storage: MongoDB Atlas`);
+  });
+})();

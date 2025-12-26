@@ -2,272 +2,303 @@
 
 ## Overview
 
-Onda Sync is a lightweight backend service that enables cross-device synchronization using a local-first approach. Your data is stored locally first, and syncs in the background.
+Onda Sync використовує **MongoDB Atlas** для зберігання даних. MongoDB Atlas - це безкоштовна хмарна база даних, яка **не видаляє дані**, навіть коли ваш сервер не активний.
 
-## Quick Start (Local Testing)
+## Підготовка: Налаштування MongoDB Atlas
 
-### 1. Install Dependencies
+### Крок 1: Створіть безкоштовний кластер
 
-```bash
-cd sync-server
-npm install
+1. Перейдіть на [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+2. Натисніть "Try Free" та створіть акаунт (можна через Google/GitHub)
+3. Виберіть:
+   - **Cloud Provider**: AWS (рекомендовано)
+   - **Region**: Виберіть найближчий (наприклад, Frankfurt для України)
+   - **Cluster Tier**: M0 Sandbox (FREE - 512 MB)
+   - **Cluster Name**: `onda-sync` або будь-яке ім'я
+4. Натисніть "Create"
+
+### Крок 2: Створіть користувача бази даних
+
+1. Після створення кластера, перейдіть до "Database Access" (ліве меню)
+2. Натисніть "Add New Database User"
+3. Виберіть "Password" authentication
+4. Введіть:
+   - **Username**: `onda-admin` (або інше ім'я)
+   - **Password**: Згенеруйте надійний пароль (збережіть його!)
+5. Встановіть права: "Read and write to any database"
+6. Натисніть "Add User"
+
+### Крок 3: Дозвольте доступ з будь-якого IP
+
+1. Перейдіть до "Network Access" (ліве меню)
+2. Натисніть "Add IP Address"
+3. Натисніть "Allow Access From Anywhere"
+4. Це додасть `0.0.0.0/0` - доступ з будь-якого місця
+5. Натисніть "Confirm"
+
+### Крок 4: Отримайте Connection String
+
+1. Поверніться до "Database" (ліве меню)
+2. Натисніть "Connect" на вашому кластері
+3. Виберіть "Drivers"
+4. Виберіть "Node.js" та версію "4.1 or later"
+5. Скопіюйте connection string (починається з `mongodb+srv://`)
+6. Замініть `<password>` на ваш пароль з Кроку 2
+7. Замініть `<dbname>` на `onda-sync`
+
+**Приклад готового connection string:**
+```
+mongodb+srv://onda-admin:MySecurePassword123@onda-sync.abc123.mongodb.net/onda-sync?retryWrites=true&w=majority
 ```
 
-### 2. Start the Server
+**⚠️ ВАЖЛИВО**: Збережіть цей connection string - він вам знадобиться!
 
-```bash
-npm start
-```
+---
 
-The server will run on `http://localhost:3001`
+## Деплой сервера
 
-### 3. Configure the App
+### Рекомендовано: Render.com (Безкоштовно)
 
-1. Open Onda app
-2. Go to Settings → Sync
-3. Enter:
-   - Server URL: `http://localhost:3001`
-   - Secret Key: Generate or enter your own (min 8 characters)
-4. Click "Test Connection"
-5. If successful, click "Save Configuration"
-6. Click "Sync Now" to perform initial sync
+#### Крок 1: Створіть Web Service
 
-## Production Deployment
-
-### Option 1: Render.com (Recommended - Free Tier Available)
-
-1. Create account at [render.com](https://render.com)
-2. Click "New +" → "Web Service"
-3. Connect your GitHub repository
-4. Configure:
+1. Створіть акаунт на [render.com](https://render.com)
+2. Натисніть "New +" → "Web Service"
+3. Підключіть ваш GitHub репозиторій
+4. Налаштуйте:
    - **Name**: `onda-sync-server`
-   - **Region**: Choose closest to your location
-   - **Branch**: `main` or your branch name
+   - **Region**: Виберіть найближчий
+   - **Branch**: `main` або ваша гілка
    - **Root Directory**: `sync-server`
-   - **Environment**: `Node`
+   - **Runtime**: Node
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-   - **Plan**: Free (or paid for better performance)
-5. Click "Create Web Service"
-6. After deployment, copy your service URL (e.g., `https://onda-sync-server.onrender.com`)
-7. Use this URL in the app's sync settings
+   - **Instance Type**: Free
 
-**Note**: Free tier may spin down after 15 minutes of inactivity. First request after idle will be slower.
+#### Крок 2: Додайте змінну оточення
 
-### Option 2: Railway.app
+1. Прокрутіть вниз до розділу "Environment Variables"
+2. Натисніть "Add Environment Variable"
+3. Введіть:
+   - **Key**: `MONGODB_URI`
+   - **Value**: Ваш connection string з MongoDB Atlas (з Кроку 4 вище)
 
-1. Create account at [railway.app](https://railway.app)
-2. Click "New Project" → "Deploy from GitHub repo"
-3. Select your repository
-4. Configure:
-   - **Root Directory**: `sync-server`
-   - Railway will auto-detect Node.js
-5. Add environment variables if needed
-6. Deploy
-7. Copy your service URL
-
-### Option 3: Fly.io
-
-1. Install flyctl: `curl -L https://fly.io/install.sh | sh`
-2. Login: `fly auth login`
-3. Navigate to sync-server directory:
-   ```bash
-   cd sync-server
-   ```
-4. Create fly.toml:
-   ```toml
-   app = "onda-sync-server"
-   
-   [build]
-     builder = "heroku/buildpacks:20"
-   
-   [env]
-     PORT = "8080"
-   
-   [[services]]
-     internal_port = 8080
-     protocol = "tcp"
-   
-     [[services.ports]]
-       handlers = ["http"]
-       port = "80"
-   
-     [[services.ports]]
-       handlers = ["tls", "http"]
-       port = "443"
-   ```
-5. Deploy:
-   ```bash
-   fly launch
-   fly deploy
-   ```
-
-### Option 4: Heroku
-
-1. Install Heroku CLI: `npm install -g heroku`
-2. Login: `heroku login`
-3. Create app:
-   ```bash
-   cd sync-server
-   heroku create onda-sync-server
-   ```
-4. Deploy:
-   ```bash
-   git subtree push --prefix sync-server heroku main
-   ```
-5. View logs: `heroku logs --tail`
-
-## Environment Variables
-
-The server uses minimal configuration. Optional environment variables:
-
-- `PORT`: Server port (default: 3001, auto-set by most platforms)
-- `NODE_ENV`: Environment mode (development/production)
-
-## Security Considerations
-
-### Secret Key Best Practices
-
-1. **Generate Strong Keys**: Use at least 16 random characters
-2. **Keep it Secret**: Never share your key publicly
-3. **One Key Per User**: Each user should have their own unique key
-4. **Change Regularly**: Consider rotating keys periodically
-
-### HTTPS in Production
-
-- Always use HTTPS in production (most platforms provide this automatically)
-- Never send secret keys over HTTP
-- Most hosting platforms (Render, Railway, Fly.io) provide free SSL certificates
-
-## Data Storage
-
-The server stores data in two ways:
-
-1. **In-Memory Cache**: For fast access
-2. **File System**: Persistent storage in `sync-server/data/` directory
-
-Each secret key has its own data file: `{secret-key}.json`
-
-## Monitoring and Maintenance
-
-### Health Check
-
-Check if server is running:
-```bash
-curl https://your-server-url.com/health
+**Приклад:**
+```
+Key: MONGODB_URI
+Value: mongodb+srv://onda-admin:MySecurePassword123@onda-sync.abc123.mongodb.net/onda-sync?retryWrites=true&w=majority
 ```
 
-Should return:
+4. Натисніть "Create Web Service"
+
+#### Крок 3: Дочекайтеся деплою
+
+1. Render почне деплой (займе 2-3 хвилини)
+2. Коли статус буде "Live" - ваш сервер готовий!
+3. Скопіюйте URL сервіса (наприклад, `https://onda-sync-server.onrender.com`)
+
+#### Крок 4: Налаштуйте додаток
+
+1. Відкрийте Onda
+2. Перейдіть до Settings → Cloud Sync
+3. Введіть:
+   - **Server URL**: Ваш URL з Render (наприклад, `https://onda-sync-server.onrender.com`)
+   - **Secret Key**: Згенеруйте або введіть свій (мінімум 8 символів)
+4. Натисніть "Test Connection"
+5. Якщо "Connection successful" - натисніть "Save Configuration"
+6. Готово! Синхронізація працює автоматично
+
+---
+
+### Альтернатива 1: Railway.app
+
+1. Створіть акаунт на [railway.app](https://railway.app)
+2. Натисніть "New Project" → "Deploy from GitHub repo"
+3. Виберіть ваш репозиторій
+4. Налаштуйте:
+   - **Root Directory**: `sync-server`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+5. Додайте змінну оточення:
+   - Перейдіть до "Variables"
+   - Додайте `MONGODB_URI` з вашим connection string
+6. Railway автоматично надасть URL
+
+**Ціна**: ~$5/місяць (з $5 безкоштовних кредитів)
+
+### Альтернатива 2: Fly.io
+
+```bash
+# Встановіть Fly CLI
+curl -L https://fly.io/install.sh | sh
+
+# Увійдіть
+fly auth login
+
+# З директорії sync-server
+cd sync-server
+fly launch
+
+# Встановіть змінну оточення
+fly secrets set MONGODB_URI="your-mongodb-connection-string"
+
+# Задеплойте
+fly deploy
+```
+
+**Ціна**: ~$5/місяць (з $5 безкоштовних кредитів)
+
+---
+
+## Переваги MongoDB Atlas + Render
+
+✅ **Повністю безкоштовно**
+- MongoDB Atlas M0 - безкоштовно (512 MB)
+- Render Free Tier - безкоштовно
+
+✅ **Дані не видаляються**
+- MongoDB Atlas зберігає дані постійно
+- Навіть коли Render "усипляє" сервер - дані залишаються
+
+✅ **Автоматичні backup**
+- MongoDB Atlas робить backup щодня
+
+✅ **Надійно**
+- 99.99% uptime від MongoDB Atlas
+- Розподілені сервери по всьому світу
+
+✅ **Швидко налаштувати**
+- Лише один connection string потрібно встановити
+- Все працює одразу
+
+---
+
+## Перевірка роботи
+
+### Тест 1: Health Check
+
+```bash
+curl https://your-server-url.onrender.com/health
+```
+
+Повинно повернути:
 ```json
 {
   "status": "ok",
-  "timestamp": "2024-01-01T00:00:00.000Z"
+  "mongodb": "connected",
+  "timestamp": "2024-12-26T10:00:00.000Z"
 }
 ```
 
-### Logs
+### Тест 2: Синхронізація в додатку
 
-Monitor logs for errors:
+1. Відкрийте Onda на одному пристрої
+2. Змініть щось (додайте завдання, змініть мультичекбокс)
+3. Дочекайтеся 1-2 секунди (автоматична синхронізація)
+4. Відкрийте Onda на іншому пристрої
+5. Зміни повинні з'явитися автоматично
 
-- **Render**: Dashboard → Logs tab
-- **Railway**: Dashboard → Deployments → View Logs
-- **Fly.io**: `fly logs`
-- **Heroku**: `heroku logs --tail`
+---
 
-## API Endpoints
+## Локальне тестування
 
-### GET /health
-Health check endpoint
+Для тестування на локальній машині:
 
-### GET /sync/data
-Pull data from server
-- Header: `x-secret-key: YOUR_KEY`
+```bash
+# Встановіть змінну оточення
+export MONGODB_URI="your-mongodb-connection-string"
 
-### POST /sync/push
-Push data to server
-- Header: `x-secret-key: YOUR_KEY`
-- Body: `{ "data": {...}, "clientVersion": 1 }`
+# Запустіть сервер
+cd sync-server
+npm install
+npm start
+```
 
-### POST /sync/pull
-Pull with conflict detection
-- Header: `x-secret-key: YOUR_KEY`
-- Body: `{ "clientVersion": 1, "clientLastSync": "..." }`
+Сервер буде доступний на `http://localhost:3001`
 
-### DELETE /sync/data
-Delete all data for a key
-- Header: `x-secret-key: YOUR_KEY`
+---
 
 ## Troubleshooting
 
-### Connection Failed
+### Помилка: "MONGODB_URI environment variable is not set"
 
-1. Check if server is running: `curl https://your-url.com/health`
-2. Verify URL is correct (include `https://`)
-3. Check firewall/network settings
-4. Ensure secret key is at least 8 characters
+**Рішення**: Встановіть змінну оточення MONGODB_URI в налаштуваннях Render/Railway/Fly
 
-### Sync Not Working
+### Помилка: "Failed to connect to MongoDB"
 
-1. Check server logs for errors
-2. Verify secret key matches on all devices
-3. Try manual sync: Click "Sync Now"
-4. Check if auto-sync is enabled
+**Можливі причини:**
+1. Неправильний connection string - перевірте username, password, cluster URL
+2. IP адреса не додана в Network Access - додайте `0.0.0.0/0`
+3. Користувач не має прав - встановіть "Read and write to any database"
 
-### Data Not Persisting
+### Сервер "спить" (Cold Start)
 
-1. Check if hosting platform has persistent storage
-2. Verify write permissions in data directory
-3. Check server logs for file system errors
+На безкоштовному плані Render сервер засинає після 15 хвилин неактивності. Перший запит після сну займе 30-60 секунд.
 
-## Performance Tips
+**Рішення:**
+- Це нормально для безкоштовного плану
+- MongoDB Atlas НЕ засинає - дані завжди доступні
+- Для production рекомендується платний план Render ($7/міс)
 
-1. **Auto-Sync Interval**: Default is 5 minutes. Adjust based on your needs.
-2. **Data Size**: Keep data reasonable (< 10MB recommended)
-3. **Hosting**: Paid tiers offer better performance and reliability
-4. **Region**: Choose server region closest to primary users
+### Синхронізація не працює
 
-## Backup and Recovery
+1. Перевірте connection в Settings → Sync → "Test Connection"
+2. Перевірте в логах Render чи є помилки MongoDB
+3. Перевірте що Server URL правильний (HTTPS, без слешу в кінці)
+4. Перевірте що Secret Key однаковий на всіх пристроях
 
-### Manual Backup
+---
 
-1. Open Onda app
-2. Go to Settings → Data
-3. Click "Export Data"
-4. Save JSON file
+## Моніторинг
 
-### Server Backup
+### MongoDB Atlas Dashboard
 
-SSH into your server (if supported) and backup the `data/` directory:
-```bash
-tar -czf backup-$(date +%Y%m%d).tar.gz data/
-```
+1. Перейдіть до [cloud.mongodb.com](https://cloud.mongodb.com)
+2. Виберіть ваш кластер
+3. Подивіться:
+   - Використання диску (Storage)
+   - Кількість з'єднань (Connections)
+   - Операції (Operations)
 
-## Cost Estimates
+### Render Dashboard
 
-- **Render Free**: $0/month (with limitations)
-- **Render Paid**: $7/month (always on, better performance)
-- **Railway**: ~$5/month (pay for what you use)
-- **Fly.io**: ~$5/month
-- **Heroku**: Free tier removed, ~$7/month minimum
+1. Перейдіть до [dashboard.render.com](https://dashboard.render.com)
+2. Виберіть ваш сервіс
+3. Подивіться:
+   - Logs - всі логи сервера
+   - Metrics - використання CPU/RAM
+   - Events - історія деплоїв
 
-## Migration Guide
+---
 
-If you need to move to a different server:
+## Масштабування (в майбутньому)
 
-1. Deploy to new server
-2. Update server URL in app settings
-3. Test connection
-4. Perform manual sync to push data
-5. Old server data remains intact (keep as backup)
+Коли ваше використання зросте:
 
-## Support
+**MongoDB Atlas:**
+- M0 (Free): 512 MB
+- M2 ($9/міс): 2 GB
+- M5 ($25/міс): 5 GB
 
-For issues or questions:
-- Check GitHub Issues
-- Review server logs
-- Test with local server first
-- Verify all configuration steps
+**Render:**
+- Free: Обмежені ресурси, засинання
+- Starter ($7/міс): Завжди активний, більше ресурсів
+- Standard ($25/міс): Ще більше ресурсів
 
-## License
+---
 
-Same as main Onda application - Non-commercial use only
+## Безпека
+
+✅ **Використовуйте HTTPS** - Render/Railway/Fly надають автоматично
+✅ **Надійний Secret Key** - мінімум 16 символів, унікальний для кожного користувача
+✅ **Не публікуйте MONGODB_URI** - це як пароль до вашої бази даних
+✅ **Регулярні backup** - MongoDB Atlas робить автоматично
+
+---
+
+## Підтримка
+
+Якщо виникли питання:
+1. Перевірте логи в Render/Railway/Fly
+2. Перевірте MongoDB Atlas metrics
+3. Переконайтеся що MONGODB_URI правильно встановлено
+4. Створіть issue в GitHub репозиторії

@@ -7,3 +7,7 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: MONGODB_URI
+        sync: false
+        # Add your MongoDB Atlas connection string in the Render dashboard
+        # Example: mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/onda-sync?retryWrites=true&w=majority
