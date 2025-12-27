@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { X, ArrowRight, ArrowLeft } from 'lucide-react';
 import { icons } from '../../../../utils/icons';
 import { BubbleBtn } from '../../../shared/BubbleBtn';
@@ -80,7 +81,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [onClose]);
 
-  return (
+  return ReactDOM.createPortal(
     <div
       className={`fixed z-[99999] cursor-default inset-0 flex items-center justify-center bg-black bg-opacity-50 text-text`}
       style={{ WebkitTapHighlightColor: 'transparent' }}
@@ -304,7 +305,8 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

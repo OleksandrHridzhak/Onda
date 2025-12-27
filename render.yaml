@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: onda-sync-server
+    runtime: node
+    buildCommand: cd sync-server && npm install
+    startCommand: cd sync-server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false

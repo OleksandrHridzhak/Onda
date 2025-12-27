@@ -1,5 +1,6 @@
 import { dbPromise } from './indexedDB.js';
 import { getSettingsTemplate } from '../utils/fileTemplates';
+import { notifyDataChange } from './autoSync';
 
 const handleError = (err, message) => ({
   status: message,
@@ -49,6 +50,9 @@ export const settingsService = {
       await store.put({ id: 1, ...updated });
       await tx.done;
 
+      // Trigger sync after updating settings
+      notifyDataChange();
+
       return { status: 'Settings updated' };
     } catch (err) {
       return handleError(err, 'Error updating settings');
@@ -66,6 +70,9 @@ export const settingsService = {
 
       await store.put({ id: 1, ...settings });
       await tx.done;
+
+      // Trigger sync after switching theme
+      notifyDataChange();
 
       return { status: 'Theme switched', darkMode };
     } catch (err) {
@@ -103,6 +110,9 @@ export const settingsService = {
       await store.put({ id: 1, ...settings });
       await tx.done;
 
+      // Trigger sync after updating theme
+      notifyDataChange();
+
       return { status: 'Theme updated' };
     } catch (err) {
       return handleError(err, 'Error updating theme');
@@ -120,6 +130,9 @@ export const settingsService = {
 
       await store.put({ id: 1, ...settings });
       await tx.done;
+
+      // Trigger sync after updating settings section
+      notifyDataChange();
 
       return { status: 'Theme updated' };
     } catch (err) {
@@ -139,6 +152,9 @@ export const settingsService = {
       await store.put({ id: 1, ...settings });
       await tx.done;
 
+      // Trigger sync after updating table settings
+      notifyDataChange();
+
       return { status: 'Table settings updated' };
     } catch (err) {
       return handleError(err, 'Error updating table settings');
@@ -157,6 +173,9 @@ export const settingsService = {
       await store.put({ id: 1, ...settings });
       await tx.done;
 
+      // Trigger sync after updating UI settings
+      notifyDataChange();
+
       return { status: 'UI settings updated' };
     } catch (err) {
       return handleError(err, 'Error updating UI settings');
@@ -174,6 +193,9 @@ export const settingsService = {
 
       await store.put({ id: 1, ...settings });
       await tx.done;
+
+      // Trigger sync after updating column order
+      notifyDataChange();
 
       return { status: 'Column order updated' };
     } catch (err) {

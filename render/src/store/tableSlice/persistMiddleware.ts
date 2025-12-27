@@ -3,6 +3,7 @@ import {
   deleteColumn as deleteColumnFromDB,
   updateColumnsOrder,
 } from '../../services/columnsDB';
+import { notifyDataChange } from '../../services/autoSync';
 
 // Debounce function to prevent too many DB writes
 const debounceMap = new Map();
@@ -44,6 +45,8 @@ export const tablePersistMiddleware = (store) => (next) => (action) => {
           try {
             await updateColumnInDB({ id: columnId, ...columnData });
             console.log('Column saved to IndexedDB:', columnId);
+            // Trigger sync after saving to IndexedDB
+            notifyDataChange();
           } catch (error) {
             console.error('Error saving column to IndexedDB:', error);
           }
@@ -65,6 +68,8 @@ export const tablePersistMiddleware = (store) => (next) => (action) => {
             await updateColumnInDB({ id: newColumnId, ...columnData });
             await updateColumnsOrder(state.tableData.columnOrder);
             console.log('New column saved to IndexedDB:', newColumnId);
+            // Trigger sync after creating new column
+            notifyDataChange();
           } catch (error) {
             console.error('Error saving new column to IndexedDB:', error);
           }
@@ -80,6 +85,8 @@ export const tablePersistMiddleware = (store) => (next) => (action) => {
           await deleteColumnFromDB(columnId);
           await updateColumnsOrder(state.tableData.columnOrder);
           console.log('Column deleted from IndexedDB:', columnId);
+          // Trigger sync after deleting column
+          notifyDataChange();
         } catch (error) {
           console.error('Error deleting column from IndexedDB:', error);
         }
@@ -93,6 +100,8 @@ export const tablePersistMiddleware = (store) => (next) => (action) => {
         try {
           await updateColumnsOrder(state.tableData.columnOrder);
           console.log('Column order saved to IndexedDB');
+          // Trigger sync after reordering columns
+          notifyDataChange();
         } catch (error) {
           console.error('Error saving column order to IndexedDB:', error);
         }

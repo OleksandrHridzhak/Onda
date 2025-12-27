@@ -55,39 +55,42 @@ export const ColumnHeaderContent: React.FC<ColumnHeaderContentProps> = ({
         {isEmptyHeader && <span className="opacity-0">∅</span>}
       </div>
       {showMenu && (
-        <ColumnMenu
-          column={column}
-          onClose={handleClose}
-          handleDeleteColumn={columnMenuLogic.handleDeleteColumn}
-          handleClearColumn={columnMenuLogic.handleClearColumn}
-          onRename={columnMenuLogic.handleRename}
-          onChangeIcon={columnMenuLogic.handleChangeIcon}
-          onChangeDescription={columnMenuLogic.handleChangeDescription}
-          onToggleTitleVisibility={(id: string, visible: boolean) =>
-            columnMenuLogic.handleToggleTitleVisibility(id, visible)
-          }
-          onChangeOptions={(
-            id: string,
-            options: string[],
-            tagColors: Record<string, string>,
-            doneTags?: string[],
-          ) =>
-            columnMenuLogic.handleChangeOptions(
-              id,
-              options,
-              tagColors,
-              doneTags,
-            )
-          }
-          onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
-          onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
-          onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
-          canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
-          canMoveDown={
-            column.id !== 'days' && columns.indexOf(column) < columns.length - 1
-          }
-          onChangeWidth={handleChangeWidth}
-        />
+        <div key={`menu-${column.id}`}>
+          <ColumnMenu
+            column={column}
+            onClose={handleClose}
+            handleDeleteColumn={columnMenuLogic.handleDeleteColumn}
+            handleClearColumn={columnMenuLogic.handleClearColumn}
+            onRename={columnMenuLogic.handleRename}
+            onChangeIcon={columnMenuLogic.handleChangeIcon}
+            onChangeDescription={columnMenuLogic.handleChangeDescription}
+            onToggleTitleVisibility={(id: string, visible: boolean) =>
+              columnMenuLogic.handleToggleTitleVisibility(id, visible)
+            }
+            onChangeOptions={(
+              id: string,
+              options: string[],
+              tagColors: Record<string, string>,
+              doneTags?: string[],
+            ) =>
+              columnMenuLogic.handleChangeOptions(
+                id,
+                options,
+                tagColors,
+                doneTags,
+              )
+            }
+            onChangeCheckboxColor={columnMenuLogic.handleChangeCheckboxColor}
+            onMoveUp={(id: string) => handleMoveColumn(id, 'up')}
+            onMoveDown={(id: string) => handleMoveColumn(id, 'down')}
+            canMoveUp={column.id !== 'days' && columns.indexOf(column) > 1}
+            canMoveDown={
+              column.id !== 'days' &&
+              columns.indexOf(column) < columns.length - 1
+            }
+            onChangeWidth={handleChangeWidth}
+          />
+        </div>
       )}
     </div>
   );

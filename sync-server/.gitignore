@@ -1,0 +1,14 @@
+# Sync server data files
+data/
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local

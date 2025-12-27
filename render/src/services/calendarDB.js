@@ -1,4 +1,5 @@
 import { dbPromise } from './indexedDB';
+import { notifyDataChange } from './autoSync';
 
 const handleError = (err, message) => ({
   status: 'error',
@@ -85,6 +86,9 @@ export const calendarService = {
       await store.put(calendar);
       await tx.done;
 
+      // Trigger sync after updating calendar event
+      notifyDataChange();
+
       return { status: 'success', data: normalizedEvent };
     } catch (err) {
       return handleError(err, 'Error updating calendar event');
@@ -111,6 +115,9 @@ export const calendarService = {
 
       await store.put(calendar);
       await tx.done;
+
+      // Trigger sync after deleting calendar event
+      notifyDataChange();
 
       return { status: 'Calendar event deleted', eventId };
     } catch (err) {

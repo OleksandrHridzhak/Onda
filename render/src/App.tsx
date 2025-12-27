@@ -12,6 +12,7 @@ import Table from './components/pages/TablePage';
 import MenuWin from './components/layout/MenuWin';
 import Calendar from './components/pages/CalendarPage';
 import Settings from './components/pages/SettingsPage';
+import { syncService } from './services/syncService';
 
 const routes = ['/', '/calendar', '/settings'];
 
@@ -29,6 +30,9 @@ function MainContent() {
     if (savedColor) {
       document.documentElement.dataset.colorScheme = savedColor;
     }
+
+    // Initialize sync service on app startup
+    syncService.initialize().catch(console.error);
   }, []);
 
   const isElectron =
