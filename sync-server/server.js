@@ -9,13 +9,13 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Configuration constants
-const MIN_SECRET_KEY_LENGTH = 8;
-const RATE_LIMIT_WINDOW = 60000; // 1 minute
-const MAX_REQUESTS = 60; // 60 requests per minute
+const MIN_SECRET_KEY_LENGTH = 8; // Minimum secret key length for security
+const RATE_LIMIT_WINDOW = 60000; // 1 minute window for rate limiting
+const MAX_REQUESTS = 60; // Maximum 60 requests per minute per key/IP
 
-// MongoDB configuration
+// MongoDB Configuration
 // Set MONGODB_URI environment variable with your MongoDB Atlas connection string
-// Example: mongodb+srv://username:password@cluster.mongodb.net/onda-sync?retryWrites=true&w=majority
+// Example: mongodb+srv://username:password@cluster.mongodb.net/onda-sync
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
 const DB_NAME = 'onda-sync';
 const COLLECTION_NAME = 'sync-data';
@@ -24,7 +24,7 @@ let mongoClient = null;
 let db = null;
 let collection = null;
 
-// Initialize MongoDB connection
+// Initialize MongoDB Connection
 async function initMongoDB() {
   if (!MONGODB_URI) {
     console.error('❌ ERROR: MONGODB_URI environment variable is not set!');
@@ -40,15 +40,19 @@ async function initMongoDB() {
     db = mongoClient.db(DB_NAME);
     collection = db.collection(COLLECTION_NAME);
     
-    // Create index on secretKey for faster queries
+    // Create index on secretKey for faster queries and enforce uniqueness
     await collection.createIndex({ secretKey: 1 }, { unique: true });
     
-    // Clean up old schema fields that are no longer needed
-    // Remove 'previousVersion' field from all documents (keep schema clean)
-    await collection.updateMany(
+    // Schema cleanup: Remove deprecated fields
+    // This keeps the database clean by removing 'previousVersion' field that's no longer used
+    const cleanupResult = await collection.updateMany(
       { previousVersion: { $exists: true } },
       { $unset: { previousVersion: "" } }
     );
+    
+    if (cleanupResult.modifiedCount > 0) {
+      console.log(`🧹 Cleaned up ${cleanupResult.modifiedCount} documents (removed deprecated fields)`);
+    }
     
     console.log('✅ Connected to MongoDB Atlas successfully');
     console.log(`   Database: ${DB_NAME}`);
@@ -64,7 +68,8 @@ async function initMongoDB() {
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// Simple rate limiting to prevent abuse
+// Rate Limiting Middleware
+// Prevents abuse by limiting requests per key/IP
 const rateLimitMap = new Map();
 
 const rateLimiter = (req, res, next) => {
@@ -78,12 +83,13 @@ const rateLimiter = (req, res, next) => {
   
   const rateData = rateLimitMap.get(key);
   
+  // Reset counter if window expired
   if (now > rateData.resetTime) {
-    // Reset the counter
     rateLimitMap.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
     return next();
   }
   
+  // Check if limit exceeded
   if (rateData.count >= MAX_REQUESTS) {
     return res.status(429).json({ 
       error: 'Too many requests', 
@@ -98,7 +104,8 @@ const rateLimiter = (req, res, next) => {
 // Apply rate limiting to all routes
 app.use(rateLimiter);
 
-// Middleware to verify secret key
+// Authentication Middleware
+// Verifies secret key is present and meets minimum length requirement
 const authenticateKey = (req, res, next) => {
   const secretKey = req.headers['x-secret-key'];
   if (!secretKey || secretKey.length < MIN_SECRET_KEY_LENGTH) {

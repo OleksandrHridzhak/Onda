@@ -1,13 +1,17 @@
+/**
+ * Auto-Sync Helper Functions
+ * Notify sync service when data changes for automatic synchronization
+ */
+
 import { syncService } from './syncService';
 
 /**
- * Database change notifier - triggers debounced sync when data changes
- * This creates Notion-like auto-sync experience
- */
-
-/**
  * Notify sync service that data has changed
- * Call this after any database write operation
+ * Call after any database write operation to trigger debounced sync
+ * 
+ * @example
+ * await db.update(data);
+ * notifyDataChange();
  */
 export function notifyDataChange() {
   syncService.triggerDebouncedSync();
@@ -15,7 +19,11 @@ export function notifyDataChange() {
 
 /**
  * Wrap a database operation to auto-sync after completion
- * Usage: await withAutoSync(() => calendarService.updateCalendar(data))
+ * 
+ * @param {Function} operation - Async database operation
+ * @returns {Promise} Result of the operation
+ * @example
+ * await withAutoSync(() => calendarDB.updateEvent(data));
  */
 export async function withAutoSync(operation) {
   try {
@@ -29,8 +37,14 @@ export async function withAutoSync(operation) {
 }
 
 /**
- * Create a proxy for a service that automatically triggers sync on write operations
- * Usage: const autoSyncCalendar = createAutoSyncProxy(calendarService)
+ * Create a proxy for a service that auto-triggers sync on write operations
+ * Automatically detects write methods (update, add, delete, create, set, save, put, remove, clear)
+ * 
+ * @param {Object} service - Database service to wrap
+ * @returns {Proxy} Proxied service with auto-sync
+ * @example
+ * const autoSyncDB = createAutoSyncProxy(calendarDB);
+ * await autoSyncDB.updateEvent(data); // Auto-syncs after update
  */
 export function createAutoSyncProxy(service) {
   return new Proxy(service, {
@@ -41,7 +55,7 @@ export function createAutoSyncProxy(service) {
         return original;
       }
 
-      // Check if this is a write operation (update, add, delete, etc.)
+      // Detect write operations by method name
       const isWriteOperation = /^(update|add|delete|create|set|save|put|remove|clear)/i.test(
         prop.toString(),
       );
@@ -50,7 +64,7 @@ export function createAutoSyncProxy(service) {
         return original;
       }
 
-      // Return wrapped function that triggers sync after completion
+      // Wrap write operation with auto-sync
       return async function (...args) {
         try {
           const result = await original.apply(target, args);
