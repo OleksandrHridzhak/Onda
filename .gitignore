@@ -35,5 +35,4 @@ main.bundle.js
 preload.bundle.js
 
 # Sync server data
-/sync-server/data/
 /sync-server/node_modules/
