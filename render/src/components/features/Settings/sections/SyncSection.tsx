@@ -217,17 +217,17 @@ export default function SyncSection() {
           <div
             className={`p-3 rounded-lg flex items-center gap-2 ${
               testResult.status === 'success'
-                ? 'bg-green-500/10 border border-green-500/20'
-                : 'bg-red-500/10 border border-red-500/20'
+                ? 'bg-cellBg border border-primaryColor/30'
+                : 'bg-cellBg border border-red-500/30'
             }`}
           >
             {testResult.status === 'success' ? (
-              <Check size={18} className="text-green-500" />
+              <Check size={18} className="text-primaryColor" />
             ) : (
-              <X size={18} className="text-red-500" />
+              <X size={18} className="text-red-400" />
             )}
             <span
-              className={`text-sm ${testResult.status === 'success' ? 'text-green-500' : 'text-red-500'}`}
+              className={`text-sm ${testResult.status === 'success' ? 'text-primaryColor' : 'text-red-400'}`}
             >
               {testResult.message}
             </span>
@@ -240,7 +240,7 @@ export default function SyncSection() {
         <div className="p-4 rounded-lg bg-cellBg border border-border space-y-3">
           <div className="flex items-center gap-2">
             {syncStatus.autoSyncActive ? (
-              <Wifi size={18} className="text-green-500" />
+              <Wifi size={18} className="text-primaryColor" />
             ) : (
               <WifiOff size={18} className="text-textTableValues" />
             )}
@@ -261,7 +261,7 @@ export default function SyncSection() {
             </div>
             <div className="flex justify-between">
               <span>Smart Sync:</span>
-              <span className={syncStatus.autoSyncActive ? 'text-green-500' : 'text-text'}>
+              <span className={syncStatus.autoSyncActive ? 'text-primaryColor' : 'text-text'}>
                 {syncStatus.autoSyncActive ? 'Active ✓' : 'Inactive'}
               </span>
             </div>
