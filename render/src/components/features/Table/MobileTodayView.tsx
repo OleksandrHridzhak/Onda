@@ -193,7 +193,7 @@ export const MobileTodayView: React.FC = () => {
           );
 
         default:
-          return <span className="text-gray-400">-</span>;
+          return null; // Don't render unsupported column types on mobile
       }
     },
     [
@@ -278,6 +278,23 @@ export const MobileTodayView: React.FC = () => {
           const cardKey = `${columnId}-${selectedDayName}`;
 
           const columnType = columnData.Type?.toLowerCase();
+          
+          // Supported column types on mobile
+          const supportedTypes = [
+            'checkbox',
+            'numberbox',
+            'multicheckbox',
+            'multiselect',
+            'text',
+            'todo',
+            'tasktable',
+          ];
+          
+          // Don't render unsupported column types
+          if (!supportedTypes.includes(columnType)) {
+            return null;
+          }
+          
           const compactTypes = [
             'checkbox',
             'numberbox',
