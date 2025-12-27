@@ -6,8 +6,8 @@
 
 // Server Configuration
 // Change this to your production server URL when deploying
-// Example: 'https://onda-sync.render.com' or 'https://your-domain.com'
-export const DEFAULT_SYNC_SERVER_URL = 'http://localhost:3001';
+// Example: 'https://onda-39t4.onrender.com' or 'https://your-domain.com'
+export const DEFAULT_SYNC_SERVER_URL = 'https://onda-39t4.onrender.com';
 
 // Sync Timing Configuration
 export const SYNC_DEBOUNCE_DELAY = 1000; // Wait 1 second after last change before syncing

@@ -47,6 +47,7 @@ Onda Sync використовує **MongoDB Atlas** для зберігання
 7. Замініть `<dbname>` на `onda-sync`
 
 **Приклад готового connection string:**
+
 ```
 mongodb+srv://onda-admin:MySecurePassword123@onda-sync.abc123.mongodb.net/onda-sync?retryWrites=true&w=majority
 ```
@@ -83,6 +84,7 @@ mongodb+srv://onda-admin:MySecurePassword123@onda-sync.abc123.mongodb.net/onda-s
    - **Value**: Ваш connection string з MongoDB Atlas (з Кроку 4 вище)
 
 **Приклад:**
+
 ```
 Key: MONGODB_URI
 Value: mongodb+srv://onda-admin:MySecurePassword123@onda-sync.abc123.mongodb.net/onda-sync?retryWrites=true&w=majority
@@ -101,7 +103,7 @@ Value: mongodb+srv://onda-admin:MySecurePassword123@onda-sync.abc123.mongodb.net
 1. Відкрийте Onda
 2. Перейдіть до Settings → Cloud Sync
 3. Введіть:
-   - **Server URL**: Ваш URL з Render (наприклад, `https://onda-sync-server.onrender.com`)
+   - **Server URL**: Ваш URL з Render (наприклад, `https://onda-39t4.onrender.com` або `https://onda-sync-server.onrender.com`)
    - **Secret Key**: Згенеруйте або введіть свій (мінімум 8 символів)
 4. Натисніть "Test Connection"
 5. Якщо "Connection successful" - натисніть "Save Configuration"
@@ -152,21 +154,26 @@ fly deploy
 ## Переваги MongoDB Atlas + Render
 
 ✅ **Повністю безкоштовно**
+
 - MongoDB Atlas M0 - безкоштовно (512 MB)
 - Render Free Tier - безкоштовно
 
 ✅ **Дані не видаляються**
+
 - MongoDB Atlas зберігає дані постійно
 - Навіть коли Render "усипляє" сервер - дані залишаються
 
 ✅ **Автоматичні backup**
+
 - MongoDB Atlas робить backup щодня
 
 ✅ **Надійно**
+
 - 99.99% uptime від MongoDB Atlas
 - Розподілені сервери по всьому світу
 
 ✅ **Швидко налаштувати**
+
 - Лише один connection string потрібно встановити
 - Все працює одразу
 
@@ -177,10 +184,11 @@ fly deploy
 ### Тест 1: Health Check
 
 ```bash
-curl https://your-server-url.onrender.com/health
+curl https://onda-39t4.onrender.com/health
 ```
 
 Повинно повернути:
+
 ```json
 {
   "status": "ok",
@@ -226,6 +234,7 @@ npm start
 ### Помилка: "Failed to connect to MongoDB"
 
 **Можливі причини:**
+
 1. Неправильний connection string - перевірте username, password, cluster URL
 2. IP адреса не додана в Network Access - додайте `0.0.0.0/0`
 3. Користувач не має прав - встановіть "Read and write to any database"
@@ -235,6 +244,7 @@ npm start
 На безкоштовному плані Render сервер засинає після 15 хвилин неактивності. Перший запит після сну займе 30-60 секунд.
 
 **Рішення:**
+
 - Це нормально для безкоштовного плану
 - MongoDB Atlas НЕ засинає - дані завжди доступні
 - Для production рекомендується платний план Render ($7/міс)
@@ -275,11 +285,13 @@ npm start
 Коли ваше використання зросте:
 
 **MongoDB Atlas:**
+
 - M0 (Free): 512 MB
 - M2 ($9/міс): 2 GB
 - M5 ($25/міс): 5 GB
 
 **Render:**
+
 - Free: Обмежені ресурси, засинання
 - Starter ($7/міс): Завжди активний, більше ресурсів
 - Standard ($25/міс): Ще більше ресурсів
@@ -298,6 +310,7 @@ npm start
 ## Підтримка
 
 Якщо виникли питання:
+
 1. Перевірте логи в Render/Railway/Fly
 2. Перевірте MongoDB Atlas metrics
 3. Переконайтеся що MONGODB_URI правильно встановлено
