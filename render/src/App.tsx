@@ -33,32 +33,23 @@ function MainContent() {
 
     // Initialize sync service on app startup
     syncService.initialize().catch(console.error);
-
-    // Pull data when app becomes visible (returns from tray or regains focus)
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        console.log('App became visible, triggering sync...');
-        syncService.sync().catch(console.error);
-      }
-    };
-
-    // Pull data when window regains focus
-    const handleFocus = () => {
-      console.log('Window focused, triggering sync...');
-      syncService.sync().catch(console.error);
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
-    };
   }, []);
 
   const isElectron =
     typeof globalThis !== 'undefined' && !!globalThis.electronAPI;
+
+  // Throttle syncs triggered by route (tab) changes
+  const lastRouteSyncRef = useRef(0);
+  useEffect(() => {
+    const THROTTLE_MS = 30_000; // 30 seconds
+    const now = Date.now();
+    if (now - lastRouteSyncRef.current < THROTTLE_MS) return;
+    lastRouteSyncRef.current = now;
+
+    console.log('Route changed, triggering sync...');
+    // Trigger a full sync (push + pull) to refresh data when user switches tabs
+    syncService.sync().catch(console.error);
+  }, [location.pathname]);
 
   return (
     <div
