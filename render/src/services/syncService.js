@@ -122,16 +122,18 @@ class SyncService {
 
     try {
       let pushResult = { success: false };
-      
+
       // Step 1: Push local changes first (if any)
       // This prevents race condition where pull would overwrite unsaved local changes
       if (this.hasLocalChanges) {
         console.log('⬆️ Pushing local changes to server...');
         pushResult = await this.pushToServer();
-        
+
         if (pushResult.success) {
           this.hasLocalChanges = false;
-          console.log(`✅ Push completed - Client v${pushResult.version - 1} → Server v${pushResult.version}`);
+          console.log(
+            `✅ Push completed - Client v${pushResult.version - 1} → Server v${pushResult.version}`,
+          );
         } else {
           console.warn('⚠️ Push failed, continuing with pull...');
         }
@@ -150,9 +152,13 @@ class SyncService {
       if (pullResult.hasNewData) {
         console.log('🔄 Merging newer server data...');
         await this.mergeServerData(pullResult.data, pullResult.version);
-        console.log(`📥 Merge completed - Client v${this.localVersion - 1} → v${this.localVersion}`);
+        console.log(
+          `📥 Merge completed - Client v${this.localVersion - 1} → v${this.localVersion}`,
+        );
       } else {
-        console.log(`📥 Pull - Client v${this.localVersion} ← Server v${pullResult.version || this.localVersion} (up to date)`);
+        console.log(
+          `📥 Pull - Client v${this.localVersion} ← Server v${pullResult.version || this.localVersion} (up to date)`,
+        );
       }
 
       this.syncInProgress = false;
@@ -321,7 +327,7 @@ class SyncService {
   triggerDebouncedSync() {
     // Mark that we have local changes needing push
     this.hasLocalChanges = true;
-    
+
     // Clear any existing timeout (reset debounce timer)
     if (this.debouncedSyncTimeout) {
       clearTimeout(this.debouncedSyncTimeout);
@@ -406,3 +412,11 @@ class SyncService {
 
 // Create singleton instance
 export const syncService = new SyncService();
+
+/**
+ * Notify sync service that data has changed.
+ * Backwards-compatible helper for `notifyDataChange()` consumers.
+ */
+export function notifyDataChange() {
+  syncService.triggerDebouncedSync();
+}
