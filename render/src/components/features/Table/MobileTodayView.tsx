@@ -193,7 +193,7 @@ export const MobileTodayView: React.FC = () => {
           );
 
         default:
-          return <span className="text-gray-400">-</span>;
+          return null;
       }
     },
     [
@@ -278,6 +278,15 @@ export const MobileTodayView: React.FC = () => {
             const cardKey = `${columnId}-${selectedDayName}`;
 
             const columnType = columnData.Type?.toLowerCase();
+
+            // Get the rendered cell to check if it's null
+            const renderedCell = renderCell(columnId, columnType, columnData);
+
+            // Skip rendering the entire card if cell content is null
+            if (renderedCell === null) {
+              return null;
+            }
+
             const compactTypes = [
               'checkbox',
               'numberbox',
@@ -307,7 +316,7 @@ export const MobileTodayView: React.FC = () => {
                     <div
                       className={`${['multiselect', 'multicheckbox'].includes(columnType) ? 'min-w-[96px] md:min-w-[48px]' : 'min-w-[48px]'} flex items-center justify-center`}
                     >
-                      {renderCell(columnId, columnType, columnData)}
+                      {renderedCell}
                     </div>
                     <button
                       aria-label={`Open settings for ${columnData.Name || columnType}`}
@@ -351,9 +360,7 @@ export const MobileTodayView: React.FC = () => {
                     <MoreVertical size={18} />
                   </button>
                 </div>
-                <div className="w-full">
-                  {renderCell(columnId, columnType, columnData)}
-                </div>
+                <div className="w-full">{renderedCell}</div>
               </div>
             );
           })}
