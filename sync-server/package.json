@@ -2,11 +2,11 @@
   "name": "onda-sync-server",
   "version": "1.0.0",
   "description": "Lightweight sync server for Onda app",
-  "main": "server.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
     "test": "node test.js"
   },
   "keywords": [
