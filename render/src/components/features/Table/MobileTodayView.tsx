@@ -193,7 +193,7 @@ export const MobileTodayView: React.FC = () => {
           );
 
         default:
-          return null; // Don't render unsupported column types on mobile
+          return <span className="text-gray-400">-</span>;
       }
     },
     [
@@ -274,106 +274,89 @@ export const MobileTodayView: React.FC = () => {
         {columnOrder
           .filter((columnId: string) => columnsData[columnId]) // Filter out missing columns to prevent empty blocks
           .map((columnId: string) => {
-          const columnData = columnsData[columnId];
-          const cardKey = `${columnId}-${selectedDayName}`;
+            const columnData = columnsData[columnId];
+            const cardKey = `${columnId}-${selectedDayName}`;
 
-          const columnType = columnData.Type?.toLowerCase();
-          
-          // Supported column types on mobile
-          const supportedTypes = [
-            'checkbox',
-            'numberbox',
-            'multicheckbox',
-            'multiselect',
-            'text',
-            'todo',
-            'tasktable',
-          ];
-          
-          // Don't render unsupported column types
-          if (!supportedTypes.includes(columnType)) {
-            return null;
-          }
-          
-          const compactTypes = [
-            'checkbox',
-            'numberbox',
-            'multicheckbox',
-            'multiselect',
-          ];
-          const isCompact = compactTypes.includes(columnType);
+            const columnType = columnData.Type?.toLowerCase();
+            const compactTypes = [
+              'checkbox',
+              'numberbox',
+              'multicheckbox',
+              'multiselect',
+            ];
+            const isCompact = compactTypes.includes(columnType);
 
-          if (isCompact) {
+            if (isCompact) {
+              return (
+                <div
+                  key={cardKey}
+                  className="bg-tableBodyBg border border-border rounded-lg p-3 flex items-center justify-between transition-all hover:shadow-sm"
+                >
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {columnData.EmojiIcon && (
+                      <span className="flex-shrink-0 text-text inline-flex items-center">
+                        {getIconComponent(columnData.EmojiIcon, 18)}
+                      </span>
+                    )}
+                    <h3 className="text-sm font-medium text-text truncate">
+                      {columnData.Name || columnType}
+                    </h3>
+                  </div>
+
+                  <div className="ml-3 flex items-center justify-end gap-2 flex-shrink-0">
+                    <div
+                      className={`${['multiselect', 'multicheckbox'].includes(columnType) ? 'min-w-[96px] md:min-w-[48px]' : 'min-w-[48px]'} flex items-center justify-center`}
+                    >
+                      {renderCell(columnId, columnType, columnData)}
+                    </div>
+                    <button
+                      aria-label={`Open settings for ${columnData.Name || columnType}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenColumnMenu(columnId);
+                      }}
+                      className="p-2 rounded-md text-textTableValues hover:bg-hoverBg transition-colors active:scale-95"
+                    >
+                      <MoreVertical size={18} />
+                    </button>
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div
                 key={cardKey}
-                className="bg-tableBodyBg border border-border rounded-lg p-3 flex items-center justify-between transition-all hover:shadow-sm"
+                className="bg-tableBodyBg border border-border rounded-lg p-4 transition-all hover:shadow-sm"
               >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  {columnData.EmojiIcon && (
-                    <span className="flex-shrink-0 text-text inline-flex items-center">
-                      {getIconComponent(columnData.EmojiIcon, 18)}
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-text flex items-center gap-2 flex-1 min-w-0">
+                    {columnData.EmojiIcon && (
+                      <span className="inline-flex items-center flex-shrink-0">
+                        {getIconComponent(columnData.EmojiIcon, 18)}
+                      </span>
+                    )}
+                    <span className="truncate">
+                      {columnData.Name || columnType}
                     </span>
-                  )}
-                  <h3 className="text-sm font-medium text-text truncate">
-                    {columnData.Name || columnType}
                   </h3>
-                </div>
-
-                <div className="ml-3 flex items-center justify-end gap-2 flex-shrink-0">
-                  <div
-                    className={`${['multiselect', 'multicheckbox'].includes(columnType) ? 'min-w-[96px] md:min-w-[48px]' : 'min-w-[48px]'} flex items-center justify-center`}
-                  >
-                    {renderCell(columnId, columnType, columnData)}
-                  </div>
                   <button
                     aria-label={`Open settings for ${columnData.Name || columnType}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       setOpenColumnMenu(columnId);
                     }}
-                    className="p-2 rounded-md text-textTableValues hover:bg-hoverBg transition-colors active:scale-95"
+                    className="p-2 rounded-md text-textTableValues hover:bg-hoverBg transition-colors active:scale-95 flex-shrink-0"
                   >
                     <MoreVertical size={18} />
                   </button>
                 </div>
+                <div className="w-full">
+                  {renderCell(columnId, columnType, columnData)}
+                </div>
               </div>
             );
-          }
-
-          return (
-            <div
-              key={cardKey}
-              className="bg-tableBodyBg border border-border rounded-lg p-4 transition-all hover:shadow-sm"
-            >
-              <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-text flex items-center gap-2 flex-1 min-w-0">
-                  {columnData.EmojiIcon && (
-                    <span className="inline-flex items-center flex-shrink-0">
-                      {getIconComponent(columnData.EmojiIcon, 18)}
-                    </span>
-                  )}
-                  <span className="truncate">
-                    {columnData.Name || columnType}
-                  </span>
-                </h3>
-                <button
-                  aria-label={`Open settings for ${columnData.Name || columnType}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setOpenColumnMenu(columnId);
-                  }}
-                  className="p-2 rounded-md text-textTableValues hover:bg-hoverBg transition-colors active:scale-95 flex-shrink-0"
-                >
-                  <MoreVertical size={18} />
-                </button>
-              </div>
-              <div className="w-full">
-                {renderCell(columnId, columnType, columnData)}
-              </div>
-            </div>
-          );
-        })}
+          })}
       </div>
     </div>
   );
