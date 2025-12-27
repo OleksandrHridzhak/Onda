@@ -99,7 +99,7 @@ export async function pushData(req, res) {
 export async function pullData(req, res) {
   try {
     const { secretKey } = req;
-    const { clientVersion } = req.body;
+    const { clientVersion, clientLastSync } = req.body; // clientLastSync for backward compatibility
 
     const collection = getCollection();
     const serverData = await collection.findOne({ secretKey });
