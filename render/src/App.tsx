@@ -38,19 +38,6 @@ function MainContent() {
   const isElectron =
     typeof globalThis !== 'undefined' && !!globalThis.electronAPI;
 
-  // Throttle syncs triggered by route (tab) changes
-  const lastRouteSyncRef = useRef(0);
-  useEffect(() => {
-    const THROTTLE_MS = 30_000; // 30 seconds
-    const now = Date.now();
-    if (now - lastRouteSyncRef.current < THROTTLE_MS) return;
-    lastRouteSyncRef.current = now;
-
-    console.log('Route changed, triggering sync...');
-    // Trigger a full sync (push + pull) to refresh data when user switches tabs
-    syncService.sync().catch(console.error);
-  }, [location.pathname]);
-
   return (
     <div
       className={`flex-1 flex flex-col bg-background overflow-x-auto overflow-y-hidden`}
