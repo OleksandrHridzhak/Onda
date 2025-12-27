@@ -43,6 +43,13 @@ async function initMongoDB() {
     // Create index on secretKey for faster queries
     await collection.createIndex({ secretKey: 1 }, { unique: true });
     
+    // Clean up old schema fields that are no longer needed
+    // Remove 'previousVersion' field from all documents (keep schema clean)
+    await collection.updateMany(
+      { previousVersion: { $exists: true } },
+      { $unset: { previousVersion: "" } }
+    );
+    
     console.log('✅ Connected to MongoDB Atlas successfully');
     console.log(`   Database: ${DB_NAME}`);
     console.log(`   Collection: ${COLLECTION_NAME}`);
@@ -162,6 +169,7 @@ app.post('/sync/push', authenticateKey, async (req, res) => {
       
       await collection.insertOne(newDoc);
 
+      console.log(`✅ Initial sync - Version: 1`);
       return res.json({
         success: true,
         version: 1,
@@ -171,13 +179,12 @@ app.post('/sync/push', authenticateKey, async (req, res) => {
     }
 
     // Simple conflict resolution: last write wins
-    // In production, more sophisticated conflict logic can be added
+    // Increment version number for this push
     const newVersion = serverData.version + 1;
     const updateData = {
       content: clientData,
       lastSync: new Date().toISOString(),
       version: newVersion,
-      previousVersion: serverData.version,
       updatedAt: new Date(),
     };
 
@@ -186,6 +193,7 @@ app.post('/sync/push', authenticateKey, async (req, res) => {
       { $set: updateData }
     );
 
+    console.log(`✅ Push completed - Client v${clientVersion} → Server v${newVersion}`);
     res.json({
       success: true,
       version: newVersion,
@@ -207,6 +215,7 @@ app.post('/sync/pull', authenticateKey, async (req, res) => {
     const serverData = await collection.findOne({ secretKey });
 
     if (!serverData) {
+      console.log(`📥 Pull - No data on server for this key`);
       return res.json({
         exists: false,
         message: 'No data on server',
@@ -215,7 +224,8 @@ app.post('/sync/pull', authenticateKey, async (req, res) => {
 
     // Check if client is up to date
     const hasConflict = clientVersion && clientVersion < serverData.version;
-
+    
+    console.log(`📥 Pull - Client v${clientVersion} ← Server v${serverData.version} ${hasConflict ? '(conflict)' : '(up to date)'}`);
     res.json({
       exists: true,
       data: serverData.content,

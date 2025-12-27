@@ -20,6 +20,7 @@ class SyncService {
     this.lastSyncTime = null;
     this.debouncedSyncTimeout = null;
     this.debounceDelay = SYNC_DEBOUNCE_DELAY;
+    this.hasLocalChanges = false; // Track if local data has changed since last sync
   }
 
   /**
@@ -101,7 +102,7 @@ class SyncService {
   }
 
   /**
-   * Perform full sync: pull from server, merge, and push if needed
+   * Perform full sync: push local changes first, then pull server updates
    */
   async sync(force = false) {
     if (this.syncInProgress && !force) {
@@ -119,7 +120,22 @@ class SyncService {
     this.syncInProgress = true;
 
     try {
-      // Step 1: Pull from server
+      let pushResult = { success: false };
+      
+      // Step 1: If we have local changes, push them first
+      // This prevents local changes from being overwritten by stale server data
+      if (this.hasLocalChanges) {
+        console.log('Pushing local changes to server...');
+        pushResult = await this.pushToServer();
+        
+        if (pushResult.success) {
+          this.hasLocalChanges = false; // Clear the flag after successful push
+        }
+      }
+
+      // Step 2: Always pull to get latest data from server
+      // This ensures we have the most recent data from other devices
+      console.log('Pulling latest data from server...');
       const pullResult = await this.pullFromServer();
 
       if (pullResult.status === 'error') {
@@ -127,13 +143,12 @@ class SyncService {
         return pullResult;
       }
 
-      // Step 2: If server has newer data, merge it
+      // Step 3: If server has newer data than us, merge it
+      // This only happens if another device pushed while we weren't looking
       if (pullResult.hasNewData) {
-        await this.mergeServerData(pullResult.data);
+        console.log('Merging newer server data...');
+        await this.mergeServerData(pullResult.data, pullResult.version);
       }
-
-      // Step 3: Push local changes to server
-      const pushResult = await this.pushToServer();
 
       this.syncInProgress = false;
 
@@ -243,20 +258,22 @@ class SyncService {
 
   /**
    * Merge server data with local data
-   * Simple strategy: server data wins (can be improved with conflict resolution)
+   * Server data wins when versions differ (last write wins strategy)
    */
-  async mergeServerData(serverData) {
+  async mergeServerData(serverData, serverVersion) {
     try {
       // Import server data into local database
       await importData(serverData);
 
-      // Update local version - use server version if available, otherwise increment local
-      if (serverData.version && typeof serverData.version === 'number') {
-        this.localVersion = serverData.version;
-      } else {
-        this.localVersion = this.localVersion + 1;
-      }
+      // Update local version to match server
+      this.localVersion = serverVersion;
       this.lastSyncTime = new Date().toISOString();
+
+      // Save updated version to config
+      await this.saveSyncConfig({
+        version: this.localVersion,
+        lastSync: this.lastSyncTime,
+      });
 
       return { status: 'success', message: 'Data merged successfully' };
     } catch (error) {
@@ -297,6 +314,9 @@ class SyncService {
    * This creates a Notion-like experience where changes sync automatically
    */
   triggerDebouncedSync() {
+    // Mark that we have local changes that need to be pushed
+    this.hasLocalChanges = true;
+    
     // Clear any existing timeout
     if (this.debouncedSyncTimeout) {
       clearTimeout(this.debouncedSyncTimeout);
@@ -309,7 +329,7 @@ class SyncService {
 
     // Set new timeout - sync after user stops editing for debounceDelay ms
     this.debouncedSyncTimeout = setTimeout(() => {
-      console.log('Debounced sync triggered');
+      console.log('Debounced sync triggered (local changes detected)');
       this.sync().catch(console.error);
     }, this.debounceDelay);
   }
