@@ -7,17 +7,14 @@
 
 [![Stack](https://skillicons.dev/icons?i=react,electron,ts,js,nodejs,html,css,figma)](https://skillicons.dev)
 
-
-
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img style="width: 49%;" alt="743shots_so" src="https://github.com/user-attachments/assets/6ec0d886-1055-48e2-9c2a-94194ad98133" />
   <img style="width: 49%;" alt="541shots_so" src="https://github.com/user-attachments/assets/80c037a8-e67b-4b43-ac22-3bae4c7c58a7" />
 </div>
 
 | Resource &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Version | Link &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
-| :--- | :---: | :--- |
-| **Onda - Windows** | 2.1 | [Download on Gumroad](https://davibes.gumroad.com/l/onda) |
-
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Onda - Windows**                                                                                                                                                                                                                                                                                  |   2.1   | [Download on Gumroad](https://davibes.gumroad.com/l/onda)                                                                                                                                                                                             |
 
 ---
 
@@ -62,43 +59,6 @@ cd ../
 ```bash
 npm run start
 ```
-
----
-
-## Sync Feature 🔄
-
-Onda now supports cross-device synchronization! Keep your data in sync across all your devices using a secure secret key.
-
-### Key Features
-
-- **Local-First**: All changes saved locally immediately, sync happens in background
-- **Automatic Sync**: Background sync every 5 minutes
-- **Secure**: Protected by your secret key (minimum 8 characters)
-- **Simple Setup**: Easy configuration in Settings
-- **Works Offline**: Sync resumes automatically when connection returns
-
-### Quick Setup
-
-1. **Deploy Sync Server** (one-time setup)
-   - Use local server for testing: `cd sync-server && npm install && npm start`
-   - Or deploy to cloud (Render.com, Railway, Fly.io) - see [Deployment Guide](./docs/SYNC_DEPLOYMENT.md)
-
-2. **Configure Onda App**
-   - Go to Settings → Sync
-   - Generate or enter secret key
-   - Enter server URL
-   - Test connection
-   - Save and sync!
-
-3. **Setup Other Devices**
-   - Use same secret key and server URL
-   - Data syncs automatically
-
-### Documentation
-
-- 📖 [User Guide](./docs/SYNC_USER_GUIDE.md) - How to use sync
-- 🚀 [Deployment Guide](./docs/SYNC_DEPLOYMENT.md) - How to deploy server
-- 💡 [Sync Server README](./sync-server/README.md) - Server API reference
 
 ---
 

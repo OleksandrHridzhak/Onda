@@ -30,41 +30,36 @@ export const GENERATED_SECRET_KEY_LENGTH = 16;
 
 ## Integration Methods
 
-### Method 1: Using the Helper Functions (Recommended)
+### Method 1: Using the Helper Function (Recommended)
 
-Import and use the auto-sync helpers:
+Import and use the auto-sync helper:
 
 ```javascript
-import { notifyDataChange, withAutoSync } from '../services/autoSync';
+import { notifyDataChange } from '../services/autoSync';
 
 // Notify after any database operation
 async function updateTask(taskId, data) {
   await db.tasks.update(taskId, data);
   notifyDataChange(); // Triggers debounced sync
 }
-
-// Or wrap the operation
-async function addTask(task) {
-  return await withAutoSync(async () => {
-    return await db.tasks.add(task);
-  });
-}
 ```
 
 ### Method 2: Using Service Proxy (Advanced)
 
-Create auto-syncing proxies for entire services:
+Instead of a proxy helper, you can create small wrapper objects that call `notifyDataChange()` after write operations:
 
 ```javascript
-import { createAutoSyncProxy } from '../services/autoSync';
 import { calendarService } from './calendarDB';
+import { notifyDataChange } from '../services/autoSync';
 
-// Create auto-syncing version
-export const autoSyncCalendar = createAutoSyncProxy(calendarService);
-
-// Now all update operations auto-trigger sync
-await autoSyncCalendar.updateCalendar(data); // Auto-syncs!
-await autoSyncCalendar.addEvent(event); // Auto-syncs!
+export const calendarServiceWithSync = {
+  async updateCalendar(data) {
+    const res = await calendarService.updateCalendar(data);
+    notifyDataChange();
+    return res;
+  },
+  // ...wrap other write methods similarly
+};
 ```
 
 ### Method 3: Direct Call
@@ -94,12 +89,12 @@ export const calendarService = {
       const db = await dbPromise;
       const tx = db.transaction('calendar', 'readwrite');
       const store = tx.objectStore('calendar');
-      
+
       await store.put({ id: 1, body: calendarData });
       await tx.done;
-      
+
       notifyDataChange(); // Trigger sync
-      
+
       return { status: 'success' };
     } catch (err) {
       return { status: 'error', error: err.message };
@@ -112,14 +107,13 @@ export const calendarService = {
 
 ```javascript
 // render/src/services/columnsDB.js
-import { withAutoSync } from './autoSync';
+import { notifyDataChange } from './autoSync';
 
 export async function updateColumn(columnData) {
-  return await withAutoSync(async () => {
-    const db = await dbPromise;
-    await db.put('columns', columnData);
-    return { status: 'success' };
-  });
+  const db = await dbPromise;
+  await db.put('columns', columnData);
+  notifyDataChange();
+  return { status: 'success' };
 }
 ```
 
@@ -194,7 +188,7 @@ Users can configure sync behavior in Settings → Sync:
 ### DO ✅
 
 - Call `notifyDataChange()` after ALL write operations
-- Use `withAutoSync()` wrapper for consistency
+- Call `notifyDataChange()` after write operations for consistency
 - Test with slow network to verify behavior
 - Keep debounce delay reasonable (500ms - 2000ms)
 
@@ -232,16 +226,19 @@ for (let i = 0; i < 10; i++) {
 ## Troubleshooting
 
 **Sync not triggering?**
+
 - Check if sync is enabled in settings
 - Verify `notifyDataChange()` is being called
 - Check console for sync logs
 
 **Too many syncs?**
+
 - Increase debounce delay
 - Check for unnecessary `notifyDataChange()` calls
 - Consider batching updates
 
 **Data not pulling on app open?**
+
 - Check visibility/focus event listeners
 - Verify sync is configured
 - Check server connectivity
