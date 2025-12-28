@@ -37,10 +37,10 @@ class SyncService {
     try {
       const config = await this.getSyncConfig();
       if (config && config.enabled && config.secretKey && config.serverUrl) {
-        this.state.setSyncUrl(config.serverUrl);
-        this.state.setSecretKey(config.secretKey);
-        this.state.setLocalVersion(config.version || 0);
-        this.state.setLastSyncTime(config.lastSync || null);
+        this.state.syncUrl = config.serverUrl;
+        this.state.secretKey = config.secretKey;
+        this.state.localVersion = config.version || 0;
+        this.state.lastSyncTime = config.lastSync || null;
 
         // Start automatic sync if enabled
         if (config.autoSync) {
@@ -73,14 +73,14 @@ class SyncService {
   async saveSyncConfig(config: Partial<SyncConfig>): Promise<SaveConfigResult> {
     const result = await this.configManager.saveSyncConfig(
       config,
-      this.state.getLocalVersion(),
-      this.state.getLastSyncTime(),
+      this.state.localVersion,
+      this.state.lastSyncTime,
     );
 
     // Update local state
     if (result.status === 'success') {
-      if (config.serverUrl) this.state.setSyncUrl(config.serverUrl);
-      if (config.secretKey) this.state.setSecretKey(config.secretKey);
+      if (config.serverUrl) this.state.syncUrl = config.serverUrl;
+      if (config.secretKey) this.state.secretKey = config.secretKey;
     }
 
     return result;
@@ -91,7 +91,7 @@ class SyncService {
    * Push-first strategy prevents race conditions and data loss
    */
   async sync(force: boolean = false): Promise<SyncResult> {
-    if (this.state.isSyncInProgress() && !force) {
+    if (this.state.syncInProgress && !force) {
       console.log('⏭️ Sync already in progress, skipping');
       return { status: 'skipped', message: 'Sync already in progress' };
     }
@@ -103,31 +103,30 @@ class SyncService {
       };
     }
 
-    this.state.setSyncInProgress(true);
+    this.state.syncInProgress = true;
 
     try {
       let pushResult: PushResult = { success: false };
 
       // Step 1: Push local changes first (if any)
-      if (this.state.hasUnsavedChanges()) {
+      if (this.state.hasLocalChanges) {
         console.log('⬆️ Pushing local changes to server...');
         pushResult = await this.operations.pushToServer(
-          this.state.getSyncUrl()!,
-          this.state.getSecretKey()!,
-          this.state.getLocalVersion(),
+          this.state.syncUrl!,
+          this.state.secretKey!,
+          this.state.localVersion,
         );
 
         if (pushResult.success) {
-          this.state.setHasLocalChanges(false);
-          this.state.setLocalVersion(pushResult.version!);
-          this.state.setLastSyncTime(
-            pushResult.lastSync || new Date().toISOString(),
-          );
+          this.state.hasLocalChanges = false;
+          this.state.localVersion = pushResult.version!;
+          this.state.lastSyncTime =
+            pushResult.lastSync || new Date().toISOString();
 
           await this.configManager.saveSyncConfig(
             {},
-            this.state.getLocalVersion(),
-            this.state.getLastSyncTime(),
+            this.state.localVersion,
+            this.state.lastSyncTime,
           );
 
           console.log(
@@ -140,14 +139,14 @@ class SyncService {
 
       // Step 2: Pull latest data from server
       const pullResult = await this.operations.pullFromServer(
-        this.state.getSyncUrl()!,
-        this.state.getSecretKey()!,
-        this.state.getLocalVersion(),
-        this.state.getLastSyncTime(),
+        this.state.syncUrl!,
+        this.state.secretKey!,
+        this.state.localVersion,
+        this.state.lastSyncTime,
       );
 
       if (pullResult.status === 'error') {
-        this.state.setSyncInProgress(false);
+        this.state.syncInProgress = false;
         return {
           status: 'error',
           message: pullResult.message || 'Pull failed',
@@ -162,36 +161,36 @@ class SyncService {
           pullResult.version || 0,
         );
 
-        this.state.setLocalVersion(pullResult.version || 0);
-        this.state.setLastSyncTime(new Date().toISOString());
+        this.state.localVersion = pullResult.version || 0;
+        this.state.lastSyncTime = new Date().toISOString();
 
         await this.configManager.saveSyncConfig(
           {},
-          this.state.getLocalVersion(),
-          this.state.getLastSyncTime(),
+          this.state.localVersion,
+          this.state.lastSyncTime,
         );
 
         console.log(
-          `📥 Merge completed - Client v${this.state.getLocalVersion() - 1} → v${this.state.getLocalVersion()}`,
+          `📥 Merge completed - Client v${this.state.localVersion - 1} → v${this.state.localVersion}`,
         );
       } else {
         console.log(
-          `📥 Pull - Client v${this.state.getLocalVersion()} ← Server v${pullResult.version || this.state.getLocalVersion()} (up to date)`,
+          `📥 Pull - Client v${this.state.localVersion} ← Server v${pullResult.version || this.state.localVersion} (up to date)`,
         );
       }
 
-      this.state.setSyncInProgress(false);
+      this.state.syncInProgress = false;
 
       return {
         status: 'success',
         message: 'Sync completed successfully',
         pulled: pullResult.hasNewData,
         pushed: pushResult.success,
-        version: this.state.getLocalVersion(),
+        version: this.state.localVersion,
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      this.state.setSyncInProgress(false);
+      this.state.syncInProgress = false;
       console.error('❌ Sync error:', error);
       return { status: 'error', message: (error as Error).message };
     }
