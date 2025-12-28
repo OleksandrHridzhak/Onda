@@ -1,6 +1,7 @@
 /**
  * Type definitions for the sync server
  */
+import { Request } from 'express';
 
 /**
  * Sync document structure in MongoDB
@@ -19,6 +20,7 @@ export interface SyncDocument {
  */
 export interface AuthRequest extends Request {
   secretKey?: string;
+  body: any;
 }
 
 /**
