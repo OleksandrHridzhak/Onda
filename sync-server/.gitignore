@@ -5,6 +5,10 @@ data/
 node_modules/
 package-lock.json
 
+# TypeScript build output
+dist/
+*.tsbuildinfo
+
 # Logs
 *.log
 npm-debug.log*
