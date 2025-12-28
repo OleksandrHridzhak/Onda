@@ -77,10 +77,7 @@ const TableScreen: React.FC = () => {
     >
       {/* Pull-to-refresh indicator */}
       {isMobile && pullDistance > 0 && (
-        <div
-          className="fixed top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 z-50 transition-all"
-          style={{ transform: `translateY(${pullDistance}px)` }}
-        >
+        <div className="fixed top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 z-50 transition-all">
           {pullDistance > 100 ? '↻ Release to refresh' : '↓ Pull to refresh'}
         </div>
       )}
