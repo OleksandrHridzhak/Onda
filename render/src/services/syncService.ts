@@ -6,12 +6,13 @@ import type {
   TestConnectionResult,
   SyncStatus,
   SaveConfigResult,
+  PushResult,
 } from './syncTypes';
 
 /**
  * Sync Service - handles synchronization with remote server
  * Local-first approach: always work with local data, sync in background
- * 
+ *
  * Refactored into modular components:
  * - SyncConfigManager: Configuration management
  * - SyncOperations: Server communication (push/pull/test)
@@ -119,7 +120,9 @@ class SyncService {
         if (pushResult.success) {
           this.state.setHasLocalChanges(false);
           this.state.setLocalVersion(pushResult.version!);
-          this.state.setLastSyncTime(pushResult.lastSync || new Date().toISOString());
+          this.state.setLastSyncTime(
+            pushResult.lastSync || new Date().toISOString(),
+          );
 
           await this.configManager.saveSyncConfig(
             {},
@@ -154,7 +157,10 @@ class SyncService {
       // Step 3: Merge if server has newer data
       if (pullResult.hasNewData) {
         console.log('🔄 Merging newer server data...');
-        await this.operations.mergeServerData(pullResult.data, pullResult.version || 0);
+        await this.operations.mergeServerData(
+          pullResult.data,
+          pullResult.version || 0,
+        );
 
         this.state.setLocalVersion(pullResult.version || 0);
         this.state.setLastSyncTime(new Date().toISOString());
@@ -191,8 +197,6 @@ class SyncService {
     }
   }
 
-
-
   /**
    * Start automatic sync at specified interval
    */
@@ -225,7 +229,10 @@ class SyncService {
   /**
    * Test connection to sync server
    */
-  async testConnection(serverUrl: string, secretKey: string): Promise<TestConnectionResult> {
+  async testConnection(
+    serverUrl: string,
+    secretKey: string,
+  ): Promise<TestConnectionResult> {
     return this.operations.testConnection(serverUrl, secretKey);
   }
 
