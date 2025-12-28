@@ -1,0 +1,18 @@
+# Sync server data files
+data/
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# TypeScript build output
+dist/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
