@@ -1,0 +1,432 @@
+import { dbPromise, exportData, importData } from './indexedDB.js';
+import {
+  DEFAULT_SYNC_SERVER_URL,
+  SYNC_DEBOUNCE_DELAY,
+  SYNC_AUTO_INTERVAL,
+} from './syncConstants';
+import type {
+  SyncConfig,
+  SyncResult,
+  PullResult,
+  PushResult,
+  TestConnectionResult,
+  SyncStatus,
+  SaveConfigResult,
+} from './syncTypes';
+
+/**
+ * Sync Service - handles synchronization with remote server
+ * Local-first approach: always work with local data, sync in background
+ */
+
+class SyncService {
+  private syncInProgress: boolean = false;
+  private syncInterval: NodeJS.Timeout | null = null;
+  private syncUrl: string | null = null;
+  private secretKey: string | null = null;
+  private localVersion: number = 0;
+  private lastSyncTime: string | null = null;
+  private debouncedSyncTimeout: NodeJS.Timeout | null = null;
+  private readonly debounceDelay: number = SYNC_DEBOUNCE_DELAY;
+  private hasLocalChanges: boolean = false; // Track if local data has changed since last sync
+
+  /**
+   * Initialize sync service with configuration
+   */
+  async initialize(): Promise<boolean> {
+    try {
+      const config = await this.getSyncConfig();
+      if (config && config.enabled && config.secretKey && config.serverUrl) {
+        this.syncUrl = config.serverUrl;
+        this.secretKey = config.secretKey;
+        this.localVersion = config.version || 0;
+        this.lastSyncTime = config.lastSync || null;
+
+        // Start automatic sync if enabled
+        if (config.autoSync) {
+          this.startAutoSync(config.syncInterval || SYNC_AUTO_INTERVAL);
+        }
+
+        // Pull data on initialization (app open)
+        await this.sync();
+
+        console.log('Sync service initialized');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to initialize sync service:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get sync configuration from settings
+   */
+  async getSyncConfig(): Promise<SyncConfig | null> {
+    try {
+      const db = await dbPromise;
+      const tx = db.transaction('settings', 'readonly');
+      const store = tx.objectStore('settings');
+      const settings = await store.get(1);
+
+      return settings?.sync || null;
+    } catch (error) {
+      console.error('Error getting sync config:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Save sync configuration to settings
+   */
+  async saveSyncConfig(config: Partial<SyncConfig>): Promise<SaveConfigResult> {
+    try {
+      const db = await dbPromise;
+      const tx = db.transaction('settings', 'readwrite');
+      const store = tx.objectStore('settings');
+      const settings = (await store.get(1)) || { id: 1 };
+
+      settings.sync = {
+        ...settings.sync,
+        ...config,
+        lastSync: this.lastSyncTime,
+        version: this.localVersion,
+      };
+
+      await store.put(settings);
+      await tx.done;
+
+      // Update local state
+      if (config.serverUrl) this.syncUrl = config.serverUrl;
+      if (config.secretKey) this.secretKey = config.secretKey;
+
+      return { status: 'success', message: 'Sync config saved' };
+    } catch (error) {
+      console.error('Error saving sync config:', error);
+      return { status: 'error', message: (error as Error).message };
+    }
+  }
+
+  /**
+   * Perform full sync: push local changes first, then pull server updates
+   * Push-first strategy prevents race conditions and data loss
+   */
+  async sync(force: boolean = false): Promise<SyncResult> {
+    if (this.syncInProgress && !force) {
+      console.log('⏭️ Sync already in progress, skipping');
+      return { status: 'skipped', message: 'Sync already in progress' };
+    }
+
+    if (!this.syncUrl || !this.secretKey) {
+      return {
+        status: 'error',
+        message: 'Sync not configured. Please set server URL and secret key.',
+      };
+    }
+
+    this.syncInProgress = true;
+
+    try {
+      let pushResult: PushResult = { success: false };
+
+      // Step 1: Push local changes first (if any)
+      // This prevents race condition where pull would overwrite unsaved local changes
+      if (this.hasLocalChanges) {
+        console.log('⬆️ Pushing local changes to server...');
+        pushResult = await this.pushToServer();
+
+        if (pushResult.success) {
+          this.hasLocalChanges = false;
+          console.log(
+            `✅ Push completed - Client v${(pushResult.version || 1) - 1} → Server v${pushResult.version}`,
+          );
+        } else {
+          console.warn('⚠️ Push failed, continuing with pull...');
+        }
+      }
+
+      // Step 2: Pull latest data from server
+      // Gets updates from other devices
+      const pullResult = await this.pullFromServer();
+
+      if (pullResult.status === 'error') {
+        this.syncInProgress = false;
+        return {
+          status: 'error',
+          message: pullResult.message || 'Pull failed',
+        };
+      }
+
+      // Step 3: Merge if server has newer data
+      if (pullResult.hasNewData) {
+        console.log('🔄 Merging newer server data...');
+        await this.mergeServerData(pullResult.data, pullResult.version || 0);
+        console.log(
+          `📥 Merge completed - Client v${this.localVersion - 1} → v${this.localVersion}`,
+        );
+      } else {
+        console.log(
+          `📥 Pull - Client v${this.localVersion} ← Server v${pullResult.version || this.localVersion} (up to date)`,
+        );
+      }
+
+      this.syncInProgress = false;
+
+      return {
+        status: 'success',
+        message: 'Sync completed successfully',
+        pulled: pullResult.hasNewData,
+        pushed: pushResult.success,
+        version: this.localVersion,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      this.syncInProgress = false;
+      console.error('❌ Sync error:', error);
+      return { status: 'error', message: (error as Error).message };
+    }
+  }
+
+  /**
+   * Pull data from server
+   */
+  private async pullFromServer(): Promise<PullResult> {
+    try {
+      const response = await fetch(`${this.syncUrl}/sync/pull`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-secret-key': this.secretKey!,
+        },
+        body: JSON.stringify({
+          clientVersion: this.localVersion,
+          clientLastSync: this.lastSyncTime,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.exists) {
+        return { status: 'success', hasNewData: false };
+      }
+
+      // Check if server has newer data
+      const hasNewData = result.version > this.localVersion;
+
+      return {
+        status: 'success',
+        hasNewData,
+        data: result.data,
+        version: result.version,
+        hasConflict: result.hasConflict,
+      };
+    } catch (error) {
+      console.error('Pull error:', error);
+      return { status: 'error', hasNewData: false, message: (error as Error).message };
+    }
+  }
+
+  /**
+   * Push local data to server
+   */
+  private async pushToServer(): Promise<PushResult> {
+    try {
+      // Export all local data
+      const localData = await exportData();
+
+      const response = await fetch(`${this.syncUrl}/sync/push`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-secret-key': this.secretKey!,
+        },
+        body: JSON.stringify({
+          data: localData,
+          clientVersion: this.localVersion,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        this.localVersion = result.version;
+        this.lastSyncTime = result.lastSync;
+
+        // Save updated version to config
+        await this.saveSyncConfig({
+          version: this.localVersion,
+          lastSync: this.lastSyncTime,
+        });
+
+        return { success: true, version: result.version };
+      }
+
+      return { success: false, message: result.message };
+    } catch (error) {
+      console.error('Push error:', error);
+      return { success: false, message: (error as Error).message };
+    }
+  }
+
+  /**
+   * Merge server data with local data
+   * Server data wins when versions differ (last write wins strategy)
+   */
+  private async mergeServerData(serverData: any, serverVersion: number): Promise<SaveConfigResult> {
+    try {
+      // Import server data into local database
+      await importData(serverData);
+
+      // Update local version to match server
+      this.localVersion = serverVersion;
+      this.lastSyncTime = new Date().toISOString();
+
+      // Save updated version to config
+      await this.saveSyncConfig({
+        version: this.localVersion,
+        lastSync: this.lastSyncTime,
+      });
+
+      return { status: 'success', message: 'Data merged successfully' };
+    } catch (error) {
+      console.error('Merge error:', error);
+      return { status: 'error', message: (error as Error).message };
+    }
+  }
+
+  /**
+   * Start automatic sync at specified interval
+   */
+  startAutoSync(intervalMs: number = SYNC_AUTO_INTERVAL): void {
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval);
+    }
+
+    this.syncInterval = setInterval(() => {
+      console.log('Auto-sync triggered');
+      this.sync();
+    }, intervalMs);
+
+    console.log(`Auto-sync started with interval: ${intervalMs}ms`);
+  }
+
+  /**
+   * Stop automatic sync
+   */
+  stopAutoSync(): void {
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval);
+      this.syncInterval = null;
+      console.log('Auto-sync stopped');
+    }
+  }
+
+  /**
+   * Trigger debounced sync - syncs after user stops making changes
+   * Creates Notion-like experience where changes sync automatically
+   */
+  triggerDebouncedSync(): void {
+    // Mark that we have local changes needing push
+    this.hasLocalChanges = true;
+
+    // Clear any existing timeout (reset debounce timer)
+    if (this.debouncedSyncTimeout) {
+      clearTimeout(this.debouncedSyncTimeout);
+    }
+
+    // Only sync if properly configured
+    if (!this.syncUrl || !this.secretKey) {
+      return;
+    }
+
+    // Sync after user stops editing for debounceDelay ms
+    this.debouncedSyncTimeout = setTimeout(() => {
+      console.log('⏱️ Debounced sync triggered (local changes detected)');
+      this.sync().catch(console.error);
+    }, this.debounceDelay);
+  }
+
+  /**
+   * Cancel any pending debounced sync
+   */
+  cancelDebouncedSync(): void {
+    if (this.debouncedSyncTimeout) {
+      clearTimeout(this.debouncedSyncTimeout);
+      this.debouncedSyncTimeout = null;
+    }
+  }
+
+  /**
+   * Test connection to sync server
+   */
+  async testConnection(serverUrl: string, secretKey: string): Promise<TestConnectionResult> {
+    try {
+      const response = await fetch(`${serverUrl}/health`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        return { status: 'error', message: 'Server not responding' };
+      }
+
+      const result = await response.json();
+
+      // Test authentication
+      const authTest = await fetch(`${serverUrl}/sync/data`, {
+        method: 'GET',
+        headers: {
+          'x-secret-key': secretKey,
+        },
+      });
+
+      if (authTest.status === 401) {
+        return {
+          status: 'error',
+          message: 'Invalid secret key (must be at least 8 characters)',
+        };
+      }
+
+      return {
+        status: 'success',
+        message: 'Connection successful',
+        serverStatus: result.status,
+      };
+    } catch (error) {
+      console.error('Connection test error:', error);
+      return { status: 'error', message: (error as Error).message };
+    }
+  }
+
+  /**
+   * Get sync status
+   */
+  getStatus(): SyncStatus {
+    return {
+      enabled: !!(this.syncUrl && this.secretKey),
+      syncing: this.syncInProgress,
+      version: this.localVersion,
+      lastSync: this.lastSyncTime,
+      autoSyncActive: !!this.syncInterval,
+    };
+  }
+}
+
+// Create singleton instance
+export const syncService = new SyncService();
+
+/**
+ * Notify sync service that data has changed.
+ * Backwards-compatible helper for `notifyDataChange()` consumers.
+ */
+export function notifyDataChange(): void {
+  syncService.triggerDebouncedSync();
+}
