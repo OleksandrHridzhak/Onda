@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Cloud, RefreshCw, Check, X, Wifi, WifiOff, Zap } from 'lucide-react';
+import {
+  Cloud,
+  RefreshCw,
+  Check,
+  X,
+  Wifi,
+  WifiOff,
+  Zap,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
 import { syncService } from '../../../../services/syncService';
 import SettingsTemplate from '../SettingsTemplate';
 import { BubbleBtn } from '../../../shared/BubbleBtn';
+import { InputText } from '../../../shared/InputText';
 import {
   DEFAULT_SYNC_SERVER_URL,
   SYNC_AUTO_INTERVAL,
@@ -115,7 +126,9 @@ export default function SyncSection() {
           <div>
             <h4 className="font-medium text-text">Enable Sync</h4>
             <p className="text-sm text-textTableValues">
-              Synchronize your data across devices
+              Synchronize your data across devices. Changes sync automatically
+              as you type (Notion-style). Data is also pulled when you open the
+              app or return from tray. No manual saving needed!
             </p>
           </div>
         </div>
@@ -132,26 +145,12 @@ export default function SyncSection() {
         </label>
       </div>
 
-      {/* Smart Sync Info */}
-      <div className="flex items-start gap-3 p-4 rounded-lg bg-settingsSectionSelectorBg border border-border">
-        <Zap className="w-5 h-5 text-primaryColor flex-shrink-0 mt-0.5" />
-        <div className="flex-1">
-          <h4 className="font-medium text-text mb-1">Smart Sync</h4>
-          <p className="text-sm text-textTableValues leading-relaxed">
-            Changes sync automatically as you type (Notion-style). Data is also
-            pulled when you open the app or return from tray. No manual saving
-            needed!
-          </p>
-        </div>
-      </div>
-
       {/* Server URL */}
       <div className="space-y-2">
         <label className="block text-sm font-medium text-text">
           Server URL
         </label>
-        <input
-          type="text"
+        <InputText
           value={syncConfig.serverUrl}
           onChange={(e) =>
             setSyncConfig({ ...syncConfig, serverUrl: e.target.value })
@@ -170,22 +169,29 @@ export default function SyncSection() {
           Secret Key
         </label>
         <div className="flex gap-2">
-          <input
-            type={showSecretKey ? 'text' : 'password'}
-            value={syncConfig.secretKey}
-            onChange={(e) =>
-              setSyncConfig({ ...syncConfig, secretKey: e.target.value })
-            }
-            placeholder="Enter at least 8 characters"
-            className="flex-1 px-4 py-2.5 rounded-lg bg-cellBg border border-border text-text placeholder-textTableValues focus:ring-2 focus:ring-primaryColor focus:border-transparent transition-all"
-          />
-          <button
-            onClick={() => setShowSecretKey(!showSecretKey)}
-            className="px-4 py-2.5 rounded-lg bg-cellBg border border-border text-text hover:bg-hoverBg transition-colors"
-          >
-            {showSecretKey ? '🙈' : '👁️'}
-          </button>
-          <BubbleBtn onClick={generateSecretKey} className="px-4">
+          <div className="w-full flex relative">
+            <InputText
+              type={showSecretKey ? 'text' : 'password'}
+              value={syncConfig.secretKey}
+              onChange={(e) =>
+                setSyncConfig({ ...syncConfig, secretKey: e.target.value })
+              }
+              placeholder="Enter at least 8 characters"
+              className="w-full px-4 py-2.5 rounded-lg transition-all"
+            />
+            <div className="flex items-center h-12 w-12 justify-center absolute right-0 top-0">
+              <button
+                onClick={() => setShowSecretKey(!showSecretKey)}
+                className={`flex items-center space-x-2 text-text transition-colors duration-200`}
+                aria-label={
+                  showSecretKey ? 'Hide secret key' : 'Show secret key'
+                }
+              >
+                {showSecretKey ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
+          </div>
+          <BubbleBtn onClick={generateSecretKey} variant="standard">
             Generate
           </BubbleBtn>
         </div>
@@ -198,6 +204,7 @@ export default function SyncSection() {
       <div className="space-y-2">
         <BubbleBtn
           onClick={handleTestConnection}
+          variant="standard"
           className="w-full justify-center"
           disabled={testResult?.status === 'testing'}
         >
@@ -215,7 +222,7 @@ export default function SyncSection() {
         </BubbleBtn>
         {testResult && testResult.status !== 'testing' && (
           <div
-            className={`p-3 rounded-lg flex items-center gap-2 ${
+            className={`p-3 rounded-lg flex items-center gap-3 ${
               testResult.status === 'success'
                 ? 'bg-cellBg border border-primaryColor/30'
                 : 'bg-cellBg border border-red-500/30'
@@ -238,7 +245,7 @@ export default function SyncSection() {
       {/* Sync Status */}
       {syncStatus && syncStatus.enabled && (
         <div className="p-4 rounded-lg bg-cellBg border border-border space-y-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {syncStatus.autoSyncActive ? (
               <Wifi size={18} className="text-primaryColor" />
             ) : (
@@ -261,7 +268,11 @@ export default function SyncSection() {
             </div>
             <div className="flex justify-between">
               <span>Smart Sync:</span>
-              <span className={syncStatus.autoSyncActive ? 'text-primaryColor' : 'text-text'}>
+              <span
+                className={
+                  syncStatus.autoSyncActive ? 'text-primaryColor' : 'text-text'
+                }
+              >
                 {syncStatus.autoSyncActive ? 'Active ✓' : 'Inactive'}
               </span>
             </div>
@@ -271,14 +282,14 @@ export default function SyncSection() {
 
       {/* Action Buttons */}
       <div className="flex gap-3 pt-2">
-        <BubbleBtn onClick={handleSave} className="flex-1 justify-center">
+        <BubbleBtn onClick={handleSave} variant="standard">
           <Check size={18} />
           Save Configuration
         </BubbleBtn>
         <BubbleBtn
           onClick={handleSync}
           disabled={!syncConfig.enabled || isSyncing}
-          className="flex-1 justify-center"
+          variant="standard"
         >
           <RefreshCw size={18} className={isSyncing ? 'animate-spin' : ''} />
           {isSyncing ? 'Syncing...' : 'Sync Now'}

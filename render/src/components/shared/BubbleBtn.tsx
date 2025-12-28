@@ -21,15 +21,13 @@ export const BubbleBtn: React.FC<BubbleBtnProps> = ({
     clear: 'bg-bubbleBtnClear text-bubbleBtnClearText',
   };
 
+  const baseClass = `items-center flex gap-3 px-4 py-2.5 text-sm rounded-xl transition ${variantClass[variant]}`;
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={
-        className ||
-        `items-center flex px-4 py-2.5 text-sm rounded-xl transition ${variantClass[variant]}`
-      }
+      className={`${baseClass} ${className}`.trim()}
     >
       {children}
     </button>
