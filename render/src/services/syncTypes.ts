@@ -34,6 +34,7 @@ export interface PullResult {
 export interface PushResult {
   success: boolean;
   version?: number;
+  lastSync?: string;
   message?: string;
 }
 

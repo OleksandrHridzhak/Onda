@@ -105,7 +105,7 @@ class SyncService {
     this.state.setSyncInProgress(true);
 
     try {
-      let pushResult = { success: false, version: undefined as number | undefined };
+      let pushResult: PushResult = { success: false };
 
       // Step 1: Push local changes first (if any)
       if (this.state.hasUnsavedChanges()) {
