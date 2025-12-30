@@ -18,6 +18,66 @@
 
 ---
 
+```text
+📦 Onda
+ ├─ 📁 api           # client APIs / services
+ ├─ 📁 assets        # icons, images, and other static assets
+ ├─ 📁 docs          # documentation (diagrams & design)
+ ├─ 📁 mobile        # Capacitor / mobile-specific logic
+ ├─ 📁 render        # React frontend
+ │    ├─ 📁 components # UI components
+ │    ├─ 📁 pages      # Page-level components
+ │    ├─ 📁 styles     # CSS / styling
+ │    └─ ...           # Other frontend code
+ ├─ 📁 sync-server   # Express sync backend
+ ├─ 📄 main.js       # Electron entry point (desktop shell)
+ ├─ 📄 preload.js    # Electron preload script
+ ├─ 📄 webpack.config.js # Frontend bundler configuration
+ └─ 📄 package.json  # Dependencies and scripts
+```
+```mermaid
+graph LR
+    %% Визначення стилів (Тільки форми та лінії, без кольорів заливки)
+    classDef host stroke-width:2px,stroke-dasharray: 5 5;
+    classDef storage stroke-width:2px;
+
+    %% Платформи
+    subgraph ElectronHost [Desktop Environment]
+        Electron[Electron Shell]
+    end
+
+    subgraph MobileHost [Mobile Environment]
+        Capacitor[Capacitor Shell]
+    end
+
+    %% Спільний фронтенд
+    subgraph ClientSide [Shared React App]
+        ReactUI[React UI]
+        Redux[(Redux State)]
+        SyncService[Sync Service]
+        IDB[(IndexedDB)]
+    end
+
+    %% Сервер
+    subgraph ServerSide [Remote Backend]
+        Express[Express / Node]
+        DB[(MongoDB)]
+    end
+
+    %% Зв'язки
+    Electron --> ReactUI
+    Capacitor --> ReactUI
+    
+    ReactUI <--> Redux
+    Redux <--> SyncService
+    SyncService <--> IDB
+    SyncService <---- Network ----> Express
+    Express <--> DB
+
+    %% Призначення класів для форм
+    class Electron,Capacitor host;
+    class Redux,IDB,DB storage;
+```
 ## Getting Started
 
 Instructions for how to run the project locally.
