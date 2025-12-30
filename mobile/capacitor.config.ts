@@ -11,8 +11,8 @@ const config: CapacitorConfig = {
     buildOptions: {
       keystorePath: undefined,
       keystoreAlias: undefined,
-      javaSourceCompatibility: '17',
-      javaTargetCompatibility: '17',
+      javaSourceCompatibility: '21',
+      javaTargetCompatibility: '21',
     },
   },
 };

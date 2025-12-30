@@ -4,7 +4,7 @@
   "description": "Onda mobile app with Capacitor",
   "private": true,
   "scripts": {
-    "sync": "cap sync android && node scripts/fix-java-version.js",
+    "sync": "cap sync android",
     "open": "cap open android",
     "run": "cap run android",
     "build:apk": "cd android && gradlew assembleDebug && echo APK: android/app/build/outputs/apk/debug/app-debug.apk",
