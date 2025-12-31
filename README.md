@@ -21,19 +21,13 @@
 ```text
 📦 Onda
  ├─ 📁 api           # client APIs / services
- ├─ 📁 assets        # icons, images, and other static assets
  ├─ 📁 docs          # documentation (diagrams & design)
  ├─ 📁 mobile        # Capacitor / mobile-specific logic
  ├─ 📁 render        # React frontend
- │    ├─ 📁 components # UI components
- │    ├─ 📁 pages      # Page-level components
- │    ├─ 📁 styles     # CSS / styling
- │    └─ ...           # Other frontend code
  ├─ 📁 sync-server   # Express sync backend
  ├─ 📄 main.js       # Electron entry point (desktop shell)
  ├─ 📄 preload.js    # Electron preload script
- ├─ 📄 webpack.config.js # Frontend bundler configuration
- └─ 📄 package.json  # Dependencies and scripts
+
 ```
 ```mermaid
 graph LR
