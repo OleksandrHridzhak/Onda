@@ -11,7 +11,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    icon: join(__dirname, './assets/onda-logo.ico'),
+    icon: join(__dirname, './assets/logo256.ico'),
     frame: false,
     webPreferences: {
       nodeIntegration: false,

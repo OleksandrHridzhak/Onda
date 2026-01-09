@@ -67,7 +67,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "assets/onda-logo.ico",
+      "icon": "assets/logo256.ico",
       "compression": "maximum"
     },
     "files": [
