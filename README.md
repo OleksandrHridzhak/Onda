@@ -5,7 +5,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=OleksandrHridzhak_Onda&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=OleksandrHridzhak_Onda)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=OleksandrHridzhak_Onda&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=OleksandrHridzhak_Onda)
 
-[![Stack](https://skillicons.dev/icons?i=react,electron,ts,js,nodejs,html,css,figma)](https://skillicons.dev)
+[![Stack](https://skillicons.dev/icons?i=react,electron,ts,js,nodejs,express,mongo,html,css,figma)](https://skillicons.dev)
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img style="width: 49%;" alt="743shots_so" src="https://github.com/user-attachments/assets/6ec0d886-1055-48e2-9c2a-94194ad98133" />
@@ -18,6 +18,60 @@
 
 ---
 
+```text
+📦 Onda
+ ├─ 📁 api           # client APIs / services
+ ├─ 📁 docs          # documentation (diagrams & design)
+ ├─ 📁 mobile        # Capacitor / mobile-specific logic
+ ├─ 📁 render        # React frontend
+ ├─ 📁 sync-server   # Express sync backend
+ ├─ 📄 main.js       # Electron entry point (desktop shell)
+ ├─ 📄 preload.js    # Electron preload script
+
+```
+```mermaid
+graph LR
+    %% Визначення стилів (Тільки форми та лінії, без кольорів заливки)
+    classDef host stroke-width:2px,stroke-dasharray: 5 5;
+    classDef storage stroke-width:2px;
+
+    %% Платформи
+    subgraph ElectronHost [Desktop Environment]
+        Electron[Electron Shell]
+    end
+
+    subgraph MobileHost [Mobile Environment]
+        Capacitor[Capacitor Shell]
+    end
+
+    %% Спільний фронтенд
+    subgraph ClientSide [Shared React App]
+        ReactUI[React UI]
+        Redux[(Redux State)]
+        SyncService[Sync Service]
+        IDB[(IndexedDB)]
+    end
+
+    %% Сервер
+    subgraph ServerSide [Remote Backend]
+        Express[Express / Node]
+        DB[(MongoDB)]
+    end
+
+    %% Зв'язки
+    Electron --> ReactUI
+    Capacitor --> ReactUI
+    
+    ReactUI <--> Redux
+    Redux <--> SyncService
+    SyncService <--> IDB
+    SyncService <---- Network ----> Express
+    Express <--> DB
+
+    %% Призначення класів для форм
+    class Electron,Capacitor host;
+    class Redux,IDB,DB storage;
+```
 ## Getting Started
 
 Instructions for how to run the project locally.
