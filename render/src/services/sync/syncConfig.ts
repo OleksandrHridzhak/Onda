@@ -1,9 +1,9 @@
-import { dbPromise } from '../indexedDB.js';
+import { getDatabase } from '../../database/rxdb';
 import type { SyncConfig, SaveConfigResult } from '../syncTypes';
 
 /**
  * Sync Configuration Management
- * Handles reading and writing sync configuration to IndexedDB
+ * Handles reading and writing sync configuration to RxDB
  */
 export class SyncConfigManager {
   /**
@@ -11,11 +11,14 @@ export class SyncConfigManager {
    */
   async getSyncConfig(): Promise<SyncConfig | null> {
     try {
-      const db = await dbPromise;
-      const tx = db.transaction('settings', 'readonly');
-      const store = tx.objectStore('settings');
-      const settings = await store.get(1);
-
+      const db = await getDatabase();
+      const doc = await db.settings.findOne('1').exec();
+      
+      if (!doc) {
+        return null;
+      }
+      
+      const settings = doc.toJSON();
       return settings?.sync || null;
     } catch (error) {
       console.error('Error getting sync config:', error);
@@ -32,11 +35,14 @@ export class SyncConfigManager {
     currentLastSync: string | null,
   ): Promise<SaveConfigResult> {
     try {
-      const db = await dbPromise;
-      const tx = db.transaction('settings', 'readwrite');
-      const store = tx.objectStore('settings');
-      const settings = (await store.get(1)) || { id: 1 };
+      const db = await getDatabase();
+      const doc = await db.settings.findOne('1').exec();
+      
+      if (!doc) {
+        return { status: 'error', message: 'Settings not found' };
+      }
 
+      const settings = doc.toJSON();
       settings.sync = {
         ...settings.sync,
         ...config,
@@ -44,8 +50,11 @@ export class SyncConfigManager {
         version: currentVersion,
       };
 
-      await store.put(settings);
-      await tx.done;
+      await doc.update({
+        $set: {
+          sync: settings.sync,
+        },
+      });
 
       return { status: 'success', message: 'Sync config saved' };
     } catch (error) {

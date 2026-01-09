@@ -1,4 +1,4 @@
-import { exportData, importData } from '../indexedDB.js';
+import { exportData, importData } from '../../database/exportImport';
 import type { PullResult, PushResult, TestConnectionResult, SaveConfigResult } from '../syncTypes';
 
 /**

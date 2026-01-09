@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Download, Upload, Trash2 } from 'lucide-react';
 import SettingsTemplate from '../SettingsTemplate';
 import { BubbleBtn } from '../../../shared/BubbleBtn';
-import { exportData, importData } from '../../../../services/indexedDB';
-import { clearAllData } from '../../../../services/dbMigration';
+import { exportData, importData, clearAllData } from '../../../../database/exportImport';
 import { ConfirmModal } from '../../../shared/ConfirmModal';
 
 export default function DataSection(): React.ReactElement {
