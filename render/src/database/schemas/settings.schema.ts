@@ -1,5 +1,3 @@
-import { RxJsonSchema } from 'rxdb';
-
 export interface SettingsDocument {
   _id: string; // Always '1' for singleton settings
   theme: {
@@ -28,7 +26,7 @@ export interface SettingsDocument {
   };
 }
 
-export const settingsSchema: RxJsonSchema<SettingsDocument> = {
+export const settingsSchema: any = {
   version: 0,
   primaryKey: '_id',
   type: 'object',

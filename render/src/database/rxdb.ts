@@ -1,6 +1,3 @@
-import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
-import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
-
 import { columnSchema, ColumnDocument } from './schemas/column.schema';
 import { settingsSchema, SettingsDocument } from './schemas/settings.schema';
 import { calendarSchema, CalendarDocument } from './schemas/calendar.schema';
@@ -28,11 +25,17 @@ export async function initDatabase(): Promise<OndaDatabase> {
   dbPromise = (async () => {
     console.log('🗄️ Initializing RxDB database...');
 
-    // Dynamic import to work around TypeScript module resolution issues
-    const { createRxDatabase } = await import('rxdb');
+    // Dynamic imports to work around TypeScript module resolution issues with RxDB v16
+    const rxdb: any = await import('rxdb');
+    const storageDexie: any = await import('rxdb/plugins/storage-dexie');
+    const validateAjv: any = await import('rxdb/plugins/validate-ajv');
+
+    const { createRxDatabase } = rxdb;
+    const { getRxStorageDexie } = storageDexie;
+    const { wrappedValidateAjvStorage } = validateAjv;
 
     // Create database
-    const db = await createRxDatabase<OndaCollections>({
+    const db = await createRxDatabase({
       name: 'ondadb',
       storage: wrappedValidateAjvStorage({
         storage: getRxStorageDexie(),

@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from 'react';
-import { RxDocument, RxCollection, RxQuery } from 'rxdb';
 import { getDatabase, OndaDatabase } from '../database/rxdb';
 
 /**
@@ -28,17 +27,15 @@ export function useRxDB(): OndaDatabase | null {
 /**
  * Hook to get a specific collection
  */
-export function useRxCollection<T = any>(
-  collectionName: string,
-): RxCollection<T> | null {
+export function useRxCollection<T = any>(collectionName: string): any | null {
   const db = useRxDB();
-  return db ? (db[collectionName] as RxCollection<T>) : null;
+  return db ? (db[collectionName] as any) : null;
 }
 
 /**
  * Hook to subscribe to a query and get reactive results
  */
-export function useRxQuery<T = any>(query: RxQuery<T> | null): T[] | null {
+export function useRxQuery<T = any>(query: any | null): T[] | null {
   const [results, setResults] = useState<T[] | null>(null);
 
   useEffect(() => {
@@ -51,7 +48,7 @@ export function useRxQuery<T = any>(query: RxQuery<T> | null): T[] | null {
     query.exec().then(setResults);
 
     // Subscribe to changes
-    const subscription = query.$.subscribe((docs) => {
+    const subscription = query.$.subscribe((docs: any) => {
       setResults(docs as any);
     });
 
@@ -66,7 +63,7 @@ export function useRxQuery<T = any>(query: RxQuery<T> | null): T[] | null {
 /**
  * Hook to subscribe to a single document
  */
-export function useRxDocument<T = any>(doc: RxDocument<T> | null): T | null {
+export function useRxDocument<T = any>(doc: any | null): T | null {
   const [data, setData] = useState<T | null>(null);
 
   useEffect(() => {
@@ -79,7 +76,7 @@ export function useRxDocument<T = any>(doc: RxDocument<T> | null): T | null {
     setData(doc.toJSON() as T);
 
     // Subscribe to changes
-    const subscription = doc.$.subscribe((document) => {
+    const subscription = doc.$.subscribe((document: any) => {
       setData(document.toJSON() as T);
     });
 

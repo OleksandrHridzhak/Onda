@@ -29,24 +29,21 @@ export async function getColumn(id: string): Promise<ColumnDocument | null> {
   }
 }
 
-export async function addColumn(
-  column: ColumnData | ColumnDocument,
-): Promise<void> {
+export async function addColumn(column: any): Promise<any> {
   try {
     const db = await getDatabase();
     await db.columns.upsert({
       _id: column.id,
       ...column,
     });
+    return { status: true, data: column };
   } catch (error) {
     console.error('Error adding column:', error);
-    throw error;
+    return { status: false, message: (error as Error).message };
   }
 }
 
-export async function updateColumn(
-  column: ColumnData | ColumnDocument,
-): Promise<void> {
+export async function updateColumn(column: any): Promise<void> {
   try {
     const db = await getDatabase();
     await db.columns.upsert({

@@ -1,11 +1,10 @@
-import { RxJsonSchema } from 'rxdb';
 import { ColumnData } from '../../types/column.types';
 
 export type ColumnDocument = ColumnData & {
   _id: string; // RxDB requires _id as primary key
 };
 
-export const columnSchema: RxJsonSchema<ColumnDocument> = {
+export const columnSchema: any = {
   version: 0,
   primaryKey: '_id',
   type: 'object',

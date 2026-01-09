@@ -1,5 +1,3 @@
-import { RxJsonSchema } from 'rxdb';
-
 export interface CalendarDocument {
   _id: string; // Always '1' for singleton calendar
   body: Array<{
@@ -10,7 +8,7 @@ export interface CalendarDocument {
   }>;
 }
 
-export const calendarSchema: RxJsonSchema<CalendarDocument> = {
+export const calendarSchema: any = {
   version: 0,
   primaryKey: '_id',
   type: 'object',
