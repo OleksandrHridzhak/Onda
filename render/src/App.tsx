@@ -13,6 +13,8 @@ import MenuWin from './components/layout/MenuWin';
 import Calendar from './components/pages/CalendarPage';
 import Settings from './components/pages/SettingsPage';
 import { syncService } from './services/syncService';
+import { initDatabase } from './database/rxdb';
+import { DataMigration } from './database/migration';
 
 const routes = ['/', '/calendar', '/settings'];
 
@@ -31,8 +33,17 @@ function MainContent() {
       document.documentElement.dataset.colorScheme = savedColor;
     }
 
-    // Initialize sync service on app startup
-    syncService.initialize().catch(console.error);
+    // Initialize RxDB and run migration
+    (async () => {
+      try {
+        await initDatabase();
+        await DataMigration.runMigration();
+        // Initialize sync service after database is ready
+        await syncService.initialize();
+      } catch (error) {
+        console.error('Failed to initialize app:', error);
+      }
+    })();
   }, []);
 
   const isElectron =
