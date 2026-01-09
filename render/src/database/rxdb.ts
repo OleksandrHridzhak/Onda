@@ -1,4 +1,3 @@
-import { createRxDatabase, RxDatabase } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
@@ -13,7 +12,7 @@ export interface OndaCollections {
   calendar: any; // RxCollection<CalendarDocument>
 }
 
-export type OndaDatabase = RxDatabase<OndaCollections>;
+export type OndaDatabase = any; // RxDatabase<OndaCollections> - using any to avoid type issues
 
 let dbPromise: Promise<OndaDatabase> | null = null;
 
@@ -28,6 +27,9 @@ export async function initDatabase(): Promise<OndaDatabase> {
 
   dbPromise = (async () => {
     console.log('🗄️ Initializing RxDB database...');
+
+    // Dynamic import to work around TypeScript module resolution issues
+    const { createRxDatabase } = await import('rxdb');
 
     // Create database
     const db = await createRxDatabase<OndaCollections>({
