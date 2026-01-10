@@ -21,11 +21,7 @@ export async function getAllColumns(): Promise<ColumnDocument[]> {
 export async function getColumn(id: string): Promise<ColumnDocument | null> {
   try {
     const db = await getDatabase();
-    const doc = await db.columns.findOne({
-      selector: {
-        _id: id
-      }
-    }).exec();
+    const doc = await db.columns.findOne(id).exec();
     return doc ? doc.toJSON() : null;
   } catch (error) {
     console.error('Error getting column:', error);
@@ -36,10 +32,47 @@ export async function getColumn(id: string): Promise<ColumnDocument | null> {
 export async function addColumn(column: any): Promise<any> {
   try {
     const db = await getDatabase();
-    await db.columns.upsert({
+    
+    // Normalize field names from old Redux format to RxDB format
+    const normalizedColumn = {
       _id: column.id,
-      ...column,
+      id: column.id,
+      type: (column.Type || column.type || '').toLowerCase(),
+      name: column.Name || column.name || '',
+      emojiIcon: column.EmojiIcon || column.emojiIcon || '',
+      width: column.Width || column.width || 150,
+      nameVisible: column.NameVisible !== undefined ? column.NameVisible : (column.nameVisible !== undefined ? column.nameVisible : true),
+      description: column.Description || column.description || '',
+      // Copy other properties as-is
+      days: column.uniqueProperties?.Days || column.days,
+      checkboxColor: column.uniqueProperties?.CheckboxColor || column.checkboxColor,
+      options: column.uniqueProperties?.Tags || column.uniqueProperties?.Options || column.options,
+      tagColors: column.uniqueProperties?.TagsColors || column.uniqueProperties?.OptionsColors || column.uniqueProperties?.CategoryColors || column.tagColors,
+      todos: column.uniqueProperties?.Chosen ? 
+        Object.entries(column.uniqueProperties.Chosen)
+          .filter(([key]) => key !== 'global')
+          .map(([day, tasks]: [string, any]) => 
+            Array.isArray(tasks) ? tasks.map((t: any) => ({ ...t, day })) : []
+          )
+          .flat() : column.todos,
+      globalTodos: column.uniqueProperties?.Chosen?.global || column.globalTodos,
+      tasks: column.uniqueProperties?.Chosen && typeof column.uniqueProperties.Chosen === 'object' ? 
+        Object.entries(column.uniqueProperties.Chosen).map(([id, data]: [string, any]) => ({
+          id,
+          name: data.name || id,
+          days: data.days || {}
+        })) : column.tasks,
+      doneTags: column.uniqueProperties?.Options || column.doneTags,
+    };
+    
+    // Remove undefined fields
+    Object.keys(normalizedColumn).forEach(key => {
+      if (normalizedColumn[key] === undefined) {
+        delete normalizedColumn[key];
+      }
     });
+    
+    await db.columns.upsert(normalizedColumn);
     return { status: true, data: column };
   } catch (error) {
     console.error('Error adding column:', error);
@@ -50,10 +83,47 @@ export async function addColumn(column: any): Promise<any> {
 export async function updateColumn(column: any): Promise<void> {
   try {
     const db = await getDatabase();
-    await db.columns.upsert({
+    
+    // Normalize field names from old Redux format to RxDB format
+    const normalizedColumn = {
       _id: column.id,
-      ...column,
+      id: column.id,
+      type: (column.Type || column.type || '').toLowerCase(),
+      name: column.Name || column.name || '',
+      emojiIcon: column.EmojiIcon || column.emojiIcon || '',
+      width: column.Width || column.width || 150,
+      nameVisible: column.NameVisible !== undefined ? column.NameVisible : (column.nameVisible !== undefined ? column.nameVisible : true),
+      description: column.Description || column.description || '',
+      // Copy other properties as-is
+      days: column.uniqueProperties?.Days || column.days,
+      checkboxColor: column.uniqueProperties?.CheckboxColor || column.checkboxColor,
+      options: column.uniqueProperties?.Tags || column.uniqueProperties?.Options || column.options,
+      tagColors: column.uniqueProperties?.TagsColors || column.uniqueProperties?.OptionsColors || column.uniqueProperties?.CategoryColors || column.tagColors,
+      todos: column.uniqueProperties?.Chosen ? 
+        Object.entries(column.uniqueProperties.Chosen)
+          .filter(([key]) => key !== 'global')
+          .map(([day, tasks]: [string, any]) => 
+            Array.isArray(tasks) ? tasks.map((t: any) => ({ ...t, day })) : []
+          )
+          .flat() : column.todos,
+      globalTodos: column.uniqueProperties?.Chosen?.global || column.globalTodos,
+      tasks: column.uniqueProperties?.Chosen && typeof column.uniqueProperties.Chosen === 'object' ? 
+        Object.entries(column.uniqueProperties.Chosen).map(([id, data]: [string, any]) => ({
+          id,
+          name: data.name || id,
+          days: data.days || {}
+        })) : column.tasks,
+      doneTags: column.uniqueProperties?.Options || column.doneTags,
+    };
+    
+    // Remove undefined fields
+    Object.keys(normalizedColumn).forEach(key => {
+      if (normalizedColumn[key] === undefined) {
+        delete normalizedColumn[key];
+      }
     });
+    
+    await db.columns.upsert(normalizedColumn);
   } catch (error) {
     console.error('Error updating column:', error);
     throw error;
@@ -63,11 +133,7 @@ export async function updateColumn(column: any): Promise<void> {
 export async function deleteColumn(id: string): Promise<void> {
   try {
     const db = await getDatabase();
-    const doc = await db.columns.findOne({
-      selector: {
-        _id: id
-      }
-    }).exec();
+    const doc = await db.columns.findOne(id).exec();
     if (doc) {
       await doc.remove();
     }
@@ -80,11 +146,7 @@ export async function deleteColumn(id: string): Promise<void> {
 export async function getColumnsOrder(): Promise<string[]> {
   try {
     const db = await getDatabase();
-    const settings = await db.settings.findOne({
-      selector: {
-        _id: '1'
-      }
-    }).exec();
+    const settings = await db.settings.findOne('1').exec();
     if (settings) {
       const data = settings.toJSON();
       return data.table?.columnOrder || [];
@@ -99,11 +161,7 @@ export async function getColumnsOrder(): Promise<string[]> {
 export async function updateColumnsOrder(order: string[]): Promise<void> {
   try {
     const db = await getDatabase();
-    const settings = await db.settings.findOne({
-      selector: {
-        _id: '1'
-      }
-    }).exec();
+    const settings = await db.settings.findOne('1').exec();
     if (settings) {
       await settings.update({
         $set: {
