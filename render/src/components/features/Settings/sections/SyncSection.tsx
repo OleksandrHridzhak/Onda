@@ -6,7 +6,6 @@ import {
   X,
   Wifi,
   WifiOff,
-  Zap,
   Eye,
   EyeOff,
 } from 'lucide-react';

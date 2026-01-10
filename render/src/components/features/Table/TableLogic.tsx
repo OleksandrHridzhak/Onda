@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useColumns } from '../../../database';
 
 export const DAYS = [
   'Monday',
@@ -13,15 +13,14 @@ export const DAYS = [
 
 /**
  * Основний хук логіки таблиці
- * Управляє UI-станом таблиці (loading state отримується з Redux)
+ * Управляє UI-станом таблиці (loading state отримується з RxDB)
  */
 export const useTableLogic = () => {
   const [showColumnSelector, setShowColumnSelector] = useState(false);
 
-  // Get loading state from Redux
-  const loading = useSelector(
-    (state: Record<string, any>) => state.tableData?.status === 'loading',
-  );
+  // Get loading state from RxDB
+  const { status } = useColumns();
+  const loading = status === 'loading';
 
   return {
     loading,

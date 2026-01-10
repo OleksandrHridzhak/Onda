@@ -3,7 +3,7 @@ import { Sun, Moon, Plus } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleThemeMode } from '../../store/slices/newThemeSlice';
-import { createNewColumn } from '../../store/tableSlice/tableSlice';
+import { useColumns } from '../../database';
 import ColumnTypeSelector from '../features/PlannerHeader/ColumnTypeSelector';
 import { sideBarItems } from '../../utils/constants';
 
@@ -18,6 +18,7 @@ type ActivePage = 'home' | 'calendar' | 'settings';
 const Sidebar: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const { createColumn } = useColumns();
 
   const themeMode = useSelector((state: RootState) => state.newTheme.themeMode);
   const [showColumnSelector, setShowColumnSelector] = useState(false);
@@ -41,6 +42,15 @@ const Sidebar: React.FC = () => {
 
   const toggleTheme = (): void => {
     dispatch(toggleThemeMode());
+  };
+
+  const handleCreateColumn = async (type: string) => {
+    try {
+      await createColumn(type);
+      setShowColumnSelector(false);
+    } catch (error) {
+      console.error('Error creating column:', error);
+    }
   };
 
   return (
@@ -148,10 +158,7 @@ const Sidebar: React.FC = () => {
           {showColumnSelector && (
             <div className="absolute left-12 z-50">
               <ColumnTypeSelector
-                onSelect={(type: string) => {
-                  dispatch(createNewColumn({ columnType: type }));
-                  setShowColumnSelector(false);
-                }}
+                onSelect={handleCreateColumn}
                 onCancel={() => setShowColumnSelector(false)}
                 darkMode={themeMode === 'dark'}
               />

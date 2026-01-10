@@ -12,16 +12,11 @@ import {
 } from './columns';
 import TableItemWrapper from './columns/TableItemWrapper';
 import './Table.css';
-import { useSelector } from 'react-redux';
+import { useColumns } from '../../../database';
 import { useRowHeightSync } from './hooks/useRowHeightSync';
 
 const Table: React.FC = () => {
-  const columnOrder: string[] = useSelector(
-    (state: Record<string, any>) => state.tableData?.columnOrder ?? [],
-  );
-  const columnsData = useSelector(
-    (state: Record<string, any>) => state.tableData?.columns ?? {},
-  );
+  const { columns: columnsData, columnOrder } = useColumns();
 
   const componentsMap: Record<string, React.FC<any>> = {
     days: DaysColumn,
@@ -36,14 +31,14 @@ const Table: React.FC = () => {
 
   // Find days column id and data (fallback to default if missing)
   const daysColumnId = Object.keys(columnsData).find(
-    (id) => columnsData[id]?.Type?.toLowerCase() === 'days',
+    (id) => columnsData[id]?.type?.toLowerCase() === 'days',
   );
   const daysColumnData = daysColumnId ? columnsData[daysColumnId] : null;
   const daysColumn = {
     id: daysColumnId || 'days',
-    name: daysColumnData?.Name || 'Days',
+    name: daysColumnData?.name || 'Days',
     type: 'days',
-    width: daysColumnData?.Width || 135,
+    width: daysColumnData?.width || 135,
   };
 
   // Sync row heights across all table columns
@@ -70,31 +65,34 @@ const Table: React.FC = () => {
               {columnOrder
                 .map((columnId: string) => {
                   const columnData = columnsData[columnId];
-                  const columnType = columnData?.Type?.toLowerCase();
+                  const columnType = columnData?.type?.toLowerCase();
                   return { columnId, columnData, columnType };
                 })
-                .filter(({ columnData, columnType }) => 
-                  Boolean(columnData) && Boolean(columnType) && Boolean(componentsMap[columnType])
+                .filter(
+                  ({ columnData, columnType }) =>
+                    Boolean(columnData) &&
+                    Boolean(columnType) &&
+                    Boolean(componentsMap[columnType]),
                 ) // Filter out missing columns and unsupported types
                 .map(({ columnId, columnData, columnType }) => {
-                const Component = componentsMap[columnType];
+                  const Component = componentsMap[columnType];
 
-                const column = {
-                  id: columnId,
-                  type: columnType,
-                  width: columnData.Width,
-                };
+                  const column = {
+                    id: columnId,
+                    type: columnType,
+                    width: columnData.width,
+                  };
 
-                return (
-                  <TableItemWrapper
-                    key={columnId}
-                    column={column}
-                    className="border-r border-border"
-                  >
-                    <Component columnId={columnId} />
-                  </TableItemWrapper>
-                );
-              })}
+                  return (
+                    <TableItemWrapper
+                      key={columnId}
+                      column={column}
+                      className="border-r border-border"
+                    >
+                      <Component columnId={columnId} />
+                    </TableItemWrapper>
+                  );
+                })}
 
               <TableItemWrapper
                 key={'filler'}

@@ -3,7 +3,6 @@ import { ColumnHeaderContent } from '../ColumnHeaderContent';
 import { NumberCell } from './NumberCell';
 import { DAYS } from '../../TableLogic';
 import { useColumnLogic } from '../useColumnLogic';
-import { updateColumnNested } from '../../../../../store/tableSlice/tableSlice';
 
 interface NumberColumnProps {
   columnId: string;
@@ -12,7 +11,7 @@ interface NumberColumnProps {
 export const NumberColumn: React.FC<NumberColumnProps> = ({ columnId }) => {
   const {
     columnData,
-    dispatch,
+    updateColumnNested,
     handleMoveColumn,
     handleChangeWidth,
     columnMenuLogic,
@@ -24,14 +23,11 @@ export const NumberColumn: React.FC<NumberColumnProps> = ({ columnId }) => {
   });
 
   const handleCellChange = (day: string, newValue: string) => {
-    dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Days', day],
-        value: newValue,
-      }),
-    );
+    updateColumnNested(['Days', day], newValue);
   };
+
+  const uniqueProps =
+    (columnData.uniqueProperties as Record<string, unknown>) || {};
 
   return (
     <table className="checkbox-nested-table column-numberbox font-poppins">
@@ -56,7 +52,9 @@ export const NumberColumn: React.FC<NumberColumnProps> = ({ columnId }) => {
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
               <NumberCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
+                value={
+                  (uniqueProps.Days as Record<string, string>)?.[day] || ''
+                }
                 onChange={(newValue) => handleCellChange(day, newValue)}
               />
             </td>

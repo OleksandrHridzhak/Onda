@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { ChevronLeft, ChevronRight, MoreVertical } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
 import { CheckboxCell } from './columns/CheckboxColumn/CheckboxCell';
 import { NumberCell } from './columns/NumberColumn/NumberCell';
 import { NotesCell } from './columns/NotesColumn/NotesCell';
@@ -8,10 +7,7 @@ import { TagsCell } from './columns/TagsColumn/TagsCell';
 import { MultiCheckboxCell } from './columns/MultiCheckboxColumn/MultiCheckboxCell';
 import { TodoCell } from './columns/TodoColumn/TodoCell';
 import { TaskTableCell } from './columns/TaskTableColumn/TaskTableCell';
-import {
-  updateColumnNested,
-  updateCommonColumnProperties,
-} from '../../../store/tableSlice/tableSlice';
+import { useColumns } from '../../../database';
 import { MobileColumnMenu } from './MobileColumnMenu';
 import { getIconComponent } from '../../../utils/icons';
 import {
@@ -21,13 +17,11 @@ import {
 } from '../../../utils/dateUtils';
 
 export const MobileTodayView: React.FC = () => {
-  const dispatch = useDispatch();
-  const columnOrder: string[] = useSelector(
-    (state: Record<string, any>) => state.tableData?.columnOrder ?? [],
-  );
-  const columnsData = useSelector(
-    (state: Record<string, any>) => state.tableData?.columns ?? {},
-  );
+  const {
+    columns: columnsData,
+    columnOrder,
+    updateColumnNested,
+  } = useColumns();
 
   // Selected day state (defaults to today)
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
@@ -61,76 +55,58 @@ export const MobileTodayView: React.FC = () => {
 
   const handleCellChange = useCallback(
     (columnId: string, value: any) => {
-      dispatch(
-        updateColumnNested({
-          columnId,
-          path: ['Days', selectedDayName],
-          value,
-        }),
-      );
+      updateColumnNested(columnId, ['Days', selectedDayName], value);
     },
-    [dispatch, selectedDayName], // dispatch is stable but included for ESLint
+    [updateColumnNested, selectedDayName],
   );
 
   // Handler for Todo column changes
   const handleTodoChange = useCallback(
     (columnId: string, newValue: any) => {
-      dispatch(
-        updateColumnNested({
-          columnId,
-          path: ['Chosen', 'global'],
-          value: newValue,
-        }),
-      );
+      updateColumnNested(columnId, ['Chosen', 'global'], newValue);
     },
-    [dispatch], // dispatch is stable but included for ESLint
+    [updateColumnNested],
   );
 
   // Handler for TaskTable column changes - curried version to avoid inline functions
   const createTaskTableHandler = useCallback(
-    (columnId: string, columnData: any) => {
+    (columnId: string) => {
       return (
         id: string,
         incomplete: string[],
         tagColors: Record<string, string>,
         completed: string[],
       ) => {
-        dispatch(
-          updateCommonColumnProperties({
-            columnId: id,
-            properties: {
-              uniqueProperties: {
-                ...columnData.uniqueProperties,
-                Options: incomplete,
-                OptionsColors: tagColors,
-                DoneTags: completed,
-              },
-            },
-          }),
-        );
+        updateColumnNested(id, ['Options'], incomplete);
+        updateColumnNested(id, ['OptionsColors'], tagColors);
+        updateColumnNested(id, ['DoneTags'], completed);
       };
     },
-    [dispatch], // dispatch is stable but included for ESLint
+    [updateColumnNested],
   );
 
   const renderCell = useCallback(
     (columnId: string, columnType: string, columnData: any) => {
-      const cellValue = columnData.uniqueProperties?.Days?.[selectedDayName];
+      const uniqueProps =
+        (columnData.uniqueProperties as Record<string, unknown>) || {};
+      const cellValue = (uniqueProps.Days as Record<string, unknown>)?.[
+        selectedDayName
+      ];
 
       switch (columnType) {
         case 'checkbox':
           return (
             <CheckboxCell
-              checked={cellValue || false}
+              checked={(cellValue as boolean) || false}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
+              color={(uniqueProps.CheckboxColor as string) || '#3b82f6'}
             />
           );
 
         case 'numberbox':
           return (
             <NumberCell
-              value={cellValue || ''}
+              value={(cellValue as string) || ''}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
             />
           );
@@ -138,7 +114,7 @@ export const MobileTodayView: React.FC = () => {
         case 'text':
           return (
             <NotesCell
-              value={cellValue || ''}
+              value={(cellValue as string) || ''}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
             />
           );
@@ -146,25 +122,34 @@ export const MobileTodayView: React.FC = () => {
         case 'multiselect':
           return (
             <TagsCell
-              value={cellValue || ''}
+              value={(cellValue as string) || ''}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              options={columnData.uniqueProperties?.Tags || []}
-              tagColors={columnData.uniqueProperties?.TagsColors || {}}
+              options={(uniqueProps.Tags as string[]) || []}
+              tagColors={
+                (uniqueProps.TagsColors as Record<string, string>) || {}
+              }
             />
           );
 
         case 'multicheckbox':
           return (
             <MultiCheckboxCell
-              value={cellValue || ''}
+              value={(cellValue as string) || ''}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              options={columnData.uniqueProperties?.Options || []}
-              tagColors={columnData.uniqueProperties?.TagsColors || {}}
+              options={(uniqueProps.Options as string[]) || []}
+              tagColors={
+                (uniqueProps.TagsColors as Record<string, string>) || {}
+              }
             />
           );
 
-        case 'todo':
-          const globalTodos = columnData.uniqueProperties?.Chosen?.global || [];
+        case 'todo': {
+          const chosen = uniqueProps.Chosen as Record<string, unknown>;
+          const globalTodos = (chosen?.global || []) as Array<{
+            text: string;
+            completed: boolean;
+            category?: string;
+          }>;
 
           return (
             <TodoCell
@@ -172,23 +157,26 @@ export const MobileTodayView: React.FC = () => {
               column={{
                 id: columnId,
                 type: 'todo',
-                options: columnData.uniqueProperties?.Categorys || [],
-                tagColors: columnData.uniqueProperties?.CategoryColors || {},
+                options: (uniqueProps.Categorys as string[]) || [],
+                tagColors:
+                  (uniqueProps.CategoryColors as Record<string, string>) || {},
               }}
               onChange={(newValue) => handleTodoChange(columnId, newValue)}
             />
           );
+        }
 
         case 'tasktable':
           return (
             <TaskTableCell
               column={{
                 id: columnId,
-                options: columnData.uniqueProperties?.Options || [],
-                doneTags: columnData.uniqueProperties?.DoneTags || [],
-                tagColors: columnData.uniqueProperties?.OptionsColors || {},
+                options: (uniqueProps.Options as string[]) || [],
+                doneTags: (uniqueProps.DoneTags as string[]) || [],
+                tagColors:
+                  (uniqueProps.OptionsColors as Record<string, string>) || {},
               }}
-              onChangeOptions={createTaskTableHandler(columnId, columnData)}
+              onChangeOptions={createTaskTableHandler(columnId)}
             />
           );
 
@@ -273,9 +261,11 @@ export const MobileTodayView: React.FC = () => {
         )}
         {columnOrder.map((columnId: string) => {
           const columnData = columnsData[columnId];
+          if (!columnData) return null;
+
           const cardKey = `${columnId}-${selectedDayName}`;
 
-          const columnType = columnData.Type?.toLowerCase();
+          const columnType = columnData.type?.toLowerCase();
 
           // Get the rendered cell to check if it's null
           // Skip rendering the entire card if cell content is null
@@ -299,13 +289,13 @@ export const MobileTodayView: React.FC = () => {
                 className="bg-tableBodyBg border border-border rounded-lg p-3 flex items-center justify-between transition-all hover:shadow-sm"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  {columnData.EmojiIcon && (
+                  {columnData.emojiIcon && (
                     <span className="flex-shrink-0 text-text inline-flex items-center">
-                      {getIconComponent(columnData.EmojiIcon, 18)}
+                      {getIconComponent(columnData.emojiIcon, 18)}
                     </span>
                   )}
                   <h3 className="text-sm font-medium text-text truncate">
-                    {columnData.Name || columnType}
+                    {columnData.name || columnType}
                   </h3>
                 </div>
 
@@ -316,7 +306,7 @@ export const MobileTodayView: React.FC = () => {
                     {renderedCell}
                   </div>
                   <button
-                    aria-label={`Open settings for ${columnData.Name || columnType}`}
+                    aria-label={`Open settings for ${columnData.name || columnType}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       setOpenColumnMenu(columnId);
@@ -337,17 +327,17 @@ export const MobileTodayView: React.FC = () => {
             >
               <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-text flex items-center gap-2 flex-1 min-w-0">
-                  {columnData.EmojiIcon && (
+                  {columnData.emojiIcon && (
                     <span className="inline-flex items-center flex-shrink-0">
-                      {getIconComponent(columnData.EmojiIcon, 18)}
+                      {getIconComponent(columnData.emojiIcon, 18)}
                     </span>
                   )}
                   <span className="truncate">
-                    {columnData.Name || columnType}
+                    {columnData.name || columnType}
                   </span>
                 </h3>
                 <button
-                  aria-label={`Open settings for ${columnData.Name || columnType}`}
+                  aria-label={`Open settings for ${columnData.name || columnType}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpenColumnMenu(columnId);

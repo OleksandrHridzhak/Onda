@@ -1,7 +1,7 @@
 // columnMenuReducer.ts
 
 interface Column {
-  name: string;
+  name?: string;
   emojiIcon?: string;
   description?: string;
   nameVisible?: boolean;
@@ -48,7 +48,7 @@ export type MenuAction =
   | { type: 'RESET'; payload: Column };
 
 export const initialState = (column: Column): MenuState => ({
-  name: column.name,
+  name: column.name || '',
   selectedIcon: column.emojiIcon || '',
   description: column.description || '',
   showTitle: column.nameVisible !== false,

@@ -1,9 +1,9 @@
-import { dbPromise } from '../indexedDB.js';
+import { getDatabase } from '../../database/index';
 import type { SyncConfig, SaveConfigResult } from '../syncTypes';
 
 /**
  * Sync Configuration Management
- * Handles reading and writing sync configuration to IndexedDB
+ * Handles reading and writing sync configuration to RxDB
  */
 export class SyncConfigManager {
   /**
@@ -11,12 +11,9 @@ export class SyncConfigManager {
    */
   async getSyncConfig(): Promise<SyncConfig | null> {
     try {
-      const db = await dbPromise;
-      const tx = db.transaction('settings', 'readonly');
-      const store = tx.objectStore('settings');
-      const settings = await store.get(1);
-
-      return settings?.sync || null;
+      const db = await getDatabase();
+      const doc = await db.settings.findOne('appSettings').exec();
+      return doc?.sync || null;
     } catch (error) {
       console.error('Error getting sync config:', error);
       return null;
@@ -32,20 +29,48 @@ export class SyncConfigManager {
     currentLastSync: string | null,
   ): Promise<SaveConfigResult> {
     try {
-      const db = await dbPromise;
-      const tx = db.transaction('settings', 'readwrite');
-      const store = tx.objectStore('settings');
-      const settings = (await store.get(1)) || { id: 1 };
+      const db = await getDatabase();
+      const doc = await db.settings.findOne('appSettings').exec();
 
-      settings.sync = {
-        ...settings.sync,
+      const currentSync = doc?.sync || {};
+      const newSync = {
+        ...currentSync,
         ...config,
         lastSync: currentLastSync,
         version: currentVersion,
       };
 
-      await store.put(settings);
-      await tx.done;
+      if (doc) {
+        await doc.patch({
+          sync: newSync,
+          updatedAt: Date.now(),
+        });
+      } else {
+        await db.settings.insert({
+          id: 'appSettings',
+          theme: {
+            darkMode: false,
+            accentColor: 'blue',
+            autoThemeSettings: {
+              enabled: false,
+              startTime: '08:00',
+              endTime: '20:00',
+            },
+          },
+          table: {
+            showSummaryRow: false,
+            compactMode: false,
+            stickyHeader: true,
+          },
+          ui: {
+            animations: true,
+            tooltips: true,
+            confirmDelete: true,
+          },
+          sync: newSync,
+          updatedAt: Date.now(),
+        });
+      }
 
       return { status: 'success', message: 'Sync config saved' };
     } catch (error) {

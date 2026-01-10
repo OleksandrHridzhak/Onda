@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ColumnHeaderContent } from '../ColumnHeaderContent';
 import { TaskTableCell } from './TaskTableCell';
 import { DAYS } from '../../TableLogic';
 import { useColumnLogic } from '../useColumnLogic';
-import { updateCommonColumnProperties } from '../../../../../store/tableSlice/tableSlice';
+import { useColumns } from '../../../../../database';
 
 interface TaskTableColumnProps {
   columnId: string;
@@ -12,46 +12,30 @@ interface TaskTableColumnProps {
 export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
   columnId,
 }) => {
-  const customClearColumn = () => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId,
-        properties: {
-          uniqueProperties: {
-            ...columnData.uniqueProperties,
-            Options: [],
-            OptionsColors: {},
-            DoneTags: [],
-          },
-        },
-      }),
-    );
-  };
+  const { updateColumnNested: updateNested } = useColumns();
 
-  const customHandleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties: {
-          uniqueProperties: {
-            ...columnData?.uniqueProperties,
-            Options: options,
-            OptionsColors: tagColors,
-            DoneTags: doneTags || [],
-          },
-        },
-      }),
-    );
-  };
+  const customClearColumn = useCallback(() => {
+    updateNested(columnId, ['Options'], []);
+    updateNested(columnId, ['OptionsColors'], {});
+    updateNested(columnId, ['DoneTags'], []);
+  }, [columnId, updateNested]);
+
+  const customHandleChangeOptions = useCallback(
+    (
+      id: string,
+      options: string[],
+      tagColors: Record<string, string>,
+      doneTags?: string[],
+    ) => {
+      updateNested(id, ['Options'], options);
+      updateNested(id, ['OptionsColors'], tagColors);
+      updateNested(id, ['DoneTags'], doneTags || []);
+    },
+    [updateNested],
+  );
 
   const {
     columnData,
-    dispatch,
     handleMoveColumn,
     handleChangeWidth,
     columnMenuLogic,
@@ -63,32 +47,28 @@ export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
     customHandleChangeOptions,
   });
 
-  const handleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties: {
-          uniqueProperties: {
-            ...columnData.uniqueProperties,
-            Options: options,
-            OptionsColors: tagColors,
-            DoneTags: doneTags || [],
-          },
-        },
-      }),
-    );
-  };
+  const handleChangeOptions = useCallback(
+    (
+      id: string,
+      options: string[],
+      tagColors: Record<string, string>,
+      doneTags?: string[],
+    ) => {
+      updateNested(id, ['Options'], options);
+      updateNested(id, ['OptionsColors'], tagColors);
+      updateNested(id, ['DoneTags'], doneTags || []);
+    },
+    [updateNested],
+  );
+
+  const uniqueProps =
+    (columnData.uniqueProperties as Record<string, unknown>) || {};
 
   const columnForHeader = {
     ...baseColumnForHeader,
-    options: columnData.uniqueProperties?.Options,
-    tagColors: columnData.uniqueProperties?.OptionsColors,
-    doneTags: columnData.uniqueProperties?.DoneTags,
+    options: uniqueProps.Options,
+    tagColors: uniqueProps.OptionsColors,
+    doneTags: uniqueProps.DoneTags,
   };
 
   return (
@@ -117,9 +97,10 @@ export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
               column={{
                 id: columnId,
                 ...columnData,
-                tagColors: columnData.uniqueProperties?.OptionsColors || {},
-                options: columnData.uniqueProperties?.Options || [],
-                doneTags: columnData.uniqueProperties?.DoneTags || [],
+                tagColors:
+                  (uniqueProps.OptionsColors as Record<string, string>) || {},
+                options: (uniqueProps.Options as string[]) || [],
+                doneTags: (uniqueProps.DoneTags as string[]) || [],
               }}
               onChangeOptions={handleChangeOptions}
             />

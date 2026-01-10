@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react';
-import { calendarService } from '../../../../services/calendarDB';
+import { useState, useCallback } from 'react';
+import { useCalendarEvents } from '../../../../database';
 
+// UI-facing CalendarEvent type (without database-specific fields)
 export interface CalendarEvent {
   id: string | number;
   title: string;
-  date: string; // stored as a date string
-  startTime: string; // HH:mm
-  endTime: string; // HH:mm
+  date: string;
+  startTime: string;
+  endTime: string;
   color: string;
   isRepeating: boolean;
   repeatDays: number[];
-  repeatFrequency: string; // 'weekly' | 'biweekly'
+  repeatFrequency: string;
 }
 
 export interface NewEvent {
@@ -25,9 +26,26 @@ export interface NewEvent {
 }
 
 export function useCalendar() {
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<unknown>(null);
+  const {
+    events: dbEvents,
+    isLoading,
+    error,
+    upsertEvent,
+    deleteEvent: removeEvent,
+  } = useCalendarEvents();
+
+  // Convert DB events to UI events
+  const events: CalendarEvent[] = dbEvents.map((e) => ({
+    id: e.id,
+    title: e.title,
+    date: e.date,
+    startTime: e.startTime,
+    endTime: e.endTime,
+    color: e.color,
+    isRepeating: e.isRepeating,
+    repeatDays: e.repeatDays,
+    repeatFrequency: e.repeatFrequency,
+  }));
 
   const [showEventModal, setShowEventModal] = useState<boolean>(false);
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
@@ -41,48 +59,23 @@ export function useCalendar() {
     repeatFrequency: 'weekly',
   });
 
-  useEffect(() => {
-    const load = async (): Promise<void> => {
-      setIsLoading(true);
+  const createOrUpdateEvent = useCallback(
+    async (
+      payload: NewEvent & { id?: string | number },
+    ): Promise<CalendarEvent | null> => {
       try {
-        const response = await calendarService.getCalendar();
-        if (response.status === 'success') {
-          setEvents(response.data || []);
-        } else {
-          setError(response.error || 'Failed to load calendar');
-        }
-      } catch (e) {
-        setError(e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    load();
-  }, []);
+        const event = await upsertEvent({
+          id: payload.id?.toString(),
+          title: payload.title,
+          date: payload.date || new Date().toDateString(),
+          startTime: payload.startTime,
+          endTime: payload.endTime,
+          color: payload.color,
+          isRepeating: !!payload.isRepeating,
+          repeatDays: payload.repeatDays || [],
+          repeatFrequency: payload.repeatFrequency || 'weekly',
+        });
 
-  const createOrUpdateEvent = async (
-    payload: NewEvent & { id?: string | number },
-  ): Promise<CalendarEvent | null> => {
-    try {
-      const eventData: CalendarEvent = {
-        id: payload.id || Date.now().toString(),
-        title: payload.title,
-        date: payload.date || new Date().toDateString(),
-        startTime: payload.startTime,
-        endTime: payload.endTime,
-        color: payload.color,
-        isRepeating: !!payload.isRepeating,
-        repeatDays: payload.repeatDays || [],
-        repeatFrequency: payload.repeatFrequency || 'weekly',
-      };
-
-      const response = await calendarService.updateCalendarEvent(eventData);
-      if (response.status === 'success') {
-        setEvents((prev) =>
-          prev.some((e) => e.id === eventData.id)
-            ? prev.map((e) => (e.id === eventData.id ? eventData : e))
-            : [...prev, eventData],
-        );
         setShowEventModal(false);
         setNewEvent({
           title: '',
@@ -94,22 +87,20 @@ export function useCalendar() {
           repeatFrequency: 'weekly',
         });
         setEditingEventId(null);
-        return eventData;
-      } else {
-        setError(response.error || 'Failed to save event');
+
+        return event;
+      } catch (e) {
+        console.error('Error saving event:', e);
         return null;
       }
-    } catch (e) {
-      setError(e);
-      return null;
-    }
-  };
+    },
+    [upsertEvent],
+  );
 
-  const deleteEvent = async (eventId: string | number): Promise<boolean> => {
-    try {
-      const response = await calendarService.deleteCalendarEvent(eventId);
-      if (response.status === 'success') {
-        setEvents((prev) => prev.filter((e) => e.id !== eventId));
+  const deleteEvent = useCallback(
+    async (eventId: string | number): Promise<boolean> => {
+      try {
+        await removeEvent(eventId);
         setShowEventModal(false);
         setNewEvent({
           title: '',
@@ -122,22 +113,20 @@ export function useCalendar() {
         });
         setEditingEventId(null);
         return true;
-      } else {
-        setError(response.error || 'Failed to delete event');
+      } catch (e) {
+        console.error('Error deleting event:', e);
         return false;
       }
-    } catch (e) {
-      setError(e);
-      return false;
-    }
-  };
+    },
+    [removeEvent],
+  );
 
-  const validateTime = (time: string): boolean => {
+  const validateTime = useCallback((time: string): boolean => {
     const regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
     return regex.test(time);
-  };
+  }, []);
 
-  const adjustEventTimes = (delta: number): void => {
+  const adjustEventTimes = useCallback((delta: number): void => {
     const shift = (time: string): string => {
       const [h, m] = time.split(':').map(Number);
       let total = h * 60 + m + delta;
@@ -154,28 +143,27 @@ export function useCalendar() {
       startTime: shift(prev.startTime),
       endTime: shift(prev.endTime),
     }));
-  };
+  }, []);
 
-  const openNewEventAt = (
-    date: Date,
-    startTime?: string,
-    endTime?: string,
-  ): void => {
-    setNewEvent({
-      title: '',
-      date: date.toDateString(),
-      startTime: startTime || '09:00',
-      endTime: endTime || '10:00',
-      color: '#2563eb',
-      isRepeating: false,
-      repeatDays: [],
-      repeatFrequency: 'weekly',
-    });
-    setEditingEventId(null);
-    setShowEventModal(true);
-  };
+  const openNewEventAt = useCallback(
+    (date: Date, startTime?: string, endTime?: string): void => {
+      setNewEvent({
+        title: '',
+        date: date.toDateString(),
+        startTime: startTime || '09:00',
+        endTime: endTime || '10:00',
+        color: '#2563eb',
+        isRepeating: false,
+        repeatDays: [],
+        repeatFrequency: 'weekly',
+      });
+      setEditingEventId(null);
+      setShowEventModal(true);
+    },
+    [],
+  );
 
-  const startEditing = (event: CalendarEvent): void => {
+  const startEditing = useCallback((event: CalendarEvent): void => {
     setNewEvent({
       ...event,
       repeatDays: event.repeatDays || [],
@@ -183,26 +171,14 @@ export function useCalendar() {
     });
     setEditingEventId(event.id.toString());
     setShowEventModal(true);
-  };
+  }, []);
 
   return {
     events,
     isLoading,
     error,
     loadEvents: async () => {
-      setIsLoading(true);
-      try {
-        const response = await calendarService.getCalendar();
-        if (response.status === 'success') {
-          setEvents(response.data || []);
-        } else {
-          setError(response.error || 'Failed to load calendar');
-        }
-      } catch (e) {
-        setError(e);
-      } finally {
-        setIsLoading(false);
-      }
+      // Events are loaded automatically via RxDB subscription
     },
     createOrUpdateEvent,
     deleteEvent,

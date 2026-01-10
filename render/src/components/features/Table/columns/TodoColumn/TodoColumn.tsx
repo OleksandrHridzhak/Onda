@@ -1,51 +1,34 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ColumnHeaderContent } from '../ColumnHeaderContent';
 import { TodoCell } from './TodoCell';
 import { DAYS } from '../../TableLogic';
 import { useColumnLogic } from '../useColumnLogic';
-import {
-  updateColumnNested,
-  updateCommonColumnProperties,
-} from '../../../../../store/tableSlice/tableSlice';
+import { useColumns } from '../../../../../database';
 
 interface TodoColumnProps {
   columnId: string;
 }
 
-export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
-  const customClearColumn = () => {
-    dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Chosen', 'global'],
-        value: [],
-      }),
-    );
-  };
+type TodoItem = { text: string; completed: boolean; category?: string };
 
-  const customHandleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties: {
-          uniqueProperties: {
-            ...columnData?.uniqueProperties,
-            Categorys: options,
-            CategoryColors: tagColors,
-          },
-        },
-      }),
-    );
-  };
+export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
+  const { updateColumnNested: updateNested } = useColumns();
+
+  const customClearColumn = useCallback(() => {
+    updateNested(columnId, ['Chosen', 'global'], []);
+  }, [columnId, updateNested]);
+
+  const customHandleChangeOptions = useCallback(
+    (id: string, options: string[], tagColors: Record<string, string>) => {
+      updateNested(id, ['Categorys'], options);
+      updateNested(id, ['CategoryColors'], tagColors);
+    },
+    [updateNested],
+  );
 
   const {
     columnData,
-    dispatch,
+    updateColumnNested,
     handleMoveColumn,
     handleChangeWidth,
     columnMenuLogic,
@@ -57,21 +40,20 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
     customHandleChangeOptions,
   });
 
-  const handleCellChange = (newValue: any) => {
-    dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Chosen', 'global'],
-        value: newValue,
-      }),
-    );
+  const handleCellChange = (newValue: TodoItem[]) => {
+    updateColumnNested(['Chosen', 'global'], newValue);
   };
+
+  const uniqueProps =
+    (columnData.uniqueProperties as Record<string, unknown>) || {};
+  const chosen = uniqueProps.Chosen as Record<string, unknown> | undefined;
+  const globalTodos = (chosen?.global as TodoItem[]) || [];
 
   const columnForHeader = {
     ...baseColumnForHeader,
-    options: columnData.uniqueProperties?.Categorys,
-    tagColors: columnData.uniqueProperties?.CategoryColors,
-    Chosen: columnData.uniqueProperties?.Chosen,
+    options: uniqueProps.Categorys,
+    tagColors: uniqueProps.CategoryColors,
+    Chosen: uniqueProps.Chosen,
   };
 
   return (
@@ -97,17 +79,14 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
             rowSpan={DAYS.length}
           >
             <TodoCell
-              value={columnData.uniqueProperties?.Chosen?.global || []}
+              value={globalTodos}
               onChange={handleCellChange}
               column={{
                 id: columnId,
-                type: columnData.Type || 'todo',
-                ...columnData,
-                options:
-                  columnData.uniqueProperties?.Categorys || columnData.options,
+                type: columnData.type || 'todo',
+                options: (uniqueProps.Categorys as string[]) || [],
                 tagColors:
-                  columnData.uniqueProperties?.CategoryColors ||
-                  columnData.tagColors,
+                  (uniqueProps.CategoryColors as Record<string, string>) || {},
               }}
             />
           </td>

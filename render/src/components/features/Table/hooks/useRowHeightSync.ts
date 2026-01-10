@@ -82,5 +82,6 @@ export const useRowHeightSync = (dependencies: any[]) => {
     return () => {
       observer.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 };

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import ColumnMenu from './columnMenu/ColumnMenu';
 import { useColumnLogic } from './columns/useColumnLogic';
-import { updateCommonColumnProperties } from '../../../store/tableSlice/tableSlice';
+import { useColumns } from '../../../database';
 
 interface MobileColumnMenuProps {
   columnId: string;
@@ -12,9 +12,10 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
   columnId,
   onClose,
 }) => {
+  const { updateColumnNested: updateNested } = useColumns();
+
   const {
     columnData,
-    dispatch,
     columnMenuLogic,
     handleMoveColumn,
     handleChangeWidth,
@@ -22,74 +23,56 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
     columnForHeader: baseColumnForHeader,
   } = useColumnLogic({ columnId });
 
+  const uniqueProps =
+    (columnData.uniqueProperties as Record<string, unknown>) || {};
+
   const columnForHeader = {
-    ...baseColumnForHeader,
+    id: baseColumnForHeader.id,
+    name: baseColumnForHeader.name,
+    type: baseColumnForHeader.type,
+    emojiIcon: baseColumnForHeader.emojiIcon,
+    nameVisible: baseColumnForHeader.nameVisible,
+    width: baseColumnForHeader.width,
+    description: baseColumnForHeader.description,
+    checkboxColor: baseColumnForHeader.checkboxColor as string | undefined,
     // include Categorys for todo columns, fallback to Options/Tags for others
-    options:
-      columnData.uniqueProperties?.Categorys ||
-      columnData.uniqueProperties?.Options ||
-      columnData.uniqueProperties?.Tags ||
-      [],
-    tagColors:
-      columnData.uniqueProperties?.CategoryColors ||
-      columnData.uniqueProperties?.OptionsColors ||
-      columnData.uniqueProperties?.TagsColors ||
-      {},
-    doneTags: columnData.uniqueProperties?.DoneTags || [],
+    options: (uniqueProps.Categorys ||
+      uniqueProps.Options ||
+      uniqueProps.Tags ||
+      []) as string[],
+    tagColors: (uniqueProps.CategoryColors ||
+      uniqueProps.OptionsColors ||
+      uniqueProps.TagsColors ||
+      {}) as Record<string, string>,
+    doneTags: (uniqueProps.DoneTags || []) as string[],
   };
 
-  const handleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
-    const type = baseColumnForHeader.type || columnData.Type?.toLowerCase();
-    if (type === 'multiselect') {
-      dispatch(
+  const handleChangeOptions = useCallback(
+    (
+      id: string,
+      options: string[],
+      tagColors: Record<string, string>,
+      doneTags?: string[],
+    ) => {
+      const columnType =
+        baseColumnForHeader.type?.toLowerCase() ||
+        columnData.type?.toLowerCase();
+      if (columnType === 'multiselect') {
         // Tags use Tags / TagsColors
-        // preserve other uniqueProperties keys
-        updateCommonColumnProperties({
-          columnId: id,
-          properties: {
-            uniqueProperties: {
-              ...columnData.uniqueProperties,
-              Tags: options,
-              TagsColors: tagColors,
-            },
-          },
-        }),
-      );
-    } else if (type === 'todo') {
-      dispatch(
-        updateCommonColumnProperties({
-          columnId: id,
-          properties: {
-            uniqueProperties: {
-              ...columnData.uniqueProperties,
-              Categorys: options,
-              CategoryColors: tagColors,
-            },
-          },
-        }),
-      );
-    } else {
-      // default: Options / OptionsColors / DoneTags
-      dispatch(
-        updateCommonColumnProperties({
-          columnId: id,
-          properties: {
-            uniqueProperties: {
-              ...columnData.uniqueProperties,
-              Options: options,
-              OptionsColors: tagColors,
-              DoneTags: doneTags || [],
-            },
-          },
-        }),
-      );
-    }
-  };
+        updateNested(id, ['Tags'], options);
+        updateNested(id, ['TagsColors'], tagColors);
+      } else if (columnType === 'todo') {
+        updateNested(id, ['Categorys'], options);
+        updateNested(id, ['CategoryColors'], tagColors);
+      } else {
+        // default: Options / OptionsColors / DoneTags
+        updateNested(id, ['Options'], options);
+        updateNested(id, ['OptionsColors'], tagColors);
+        updateNested(id, ['DoneTags'], doneTags || []);
+      }
+    },
+    [baseColumnForHeader.type, columnData.type, updateNested],
+  );
 
   return (
     <ColumnMenu

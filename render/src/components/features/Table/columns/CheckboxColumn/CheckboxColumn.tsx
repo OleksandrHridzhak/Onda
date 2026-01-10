@@ -3,7 +3,6 @@ import { ColumnHeaderContent } from '../ColumnHeaderContent';
 import { CheckboxCell } from './CheckboxCell';
 import { DAYS } from '../../TableLogic';
 import { useColumnLogic } from '../useColumnLogic';
-import { updateColumnNested } from '../../../../../store/tableSlice/tableSlice';
 
 interface CheckboxColumnProps {
   columnId: string;
@@ -12,7 +11,7 @@ interface CheckboxColumnProps {
 export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
   const {
     columnData,
-    dispatch,
+    updateColumnNested,
     handleMoveColumn,
     handleChangeWidth,
     columnMenuLogic,
@@ -24,18 +23,15 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
   });
 
   const handleCheckboxChange = (day: string, newValue: boolean) => {
-    dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Days', day],
-        value: newValue,
-      }),
-    );
+    updateColumnNested(['Days', day], newValue);
   };
+
+  const uniqueProps =
+    (columnData.uniqueProperties as Record<string, unknown>) || {};
 
   const columnForHeader = {
     ...baseColumnForHeader,
-    checkboxColor: columnData.uniqueProperties?.CheckboxColor,
+    checkboxColor: uniqueProps.CheckboxColor,
   };
 
   return (
@@ -61,9 +57,11 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
           >
             <td>
               <CheckboxCell
-                checked={columnData.uniqueProperties?.Days?.[day] || false}
+                checked={
+                  (uniqueProps.Days as Record<string, boolean>)?.[day] || false
+                }
                 onChange={(newValue) => handleCheckboxChange(day, newValue)}
-                color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
+                color={(uniqueProps.CheckboxColor as string) || '#3b82f6'}
               />
             </td>
           </tr>

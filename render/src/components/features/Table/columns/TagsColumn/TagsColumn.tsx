@@ -1,41 +1,28 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ColumnHeaderContent } from '../ColumnHeaderContent';
 import { TagsCell } from './TagsCell';
 import { DAYS } from '../../TableLogic';
 import { useColumnLogic } from '../useColumnLogic';
-import {
-  updateColumnNested,
-  updateCommonColumnProperties,
-} from '../../../../../store/tableSlice/tableSlice';
+import { useColumns } from '../../../../../database';
 
 interface TagsColumnProps {
   columnId: string;
 }
 
 export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
-  const customHandleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties: {
-          uniqueProperties: {
-            ...columnData?.uniqueProperties,
-            Tags: options,
-            TagsColors: tagColors,
-          },
-        },
-      }),
-    );
-  };
+  const { updateColumnNested: updateNested } = useColumns();
+
+  const customHandleChangeOptions = useCallback(
+    (id: string, options: string[], tagColors: Record<string, string>) => {
+      updateNested(id, ['Tags'], options);
+      updateNested(id, ['TagsColors'], tagColors);
+    },
+    [updateNested],
+  );
 
   const {
     columnData,
-    dispatch,
+    updateColumnNested,
     handleMoveColumn,
     handleChangeWidth,
     columnMenuLogic,
@@ -48,19 +35,16 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
   });
 
   const handleCellChange = (day: string, newValue: string) => {
-    dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Days', day],
-        value: newValue,
-      }),
-    );
+    updateColumnNested(['Days', day], newValue);
   };
+
+  const uniqueProps =
+    (columnData.uniqueProperties as Record<string, unknown>) || {};
 
   const columnForHeader = {
     ...baseColumnForHeader,
-    options: columnData.uniqueProperties?.Tags,
-    tagColors: columnData.uniqueProperties?.TagsColors,
+    options: uniqueProps.Tags,
+    tagColors: uniqueProps.TagsColors,
   };
 
   return (
@@ -86,10 +70,14 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
               <TagsCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
+                value={
+                  (uniqueProps.Days as Record<string, string>)?.[day] || ''
+                }
                 onChange={(newValue) => handleCellChange(day, newValue)}
-                options={columnData.uniqueProperties?.Tags || []}
-                tagColors={columnData.uniqueProperties?.TagsColors || {}}
+                options={(uniqueProps.Tags as string[]) || []}
+                tagColors={
+                  (uniqueProps.TagsColors as Record<string, string>) || {}
+                }
               />
             </td>
           </tr>

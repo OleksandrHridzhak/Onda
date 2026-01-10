@@ -4,7 +4,7 @@ import { Settings, Download, X, Cloud } from 'lucide-react';
 import FullCloseSection from '../features/Settings/sections/FullCloseSection';
 import DataSection from '../features/Settings/sections/DataSection';
 import SyncSection from '../features/Settings/sections/SyncSection';
-import { settingsService } from '../../services/settingsDB';
+import { useSettings } from '../../database';
 
 interface ThemeSettings {
   accentColor: string;
@@ -65,6 +65,7 @@ export default function SettingsDashboard(): React.ReactElement {
   const [activeSection, setActiveSection] = useState(() => {
     return localStorage.getItem('activeSection') || 'table';
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [settings, setSettings] = useState<AppSettings>({
     theme: {
       accentColor: 'standard',
@@ -94,21 +95,20 @@ export default function SettingsDashboard(): React.ReactElement {
     },
   });
 
+  const { settings: dbSettings } = useSettings();
+
   useEffect(() => {
-    settingsService
-      .getSettings()
-      .then(({ data }) => {
-        if (data) {
-          setSettings((prev) => ({
-            ...prev,
-            ...data,
-            header: data.header ?? prev.header,
-            calendar: data.calendar ?? prev.calendar,
-          }));
-        }
-      })
-      .catch(console.error);
-  }, []);
+    if (dbSettings) {
+      setSettings((prev) => ({
+        ...prev,
+        theme: dbSettings.theme || prev.theme,
+        table: { ...prev.table, ...dbSettings.table },
+        ui: dbSettings.ui || prev.ui,
+        header: dbSettings.header ?? prev.header,
+        calendar: dbSettings.calendar ?? prev.calendar,
+      }));
+    }
+  }, [dbSettings]);
 
   useEffect(() => {
     localStorage.setItem('activeSection', activeSection);

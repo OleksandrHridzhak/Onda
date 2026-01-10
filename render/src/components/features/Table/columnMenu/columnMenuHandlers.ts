@@ -15,11 +15,11 @@ interface State {
 
 interface Column {
   id: string;
-  name: string;
+  name?: string;
   emojiIcon?: string;
   description?: string;
   nameVisible?: boolean;
-  type: string;
+  type?: string;
   options?: string[];
   tagColors?: Record<string, string>;
   doneTags?: string[];

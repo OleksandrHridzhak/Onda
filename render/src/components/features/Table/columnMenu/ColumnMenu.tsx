@@ -18,12 +18,24 @@ import {
 } from './columnMenuHandlers';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
 
-import { ColumnData } from '../../../../types/column.types';
-
-type Column = ColumnData;
+// Use a flexible type that accepts any column-like object
+interface ColumnMenuColumn {
+  id: string;
+  type?: string;
+  name?: string;
+  emojiIcon?: string;
+  width?: number;
+  nameVisible?: boolean;
+  description?: string;
+  checkboxColor?: string;
+  options?: string[];
+  tagColors?: Record<string, string>;
+  doneTags?: string[];
+  Chosen?: unknown;
+}
 
 interface ColumnMenuProps {
-  column: Column;
+  column: ColumnMenuColumn;
   handleDeleteColumn: (id: string) => void;
   handleClearColumn: (id: string) => void;
   onClose: () => void;
