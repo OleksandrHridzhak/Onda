@@ -75,10 +75,15 @@ export async function initDatabase(): Promise<OndaDatabase> {
       const rxdb: any = await import('rxdb');
       const storageDexie: any = await import('rxdb/plugins/storage-dexie');
       const validateAjv: any = await import('rxdb/plugins/validate-ajv');
+      const updatePlugin: any = await import('rxdb/plugins/update');
 
-      const { createRxDatabase, removeRxDatabase } = rxdb;
+      const { createRxDatabase, removeRxDatabase, addRxPlugin } = rxdb;
       const { getRxStorageDexie } = storageDexie;
       const { wrappedValidateAjvStorage } = validateAjv;
+      const { RxDBUpdatePlugin } = updatePlugin;
+
+      // Add update plugin to enable .update() method on documents
+      addRxPlugin(RxDBUpdatePlugin);
 
       const storage = wrappedValidateAjvStorage({
         storage: getRxStorageDexie(),
