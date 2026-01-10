@@ -12,10 +12,10 @@ export async function exportData() {
     const columnsDocs = await db.columns.find().exec();
     const columns = columnsDocs.map((doc: any) => doc.toJSON());
 
-    const settingsDoc = await db.settings.findOne('1').exec();
+    const settingsDoc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
     const settings = settingsDoc ? [settingsDoc.toJSON()] : [];
 
-    const calendarDoc = await db.calendar.findOne('1').exec();
+    const calendarDoc = await db.calendar.findOne({ selector: { _id: '1' } }).exec();
     const calendar = calendarDoc ? [calendarDoc.toJSON()] : [];
 
     return {
@@ -90,7 +90,7 @@ export async function clearAllData() {
     }
 
     // Clear calendar
-    const calendarDoc = await db.calendar.findOne('1').exec();
+    const calendarDoc = await db.calendar.findOne({ selector: { _id: '1' } }).exec();
     if (calendarDoc) {
       await calendarDoc.update({
         $set: {
@@ -101,7 +101,7 @@ export async function clearAllData() {
 
     // Clear settings (reset to defaults would require importing from fileTemplates)
     // For now, just clear sync settings
-    const settingsDoc = await db.settings.findOne('1').exec();
+    const settingsDoc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
     if (settingsDoc) {
       await settingsDoc.update({
         $set: {

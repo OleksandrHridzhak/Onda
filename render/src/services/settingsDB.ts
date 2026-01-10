@@ -28,7 +28,7 @@ export const settingsService = {
   > {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return { status: 'Settings not found', error: 'Settings not found' };
@@ -43,7 +43,7 @@ export const settingsService = {
   async updateSettings(newSettings: Partial<SettingsDocument>) {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return handleError(
@@ -65,7 +65,7 @@ export const settingsService = {
   async switchTheme(darkMode: boolean) {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return handleError(
@@ -89,7 +89,7 @@ export const settingsService = {
   async getTheme() {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return { status: 'Theme fetched', darkMode: false };
@@ -108,7 +108,7 @@ export const settingsService = {
   async updateTheme(themeSettings: any) {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return handleError(
@@ -133,7 +133,7 @@ export const settingsService = {
   async updateSettingsSection(newObject: any, section: string) {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return handleError(
@@ -158,7 +158,7 @@ export const settingsService = {
   async updateTableSettings(tableSettings: any) {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return handleError(
@@ -183,7 +183,7 @@ export const settingsService = {
   async updateUISettings(uiSettings: any) {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return handleError(
@@ -208,7 +208,7 @@ export const settingsService = {
   async updateColumnOrder(columnOrder: string[]) {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return handleError(

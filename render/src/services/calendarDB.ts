@@ -25,7 +25,7 @@ export const calendarService = {
   > {
     try {
       const db = await getDatabase();
-      const doc = await db.calendar.findOne('1').exec();
+      const doc = await db.calendar.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         // Create empty calendar if not exists
@@ -46,7 +46,7 @@ export const calendarService = {
   async saveCalendar(calendar: any[]) {
     try {
       const db = await getDatabase();
-      const doc = await db.calendar.findOne('1').exec();
+      const doc = await db.calendar.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         // Create if doesn't exist
@@ -76,7 +76,7 @@ export const calendarService = {
   async updateCalendarEvent(eventData: any) {
     try {
       const db = await getDatabase();
-      const doc = await db.calendar.findOne('1').exec();
+      const doc = await db.calendar.findOne({ selector: { _id: '1' } }).exec();
 
       let calendar = doc ? doc.toJSON() : { _id: '1', body: [] };
 
@@ -127,7 +127,7 @@ export const calendarService = {
   async deleteCalendarEvent(eventId: string | number) {
     try {
       const db = await getDatabase();
-      const doc = await db.calendar.findOne('1').exec();
+      const doc = await db.calendar.findOne({ selector: { _id: '1' } }).exec();
 
       if (!doc) {
         return { status: 'error' as const, error: 'Calendar not found' };
@@ -170,7 +170,7 @@ export const calendarService = {
   async clearCalendar() {
     try {
       const db = await getDatabase();
-      const doc = await db.calendar.findOne('1').exec();
+      const doc = await db.calendar.findOne({ selector: { _id: '1' } }).exec();
 
       if (doc) {
         await doc.update({

@@ -12,7 +12,7 @@ export class SyncConfigManager {
   async getSyncConfig(): Promise<SyncConfig | null> {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
       
       if (!doc) {
         return null;
@@ -36,7 +36,7 @@ export class SyncConfigManager {
   ): Promise<SaveConfigResult> {
     try {
       const db = await getDatabase();
-      const doc = await db.settings.findOne('1').exec();
+      const doc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
       
       if (!doc) {
         return { status: 'error', message: 'Settings not found' };

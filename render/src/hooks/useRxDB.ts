@@ -140,7 +140,11 @@ export function useRxDocumentById<T = any>(
 
     // Initial fetch
     collection
-      .findOne(docId)
+      .findOne({
+        selector: {
+          _id: docId
+        }
+      })
       .exec()
       .then((doc) => {
         if (doc) {
@@ -149,13 +153,19 @@ export function useRxDocumentById<T = any>(
       });
 
     // Subscribe to changes
-    const subscription = collection.findOne(docId).$.subscribe((doc) => {
-      if (doc) {
-        setData(doc.toJSON() as T);
-      } else {
-        setData(null);
-      }
-    });
+    const subscription = collection
+      .findOne({
+        selector: {
+          _id: docId
+        }
+      })
+      .$.subscribe((doc) => {
+        if (doc) {
+          setData(doc.toJSON() as T);
+        } else {
+          setData(null);
+        }
+      });
 
     return () => {
       subscription.unsubscribe();

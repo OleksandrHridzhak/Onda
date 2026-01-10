@@ -21,7 +21,11 @@ export async function getAllColumns(): Promise<ColumnDocument[]> {
 export async function getColumn(id: string): Promise<ColumnDocument | null> {
   try {
     const db = await getDatabase();
-    const doc = await db.columns.findOne(id).exec();
+    const doc = await db.columns.findOne({
+      selector: {
+        _id: id
+      }
+    }).exec();
     return doc ? doc.toJSON() : null;
   } catch (error) {
     console.error('Error getting column:', error);
@@ -59,7 +63,11 @@ export async function updateColumn(column: any): Promise<void> {
 export async function deleteColumn(id: string): Promise<void> {
   try {
     const db = await getDatabase();
-    const doc = await db.columns.findOne(id).exec();
+    const doc = await db.columns.findOne({
+      selector: {
+        _id: id
+      }
+    }).exec();
     if (doc) {
       await doc.remove();
     }
@@ -72,7 +80,11 @@ export async function deleteColumn(id: string): Promise<void> {
 export async function getColumnsOrder(): Promise<string[]> {
   try {
     const db = await getDatabase();
-    const settings = await db.settings.findOne('1').exec();
+    const settings = await db.settings.findOne({
+      selector: {
+        _id: '1'
+      }
+    }).exec();
     if (settings) {
       const data = settings.toJSON();
       return data.table?.columnOrder || [];
@@ -87,7 +99,11 @@ export async function getColumnsOrder(): Promise<string[]> {
 export async function updateColumnsOrder(order: string[]): Promise<void> {
   try {
     const db = await getDatabase();
-    const settings = await db.settings.findOne('1').exec();
+    const settings = await db.settings.findOne({
+      selector: {
+        _id: '1'
+      }
+    }).exec();
     if (settings) {
       await settings.update({
         $set: {

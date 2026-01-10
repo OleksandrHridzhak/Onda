@@ -22,7 +22,7 @@ export class DataMigration {
 
       // Check if RxDB already has data
       const db = await getDatabase();
-      const settingsDoc = await db.settings.findOne('1').exec();
+      const settingsDoc = await db.settings.findOne({ selector: { _id: '1' } }).exec();
 
       // Migration needed if old DB exists and RxDB settings don't exist
       return !settingsDoc;
@@ -136,7 +136,7 @@ export class DataMigration {
       const db = await getDatabase();
 
       // Check if settings exist
-      const settings = await db.settings.findOne('1').exec();
+      const settings = await db.settings.findOne({ selector: { _id: '1' } }).exec();
       if (!settings) {
         console.log('⚙️ Initializing default settings...');
         await db.settings.upsert({
@@ -146,7 +146,7 @@ export class DataMigration {
       }
 
       // Check if calendar exists
-      const calendar = await db.calendar.findOne('1').exec();
+      const calendar = await db.calendar.findOne({ selector: { _id: '1' } }).exec();
       if (!calendar) {
         console.log('📅 Initializing default calendar...');
         await db.calendar.upsert({
