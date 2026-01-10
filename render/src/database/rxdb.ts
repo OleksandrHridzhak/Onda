@@ -2,6 +2,44 @@ import { columnSchema, ColumnDocument } from './schemas/column.schema';
 import { settingsSchema, SettingsDocument } from './schemas/settings.schema';
 import { calendarSchema, CalendarDocument } from './schemas/calendar.schema';
 
+/**
+ * Initialize default data in database
+ */
+async function initializeDefaults(db: any): Promise<void> {
+  try {
+    // Check if settings exist
+    const settings = await db.settings.findOne('1').exec();
+    if (!settings) {
+      console.log('⚙️ Initializing default settings...');
+      const defaultSettings = {
+        _id: '1',
+        theme: {
+          darkMode: false,
+          colorScheme: 'blue',
+          themeMode: 'light',
+        },
+        table: {
+          columnOrder: [],
+        },
+        ui: {},
+      };
+      await db.settings.upsert(defaultSettings);
+    }
+
+    // Check if calendar exists
+    const calendar = await db.calendar.findOne('1').exec();
+    if (!calendar) {
+      console.log('📅 Initializing default calendar...');
+      await db.calendar.upsert({
+        _id: '1',
+        body: [],
+      });
+    }
+  } catch (error) {
+    console.error('Error initializing defaults:', error);
+  }
+}
+
 // Define database collections type
 export interface OndaCollections {
   columns: any; // RxCollection<ColumnDocument>
@@ -95,6 +133,9 @@ export async function initDatabase(): Promise<OndaDatabase> {
       });
 
       console.log('✅ RxDB database initialized successfully');
+
+      // Initialize default data if needed
+      await initializeDefaults(db);
 
       // Cache the instance
       dbInstance = db;

@@ -14,7 +14,6 @@ import Calendar from './components/pages/CalendarPage';
 import Settings from './components/pages/SettingsPage';
 import { syncService } from './services/syncService';
 import { initDatabase } from './database/rxdb';
-import { DataMigration } from './database/migration';
 
 const routes = ['/', '/calendar', '/settings'];
 
@@ -33,11 +32,10 @@ function MainContent() {
       document.documentElement.dataset.colorScheme = savedColor;
     }
 
-    // Initialize RxDB and run migration
+    // Initialize RxDB
     (async () => {
       try {
         await initDatabase();
-        await DataMigration.runMigration();
         // Initialize sync service after database is ready
         await syncService.initialize();
       } catch (error) {
