@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Calendar, Clock } from 'lucide-react';
-import { calendarService } from '../../../../services/calendarDB';
+import { useCalendarEvents } from '../../../../database';
 
 interface Event {
   id: string | number;
@@ -21,7 +21,7 @@ const TimelineWidget: React.FC = () => {
     return `${hours}:${minutes}`;
   };
 
-  const [events, setEvents] = useState<Event[]>([]);
+  const { events: calendarEvents } = useCalendarEvents();
   const [hoveredEvent, setHoveredEvent] = useState<Event | null>(null);
   const [currentTime, setCurrentTime] = useState(getCurrentTimeString());
 
@@ -33,48 +33,29 @@ const TimelineWidget: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const loadTodayEvents = async (): Promise<void> => {
-      try {
-        const response = await calendarService.getCalendar();
-        if (response.status === 'success') {
-          const now = new Date();
-          const todayDay = now.getDay();
+  const todayEvents = useMemo(() => {
+    const now = new Date();
+    const todayDay = now.getDay();
 
-          const isSameDate = (d1: Date, d2: Date): boolean =>
-            d1.getFullYear() === d2.getFullYear() &&
-            d1.getMonth() === d2.getMonth() &&
-            d1.getDate() === d2.getDate();
+    const isSameDate = (d1: Date, d2: Date): boolean =>
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
 
-          const filteredEvents = response.data.filter((event: Event) => {
-            const isRepeatingToday =
-              event.isRepeating &&
-              Array.isArray(event.repeatDays) &&
-              event.repeatDays.includes(todayDay);
+    const filtered = calendarEvents.filter((event) => {
+      const isRepeatingToday =
+        event.isRepeating && event.repeatDays?.includes(todayDay);
+      const isToday = event.date && isSameDate(new Date(event.date), now);
+      return isRepeatingToday || isToday;
+    });
 
-            if (isRepeatingToday) return true;
-
-            const eventDate = new Date(event.date);
-            return isSameDate(eventDate, now);
-          });
-
-          filteredEvents.sort((a: Event, b: Event) => {
-            const [hA, mA] = a.startTime.split(':').map(Number);
-            const [hB, mB] = b.startTime.split(':').map(Number);
-            return hA * 60 + mA - (hB * 60 + mB);
-          });
-
-          setEvents(filteredEvents);
-        }
-      } catch (err) {
-        console.error('Error loading events:', err);
-      }
-    };
-
-    loadTodayEvents();
-    const interval = setInterval(loadTodayEvents, 60 * 1000);
-    return () => clearInterval(interval);
-  }, []);
+    // Sort by start time
+    return filtered.sort((a, b) => {
+      const [hA, mA] = a.startTime.split(':').map(Number);
+      const [hB, mB] = b.startTime.split(':').map(Number);
+      return hA * 60 + mA - (hB * 60 + mB);
+    });
+  }, [calendarEvents]);
 
   const getColorClass = (color: string): string => {
     const colorMap: Record<string, string> = {
@@ -143,7 +124,7 @@ const TimelineWidget: React.FC = () => {
                 className="absolute top-0 h-full w-0.5 bg-red-500"
                 style={{ left: `${timeToPercent(currentTime)}%` }}
               />
-              {events.map((event) => {
+              {todayEvents.map((event) => {
                 const width = Math.max(
                   1,
                   durationToPercent(event.startTime, event.endTime),

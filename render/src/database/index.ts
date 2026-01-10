@@ -33,17 +33,10 @@ import {
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
 const RxDB = require('rxdb') as any;
 const RxDBStorageDexie = require('rxdb/plugins/storage-dexie') as any;
-const RxDBDevMode = require('rxdb/plugins/dev-mode') as any;
 /* eslint-enable @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any */
 
-const { createRxDatabase, addRxPlugin } = RxDB;
+const { createRxDatabase } = RxDB;
 const { getRxStorageDexie } = RxDBStorageDexie;
-const { RxDBDevModePlugin } = RxDBDevMode;
-
-// Add dev mode plugin in development
-if (process.env.NODE_ENV === 'development') {
-  addRxPlugin(RxDBDevModePlugin);
-}
 
 // Define the database collections type
 export type OndaCollections = {
@@ -70,7 +63,6 @@ export async function getDatabase(): Promise<OndaDatabase> {
   dbPromise = createRxDatabase({
     name: 'ondadb',
     storage: getRxStorageDexie(),
-    ignoreDuplicate: true,
   }).then(async (db: any) => {
     // Create collections
     await db.addCollections({
