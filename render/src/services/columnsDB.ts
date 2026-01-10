@@ -11,7 +11,9 @@ export async function getAllColumns(): Promise<ColumnDocument[]> {
   try {
     const db = await getDatabase();
     const docs = await db.columns.find().exec();
-    return docs.map((doc) => doc.toJSON());
+    const columns = docs.map((doc: any) => doc.toJSON());
+    console.log('📦 Retrieved columns from RxDB:', columns.length, 'columns');
+    return columns;
   } catch (error) {
     console.error('Error getting all columns:', error);
     return [];
@@ -32,6 +34,8 @@ export async function getColumn(id: string): Promise<ColumnDocument | null> {
 export async function addColumn(column: any): Promise<any> {
   try {
     const db = await getDatabase();
+    
+    console.log('📝 Adding column to RxDB:', column);
     
     // Normalize field names from old Redux format to RxDB format
     const normalizedColumn = {
@@ -72,10 +76,15 @@ export async function addColumn(column: any): Promise<any> {
       }
     });
     
+    console.log('✅ Normalized column for RxDB:', normalizedColumn);
+    
     await db.columns.upsert(normalizedColumn);
+    
+    console.log('💾 Column saved to RxDB successfully');
+    
     return { status: true, data: column };
   } catch (error) {
-    console.error('Error adding column:', error);
+    console.error('❌ Error adding column:', error);
     return { status: false, message: (error as Error).message };
   }
 }
