@@ -292,52 +292,41 @@ export function useColumns() {
 
         if (!doc) return;
 
-        const data = doc.toJSON();
+        // Use incrementalPatch to avoid conflict errors
+        // This ensures the update is applied to the latest document state
+        await doc.incrementalPatch((oldData: Column) => {
+          const newUniqueProperties = { ...oldData.uniqueProperties };
 
-        // Navigate to the nested property
-        if (path.length === 1) {
-          // Direct property on uniqueProperties
-          const newUniqueProperties = {
-            ...data.uniqueProperties,
-            [path[0]]: value,
-          };
-          await doc.patch({
-            uniqueProperties: newUniqueProperties,
-            updatedAt: Date.now(),
-          });
-        } else if (path.length === 2) {
-          // Nested property like Days.Monday
-          const parentKey = path[0];
-          const childKey = path[1];
-          const parentObj =
-            (data.uniqueProperties[parentKey] as Record<string, unknown>) || {};
-          const newUniqueProperties = {
-            ...data.uniqueProperties,
-            [parentKey]: {
+          if (path.length === 1) {
+            // Direct property on uniqueProperties
+            newUniqueProperties[path[0]] = value;
+          } else if (path.length === 2) {
+            // Nested property like Days.Monday
+            const parentKey = path[0];
+            const childKey = path[1];
+            const parentObj =
+              (newUniqueProperties[parentKey] as Record<string, unknown>) || {};
+            newUniqueProperties[parentKey] = {
               ...parentObj,
               [childKey]: value,
-            },
-          };
-          await doc.patch({
-            uniqueProperties: newUniqueProperties,
-            updatedAt: Date.now(),
-          });
-        } else if (path.length > 2) {
-          // Deeper nested property
-          const newUniqueProperties = { ...data.uniqueProperties };
-          let obj: Record<string, unknown> = newUniqueProperties;
-          for (let i = 0; i < path.length - 1; i++) {
-            if (!obj[path[i]]) {
-              obj[path[i]] = {};
+            };
+          } else if (path.length > 2) {
+            // Deeper nested property
+            let obj: Record<string, unknown> = newUniqueProperties;
+            for (let i = 0; i < path.length - 1; i++) {
+              if (!obj[path[i]]) {
+                obj[path[i]] = {};
+              }
+              obj = obj[path[i]] as Record<string, unknown>;
             }
-            obj = obj[path[i]] as Record<string, unknown>;
+            obj[path[path.length - 1]] = value;
           }
-          obj[path[path.length - 1]] = value;
-          await doc.patch({
+
+          return {
             uniqueProperties: newUniqueProperties,
             updatedAt: Date.now(),
-          });
-        }
+          };
+        });
 
         notifyDataChange();
       } catch (error) {
@@ -362,10 +351,11 @@ export function useColumns() {
 
         if (!doc) return;
 
-        await doc.patch({
+        // Use incrementalPatch to avoid conflict errors
+        await doc.incrementalPatch(() => ({
           ...properties,
           updatedAt: Date.now(),
-        });
+        }));
 
         notifyDataChange();
       } catch (error) {
