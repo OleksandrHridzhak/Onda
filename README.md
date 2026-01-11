@@ -73,47 +73,30 @@ graph LR
     class Redux,IDB,DB storage;
 ```
 
-## Getting Started
+## 📚 Documentation
 
-Instructions for how to run the project locally.
-
-### Requirements
-
-- Node.js (version XX+)
-- npm or yarn
-- Git Bash (for Windows)
-- VS Code (optional)
+| Document | Description |
+|----------|-------------|
+| [Architecture](docs/ARCHITECTURE.md) | Структура проекту, потік даних, де що шукати |
+| [Development](docs/DEVELOPMENT.md) | Команди, швидкий старт, git workflow |
+| [Decisions](docs/DECISIONS.md) | Чому зроблено так, а не інакше |
 
 ---
 
-## Installation
-
-1. Clone the repository:
+## Quick Start
 
 ```bash
 git clone https://github.com/OleksandrHridzhak/Onda
 cd Onda
-```
-
-2. Install dependencies in the root folder:
-
-```bash
 npm install
-```
-
-3. Install frontend dependencies:
-
-```bash
-cd /render
-npm install
-cd ../
-```
-
-4. Run the start script:
-
-```bash
+cd render && npm install && cd ..
 npm run start
 ```
+
+### Requirements
+
+- Node.js 18+
+- npm
 
 ---
 
