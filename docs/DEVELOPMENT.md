@@ -74,7 +74,7 @@ git commit -m "feat: додати нову фічу"
 # або
 git commit -m "fix: виправити баг"
 
-# Типи комітів: feat, fix, docs, style, refactor, test, chore
+# Типи: feat, fix, docs, style, refactor, perf, test, chore, revert, build, ci
 ```
 
 ## Структура компонентів
@@ -84,7 +84,7 @@ components/
 ├─ features/     ← Бізнес-логіка (Table, Calendar, Settings)
 ├─ layout/       ← Layout компоненти (Sidebar, MenuWin)
 ├─ pages/        ← Сторінки-контейнери
-└─ shared/       ← Переиспользуемі UI елементи
+└─ shared/       ← Переиспользовувані UI елементи
 ```
 
 ## Типова задача: додати нову фічу
