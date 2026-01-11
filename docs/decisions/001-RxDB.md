@@ -1,1 +1,0 @@
-It is hard to work with chain of different logic parts. I decided to switch my old frontend data managing(redux + indexeddb + syncService ) to RxDb which is giving the same functionality but easier and with less code.

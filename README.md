@@ -29,9 +29,9 @@
  ├─ 📄 preload.js    # Electron preload script
 
 ```
+
 ```mermaid
 graph LR
-    %% Визначення стилів (Тільки форми та лінії, без кольорів заливки)
     classDef host stroke-width:2px,stroke-dasharray: 5 5;
     classDef storage stroke-width:2px;
 
@@ -61,9 +61,9 @@ graph LR
     %% Зв'язки
     Electron --> ReactUI
     Capacitor --> ReactUI
-    
+
     ReactUI <--> Redux
-    Redux <--> SyncService
+    Redux <--> IDB
     SyncService <--> IDB
     SyncService <---- Network ----> Express
     Express <--> DB
@@ -72,6 +72,7 @@ graph LR
     class Electron,Capacitor host;
     class Redux,IDB,DB storage;
 ```
+
 ## Getting Started
 
 Instructions for how to run the project locally.
