@@ -292,16 +292,15 @@ export function useColumns() {
 
         if (!doc) return;
 
-        // Use incrementalPatch to avoid conflict errors
-        // This ensures the update is applied to the latest document state
-        await doc.incrementalPatch((oldData: Column) => {
-          const newUniqueProperties = { ...oldData.uniqueProperties };
+        // Use incrementalModify which properly queues writes
+        await doc.incrementalModify((oldData: Record<string, unknown>) => {
+          const newUniqueProperties = {
+            ...(oldData.uniqueProperties as Record<string, unknown>),
+          };
 
           if (path.length === 1) {
-            // Direct property on uniqueProperties
             newUniqueProperties[path[0]] = value;
           } else if (path.length === 2) {
-            // Nested property like Days.Monday
             const parentKey = path[0];
             const childKey = path[1];
             const parentObj =
@@ -311,7 +310,6 @@ export function useColumns() {
               [childKey]: value,
             };
           } else if (path.length > 2) {
-            // Deeper nested property
             let obj: Record<string, unknown> = newUniqueProperties;
             for (let i = 0; i < path.length - 1; i++) {
               if (!obj[path[i]]) {
@@ -323,6 +321,7 @@ export function useColumns() {
           }
 
           return {
+            ...oldData,
             uniqueProperties: newUniqueProperties,
             updatedAt: Date.now(),
           };
@@ -351,8 +350,9 @@ export function useColumns() {
 
         if (!doc) return;
 
-        // Use incrementalPatch to avoid conflict errors
-        await doc.incrementalPatch(() => ({
+        // Use incrementalModify which properly queues writes
+        await doc.incrementalModify((oldData: Record<string, unknown>) => ({
+          ...oldData,
           ...properties,
           updatedAt: Date.now(),
         }));
