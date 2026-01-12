@@ -9,6 +9,7 @@ interface Column {
   doneTags?: string[];
   tagColors?: Record<string, string>;
   checkboxColor?: string;
+  Chosen?: unknown;
   width?: number;
 }
 
@@ -22,6 +23,7 @@ export interface MenuState {
   optionColors: Record<string, string>;
   checkboxColor: string;
   newOption: string;
+  Chosen?: unknown;
   width: number;
   isIconSectionExpanded: boolean;
   isColorMenuOpen: Record<string, boolean>;
@@ -55,6 +57,7 @@ export const initialState = (column: Column): MenuState => ({
   optionColors: column.tagColors || {},
   checkboxColor: column.checkboxColor || 'green',
   newOption: '',
+  Chosen: column.Chosen,
   width: column.width ? Number.parseInt(String(column.width)) : 0,
   isIconSectionExpanded: false,
   isColorMenuOpen: {},

@@ -19,6 +19,7 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
     handleMoveColumn,
     handleChangeWidth,
     columns,
+    columnForHeader,
   } = useColumnLogic({ columnId });
 
   const handleChangeOptions = (
@@ -27,21 +28,56 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
     tagColors: Record<string, string>,
     doneTags?: string[],
   ) => {
-    const properties: any = { options, tagColors };
-    if (doneTags) {
-      properties.doneTags = doneTags;
+    const type = columnForHeader.type || columnData.type?.toLowerCase();
+    if (type === 'multiselect') {
+      dispatch(
+        // Tags use Tags / TagsColors
+        // preserve other uniqueProperties keys
+        updateCommonColumnProperties({
+          columnId: id,
+          properties: {
+            uniqueProperties: {
+              ...columnData.uniqueProperties,
+              Tags: options,
+              TagsColors: tagColors,
+            },
+          },
+        }),
+      );
+    } else if (type === 'todo') {
+      dispatch(
+        updateCommonColumnProperties({
+          columnId: id,
+          properties: {
+            uniqueProperties: {
+              ...columnData.uniqueProperties,
+              Categorys: options,
+              CategoryColors: tagColors,
+            },
+          },
+        }),
+      );
+    } else {
+      // default: Options / OptionsColors / DoneTags
+      dispatch(
+        updateCommonColumnProperties({
+          columnId: id,
+          properties: {
+            uniqueProperties: {
+              ...columnData.uniqueProperties,
+              Options: options,
+              OptionsColors: tagColors,
+              DoneTags: doneTags || [],
+            },
+          },
+        }),
+      );
     }
-    dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties,
-      }),
-    );
   };
 
   return (
     <ColumnMenu
-      column={columnData as any}
+      column={columnForHeader as any}
       onClose={onClose}
       handleDeleteColumn={columnMenuLogic.handleDeleteColumn}
       handleClearColumn={columnMenuLogic.handleClearColumn}

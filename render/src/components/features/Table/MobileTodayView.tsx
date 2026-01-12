@@ -64,7 +64,7 @@ export const MobileTodayView: React.FC = () => {
       dispatch(
         updateColumnNested({
           columnId,
-          path: ['days', selectedDayName],
+          path: ['Days', selectedDayName],
           value,
         }),
       );
@@ -78,7 +78,7 @@ export const MobileTodayView: React.FC = () => {
       dispatch(
         updateColumnNested({
           columnId,
-          path: ['globalTodos'],
+          path: ['Chosen', 'global'],
           value: newValue,
         }),
       );
@@ -99,9 +99,12 @@ export const MobileTodayView: React.FC = () => {
           updateCommonColumnProperties({
             columnId: id,
             properties: {
-              tasks: incomplete,
-              tagColors: tagColors,
-              doneTags: completed,
+              uniqueProperties: {
+                ...columnData.uniqueProperties,
+                Options: incomplete,
+                OptionsColors: tagColors,
+                DoneTags: completed,
+              },
             },
           }),
         );
@@ -112,7 +115,7 @@ export const MobileTodayView: React.FC = () => {
 
   const renderCell = useCallback(
     (columnId: string, columnType: string, columnData: any) => {
-      const cellValue = columnData.days?.[selectedDayName];
+      const cellValue = columnData.uniqueProperties?.Days?.[selectedDayName];
 
       switch (columnType) {
         case 'checkbox':
@@ -120,7 +123,7 @@ export const MobileTodayView: React.FC = () => {
             <CheckboxCell
               checked={cellValue || false}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              color={columnData.checkboxColor || '#3b82f6'}
+              color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
             />
           );
 
@@ -145,8 +148,8 @@ export const MobileTodayView: React.FC = () => {
             <TagsCell
               value={cellValue || ''}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              options={columnData.options || []}
-              tagColors={columnData.tagColors || {}}
+              options={columnData.uniqueProperties?.Tags || []}
+              tagColors={columnData.uniqueProperties?.TagsColors || {}}
             />
           );
 
@@ -155,13 +158,13 @@ export const MobileTodayView: React.FC = () => {
             <MultiCheckboxCell
               value={cellValue || ''}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              options={columnData.options || []}
-              tagColors={columnData.tagColors || {}}
+              options={columnData.uniqueProperties?.Options || []}
+              tagColors={columnData.uniqueProperties?.TagsColors || {}}
             />
           );
 
         case 'todo':
-          const globalTodos = columnData.globalTodos || [];
+          const globalTodos = columnData.uniqueProperties?.Chosen?.global || [];
 
           return (
             <TodoCell
@@ -169,7 +172,8 @@ export const MobileTodayView: React.FC = () => {
               column={{
                 id: columnId,
                 type: 'todo',
-                ...columnData,
+                options: columnData.uniqueProperties?.Categorys || [],
+                tagColors: columnData.uniqueProperties?.CategoryColors || {},
               }}
               onChange={(newValue) => handleTodoChange(columnId, newValue)}
             />
@@ -180,7 +184,9 @@ export const MobileTodayView: React.FC = () => {
             <TaskTableCell
               column={{
                 id: columnId,
-                ...columnData,
+                options: columnData.uniqueProperties?.Options || [],
+                doneTags: columnData.uniqueProperties?.DoneTags || [],
+                tagColors: columnData.uniqueProperties?.OptionsColors || {},
               }}
               onChangeOptions={createTaskTableHandler(columnId, columnData)}
             />

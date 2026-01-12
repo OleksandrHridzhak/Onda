@@ -27,7 +27,7 @@ export const NumberColumn: React.FC<NumberColumnProps> = ({ columnId }) => {
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['days', day],
+        path: ['Days', day],
         value: newValue,
       }),
     );
@@ -56,7 +56,7 @@ export const NumberColumn: React.FC<NumberColumnProps> = ({ columnId }) => {
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
               <NumberCell
-                value={columnData.days?.[day] || ''}
+                value={columnData.uniqueProperties?.Days?.[day] || ''}
                 onChange={(newValue) => handleCellChange(day, newValue)}
               />
             </td>

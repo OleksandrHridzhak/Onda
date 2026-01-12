@@ -27,8 +27,11 @@ const createTodoColumn = () => {
   const id = generateId();
   const column = {
     ...basicColumnTemplate('TODO'),
-    todos: [],
-    globalTodos: [],
+    uniqueProperties: {
+      Chosen: { global: [] },
+      Categorys: ['Option 1', 'Option 2'],
+      CategoryColors: { 'Option 1': 'blue', 'Option 2': 'green' },
+    },
   };
   return { [id]: column };
 };
@@ -37,16 +40,18 @@ const createCheckboxColumn = () => {
   const id = generateId();
   const column = {
     ...basicColumnTemplate('CHECKBOX'),
-    days: {
-      Monday: false,
-      Tuesday: false,
-      Wednesday: false,
-      Thursday: false,
-      Friday: false,
-      Saturday: false,
-      Sunday: false,
+    uniqueProperties: {
+      Days: {
+        Monday: false,
+        Tuesday: false,
+        Wednesday: false,
+        Thursday: false,
+        Friday: false,
+        Saturday: false,
+        Sunday: false,
+      },
+      CheckboxColor: 'green',
     },
-    checkboxColor: 'green',
   };
   return { [id]: column };
 };
@@ -55,14 +60,16 @@ const createNumberboxColumn = () => {
   const id = generateId();
   const column = {
     ...basicColumnTemplate('NUMBERBOX'),
-    days: {
-      Monday: '',
-      Tuesday: '',
-      Wednesday: '',
-      Thursday: '',
-      Friday: '',
-      Saturday: '',
-      Sunday: '',
+    uniqueProperties: {
+      Days: {
+        Monday: '',
+        Tuesday: '',
+        Wednesday: '',
+        Thursday: '',
+        Friday: '',
+        Saturday: '',
+        Sunday: '',
+      },
     },
   };
   return { [id]: column };
@@ -72,14 +79,16 @@ const createTextColumn = () => {
   const id = generateId();
   const column = {
     ...basicColumnTemplate('TEXT'),
-    days: {
-      Monday: '',
-      Tuesday: '',
-      Wednesday: '',
-      Thursday: '',
-      Friday: '',
-      Saturday: '',
-      Sunday: '',
+    uniqueProperties: {
+      Days: {
+        Monday: '',
+        Tuesday: '',
+        Wednesday: '',
+        Thursday: '',
+        Friday: '',
+        Saturday: '',
+        Sunday: '',
+      },
     },
   };
   return { [id]: column };
@@ -89,17 +98,19 @@ const createMultiSelectColumn = () => {
   const id = generateId();
   const column = {
     ...basicColumnTemplate('MULTISELECT'),
-    days: {
-      Monday: '',
-      Tuesday: '',
-      Wednesday: '',
-      Thursday: '',
-      Friday: '',
-      Saturday: '',
-      Sunday: '',
+    uniqueProperties: {
+      Days: {
+        Monday: '',
+        Tuesday: '',
+        Wednesday: '',
+        Thursday: '',
+        Friday: '',
+        Saturday: '',
+        Sunday: '',
+      },
+      Tags: ['Option 1', 'Option 2'],
+      TagsColors: { 'Option 1': 'blue', 'Option 2': 'green' },
     },
-    options: ['Option 1', 'Option 2'],
-    tagColors: { 'Option 1': 'blue', 'Option 2': 'green' },
   };
   return { [id]: column };
 };
@@ -108,17 +119,19 @@ const createMulticheckboxColumn = () => {
   const id = generateId();
   const column = {
     ...basicColumnTemplate('MULTICHECKBOX'),
-    days: {
-      Monday: '',
-      Tuesday: '',
-      Wednesday: '',
-      Thursday: '',
-      Friday: '',
-      Saturday: '',
-      Sunday: '',
+    uniqueProperties: {
+      Days: {
+        Monday: '',
+        Tuesday: '',
+        Wednesday: '',
+        Thursday: '',
+        Friday: '',
+        Saturday: '',
+        Sunday: '',
+      },
+      Options: ['Task 1', 'Task 2'],
+      OptionsColors: { 'Task 1': 'blue', 'Task 2': 'green' },
     },
-    options: ['Task 1', 'Task 2'],
-    tagColors: { 'Task 1': 'blue', 'Task 2': 'green' },
   };
   return { [id]: column };
 };
@@ -127,9 +140,11 @@ const createTasktableColumn = () => {
   const id = generateId();
   const column = {
     ...basicColumnTemplate('TASKTABLE'),
-    tasks: [],
-    doneTags: ['Done', 'Completed'],
-    tagColors: { 'Done': 'green', 'Completed': 'blue' },
+    uniqueProperties: {
+      Chosen: {},
+      Options: ['Task 1', 'Task 2'],
+      OptionsColors: { 'Task 1': 'blue', 'Task 2': 'green' },
+    },
   };
   return { [id]: column };
 };

@@ -182,7 +182,12 @@ const tableSlice = createSlice({
 
       if (!state.columns[columnId]) return;
 
-      let obj = state.columns[columnId];
+      // Ensure uniqueProperties exists
+      if (!state.columns[columnId].uniqueProperties) {
+        state.columns[columnId].uniqueProperties = {};
+      }
+
+      let obj = state.columns[columnId].uniqueProperties;
 
       for (let i = 0; i < path.length - 1; i++) {
         if (!obj[path[i]]) {

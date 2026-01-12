@@ -27,7 +27,7 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['days', day],
+        path: ['Days', day],
         value: newValue,
       }),
     );
@@ -35,6 +35,7 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
 
   const columnForHeader = {
     ...baseColumnForHeader,
+    checkboxColor: columnData.uniqueProperties?.CheckboxColor,
   };
 
   return (
@@ -60,9 +61,9 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
           >
             <td>
               <CheckboxCell
-                checked={columnData.days?.[day] || false}
+                checked={columnData.uniqueProperties?.Days?.[day] || false}
                 onChange={(newValue) => handleCheckboxChange(day, newValue)}
-                color={columnData.checkboxColor || '#3b82f6'}
+                color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
               />
             </td>
           </tr>

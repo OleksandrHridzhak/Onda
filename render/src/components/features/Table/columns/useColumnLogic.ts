@@ -67,7 +67,7 @@ export const useColumnLogic = ({
         dispatch(
           updateColumnNested({
             columnId,
-            path: ['days', day],
+            path: ['Days', day],
             value: clearValue,
           }),
         );
@@ -132,7 +132,7 @@ export const useColumnLogic = ({
       dispatch(
         updateColumnNested({
           columnId: id,
-          path: ['checkboxColor'],
+          path: ['CheckboxColor'],
           value: color,
         }),
       );
@@ -142,11 +142,24 @@ export const useColumnLogic = ({
   const columns = columnOrder.map((id) => ({
     id,
     ...allColumns[id],
+    name: allColumns[id]?.name,
+    type: allColumns[id]?.type?.toLowerCase(),
+    emojiIcon: allColumns[id]?.emojiIcon,
+    nameVisible: allColumns[id]?.nameVisible,
   }));
 
   const columnForHeader = {
     id: columnId,
-    ...columnData,
+    name: columnData.name,
+    type: columnData.type?.toLowerCase(),
+    emojiIcon: columnData.emojiIcon,
+    nameVisible: columnData.nameVisible,
+    width: columnData.width,
+    description: columnData.description,
+    checkboxColor: columnData.uniqueProperties?.CheckboxColor,
+    options: columnData.uniqueProperties?.Options || columnData.uniqueProperties?.Tags || [],
+    tagColors: columnData.uniqueProperties?.OptionsColors || columnData.uniqueProperties?.TagsColors || columnData.uniqueProperties?.CategoryColors || {},
+    doneTags: columnData.uniqueProperties?.DoneTags || [],
   };
 
   return {
