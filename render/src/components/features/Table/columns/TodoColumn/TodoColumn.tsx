@@ -17,7 +17,7 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['Chosen', 'global'],
+        path: ['globalTodos'],
         value: [],
       }),
     );
@@ -33,11 +33,8 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
       updateCommonColumnProperties({
         columnId: id,
         properties: {
-          uniqueProperties: {
-            ...columnData?.uniqueProperties,
-            Categorys: options,
-            CategoryColors: tagColors,
-          },
+          options,
+          tagColors,
         },
       }),
     );
@@ -50,7 +47,7 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
     handleChangeWidth,
     columnMenuLogic,
     columns,
-    columnForHeader: baseColumnForHeader,
+    columnForHeader,
   } = useColumnLogic({
     columnId,
     customClearColumn,
@@ -61,17 +58,10 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['Chosen', 'global'],
+        path: ['globalTodos'],
         value: newValue,
       }),
     );
-  };
-
-  const columnForHeader = {
-    ...baseColumnForHeader,
-    options: columnData.uniqueProperties?.Categorys,
-    tagColors: columnData.uniqueProperties?.CategoryColors,
-    Chosen: columnData.uniqueProperties?.Chosen,
   };
 
   return (
@@ -97,17 +87,12 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
             rowSpan={DAYS.length}
           >
             <TodoCell
-              value={columnData.uniqueProperties?.Chosen?.global || []}
+              value={columnData.globalTodos || []}
               onChange={handleCellChange}
               column={{
                 id: columnId,
-                type: columnData.Type || 'todo',
+                type: columnData.type || 'todo',
                 ...columnData,
-                options:
-                  columnData.uniqueProperties?.Categorys || columnData.options,
-                tagColors:
-                  columnData.uniqueProperties?.CategoryColors ||
-                  columnData.tagColors,
               }}
             />
           </td>

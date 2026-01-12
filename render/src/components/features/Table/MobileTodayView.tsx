@@ -64,7 +64,7 @@ export const MobileTodayView: React.FC = () => {
       dispatch(
         updateColumnNested({
           columnId,
-          path: ['Days', selectedDayName],
+          path: ['days', selectedDayName],
           value,
         }),
       );
@@ -78,7 +78,7 @@ export const MobileTodayView: React.FC = () => {
       dispatch(
         updateColumnNested({
           columnId,
-          path: ['Chosen', 'global'],
+          path: ['globalTodos'],
           value: newValue,
         }),
       );
@@ -99,12 +99,9 @@ export const MobileTodayView: React.FC = () => {
           updateCommonColumnProperties({
             columnId: id,
             properties: {
-              uniqueProperties: {
-                ...columnData.uniqueProperties,
-                Options: incomplete,
-                OptionsColors: tagColors,
-                DoneTags: completed,
-              },
+              tasks: incomplete,
+              tagColors: tagColors,
+              doneTags: completed,
             },
           }),
         );
@@ -115,7 +112,7 @@ export const MobileTodayView: React.FC = () => {
 
   const renderCell = useCallback(
     (columnId: string, columnType: string, columnData: any) => {
-      const cellValue = columnData.uniqueProperties?.Days?.[selectedDayName];
+      const cellValue = columnData.days?.[selectedDayName];
 
       switch (columnType) {
         case 'checkbox':
@@ -123,7 +120,7 @@ export const MobileTodayView: React.FC = () => {
             <CheckboxCell
               checked={cellValue || false}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
+              color={columnData.checkboxColor || '#3b82f6'}
             />
           );
 
@@ -148,8 +145,8 @@ export const MobileTodayView: React.FC = () => {
             <TagsCell
               value={cellValue || ''}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              options={columnData.uniqueProperties?.Tags || []}
-              tagColors={columnData.uniqueProperties?.TagsColors || {}}
+              options={columnData.options || []}
+              tagColors={columnData.tagColors || {}}
             />
           );
 
@@ -158,13 +155,13 @@ export const MobileTodayView: React.FC = () => {
             <MultiCheckboxCell
               value={cellValue || ''}
               onChange={(newValue) => handleCellChange(columnId, newValue)}
-              options={columnData.uniqueProperties?.Options || []}
-              tagColors={columnData.uniqueProperties?.TagsColors || {}}
+              options={columnData.options || []}
+              tagColors={columnData.tagColors || {}}
             />
           );
 
         case 'todo':
-          const globalTodos = columnData.uniqueProperties?.Chosen?.global || [];
+          const globalTodos = columnData.globalTodos || [];
 
           return (
             <TodoCell
@@ -172,8 +169,7 @@ export const MobileTodayView: React.FC = () => {
               column={{
                 id: columnId,
                 type: 'todo',
-                options: columnData.uniqueProperties?.Categorys || [],
-                tagColors: columnData.uniqueProperties?.CategoryColors || {},
+                ...columnData,
               }}
               onChange={(newValue) => handleTodoChange(columnId, newValue)}
             />
@@ -184,9 +180,7 @@ export const MobileTodayView: React.FC = () => {
             <TaskTableCell
               column={{
                 id: columnId,
-                options: columnData.uniqueProperties?.Options || [],
-                doneTags: columnData.uniqueProperties?.DoneTags || [],
-                tagColors: columnData.uniqueProperties?.OptionsColors || {},
+                ...columnData,
               }}
               onChangeOptions={createTaskTableHandler(columnId, columnData)}
             />
@@ -275,7 +269,7 @@ export const MobileTodayView: React.FC = () => {
           const columnData = columnsData[columnId];
           const cardKey = `${columnId}-${selectedDayName}`;
 
-          const columnType = columnData.Type?.toLowerCase();
+          const columnType = columnData.type?.toLowerCase();
 
           // Get the rendered cell to check if it's null
           // Skip rendering the entire card if cell content is null
@@ -299,13 +293,13 @@ export const MobileTodayView: React.FC = () => {
                 className="bg-tableBodyBg border border-border rounded-lg p-3 flex items-center justify-between transition-all hover:shadow-sm"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  {columnData.EmojiIcon && (
+                  {columnData.emojiIcon && (
                     <span className="flex-shrink-0 text-text inline-flex items-center">
-                      {getIconComponent(columnData.EmojiIcon, 18)}
+                      {getIconComponent(columnData.emojiIcon, 18)}
                     </span>
                   )}
                   <h3 className="text-sm font-medium text-text truncate">
-                    {columnData.Name || columnType}
+                    {columnData.name || columnType}
                   </h3>
                 </div>
 
@@ -316,7 +310,7 @@ export const MobileTodayView: React.FC = () => {
                     {renderedCell}
                   </div>
                   <button
-                    aria-label={`Open settings for ${columnData.Name || columnType}`}
+                    aria-label={`Open settings for ${columnData.name || columnType}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       setOpenColumnMenu(columnId);
@@ -337,17 +331,17 @@ export const MobileTodayView: React.FC = () => {
             >
               <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-text flex items-center gap-2 flex-1 min-w-0">
-                  {columnData.EmojiIcon && (
+                  {columnData.emojiIcon && (
                     <span className="inline-flex items-center flex-shrink-0">
-                      {getIconComponent(columnData.EmojiIcon, 18)}
+                      {getIconComponent(columnData.emojiIcon, 18)}
                     </span>
                   )}
                   <span className="truncate">
-                    {columnData.Name || columnType}
+                    {columnData.name || columnType}
                   </span>
                 </h3>
                 <button
-                  aria-label={`Open settings for ${columnData.Name || columnType}`}
+                  aria-label={`Open settings for ${columnData.name || columnType}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpenColumnMenu(columnId);

@@ -48,7 +48,7 @@ export const useColumnLogic = ({
     dispatch(
       updateCommonColumnProperties({
         columnId: id,
-        properties: { Width: width },
+        properties: { width: width },
       }),
     );
   };
@@ -67,7 +67,7 @@ export const useColumnLogic = ({
         dispatch(
           updateColumnNested({
             columnId,
-            path: ['Days', day],
+            path: ['days', day],
             value: clearValue,
           }),
         );
@@ -98,7 +98,7 @@ export const useColumnLogic = ({
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { Name: newName },
+          properties: { name: newName },
         }),
       );
     },
@@ -106,7 +106,7 @@ export const useColumnLogic = ({
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { EmojiIcon: newIcon },
+          properties: { emojiIcon: newIcon },
         }),
       );
     },
@@ -114,7 +114,7 @@ export const useColumnLogic = ({
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { Description: description },
+          properties: { description: description },
         }),
       );
     },
@@ -122,7 +122,7 @@ export const useColumnLogic = ({
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { NameVisible: visible },
+          properties: { nameVisible: visible },
         }),
       );
     },
@@ -132,7 +132,7 @@ export const useColumnLogic = ({
       dispatch(
         updateColumnNested({
           columnId: id,
-          path: ['CheckboxColor'],
+          path: ['checkboxColor'],
           value: color,
         }),
       );
@@ -142,24 +142,11 @@ export const useColumnLogic = ({
   const columns = columnOrder.map((id) => ({
     id,
     ...allColumns[id],
-    name: allColumns[id]?.Name,
-    type: allColumns[id]?.Type?.toLowerCase(),
-    emojiIcon: allColumns[id]?.EmojiIcon,
-    nameVisible: allColumns[id]?.NameVisible,
   }));
 
   const columnForHeader = {
     id: columnId,
-    name: columnData.Name,
-    type: columnData.Type?.toLowerCase(),
-    emojiIcon: columnData.EmojiIcon,
-    nameVisible: columnData.NameVisible,
-    width: columnData.Width,
-    description: columnData.Description,
-    checkboxColor: columnData.CheckboxColor,
-    options: columnData.uniqueProperties?.Options || [],
-    tagColors: columnData.uniqueProperties?.OptionsColors || {},
-    doneTags: columnData.uniqueProperties?.DoneTags || [],
+    ...columnData,
   };
 
   return {

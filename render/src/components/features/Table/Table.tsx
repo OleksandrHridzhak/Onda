@@ -36,14 +36,14 @@ const Table: React.FC = () => {
 
   // Find days column id and data (fallback to default if missing)
   const daysColumnId = Object.keys(columnsData).find(
-    (id) => columnsData[id]?.Type?.toLowerCase() === 'days',
+    (id) => columnsData[id]?.type?.toLowerCase() === 'days',
   );
   const daysColumnData = daysColumnId ? columnsData[daysColumnId] : null;
   const daysColumn = {
     id: daysColumnId || 'days',
-    name: daysColumnData?.Name || 'Days',
+    name: daysColumnData?.name || 'Days',
     type: 'days',
-    width: daysColumnData?.Width || 135,
+    width: daysColumnData?.width || 135,
   };
 
   // Sync row heights across all table columns
@@ -70,7 +70,7 @@ const Table: React.FC = () => {
               {columnOrder
                 .map((columnId: string) => {
                   const columnData = columnsData[columnId];
-                  const columnType = columnData?.Type?.toLowerCase();
+                  const columnType = columnData?.type?.toLowerCase();
                   return { columnId, columnData, columnType };
                 })
                 .filter(({ columnData, columnType }) => 
@@ -82,7 +82,7 @@ const Table: React.FC = () => {
                 const column = {
                   id: columnId,
                   type: columnType,
-                  width: columnData.Width,
+                  width: columnData.width,
                 };
 
                 return (

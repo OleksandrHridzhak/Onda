@@ -25,11 +25,8 @@ export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
       updateCommonColumnProperties({
         columnId: id,
         properties: {
-          uniqueProperties: {
-            ...columnData?.uniqueProperties,
-            Options: options,
-            OptionsColors: tagColors,
-          },
+          options,
+          tagColors,
         },
       }),
     );
@@ -42,7 +39,7 @@ export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
     handleChangeWidth,
     columnMenuLogic,
     columns,
-    columnForHeader: baseColumnForHeader,
+    columnForHeader,
   } = useColumnLogic({
     columnId,
     clearValue: '',
@@ -53,16 +50,10 @@ export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['Days', day],
+        path: ['days', day],
         value: newValue,
       }),
     );
-  };
-
-  const columnForHeader = {
-    ...baseColumnForHeader,
-    options: columnData.uniqueProperties?.Options,
-    tagColors: columnData.uniqueProperties?.OptionsColors,
   };
 
   return (
@@ -88,10 +79,10 @@ export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
               <MultiCheckboxCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
+                value={columnData.days?.[day] || ''}
                 onChange={(newValue) => handleCellChange(day, newValue)}
-                options={columnData.uniqueProperties?.Options || []}
-                tagColors={columnData.uniqueProperties?.OptionsColors || {}}
+                options={columnData.options || []}
+                tagColors={columnData.tagColors || {}}
               />
             </td>
           </tr>

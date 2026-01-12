@@ -23,11 +23,8 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
       updateCommonColumnProperties({
         columnId: id,
         properties: {
-          uniqueProperties: {
-            ...columnData?.uniqueProperties,
-            Tags: options,
-            TagsColors: tagColors,
-          },
+          options,
+          tagColors,
         },
       }),
     );
@@ -40,7 +37,7 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
     handleChangeWidth,
     columnMenuLogic,
     columns,
-    columnForHeader: baseColumnForHeader,
+    columnForHeader,
   } = useColumnLogic({
     columnId,
     clearValue: '',
@@ -51,16 +48,10 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
     dispatch(
       updateColumnNested({
         columnId,
-        path: ['Days', day],
+        path: ['days', day],
         value: newValue,
       }),
     );
-  };
-
-  const columnForHeader = {
-    ...baseColumnForHeader,
-    options: columnData.uniqueProperties?.Tags,
-    tagColors: columnData.uniqueProperties?.TagsColors,
   };
 
   return (
@@ -86,10 +77,10 @@ export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
           >
             <td className="px-2 py-3 text-sm text-textTableRealValues">
               <TagsCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
+                value={columnData.days?.[day] || ''}
                 onChange={(newValue) => handleCellChange(day, newValue)}
-                options={columnData.uniqueProperties?.Tags || []}
-                tagColors={columnData.uniqueProperties?.TagsColors || {}}
+                options={columnData.options || []}
+                tagColors={columnData.tagColors || {}}
               />
             </td>
           </tr>
