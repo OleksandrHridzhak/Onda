@@ -11,14 +11,17 @@ const generateId = () => {
   }
 };
 
-const basicColumnTemplate = (type) => ({
-  name: COLUMN_NAMES[type],
-  type: type,
-  emojiIcon: COLUMN_EMOJI_ICON[type],
-  nameVisible: COLUMN_NAME_VISIBLE[type],
-  width: COLUMN_WIDTHS[type],
-  description: '',
-});
+const basicColumnTemplate = (type) => {
+  const upperType = type.toUpperCase();
+  return {
+    name: COLUMN_NAMES[upperType],
+    type: type.toLowerCase(),
+    emojiIcon: COLUMN_EMOJI_ICON[upperType],
+    nameVisible: COLUMN_NAME_VISIBLE[upperType],
+    width: COLUMN_WIDTHS[upperType],
+    description: '',
+  };
+};
 
 const createTodoColumn = () => {
   const id = generateId();
