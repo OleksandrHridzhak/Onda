@@ -19,24 +19,7 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
     handleMoveColumn,
     handleChangeWidth,
     columns,
-    columnForHeader: baseColumnForHeader,
   } = useColumnLogic({ columnId });
-
-  const columnForHeader = {
-    ...baseColumnForHeader,
-    // include Categorys for todo columns, fallback to Options/Tags for others
-    options:
-      columnData.uniqueProperties?.Categorys ||
-      columnData.uniqueProperties?.Options ||
-      columnData.uniqueProperties?.Tags ||
-      [],
-    tagColors:
-      columnData.uniqueProperties?.CategoryColors ||
-      columnData.uniqueProperties?.OptionsColors ||
-      columnData.uniqueProperties?.TagsColors ||
-      {},
-    doneTags: columnData.uniqueProperties?.DoneTags || [],
-  };
 
   const handleChangeOptions = (
     id: string,
@@ -44,56 +27,21 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
     tagColors: Record<string, string>,
     doneTags?: string[],
   ) => {
-    const type = baseColumnForHeader.type || columnData.Type?.toLowerCase();
-    if (type === 'multiselect') {
-      dispatch(
-        // Tags use Tags / TagsColors
-        // preserve other uniqueProperties keys
-        updateCommonColumnProperties({
-          columnId: id,
-          properties: {
-            uniqueProperties: {
-              ...columnData.uniqueProperties,
-              Tags: options,
-              TagsColors: tagColors,
-            },
-          },
-        }),
-      );
-    } else if (type === 'todo') {
-      dispatch(
-        updateCommonColumnProperties({
-          columnId: id,
-          properties: {
-            uniqueProperties: {
-              ...columnData.uniqueProperties,
-              Categorys: options,
-              CategoryColors: tagColors,
-            },
-          },
-        }),
-      );
-    } else {
-      // default: Options / OptionsColors / DoneTags
-      dispatch(
-        updateCommonColumnProperties({
-          columnId: id,
-          properties: {
-            uniqueProperties: {
-              ...columnData.uniqueProperties,
-              Options: options,
-              OptionsColors: tagColors,
-              DoneTags: doneTags || [],
-            },
-          },
-        }),
-      );
+    const properties: any = { options, tagColors };
+    if (doneTags) {
+      properties.doneTags = doneTags;
     }
+    dispatch(
+      updateCommonColumnProperties({
+        columnId: id,
+        properties,
+      }),
+    );
   };
 
   return (
     <ColumnMenu
-      column={columnForHeader}
+      column={columnData as any}
       onClose={onClose}
       handleDeleteColumn={columnMenuLogic.handleDeleteColumn}
       handleClearColumn={columnMenuLogic.handleClearColumn}

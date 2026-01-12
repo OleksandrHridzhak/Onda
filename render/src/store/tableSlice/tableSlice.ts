@@ -2,11 +2,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { columnsFactory } from './columnsFactory';
 import {
   getAllColumnsIDB,
-  addColumn as addColumnToDB,
-  updateColumn as updateColumnInDB,
-  deleteColumn as deleteColumnFromDB,
-  getColumnsOrder,
-  updateColumnsOrder,
+  addColumnIDB as addColumnToDB,
+  updateColumnIDB as updateColumnInDB,
+  deleteColumnIDB as deleteColumnFromDB,
+  getColumnsOrderIDB as getColumnsOrder,
+  updateColumnsOrderIDB as updateColumnsOrder,
 } from '../../services/indexedDB/columnsDB';
 
 // Async thunk for loading columns from IndexedDB

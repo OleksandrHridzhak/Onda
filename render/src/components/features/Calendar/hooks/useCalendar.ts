@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { calendarService } from '../../../../services/calendarDB';
+import { calendarService } from '../../../../services/indexedDB/calendarDB';
 
 export interface CalendarEvent {
   id: string | number;

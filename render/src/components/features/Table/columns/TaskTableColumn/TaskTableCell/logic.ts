@@ -1,6 +1,6 @@
 interface Column {
   id: string;
-  tagColors: Record<string, string>;
+  tagColors?: Record<string, string>;
 }
 
 export const handleToggleTask = (

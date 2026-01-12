@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
-import { calendarService } from '../../../../services/calendarDB';
+import { calendarService } from '../../../../services/indexedDB/calendarDB';
 
 interface Event {
   id: string | number;

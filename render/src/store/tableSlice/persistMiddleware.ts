@@ -7,9 +7,9 @@
  */
 
 import {
-  updateColumn as updateColumnInDB,
-  deleteColumn as deleteColumnFromDB,
-  updateColumnsOrder,
+  updateColumnIDB as updateColumnInDB,
+  deleteColumnIDB as deleteColumnFromDB,
+  updateColumnsOrderIDB as updateColumnsOrder,
 } from '../../services/indexedDB/columnsDB';
 import { notifyDataChange } from '../../services/syncService';
 

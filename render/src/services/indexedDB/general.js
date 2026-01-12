@@ -1,4 +1,4 @@
-import { clearAllColumns } from './columnsDB';
+import { clearAllColumnsIDB } from './columnsDB';
 import { dbPromise } from './indexedDB';
 
 /**
@@ -9,7 +9,7 @@ import { dbPromise } from './indexedDB';
 export async function clearAllData() {
   try {
     // Clear columns and their order
-    await clearAllColumns();
+    await clearAllColumnsIDB();
 
     // Clear other stores if needed
     const db = await dbPromise;

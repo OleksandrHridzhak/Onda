@@ -1,5 +1,5 @@
 import { dbPromise } from './indexedDB';
-import { notifyDataChange } from './autoSync';
+import { notifyDataChange } from '../syncService';
 
 const handleError = (err, message) => ({
   status: 'error',
