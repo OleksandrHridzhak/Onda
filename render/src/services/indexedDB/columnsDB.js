@@ -1,12 +1,11 @@
 /* global globalThis:readonly */
 import { dbPromise } from './indexedDB';
 
-// Нові функції для роботи з окремими колонками
-
 /**
- * Отримати всі колонки
+ * Getting all columns from Indexed
+ *
  */
-export async function getAllColumns() {
+export async function getAllColumnsIDB() {
   try {
     const db = await dbPromise;
     const columns = await db.getAll('columns');
@@ -21,7 +20,7 @@ export async function getAllColumns() {
 /**
  * Отримати колонку за id
  */
-export async function getColumnById(columnId) {
+export async function getColumnByIdIDB(columnId) {
   try {
     const db = await dbPromise;
     const column = await db.get('columns', columnId);
@@ -35,7 +34,7 @@ export async function getColumnById(columnId) {
 /**
  * Додати нову колонку
  */
-export async function addColumn(columnData) {
+export async function addColumnIDB(columnData) {
   try {
     const db = await dbPromise;
 
@@ -68,7 +67,7 @@ export async function addColumn(columnData) {
 /**
  * Оновити колонку за id
  */
-export async function updateColumn(columnData) {
+export async function updateColumnIDB(columnData) {
   try {
     if (!columnData.id) {
       throw new Error('Column ID is required');
@@ -87,7 +86,7 @@ export async function updateColumn(columnData) {
 /**
  * Видалити колонку за id
  */
-export async function deleteColumn(columnId) {
+export async function deleteColumnIDB(columnId) {
   try {
     const db = await dbPromise;
     await db.delete('columns', columnId);
@@ -102,7 +101,7 @@ export async function deleteColumn(columnId) {
 /**
  * Очистити всі колонки (для тестування)
  */
-export async function clearAllColumns() {
+export async function clearAllColumnsIDB() {
   try {
     const db = await dbPromise;
     const tx = db.transaction(['columns', 'settings'], 'readwrite');
@@ -120,7 +119,7 @@ export async function clearAllColumns() {
 /**
  * Оновити порядок колонок (зберегти масив id у правильному порядку)
  */
-export async function updateColumnsOrder(columnIds) {
+export async function updateColumnsOrderIDB(columnIds) {
   try {
     const db = await dbPromise;
 
@@ -143,7 +142,7 @@ export async function updateColumnsOrder(columnIds) {
 /**
  * Отримати порядок колонок
  */
-export async function getColumnsOrder() {
+export async function getColumnsOrderIDB() {
   try {
     const db = await dbPromise;
     const orderRecord = await db.get('settings', 'columnsOrder');

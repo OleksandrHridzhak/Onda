@@ -19,7 +19,7 @@ import {
   SYNC_AUTO_INTERVAL,
   SYNC_STATUS_UPDATE_INTERVAL,
   GENERATED_SECRET_KEY_LENGTH,
-} from '../../../../services/syncConstants';
+} from '../../../../services/sync/syncConstants';
 
 export default function SyncSection() {
   const [syncConfig, setSyncConfig] = useState({

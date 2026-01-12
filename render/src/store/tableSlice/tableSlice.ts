@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { columnsFactory } from './columnsFactory';
 import {
-  getAllColumns,
+  getAllColumnsIDB,
   addColumn as addColumnToDB,
   updateColumn as updateColumnInDB,
   deleteColumn as deleteColumnFromDB,
   getColumnsOrder,
   updateColumnsOrder,
-} from '../../services/columnsDB';
+} from '../../services/indexedDB/columnsDB';
 
 // Async thunk for loading columns from IndexedDB
 export const loadColumnsFromDB = createAsyncThunk<
@@ -17,7 +17,7 @@ export const loadColumnsFromDB = createAsyncThunk<
 >('tableData/loadColumnsFromDB', async (_, { rejectWithValue }) => {
   try {
     const [columnsData, columnOrderData] = await Promise.all([
-      getAllColumns(),
+      getAllColumnsIDB(),
       getColumnsOrder(),
     ]);
 

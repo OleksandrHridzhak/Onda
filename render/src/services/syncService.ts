@@ -1,4 +1,4 @@
-import { SYNC_AUTO_INTERVAL } from './syncConstants';
+import { SYNC_AUTO_INTERVAL } from './sync/syncConstants';
 import { SyncConfigManager, SyncOperations, SyncStateManager } from './sync';
 import type {
   SyncConfig,

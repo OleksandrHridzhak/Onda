@@ -1,7 +1,14 @@
-import { openDB } from 'idb';
-import { getColumnTemplates } from '../utils/fileTemplates';
+/**
+ * Main Indexeddb file
+ */
 
-// Ініціалізація бази даних
+import { openDB } from 'idb';
+import { getColumnTemplates } from '../../utils/fileTemplates';
+
+/**
+ * We call the function when w
+ *
+ */
 export const dbPromise = openDB('ondaDB', 2, {
   upgrade(db, oldVersion) {
     if (!db.objectStoreNames.contains('settings')) {

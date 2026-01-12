@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { updateColumn } from '../../../../services/columnsDB';
+import { updateColumn } from '../../../../services/indexedDB/columnsDB';
 import { ColumnData } from '../../../../types/column.types';
 
 const handleError = (message: string, error: unknown): void => {

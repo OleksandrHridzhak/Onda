@@ -4,7 +4,7 @@ import { Settings, Download, X, Cloud } from 'lucide-react';
 import FullCloseSection from '../features/Settings/sections/FullCloseSection';
 import DataSection from '../features/Settings/sections/DataSection';
 import SyncSection from '../features/Settings/sections/SyncSection';
-import { settingsService } from '../../services/settingsDB';
+import { settingsService } from '../../services/indexedDB/settingsDB';
 
 interface ThemeSettings {
   accentColor: string;

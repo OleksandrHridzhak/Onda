@@ -2,7 +2,9 @@ import { clearAllColumns } from './columnsDB';
 import { dbPromise } from './indexedDB';
 
 /**
- * Clear all data from database (for migration to new format)
+ * Clear all data (weeks, settings, calendar)
+ * from database for "Clear Data" button in Settings.
+ *
  */
 export async function clearAllData() {
   try {

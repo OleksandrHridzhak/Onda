@@ -1,5 +1,10 @@
-import { exportData, importData } from '../indexedDB.js';
-import type { PullResult, PushResult, TestConnectionResult, SaveConfigResult } from '../syncTypes';
+import { exportData, importData } from '../indexedDB/indexedDB.js';
+import type {
+  PullResult,
+  PushResult,
+  TestConnectionResult,
+  SaveConfigResult,
+} from '../syncTypes';
 
 /**
  * Sync Operations
@@ -50,7 +55,11 @@ export class SyncOperations {
       };
     } catch (error) {
       console.error('Pull error:', error);
-      return { status: 'error', hasNewData: false, message: (error as Error).message };
+      return {
+        status: 'error',
+        hasNewData: false,
+        message: (error as Error).message,
+      };
     }
   }
 
@@ -103,7 +112,10 @@ export class SyncOperations {
    * Merge server data with local data
    * Server data wins when versions differ (last write wins strategy)
    */
-  async mergeServerData(serverData: any, serverVersion: number): Promise<SaveConfigResult> {
+  async mergeServerData(
+    serverData: any,
+    serverVersion: number,
+  ): Promise<SaveConfigResult> {
     try {
       // Import server data into local database
       await importData(serverData);
@@ -118,7 +130,10 @@ export class SyncOperations {
   /**
    * Test connection to sync server
    */
-  async testConnection(serverUrl: string, secretKey: string): Promise<TestConnectionResult> {
+  async testConnection(
+    serverUrl: string,
+    secretKey: string,
+  ): Promise<TestConnectionResult> {
     try {
       const response = await fetch(`${serverUrl}/health`, {
         method: 'GET',

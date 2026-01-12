@@ -1,4 +1,4 @@
-import { dbPromise } from '../indexedDB.js';
+import { dbPromise } from '../indexedDB/indexedDB.js';
 import type { SyncConfig, SaveConfigResult } from '../syncTypes';
 
 /**

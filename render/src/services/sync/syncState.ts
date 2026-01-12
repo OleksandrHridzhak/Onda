@@ -1,4 +1,4 @@
-import { SYNC_DEBOUNCE_DELAY, SYNC_AUTO_INTERVAL } from '../syncConstants';
+import { SYNC_DEBOUNCE_DELAY, SYNC_AUTO_INTERVAL } from './syncConstants';
 import type { SyncStatus } from '../syncTypes';
 
 /**

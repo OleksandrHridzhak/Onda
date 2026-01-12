@@ -1,9 +1,17 @@
+/**
+ *
+ * Middleware that exists between UI and Redux Global State.
+ *
+ * Needed for adding changes in indexedDB and keeping always the same information.
+ *
+ */
+
 import {
   updateColumn as updateColumnInDB,
   deleteColumn as deleteColumnFromDB,
   updateColumnsOrder,
-} from '../../services/columnsDB';
-import { notifyDataChange } from '../../services/autoSync';
+} from '../../services/indexedDB/columnsDB';
+import { notifyDataChange } from '../../services/syncService';
 
 // Debounce function to prevent too many DB writes
 const debounceMap = new Map();
