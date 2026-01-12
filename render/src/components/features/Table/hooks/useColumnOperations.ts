@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { updateColumn } from '../../../../services/indexedDB/columnsDB';
+import { updateColumnIDB } from '../../../../services/indexedDB/columnsDB';
 import { ColumnData } from '../../../../types/column.types';
 
 const handleError = (message: string, error: unknown): void => {
@@ -24,7 +24,7 @@ export const useColumnOperations = (
   /**
    * Оновлює колонку в БД та стані
    */
-  const updateColumnData = useCallback(
+  const updateColumnIDBData = useCallback(
     async (
       columnId: string,
       updateFn: (column: Column) => void,
@@ -39,7 +39,7 @@ export const useColumnOperations = (
         // Створюємо копію колонки та оновлюємо
         const updatedColumn = { ...column };
         updateFn(updatedColumn);
-        await updateColumn(updatedColumn);
+        await updateColumnIDB(updatedColumn);
 
         // Оновлюємо стан
         setColumns((prev) =>
@@ -64,13 +64,13 @@ export const useColumnOperations = (
       day: string,
       value: unknown,
     ): Promise<UpdateResult> => {
-      return updateColumnData(columnId, (instance) => {
+      return updateColumnIDBData(columnId, (instance) => {
         if ('days' in instance && instance.days) {
           instance.days[day] = value;
         }
       });
     },
-    [updateColumnData],
+    [updateColumnIDBData],
   );
 
   /**
@@ -78,13 +78,13 @@ export const useColumnOperations = (
    */
   const updateTasks = useCallback(
     async (columnId: string, tasks: unknown): Promise<UpdateResult> => {
-      return updateColumnData(columnId, (instance) => {
+      return updateColumnIDBData(columnId, (instance) => {
         if ('tasks' in instance) {
           (instance as any).tasks = tasks;
         }
       });
     },
-    [updateColumnData],
+    [updateColumnIDBData],
   );
 
   /**
@@ -95,7 +95,7 @@ export const useColumnOperations = (
       columnId: string,
       updates: Record<string, unknown>,
     ): Promise<UpdateResult> => {
-      return updateColumnData(columnId, (instance) => {
+      return updateColumnIDBData(columnId, (instance) => {
         // Мапінг legacy полів на поля класу для зворотної сумісності
         const fieldMapping: Record<string, string> = {
           Name: 'name',
@@ -118,7 +118,7 @@ export const useColumnOperations = (
         });
       });
     },
-    [updateColumnData],
+    [updateColumnIDBData],
   );
 
   /**
@@ -127,7 +127,7 @@ export const useColumnOperations = (
   const clearColumn = useCallback(
     async (columnId: string): Promise<UpdateResult> => {
       console.log('clearColumn called with columnId:', columnId);
-      return updateColumnData(columnId, (instance) => {
+      return updateColumnIDBData(columnId, (instance) => {
         console.log(
           'clearColumn - instance type:',
           instance.type,
@@ -167,11 +167,11 @@ export const useColumnOperations = (
         }
       });
     },
-    [updateColumnData],
+    [updateColumnIDBData],
   );
 
   return {
-    updateColumnData,
+    updateColumnIDBData,
     updateDayData,
     updateTasks,
     updateProperties,

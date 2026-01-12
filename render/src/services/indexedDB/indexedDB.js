@@ -3,7 +3,6 @@
  */
 
 import { openDB } from 'idb';
-import { getColumnTemplates } from '../../utils/fileTemplates';
 
 /**
  * We call the function when w

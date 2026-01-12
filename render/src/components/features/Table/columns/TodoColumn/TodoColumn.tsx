@@ -101,7 +101,7 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
               onChange={handleCellChange}
               column={{
                 id: columnId,
-                type: columnData.Type || 'todo',
+                type: columnData.type || 'todo',
                 ...columnData,
                 options:
                   columnData.uniqueProperties?.Categorys || columnData.options,

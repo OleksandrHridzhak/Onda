@@ -1,6 +1,6 @@
 import { dbPromise } from './indexedDB.js';
-import { getSettingsTemplate } from '../../utils/fileTemplates.js';
-import { notifyDataChange } from '../autoSync.js';
+import { getSettingsTemplate } from '../../utils/fileTemplates';
+import { notifyDataChange } from '../syncService';
 
 const handleError = (err, message) => ({
   status: message,

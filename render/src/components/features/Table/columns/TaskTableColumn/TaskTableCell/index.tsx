@@ -14,7 +14,7 @@ interface Column {
   id: string;
   options?: string[];
   doneTags?: string[];
-  tagColors: Record<string, string>;
+  tagColors?: Record<string, string>;
 }
 
 interface TaskTableCellProps {

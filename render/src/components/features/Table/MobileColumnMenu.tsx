@@ -19,24 +19,8 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
     handleMoveColumn,
     handleChangeWidth,
     columns,
-    columnForHeader: baseColumnForHeader,
+    columnForHeader,
   } = useColumnLogic({ columnId });
-
-  const columnForHeader = {
-    ...baseColumnForHeader,
-    // include Categorys for todo columns, fallback to Options/Tags for others
-    options:
-      columnData.uniqueProperties?.Categorys ||
-      columnData.uniqueProperties?.Options ||
-      columnData.uniqueProperties?.Tags ||
-      [],
-    tagColors:
-      columnData.uniqueProperties?.CategoryColors ||
-      columnData.uniqueProperties?.OptionsColors ||
-      columnData.uniqueProperties?.TagsColors ||
-      {},
-    doneTags: columnData.uniqueProperties?.DoneTags || [],
-  };
 
   const handleChangeOptions = (
     id: string,
@@ -44,7 +28,7 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
     tagColors: Record<string, string>,
     doneTags?: string[],
   ) => {
-    const type = baseColumnForHeader.type || columnData.Type?.toLowerCase();
+    const type = columnForHeader.type || columnData.type?.toLowerCase();
     if (type === 'multiselect') {
       dispatch(
         // Tags use Tags / TagsColors
@@ -93,7 +77,7 @@ export const MobileColumnMenu: React.FC<MobileColumnMenuProps> = ({
 
   return (
     <ColumnMenu
-      column={columnForHeader}
+      column={columnForHeader as any}
       onClose={onClose}
       handleDeleteColumn={columnMenuLogic.handleDeleteColumn}
       handleClearColumn={columnMenuLogic.handleClearColumn}

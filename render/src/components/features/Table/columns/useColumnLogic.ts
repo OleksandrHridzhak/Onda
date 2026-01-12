@@ -48,7 +48,7 @@ export const useColumnLogic = ({
     dispatch(
       updateCommonColumnProperties({
         columnId: id,
-        properties: { Width: width },
+        properties: { width: width },
       }),
     );
   };
@@ -98,7 +98,7 @@ export const useColumnLogic = ({
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { Name: newName },
+          properties: { name: newName },
         }),
       );
     },
@@ -106,7 +106,7 @@ export const useColumnLogic = ({
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { EmojiIcon: newIcon },
+          properties: { emojiIcon: newIcon },
         }),
       );
     },
@@ -114,7 +114,7 @@ export const useColumnLogic = ({
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { Description: description },
+          properties: { description: description },
         }),
       );
     },
@@ -122,7 +122,7 @@ export const useColumnLogic = ({
       dispatch(
         updateCommonColumnProperties({
           columnId: id,
-          properties: { NameVisible: visible },
+          properties: { nameVisible: visible },
         }),
       );
     },
@@ -142,23 +142,23 @@ export const useColumnLogic = ({
   const columns = columnOrder.map((id) => ({
     id,
     ...allColumns[id],
-    name: allColumns[id]?.Name,
-    type: allColumns[id]?.Type?.toLowerCase(),
-    emojiIcon: allColumns[id]?.EmojiIcon,
-    nameVisible: allColumns[id]?.NameVisible,
+    name: allColumns[id]?.name,
+    type: allColumns[id]?.type?.toLowerCase(),
+    emojiIcon: allColumns[id]?.emojiIcon,
+    nameVisible: allColumns[id]?.nameVisible,
   }));
 
   const columnForHeader = {
     id: columnId,
-    name: columnData.Name,
-    type: columnData.Type?.toLowerCase(),
-    emojiIcon: columnData.EmojiIcon,
-    nameVisible: columnData.NameVisible,
-    width: columnData.Width,
-    description: columnData.Description,
-    checkboxColor: columnData.CheckboxColor,
-    options: columnData.uniqueProperties?.Options || [],
-    tagColors: columnData.uniqueProperties?.OptionsColors || {},
+    name: columnData.name,
+    type: columnData.type?.toLowerCase(),
+    emojiIcon: columnData.emojiIcon,
+    nameVisible: columnData.nameVisible,
+    width: columnData.width,
+    description: columnData.description,
+    checkboxColor: columnData.uniqueProperties?.CheckboxColor,
+    options: columnData.uniqueProperties?.Options || columnData.uniqueProperties?.Tags || [],
+    tagColors: columnData.uniqueProperties?.OptionsColors || columnData.uniqueProperties?.TagsColors || columnData.uniqueProperties?.CategoryColors || {},
     doneTags: columnData.uniqueProperties?.DoneTags || [],
   };
 

@@ -275,7 +275,7 @@ export const MobileTodayView: React.FC = () => {
           const columnData = columnsData[columnId];
           const cardKey = `${columnId}-${selectedDayName}`;
 
-          const columnType = columnData.Type?.toLowerCase();
+          const columnType = columnData.type?.toLowerCase();
 
           // Get the rendered cell to check if it's null
           // Skip rendering the entire card if cell content is null
@@ -299,13 +299,13 @@ export const MobileTodayView: React.FC = () => {
                 className="bg-tableBodyBg border border-border rounded-lg p-3 flex items-center justify-between transition-all hover:shadow-sm"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  {columnData.EmojiIcon && (
+                  {columnData.emojiIcon && (
                     <span className="flex-shrink-0 text-text inline-flex items-center">
-                      {getIconComponent(columnData.EmojiIcon, 18)}
+                      {getIconComponent(columnData.emojiIcon, 18)}
                     </span>
                   )}
                   <h3 className="text-sm font-medium text-text truncate">
-                    {columnData.Name || columnType}
+                    {columnData.name || columnType}
                   </h3>
                 </div>
 
@@ -316,7 +316,7 @@ export const MobileTodayView: React.FC = () => {
                     {renderedCell}
                   </div>
                   <button
-                    aria-label={`Open settings for ${columnData.Name || columnType}`}
+                    aria-label={`Open settings for ${columnData.name || columnType}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       setOpenColumnMenu(columnId);
@@ -337,17 +337,17 @@ export const MobileTodayView: React.FC = () => {
             >
               <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-text flex items-center gap-2 flex-1 min-w-0">
-                  {columnData.EmojiIcon && (
+                  {columnData.emojiIcon && (
                     <span className="inline-flex items-center flex-shrink-0">
-                      {getIconComponent(columnData.EmojiIcon, 18)}
+                      {getIconComponent(columnData.emojiIcon, 18)}
                     </span>
                   )}
                   <span className="truncate">
-                    {columnData.Name || columnType}
+                    {columnData.name || columnType}
                   </span>
                 </h3>
                 <button
-                  aria-label={`Open settings for ${columnData.Name || columnType}`}
+                  aria-label={`Open settings for ${columnData.name || columnType}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpenColumnMenu(columnId);
