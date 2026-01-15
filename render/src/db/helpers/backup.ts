@@ -1,5 +1,5 @@
-import { ExportData } from './types';
-import { db } from './index';
+import { ExportData } from '../types';
+import { db } from '../index';
 
 /**
  * Exports all data from the database
