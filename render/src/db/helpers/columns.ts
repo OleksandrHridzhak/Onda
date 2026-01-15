@@ -6,6 +6,13 @@ import { DbResult } from '../types';
 
 /**
  * Fetch all columns from the database
+ * @returns DbResult with array of columns
+ * @example
+ * // Success:
+ * { success: true, data: [{ id: '123', name: 'Tasks', type: 'todoListColumn', ... }] }
+ *
+ * // Error:
+ * { success: false, error: 'Failed to connect to database' }
  */
 
 export async function getAllColumns(): Promise<DbResult<Column[]>> {
@@ -21,6 +28,16 @@ export async function getAllColumns(): Promise<DbResult<Column[]>> {
 /**
  * Get a specific column by its ID
  * @param columnId - The unique ID of the column to get
+ * @returns DbResult with the column object
+ * @example
+ * // Success:
+ * { success: true, data: { id: '123', name: 'Tasks', type: 'todoListColumn', ... } }
+ *
+ * // Not found:
+ * { success: false, error: 'Column with ID abc not found' }
+ *
+ * // Error:
+ * { success: false, error: 'Database connection failed' }
  */
 export async function getColumnById(
     columnId: string,
@@ -43,10 +60,23 @@ export async function getColumnById(
 /**
  * Creates a new column based on a predefined template and updates the global order.
  * @param type - The specific type of column to be created (e.g., 'todoListColumn').(watch constants/columnTypes.ts)
+ * @returns DbResult with the new column object (includes id)
+ * @example
+ * // Success:
+ * {
+ *   success: true,
+ *   data: { id: '550e8400-e29b-41d4-a716-446655440000', name: 'New Column', type: 'todoListColumn', ... }
+ * }
+ *
+ * // Template not found:
+ * { success: false, error: 'Template for type "invalidType" not found.' }
+ *
+ * // Error:
+ * { success: false, error: 'Transaction failed' }
  */
 export async function createColumn(
     type: ColumnType,
-): Promise<DbResult<{ id: string; column: Column }>> {
+): Promise<DbResult<Column>> {
     const id = crypto.randomUUID();
 
     // 1. Retrieve the blueprint for the requested column type
@@ -77,17 +107,19 @@ export async function createColumn(
                 // 5. Update the global order array in settings to include the new column
                 const settings = await db.settings.get('global');
                 if (settings) {
-                    const newOrder = [...settings.columnsOrder, id];
+                    const newOrder = [...settings.layout.columnsOrder, id];
                     await db.settings.update('global', {
-                        columnsOrder: newOrder,
+                        layout: { columnsOrder: newOrder },
                     });
+                } else {
+                    throw new Error('Global settings not found');
                 }
 
                 console.log(
                     `[Onda DB] Successfully created ${type} with ID:`,
                     id,
                 );
-                return { success: true, data: { id, column: newColumn } };
+                return { success: true, data: newColumn };
             },
         );
     } catch (error) {
@@ -103,8 +135,18 @@ export async function createColumn(
  * Updates specific fields of a column using its ID.
  * Supports both top-level properties (e.g., { name: 'New Name' })
  * and nested properties via dot notation (e.g., { 'uniqueProps.checkboxColor': 'blue' }).
- * * @param columnId - The unique ID of the column to update.
+ * @param columnId - The unique ID of the column to update.
  * @param changes - An object containing the fields and their new values.
+ * @returns DbResult with the count of updated records
+ * @example
+ * // Success:
+ * { success: true, data: { updatedCount: 1 } }
+ *
+ * // Column not found:
+ * { success: false, error: 'No column found with ID: abc123' }
+ *
+ * // Error:
+ * { success: false, error: 'Update failed: constraint violation' }
  */
 export async function updateColumnFields(
     columnId: string,
@@ -140,6 +182,13 @@ export async function updateColumnFields(
 /**
  * Completely delete a column and remove its ID from the global order
  * @param columnId - The unique ID of the column to delete
+ * @returns DbResult with the deleted column's id
+ * @example
+ * // Success:
+ * { success: true, data: { columnId: '550e8400-e29b-41d4-a716-446655440000' } }
+ *
+ * // Error:
+ * { success: false, error: 'Column not found or deletion failed' }
  */
 export async function deleteColumn(
     columnId: string,
@@ -152,10 +201,12 @@ export async function deleteColumn(
             // 2. Remove the ID from the global order array
             const settings = await db.settings.get('global');
             if (settings) {
-                const newOrder = settings.columnsOrder.filter(
+                const newOrder = settings.layout.columnsOrder.filter(
                     (id) => id !== columnId,
                 );
-                await db.settings.update('global', { columnsOrder: newOrder });
+                await db.settings.update('global', {
+                    layout: { columnsOrder: newOrder },
+                });
             }
         });
 

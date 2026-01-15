@@ -2,6 +2,7 @@ import Dexie, { type Table } from 'dexie';
 import { CalendarEntry } from '../types/calendar.types';
 import { Setting } from '../types/settings.types';
 import { Column } from '../types/newColumn.types';
+import { DEFAULT_SETTINGS } from './constants';
 
 /**  Main database class
  *
@@ -29,16 +30,7 @@ export class OndaDB extends Dexie {
          * problems with settings and it`s id "global"
          */
         this.on('populate', () => {
-            this.settings.add({
-                id: 'global',
-                columnsOrder: [],
-                darkMode: false,
-                sync: {
-                    syncServerUrl: 'https://onda-39t4.onrender.com',
-                    syncSecretKey: '',
-                    isSyncEnabled: false,
-                },
-            });
+            this.settings.add(DEFAULT_SETTINGS);
             console.log('Database populated with default settings');
         });
     }

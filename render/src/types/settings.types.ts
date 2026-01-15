@@ -1,8 +1,8 @@
 export interface Setting {
     id: 'global';
-    columnsOrder: string[];
-    darkMode: boolean;
-
+    layout: {
+        columnsOrder: string[];
+    };
     sync: {
         syncServerUrl: string;
         syncSecretKey: string;
