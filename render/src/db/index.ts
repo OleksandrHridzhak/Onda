@@ -1,7 +1,7 @@
 import Dexie, { type Table } from 'dexie';
-import { CalendarEntry } from '../../types/calendar.types';
-import { Setting } from '../../types/settings.types';
-import { Column } from '../../types/newColumn.types';
+import { CalendarEntry } from '../types/calendar.types';
+import { Setting } from '../types/settings.types';
+import { Column } from '../types/newColumn.types';
 
 /**  Main database class
  *
@@ -15,7 +15,7 @@ export class OndaDB extends Dexie {
     calendar!: Table<CalendarEntry, string>;
 
     constructor() {
-        super('ondaDB');
+        super('ondaDexieDB');
         /**
          * Define tables and their primary key(id) and indexes(date)
          */
@@ -34,7 +34,7 @@ export class OndaDB extends Dexie {
                 columnsOrder: [],
                 darkMode: false,
                 sync: {
-                    syncServerUrl: '',
+                    syncServerUrl: 'https://onda-39t4.onrender.com',
                     syncSecretKey: '',
                     isSyncEnabled: false,
                 },
