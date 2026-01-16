@@ -7,6 +7,7 @@ import { getAllColumns } from '../../../db/helpers/columns';
 import { getSettings } from '../../../db/helpers/settings';
 import './Table.css';
 import { useRowHeightSync } from './hooks/useRowHeightSync';
+import DynamicColumn from './DynamicColumn';
 
 const Table: React.FC = () => {
     /**
@@ -65,26 +66,9 @@ const Table: React.FC = () => {
                             </TableItemWrapper>
 
                             {/* Dynamic: User-defined optional columns */}
-                            {columnOrder.map((id) => {
-                                const data = columnsData.find(
-                                    (c) => c.id === id,
-                                );
-                                const Component = data
-                                    ? componentsMap[data.type]
-                                    : null;
-
-                                if (!Component) return null;
-
-                                return (
-                                    <TableItemWrapper
-                                        key={id}
-                                        column={data}
-                                        className="border-r border-border"
-                                    >
-                                        <Component columnId={id} />
-                                    </TableItemWrapper>
-                                );
-                            })}
+                            {columnOrder.map((id) => (
+                                <DynamicColumn key={id} columnId={id} />
+                            ))}
 
                             {/* Utility: Filler column to occupy remaining space */}
                             <TableItemWrapper
@@ -100,3 +84,4 @@ const Table: React.FC = () => {
         </div>
     );
 };
+export default Table;
