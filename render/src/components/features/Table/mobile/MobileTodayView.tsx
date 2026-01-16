@@ -1,24 +1,24 @@
 import React, { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { MoreVertical } from 'lucide-react';
-import { CheckboxCell } from './columns/CheckboxColumn/CheckboxCell';
-import { NumberCell } from './columns/NumberColumn/NumberCell';
-import { NotesCell } from './columns/NotesColumn/NotesCell';
-import { TagsCell } from './columns/TagsColumn/TagsCell';
-import { MultiCheckboxCell } from './columns/MultiCheckboxColumn/MultiCheckboxCell';
-import { TodoCell } from './columns/TodoColumn/TodoCell';
-import { TaskTableCell } from './columns/TaskTableColumn/TaskTableCell';
+import { CheckboxCell } from '../columns/CheckboxColumn/CheckboxCell';
+import { NumberCell } from '../columns/NumberColumn/NumberCell';
+import { NotesCell } from '../columns/NotesColumn/NotesCell';
+import { TagsCell } from '../columns/TagsColumn/TagsCell';
+import { MultiCheckboxCell } from '../columns/MultiCheckboxColumn/MultiCheckboxCell';
+import { TodoCell } from '../columns/TodoColumn/TodoCell';
+import { TaskTableCell } from '../columns/TaskTableColumn/TaskTableCell';
 import {
     updateColumnNested,
     updateCommonColumnProperties,
-} from '../../../store/tableSlice/tableSlice';
+} from '../../../../store/tableSlice/tableSlice';
 import { MobileColumnMenu } from './MobileColumnMenu';
-import { getIconComponent } from '../../../utils/icons';
+import { getIconComponent } from '../../../../utils/icons';
 import {
     getMonday,
     getWeekDays,
     formatDateDisplay,
-} from '../../../utils/dateUtils';
+} from '../../../../utils/dateUtils';
 
 export const MobileTodayView: React.FC = () => {
     const dispatch = useDispatch();

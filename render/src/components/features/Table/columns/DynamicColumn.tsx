@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../../../db';
-import { componentsMap } from './Table.constants';
-import TableItemWrapper from './columns/TableItemWrapper';
+import { db } from '../../../../db';
+import { componentsMap } from '../Table.constants';
+import TableItemWrapper from './TableItemWrapper';
 
 /**
  * DynamicColumn component that subscribes only to its own column data.

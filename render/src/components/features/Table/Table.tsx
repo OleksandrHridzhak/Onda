@@ -7,7 +7,7 @@ import { getAllColumns } from '../../../db/helpers/columns';
 import { getSettings } from '../../../db/helpers/settings';
 import './Table.css';
 import { useRowHeightSync } from './hooks/useRowHeightSync';
-import DynamicColumn from './DynamicColumn';
+import DynamicColumn from './columns/DynamicColumn';
 
 const Table: React.FC = () => {
     /**
