@@ -22,10 +22,10 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
     [COLUMN_TYPES.CHECKBOX]: {
         type: COLUMN_TYPES.CHECKBOX,
         name: 'CheckBox Column',
-        isNameVisible: true,
+        isNameVisible: false,
         description: 'Track daily items with simple checkboxes.',
-        emojiIconName: 'CheckSquare',
-        width: 200,
+        emojiIconName: 'Star',
+        width: 50,
         uniqueProps: {
             days: createWeeklyValues(false),
             checkboxColor: '#3B82F6',
@@ -37,8 +37,8 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         name: 'TextBox Column',
         isNameVisible: true,
         description: 'Store text strings for each day of the week.',
-        emojiIconName: 'Type',
-        width: 320,
+        emojiIconName: 'Star',
+        width: 130,
         uniqueProps: {
             days: createWeeklyValues(''),
         },
@@ -47,10 +47,10 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
     [COLUMN_TYPES.NUMBERBOX]: {
         type: COLUMN_TYPES.NUMBERBOX,
         name: 'NumberBox Column',
-        isNameVisible: true,
+        isNameVisible: false,
         description: 'Log numeric values for each weekday.',
-        emojiIconName: 'Hash',
-        width: 180,
+        emojiIconName: 'Star',
+        width: 60,
         uniqueProps: {
             days: createWeeklyValues(0),
         },
@@ -61,8 +61,8 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         name: 'Tags Column',
         isNameVisible: true,
         description: 'Assign specific tags to each day.',
-        emojiIconName: 'Tag',
-        width: 250,
+        emojiIconName: 'Star',
+        width: 120,
         uniqueProps: {
             availableTags: [
                 { id: 't1', name: 'Work', color: '#EF4444' },
@@ -78,7 +78,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         isNameVisible: true,
         description: 'Manage a list of tasks and categories.',
         emojiIconName: 'ListTodo',
-        width: 350,
+        width: 150,
         uniqueProps: {
             availableCategories: [
                 { id: 'c1', name: 'Urgent', color: '#F59E0B' },
@@ -90,10 +90,10 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
     [COLUMN_TYPES.MULTI_CHECKBOX]: {
         type: COLUMN_TYPES.MULTI_CHECKBOX,
         name: 'MultiCheckBox Column',
-        isNameVisible: true,
+        isNameVisible: false,
         description: 'Select multiple options per weekday.',
-        emojiIconName: 'Checklist',
-        width: 280,
+        emojiIconName: 'Circle',
+        width: 50,
         uniqueProps: {
             availableOptions: [
                 { id: 'o1', name: 'Option 1', color: '#8B5CF6' },
@@ -108,8 +108,8 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         name: 'TaskTable Column',
         isNameVisible: true,
         description: 'Advanced task tracking with completion status.',
-        emojiIconName: 'TableProperties',
-        width: 400,
+        emojiIconName: 'ListTodo',
+        width: 150,
         uniqueProps: {
             availableTags: [],
             doneTasks: [],
