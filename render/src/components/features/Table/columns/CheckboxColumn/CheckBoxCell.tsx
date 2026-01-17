@@ -1,6 +1,6 @@
 import React from 'react';
 import { Check } from 'lucide-react';
-import { CHECKBOX_COLORS } from './checkBoxColors';
+import { CHECKBOX_COLORS } from './checkboxColors';
 
 interface CheckboxCellProps {
     checked: boolean;

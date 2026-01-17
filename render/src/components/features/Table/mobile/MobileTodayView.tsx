@@ -1,11 +1,11 @@
 import React, { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { MoreVertical } from 'lucide-react';
-import { CheckboxCell } from '../columns/CheckboxColumn/CheckBoxCell';
+import { CheckboxCell } from '../columns/CheckboxColumn/CheckboxCell';
 import { NumberCell } from '../columns/NumberColumn/NumberCell';
-import { NotesCell } from '../columns/NotesColumn/NotesCell';
+import { TextboxCell } from '../columns/TextboxColumn/TextboxCell';
 import { TagsCell } from '../columns/TagsColumn/TagsCell';
-import { MultiCheckboxCell } from '../columns/MultiCheckboxColumn/MultiCheckboxCell';
+import { MultiCheckboxCell } from '../columns/MultiCheckboxColumn/MultiCheckBoxCell';
 import { TodoCell } from '../columns/TodoColumn/TodoCell';
 import { TaskTableCell } from '../columns/TaskTableColumn/TaskTableCell';
 import {
@@ -145,7 +145,7 @@ export const MobileTodayView: React.FC = () => {
 
                 case 'text':
                     return (
-                        <NotesCell
+                        <TextboxCell
                             value={cellValue || ''}
                             onChange={(newValue) =>
                                 handleCellChange(columnId, newValue)

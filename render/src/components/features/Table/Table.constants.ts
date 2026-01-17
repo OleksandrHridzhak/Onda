@@ -5,7 +5,7 @@ import {
     CheckboxColumn,
     TagsColumn,
     NumberColumn,
-    NotesColumn,
+    TextboxColumn,
     MultiCheckboxColumn,
     TodoColumn,
     TaskTableColumn,
@@ -14,10 +14,10 @@ import {
 
 export const componentsMap: Record<string, React.FC<any>> = {
     days: DaysColumn,
-    checkBoxColumn: CheckboxColumn,
+    checkboxColumn: CheckboxColumn,
     numberBoxColumn: NumberColumn,
     tagsColumn: TagsColumn,
-    textBoxColumn: NotesColumn,
+    textboxColumn: TextboxColumn,
     multiCheckBoxColumn: MultiCheckboxColumn,
     todoListColumn: TodoColumn,
     taskTableColumn: TaskTableColumn,

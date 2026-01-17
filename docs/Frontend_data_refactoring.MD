@@ -56,7 +56,7 @@ interface NumberBoxColumn extends Column{
       }
 }
 
-interface TextBoxColumn extends Column{
+interface TextboxColumn extends Column{
 	days: {
         Monday: string,
         Tuesday: string,

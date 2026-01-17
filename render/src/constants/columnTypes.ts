@@ -3,8 +3,8 @@
  * Using 'as const' ensures these strings are treated as literal types.
  */
 export const COLUMN_TYPES = {
-    CHECKBOX: 'checkBoxColumn',
-    TEXTBOX: 'textBoxColumn',
+    CHECKBOX: 'checkboxColumn',
+    TEXTBOX: 'textboxColumn',
     NUMBERBOX: 'numberBoxColumn',
     TAGS: 'tagsColumn',
     TODO: 'todoListColumn',
@@ -17,7 +17,7 @@ export const COLUMN_TYPES = {
  * Clear, simple, and no TypeScript "magic".
  */
 export type ColumnType =
-    | 'checkBoxColumn'
+    | 'checkboxColumn'
     | 'textBoxColumn'
     | 'numberBoxColumn'
     | 'tagsColumn'

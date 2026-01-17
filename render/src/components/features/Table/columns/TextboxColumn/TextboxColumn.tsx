@@ -1,20 +1,20 @@
 import React from 'react';
 import { ColumnHeader } from '../ColumnHeader';
-import { NotesCell } from './NotesCell';
+import { TextboxCell } from './TextboxCell';
 import { updateColumnFields } from '../../../../../db/helpers/columns';
-import { TextBoxColumn } from '../../../../../types/newColumn.types';
+import { TextboxColumn as TextboxColumnType } from '../../../../../types/newColumn.types';
 import { useReactiveColumn } from '../../hooks/useReactiveColumn';
 import { DayColumnLayout } from '../DayColumnLayout';
 
 // TODO : Don't repeat in each column, create a HOC for this pattern
-interface NotesColumnProps {
+interface TextboxColumnProps {
     columnId: string;
 }
 
-export const NotesColumn: React.FC<NotesColumnProps> = ({ columnId }) => {
-    const { column, isLoading, isError } = useReactiveColumn<TextBoxColumn>(
+export const TextboxColumn: React.FC<TextboxColumnProps> = ({ columnId }) => {
+    const { column, isLoading, isError } = useReactiveColumn<TextboxColumnType>(
         columnId,
-        'textBoxColumn',
+        'textboxColumn',
     );
 
     // TODO: Try to add skeleton loading state later
@@ -33,7 +33,7 @@ export const NotesColumn: React.FC<NotesColumnProps> = ({ columnId }) => {
             <ColumnHeader columnId={columnId} />
             <DayColumnLayout>
                 {(day) => (
-                    <NotesCell
+                    <TextboxCell
                         value={column?.uniqueProps?.days?.[day] || ''}
                         onChange={(newValue) => handleCellChange(day, newValue)}
                     />

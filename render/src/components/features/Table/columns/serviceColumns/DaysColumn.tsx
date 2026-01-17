@@ -1,7 +1,10 @@
 import React from 'react';
 import { DAYS } from '../../TableLogic';
-import { DayColumnLayout } from '../DayColumnLayout';
 
+/**
+ * A column component that displays the days of the week.
+ * ! Always exist at the left side of the table.
+ */
 export const DaysColumn: React.FC = () => {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 

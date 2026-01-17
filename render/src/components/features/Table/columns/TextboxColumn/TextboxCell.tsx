@@ -1,12 +1,15 @@
 import React from 'react';
-import { useNotesEdit } from './useNotesEdit';
+import { useNotesEdit } from './useTextboxEdit';
 
-interface NotesCellProps {
+interface TextboxCellProps {
     value: string;
     onChange: (value: string) => void;
 }
 
-export const NotesCell: React.FC<NotesCellProps> = ({ value, onChange }) => {
+export const TextboxCell: React.FC<TextboxCellProps> = ({
+    value,
+    onChange,
+}) => {
     const {
         isEditing,
         setIsEditing,

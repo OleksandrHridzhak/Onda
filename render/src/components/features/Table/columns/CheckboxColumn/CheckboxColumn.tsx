@@ -1,8 +1,8 @@
 import React from 'react';
 import { ColumnHeader } from '../ColumnHeader';
-import { CheckboxCell } from './CheckBoxCell';
+import { CheckboxCell } from './CheckboxCell';
 import { updateColumnFields } from '../../../../../db/helpers/columns';
-import { CheckBoxColumn } from '../../../../../types/newColumn.types';
+import { CheckboxColumn as CheckboxColumnType } from '../../../../../types/newColumn.types';
 import { useReactiveColumn } from '../../hooks/useReactiveColumn';
 import { DayColumnLayout } from '../DayColumnLayout';
 
@@ -14,10 +14,8 @@ interface CheckboxColumnProps {
  */
 
 export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
-    const { column, isLoading, isError } = useReactiveColumn<CheckBoxColumn>(
-        columnId,
-        'checkBoxColumn',
-    );
+    const { column, isLoading, isError } =
+        useReactiveColumn<CheckboxColumnType>(columnId, 'checkboxColumn');
 
     // TODO: Try to add skeleton loading state later
     if (isLoading) {

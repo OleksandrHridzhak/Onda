@@ -1,95 +1,114 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
-import { MultiCheckboxCell } from './MultiCheckboxCell';
-import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
-import {
-    updateColumnNested,
-    updateCommonColumnProperties,
-} from '../../../../../store/tableSlice/tableSlice';
+import { ColumnHeader } from '../ColumnHeader';
+import { MultiCheckboxCell } from './MultiCheckBoxCell';
 import { DayColumnLayout } from '../DayColumnLayout';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
+import {
+    MultiCheckboxColumn as MultiCheckboxColumnType,
+    Tag,
+} from '../../../../../types/newColumn.types';
+import { getCheckBoxColorOptions } from '../../../../../utils/colorOptions';
 
 interface MultiCheckboxColumnProps {
     columnId: string;
 }
 
+const COLOR_ORDER = ['green', 'blue', 'purple', 'orange'];
+
+const COLOR_KEY_BY_HEX = (() => {
+    const palette = getCheckBoxColorOptions({ darkMode: false });
+    const map: Record<string, string> = {};
+
+    Object.entries(palette).forEach(([key, value]) => {
+        map[value.hex.toLowerCase()] = key;
+    });
+
+    return map;
+})();
+
+const mapTagColors = (availableOptions: Tag[]): Record<string, string> => {
+    return availableOptions.reduce<Record<string, string>>(
+        (acc, option, index) => {
+            const rawColor = option.color || '';
+            const lowerColor = rawColor.toLowerCase();
+
+            let colorKey: string | undefined;
+
+            // If the stored color is one of our named palette keys
+            if (COLOR_KEY_BY_HEX[lowerColor]) {
+                colorKey = COLOR_KEY_BY_HEX[lowerColor];
+            } else if (!rawColor.startsWith('#') && rawColor) {
+                // Treat non-hex strings as direct palette keys
+                colorKey = rawColor;
+            }
+
+            // Fallback to a deterministic color if nothing matched
+            if (!colorKey) {
+                colorKey = COLOR_ORDER[index % COLOR_ORDER.length];
+            }
+
+            acc[option.name] = colorKey;
+            return acc;
+        },
+        {},
+    );
+};
+
 export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
     columnId,
 }) => {
-    const customHandleChangeOptions = (
-        id: string,
-        options: string[],
-        tagColors: Record<string, string>,
-        doneTags?: string[],
-    ) => {
-        dispatch(
-            updateCommonColumnProperties({
-                columnId: id,
-                properties: {
-                    uniqueProperties: {
-                        ...columnData?.uniqueProperties,
-                        Options: options,
-                        OptionsColors: tagColors,
-                    },
-                },
-            }),
+    const { column, isLoading, isError } =
+        useReactiveColumn<MultiCheckboxColumnType>(
+            columnId,
+            'multiCheckBoxColumn',
         );
-    };
 
-    const {
-        columnData,
-        dispatch,
-        handleMoveColumn,
-        handleChangeWidth,
-        columnMenuLogic,
-        columns,
-        columnForHeader: baseColumnForHeader,
-    } = useColumnLogic({
-        columnId,
-        clearValue: '',
-        customHandleChangeOptions,
-    });
+    if (isLoading) {
+        // TODO: Replace with a proper skeleton loader
+        return <div></div>;
+    }
+
+    const availableOptions = column?.uniqueProps?.availableOptions || [];
+    const optionNames = availableOptions.map((option) => option.name);
+    const tagColors = mapTagColors(availableOptions);
+
+    const getValueForDay = (day: string): string => {
+        if (!column) return '';
+
+        const selectedIds = column.uniqueProps.days?.[day] || [];
+        const selectedNames = availableOptions
+            .filter((option) => selectedIds.includes(option.id))
+            .map((option) => option.name);
+
+        return selectedNames.join(', ');
+    };
 
     const handleCellChange = (day: string, newValue: string) => {
-        dispatch(
-            updateColumnNested({
-                columnId,
-                path: ['Days', day],
-                value: newValue,
-            }),
-        );
-    };
+        const selectedNames = newValue
+            .split(',')
+            .map((name) => name.trim())
+            .filter(Boolean);
 
-    const columnForHeader = {
-        ...baseColumnForHeader,
-        options: columnData.uniqueProperties?.Options,
-        tagColors: columnData.uniqueProperties?.OptionsColors,
+        const selectedIds = availableOptions
+            .filter((option) => selectedNames.includes(option.name))
+            .map((option) => option.id);
+
+        updateColumnFields(columnId, {
+            [`uniqueProps.days.${day}`]: selectedIds,
+        });
     };
 
     return (
         <table className="checkbox-nested-table column-multicheckbox font-poppins">
-            <thead className="bg-tableHeader">
-                <tr>
-                    <th className="border-b border-border">
-                        <ColumnHeaderContent
-                            column={columnForHeader}
-                            columnMenuLogic={columnMenuLogic}
-                            handleMoveColumn={handleMoveColumn}
-                            handleChangeWidth={handleChangeWidth}
-                            columns={columns}
-                        />
-                    </th>
-                </tr>
-            </thead>
+            <ColumnHeader columnId={columnId} />
             <DayColumnLayout>
                 {(day) => (
                     <MultiCheckboxCell
-                        value={columnData.uniqueProperties?.Days?.[day] || ''}
+                        value={getValueForDay(day)}
                         onChange={(newValue) => handleCellChange(day, newValue)}
-                        options={columnData.uniqueProperties?.Options || []}
-                        tagColors={
-                            columnData.uniqueProperties?.OptionsColors || {}
-                        }
+                        options={optionNames}
+                        tagColors={tagColors}
                     />
                 )}
             </DayColumnLayout>

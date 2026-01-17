@@ -34,7 +34,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
 
     [COLUMN_TYPES.TEXTBOX]: {
         type: COLUMN_TYPES.TEXTBOX,
-        name: 'TextBox Column',
+        name: 'Textbox Column',
         isNameVisible: true,
         description: 'Store text strings for each day of the week.',
         emojiIconName: 'Star',

@@ -37,8 +37,8 @@ export interface BaseColumn {
  * CheckBoxColumn
  * Stores boolean values per weekday and a display color for checkboxes.
  */
-export interface CheckBoxColumn extends BaseColumn {
-    type: 'checkBoxColumn';
+export interface CheckboxColumn extends BaseColumn {
+    type: 'checkboxColumn';
     uniqueProps: {
         days: WeeklyValues<boolean>;
         checkboxColor: string;
@@ -46,11 +46,11 @@ export interface CheckBoxColumn extends BaseColumn {
 }
 
 /**
- * TextBoxColumn
+ * TextboxColumn
  * Stores string values for each weekday.
  */
-export interface TextBoxColumn extends BaseColumn {
-    type: 'textBoxColumn';
+export interface TextboxColumn extends BaseColumn {
+    type: 'textboxColumn';
     uniqueProps: {
         days: WeeklyValues<string>;
     };
@@ -150,8 +150,8 @@ export interface TaskTableColumn extends BaseColumn {
  * - Ensures compile-time safety when accessing `uniqueProps`
  */
 export type Column =
-    | CheckBoxColumn
-    | TextBoxColumn
+    | CheckboxColumn
+    | TextboxColumn
     | NumberBoxColumn
     | TagsColumn
     | TodoListColumn
