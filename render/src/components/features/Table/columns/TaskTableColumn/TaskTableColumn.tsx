@@ -1,9 +1,11 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
-import { TaskTableCell } from '.';
+import { ColumnHeader } from '../ColumnHeader';
+import { TaskTableCell } from './TaskTableCell';
 import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
-import { updateCommonColumnProperties } from '../../../../../store/tableSlice/tableSlice';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
+import { TaskTableColumn as TaskTableColumnType } from '../../../../../types/newColumn.types';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
+import { getCheckBoxColorOptions } from '../../../../../utils/colorOptions';
 
 interface TaskTableColumnProps {
     columnId: string;
@@ -12,100 +14,69 @@ interface TaskTableColumnProps {
 export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
     columnId,
 }) => {
-    const customClearColumn = () => {
-        dispatch(
-            updateCommonColumnProperties({
-                columnId,
-                properties: {
-                    uniqueProperties: {
-                        ...columnData.uniqueProperties,
-                        Options: [],
-                        OptionsColors: {},
-                        DoneTags: [],
-                    },
-                },
-            }),
-        );
-    };
+    const { column, isLoading, isError } =
+        useReactiveColumn<TaskTableColumnType>(columnId, 'taskTableColumn');
 
-    const customHandleChangeOptions = (
-        id: string,
-        options: string[],
-        tagColors: Record<string, string>,
-        doneTags?: string[],
-    ) => {
-        dispatch(
-            updateCommonColumnProperties({
-                columnId: id,
-                properties: {
-                    uniqueProperties: {
-                        ...columnData?.uniqueProperties,
-                        Options: options,
-                        OptionsColors: tagColors,
-                        DoneTags: doneTags || [],
-                    },
-                },
-            }),
-        );
-    };
+    // TODO: Add proper skeleton/error UI later
+    if (isLoading) {
+        return <div></div>;
+    }
 
-    const {
-        columnData,
-        dispatch,
-        handleMoveColumn,
-        handleChangeWidth,
-        columnMenuLogic,
-        columns,
-        columnForHeader: baseColumnForHeader,
-    } = useColumnLogic({
-        columnId,
-        customClearColumn,
-        customHandleChangeOptions,
+    if (isError || !column) {
+        return null;
+    }
+
+    const availableTags = column.uniqueProps.availableTags || [];
+    const doneTaskIds = column.uniqueProps.doneTasks || [];
+
+    const nameToId: Record<string, string> = {};
+    const idToName: Record<string, string> = {};
+    availableTags.forEach((tag) => {
+        nameToId[tag.name] = tag.id;
+        idToName[tag.id] = tag.name;
     });
 
-    const handleChangeOptions = (
-        id: string,
-        options: string[],
-        tagColors: Record<string, string>,
-        doneTags?: string[],
-    ) => {
-        dispatch(
-            updateCommonColumnProperties({
-                columnId: id,
-                properties: {
-                    uniqueProperties: {
-                        ...columnData.uniqueProperties,
-                        Options: options,
-                        OptionsColors: tagColors,
-                        DoneTags: doneTags || [],
-                    },
-                },
-            }),
-        );
-    };
+    const checkboxColors = getCheckBoxColorOptions({ darkMode: false });
+    const hexToName: Record<string, string> = {};
+    Object.entries(checkboxColors).forEach(([name, cfg]) => {
+        if (cfg.hex) {
+            hexToName[cfg.hex.toLowerCase()] = name;
+        }
+    });
 
-    const columnForHeader = {
-        ...baseColumnForHeader,
-        options: columnData.uniqueProperties?.Options,
-        tagColors: columnData.uniqueProperties?.OptionsColors,
-        doneTags: columnData.uniqueProperties?.DoneTags,
+    const tagColors: Record<string, string> = {};
+    availableTags.forEach((tag) => {
+        const hex = (tag.color || '').toLowerCase();
+        const colorName = hexToName[hex] || 'blue';
+        tagColors[tag.name] = colorName;
+    });
+
+    const completedTaskNames = availableTags
+        .filter((tag) => doneTaskIds.includes(tag.id))
+        .map((tag) => tag.name);
+
+    const incompleteTaskNames = availableTags
+        .filter((tag) => !doneTaskIds.includes(tag.id))
+        .map((tag) => tag.name);
+
+    const handleChangeOptions = (
+        _id: string,
+        _incomplete: string[],
+        _tagColors: Record<string, string>,
+        completed: string[],
+    ) => {
+        const completedIds = completed
+            .map((name) => nameToId[name])
+            .filter((val): val is string => Boolean(val));
+
+        updateColumnFields(columnId, {
+            'uniqueProps.doneTasks': completedIds,
+        });
     };
 
     return (
         <table className="checkbox-nested-table font-poppins">
-            <thead className="bg-tableHeader">
-                <tr>
-                    <th className="border-b border-border">
-                        <ColumnHeaderContent
-                            column={columnForHeader}
-                            columnMenuLogic={columnMenuLogic}
-                            handleMoveColumn={handleMoveColumn}
-                            handleChangeWidth={handleChangeWidth}
-                            columns={columns}
-                        />
-                    </th>
-                </tr>
-            </thead>
+            <ColumnHeader columnId={columnId} />
             <tbody className="bg-tableBodyBg">
                 <tr>
                     <td
@@ -116,14 +87,9 @@ export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
                         <TaskTableCell
                             column={{
                                 id: columnId,
-                                ...columnData,
-                                tagColors:
-                                    columnData.uniqueProperties
-                                        ?.OptionsColors || {},
-                                options:
-                                    columnData.uniqueProperties?.Options || [],
-                                doneTags:
-                                    columnData.uniqueProperties?.DoneTags || [],
+                                tagColors,
+                                options: incompleteTaskNames,
+                                doneTags: completedTaskNames,
                             }}
                             onChangeOptions={handleChangeOptions}
                         />

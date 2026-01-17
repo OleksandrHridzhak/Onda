@@ -7,7 +7,7 @@ import { TextboxCell } from '../columns/TextboxColumn/TextboxCell';
 import { TagsCell } from '../columns/TagsColumn/TagsCell';
 import { MultiCheckboxCell } from '../columns/MultiCheckboxColumn/MultiCheckBoxCell';
 import { TodoCell } from '../columns/TodoColumn/TodoCell';
-import { TaskTableCell } from '../columns/TaskTableColumn';
+import { TaskTableCell } from '../columns/TaskTableColumn/TaskTableCell';
 import {
     updateColumnNested,
     updateCommonColumnProperties,
