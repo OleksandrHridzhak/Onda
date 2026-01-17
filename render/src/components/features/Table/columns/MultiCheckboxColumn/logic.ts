@@ -55,16 +55,10 @@ export const handleOptionToggle = (
 
     onChange(newIds);
 
-    // Update local state for display
-    const newDisplayValue = newIds
+    // Update local state for display (array of names)
+    const newNames = newIds
         .map((id) => availableOptions.find((opt) => opt.id === id)?.name)
-        .filter(Boolean)
-        .join(', ');
+        .filter(Boolean) as string[];
 
-    setSelectedValues(
-        newDisplayValue
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean),
-    );
+    setSelectedValues(newNames);
 };
