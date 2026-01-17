@@ -1,5 +1,6 @@
 import React from 'react';
 import { DAYS } from '../../TableLogic';
+import { DayColumnLayout } from '../DayColumnLayout';
 
 export const DaysColumn: React.FC = () => {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });

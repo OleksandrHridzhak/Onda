@@ -18,7 +18,9 @@ export const DayColumnLayout: React.FC<DayColumnLayoutProps> = ({
         <tbody className="bg-tableBodyBg">
             {DAYS.map((day) => (
                 <tr key={day} className="border-b border-border last:border-0">
-                    <td className="h-full w-full">{children(day)}</td>
+                    <td className="px-2 py-3 text-sm text-textTableRealValues">
+                        {children(day)}
+                    </td>
                 </tr>
             ))}
         </tbody>

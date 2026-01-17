@@ -1,68 +1,44 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { ColumnHeader } from '../ColumnHeader';
 import { NotesCell } from './NotesCell';
-import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
-import { updateColumnNested } from '../../../../../store/tableSlice/tableSlice';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
+import { TextBoxColumn } from '../../../../../types/newColumn.types';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
+import { DayColumnLayout } from '../DayColumnLayout';
 
+// TODO : Don't repeat in each column, create a HOC for this pattern
 interface NotesColumnProps {
-  columnId: string;
+    columnId: string;
 }
 
 export const NotesColumn: React.FC<NotesColumnProps> = ({ columnId }) => {
-  const {
-    columnData,
-    dispatch,
-    handleMoveColumn,
-    handleChangeWidth,
-    columnMenuLogic,
-    columns,
-    columnForHeader,
-  } = useColumnLogic({
-    columnId,
-    clearValue: '',
-  });
-
-  const handleCellChange = (day: string, newValue: string) => {
-    dispatch(
-      updateColumnNested({
+    const { column, isLoading, isError } = useReactiveColumn<TextBoxColumn>(
         columnId,
-        path: ['Days', day],
-        value: newValue,
-      }),
+        'textBoxColumn',
     );
-  };
 
-  return (
-    <table className="checkbox-nested-table column-text font-poppins">
-      <thead className="bg-tableHeader">
-        <tr>
-          <th className="border-b border-border">
-            <ColumnHeaderContent
-              column={columnForHeader}
-              columnMenuLogic={columnMenuLogic}
-              handleMoveColumn={handleMoveColumn}
-              handleChangeWidth={handleChangeWidth}
-              columns={columns}
-            />
-          </th>
-        </tr>
-      </thead>
-      <tbody className="bg-tableBodyBg">
-        {DAYS.map((day, idx) => (
-          <tr
-            key={day}
-            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
-          >
-            <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <NotesCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
-                onChange={(newValue) => handleCellChange(day, newValue)}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+    // TODO: Try to add skeleton loading state later
+    if (isLoading) {
+        return <div></div>;
+    }
+
+    const handleCellChange = (day: string, newValue: string) => {
+        updateColumnFields(columnId, {
+            [`uniqueProps.days.${day}`]: newValue,
+        });
+    };
+
+    return (
+        <table className="checkbox-nested-table column-text font-poppins">
+            <ColumnHeader columnId={columnId} />
+            <DayColumnLayout>
+                {(day) => (
+                    <NotesCell
+                        value={column?.uniqueProps?.days?.[day] || ''}
+                        onChange={(newValue) => handleCellChange(day, newValue)}
+                    />
+                )}
+            </DayColumnLayout>
+        </table>
+    );
 };
