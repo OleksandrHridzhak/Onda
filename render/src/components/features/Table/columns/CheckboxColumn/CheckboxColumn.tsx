@@ -1,47 +1,34 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
 import { ColumnHeader } from '../ColumnHeader';
-import { CheckboxCell } from './CheckboxCell';
+import { CheckboxCell } from './CheckBoxCell';
 import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
 import { updateColumnFields } from '../../../../../db/helpers/columns';
+import { CheckBoxColumn } from '../../../../../types/newColumn.types';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
 
 interface CheckboxColumnProps {
     columnId: string;
 }
 
 export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
-    const {
-        columnData,
-        dispatch,
-        handleMoveColumn,
-        handleChangeWidth,
-        columnMenuLogic,
-        columns,
-        columnForHeader: baseColumnForHeader,
-    } = useColumnLogic({
+    const { column, isLoading, isError } = useReactiveColumn<CheckBoxColumn>(
         columnId,
-        clearValue: false,
-    });
+        'checkBoxColumn',
+    );
+
+    // TODO: Try to add skeleton loading state later
+    if (isLoading) {
+        return <div></div>;
+    }
 
     const handleCheckboxChange = (day: string, newValue: boolean) => {
         updateColumnFields(columnId, { [`uniqueProps.days.${day}`]: newValue });
     };
 
-    const columnForHeader = {
-        ...baseColumnForHeader,
-        checkboxColor: columnData?.uniqueProps?.checkboxColor,
-    };
-
     return (
         <table className="checkbox-nested-table column-checkbox font-poppins">
-            <thead className="bg-tableHeader">
-                <tr>
-                    <th className="border-b border-border">
-                        <ColumnHeader columnId={columnId} />
-                    </th>
-                </tr>
-            </thead>
+            <ColumnHeader columnId={columnId} />
+
             <tbody className="bg-tableBodyBg">
                 {DAYS.map((day, idx) => (
                     <tr
@@ -55,15 +42,14 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
                         <td>
                             <CheckboxCell
                                 checked={
-                                    columnData?.uniqueProps?.days?.[day] ||
-                                    false
+                                    column?.uniqueProps?.days?.[day] || false
                                 }
                                 onChange={(newValue) =>
                                     handleCheckboxChange(day, newValue)
                                 }
                                 color={
-                                    columnData?.uniqueProps?.checkboxColor ||
-                                    '#3b82f6'
+                                    column?.uniqueProps?.checkboxColor ||
+                                    'green'
                                 }
                             />
                         </td>

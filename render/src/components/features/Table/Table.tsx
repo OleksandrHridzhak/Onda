@@ -30,7 +30,7 @@ const Table: React.FC = () => {
     });
 
     // Synchronize row heights across all nested tables
-    useRowHeightSync([columnsData, columnOrder]);
+    useRowHeightSync([columnsData]);
 
     // To avoid rendering issues, ensure required data is loaded
     if (columnOrder === undefined || columnsData === undefined) {

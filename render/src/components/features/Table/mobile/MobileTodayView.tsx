@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { MoreVertical } from 'lucide-react';
-import { CheckboxCell } from '../columns/CheckboxColumn/CheckboxCell';
+import { CheckboxCell } from '../columns/CheckboxColumn/CheckBoxCell';
 import { NumberCell } from '../columns/NumberColumn/NumberCell';
 import { NotesCell } from '../columns/NotesColumn/NotesCell';
 import { TagsCell } from '../columns/TagsColumn/TagsCell';

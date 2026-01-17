@@ -28,7 +28,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         width: 50,
         uniqueProps: {
             days: createWeeklyValues(false),
-            checkboxColor: '#3B82F6',
+            checkboxColor: 'green',
         },
     },
 
