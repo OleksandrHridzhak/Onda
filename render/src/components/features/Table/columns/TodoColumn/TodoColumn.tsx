@@ -32,6 +32,7 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
     }
 
     // Map new Dexie Todo format to legacy TodoCell format
+    // We include the id as a custom property to track todos across changes
     const todosForCell = (column.uniqueProps.todos || []).map((todo) => ({
         text: todo.text,
         completed: todo.done,
@@ -40,6 +41,8 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
                   (cat) => cat.id === todo.categoryId,
               )?.name
             : undefined,
+        // Include ID for tracking (not used by TodoCell but preserved in state)
+        _id: todo.id,
     }));
 
     // Map legacy TodoCell format back to new Dexie Todo format
@@ -48,10 +51,10 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
             text: string;
             completed: boolean;
             category?: string;
+            _id?: string;
         }>,
     ) => {
-        const todosForDb: Todo[] = newTodos.map((todo, index) => {
-            const existingTodo = column.uniqueProps.todos[index];
+        const todosForDb: Todo[] = newTodos.map((todo) => {
             const categoryId = todo.category
                 ? column.uniqueProps.availableCategories?.find(
                       (cat) => cat.name === todo.category,
@@ -59,7 +62,8 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
                 : undefined;
 
             return {
-                id: existingTodo?.id || crypto.randomUUID(),
+                // Preserve existing ID or generate new one for new todos
+                id: todo._id || crypto.randomUUID(),
                 text: todo.text,
                 done: todo.completed,
                 categoryId,
