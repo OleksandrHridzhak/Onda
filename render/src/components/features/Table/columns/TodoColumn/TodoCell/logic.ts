@@ -28,7 +28,7 @@ export const handleAddTodo = (
                 id: crypto.randomUUID(),
                 text: newTodo.trim(),
                 done: false,
-                categoryId: newCategoryId || undefined,
+                categoryId: newCategoryId ? newCategoryId : undefined,
             },
         ];
         setTodos(updatedTodos);
@@ -110,7 +110,7 @@ export const handleSaveEdit = (
                 ? {
                       ...todo,
                       text: editText.trim(),
-                      categoryId: editCategoryId || undefined,
+                      categoryId: editCategoryId ? editCategoryId : undefined,
                   }
                 : todo,
         );
