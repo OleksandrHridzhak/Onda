@@ -1,6 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getColorOptions } from '../../../../../utils/colorOptions';
+import {
+    getColorOptions,
+    getCheckBoxColorOptions,
+} from '../../../../../utils/colorOptions';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
 import { Tag } from '../../../../../types/newColumn.types';
 
@@ -44,10 +47,33 @@ export const TagsCell: React.FC<TagsCellProps> = ({
     } = useDropdownMultiSelect(displayValue);
 
     const colorOptions = getColorOptions({ darkMode });
+    const checkboxColors = getCheckBoxColorOptions({ darkMode });
+
+    // Map hex colors to color names
+    const hexToName: Record<string, string> = {};
+    Object.entries(checkboxColors).forEach(([name, cfg]) => {
+        if (cfg.hex) {
+            hexToName[cfg.hex.toLowerCase()] = name;
+        }
+    });
 
     // Get Tag object by ID
     const getTagById = (tagId: string) => {
         return availableTags.find((tag) => tag.id === tagId);
+    };
+
+    // Get color option for a tag (handles both hex and color names)
+    const getColorForTag = (tag: Tag) => {
+        const colorValue = (tag.color || '').toLowerCase();
+        // Check if it's a hex color
+        const colorName = colorValue.startsWith('#')
+            ? hexToName[colorValue] || 'blue'
+            : colorValue || 'blue';
+
+        return (
+            colorOptions.find((opt) => opt.name === colorName) ||
+            colorOptions[1]
+        );
     };
 
     const handleTagToggle = (tagId: string): void => {
@@ -82,14 +108,12 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                             const tag = getTagById(tagId);
                             if (!tag) return null;
 
-                            const colorOption = colorOptions.find(
-                                (opt) => opt.name === tag.color,
-                            );
+                            const colorOption = getColorForTag(tag);
 
                             return (
                                 <span
                                     key={tagId}
-                                    className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption?.bg} ${colorOption?.text}`}
+                                    className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text}`}
                                 >
                                     {tag.name}
                                 </span>
@@ -106,9 +130,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                     className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'} rounded-md shadow-lg max-h-48 overflow-auto`}
                 >
                     {availableTags.map((tag) => {
-                        const colorOption = colorOptions.find(
-                            (opt) => opt.name === tag.color,
-                        );
+                        const colorOption = getColorForTag(tag);
 
                         return (
                             <div
@@ -130,7 +152,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                             >
                                 <div className="flex items-center">
                                     <span
-                                        className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption?.bg} ${colorOption?.text} mr-2`}
+                                        className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text} mr-2`}
                                     >
                                         {tag.name}
                                     </span>
