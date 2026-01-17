@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { getColorOptions } from '../../../../../utils/colorOptions';
 import { useTaskState } from './hooks/useTaskState';
 import { handleToggleTask } from './logic';
+import { Tag } from '../../../../../types/newColumn.types';
 
 interface RootState {
     newTheme: {
@@ -10,26 +11,21 @@ interface RootState {
     };
 }
 
-interface Column {
-    id: string;
-    options?: string[];
-    doneTags?: string[];
-    tagColors?: Record<string, string>;
-}
-
 interface TaskTableCellProps {
-    column: Column;
-    onChangeOptions: (
-        id: string,
-        incomplete: string[],
-        tagColors: Record<string, string>,
-        completed: string[],
-    ) => void;
+    availableTags: Tag[];
+    doneTasks: string[];
+    onChange: (availableTags: Tag[], doneTasks: string[]) => void;
 }
 
+/**
+ * TaskTableCell component
+ * Displays available tasks with ability to toggle completion status.
+ * Uses the new Dexie Tag format with ID tracking.
+ */
 export const TaskTableCell: React.FC<TaskTableCellProps> = ({
-    column,
-    onChangeOptions,
+    availableTags,
+    doneTasks,
+    onChange,
 }) => {
     const { themeMode } = useSelector((state: RootState) => state.newTheme);
     const darkMode = themeMode === 'dark' ? true : false;
@@ -39,9 +35,14 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
         setIncompleteTasks,
         completedTasks,
         setCompletedTasks,
-    } = useTaskState(column);
+    } = useTaskState(availableTags, doneTasks);
 
     const colorOptions = getColorOptions({ darkMode });
+
+    // Get Tag object by ID
+    const getTagById = (tagId: string) => {
+        return availableTags.find((tag) => tag.id === tagId);
+    };
 
     return (
         <div className="h-full flex flex-col">
@@ -59,76 +60,25 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
                         To Do
                     </h3>
                     <div className="flex flex-wrap gap-1">
-                        {incompleteTasks.map((task, index) => (
-                            <div
-                                key={index}
-                                role="button"
-                                tabIndex={0}
-                                onClick={() =>
-                                    handleToggleTask(
-                                        task,
-                                        false,
-                                        incompleteTasks,
-                                        completedTasks,
-                                        setIncompleteTasks,
-                                        setCompletedTasks,
-                                        onChangeOptions,
-                                        column,
-                                    )
-                                }
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
+                        {incompleteTasks.map((taskId) => {
+                            const tag = getTagById(taskId);
+                            if (!tag) return null;
+
+                            return (
+                                <div
+                                    key={taskId}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() =>
                                         handleToggleTask(
-                                            task,
+                                            taskId,
                                             false,
                                             incompleteTasks,
                                             completedTasks,
                                             setIncompleteTasks,
                                             setCompletedTasks,
-                                            onChangeOptions,
-                                            column,
-                                        );
-                                    }
-                                }}
-                                className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer
-                  ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}
-                  hover:opacity-80 transition-opacity flex items-center gap-1`}
-                                aria-label={`Mark task "${task}" as complete`}
-                            >
-                                {task}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div>
-                    <h3
-                        className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
-                    >
-                        Completed
-                    </h3>
-                    <div className="flex flex-wrap gap-1">
-                        {completedTasks.map((task, index) => {
-                            const color = column.tagColors[task] || 'blue';
-                            const colorOption =
-                                colorOptions.find(
-                                    (opt) => opt.name === color,
-                                ) || colorOptions[1];
-                            return (
-                                <div
-                                    key={index}
-                                    role="button"
-                                    tabIndex={0}
-                                    onClick={() =>
-                                        handleToggleTask(
-                                            task,
-                                            true,
-                                            incompleteTasks,
-                                            completedTasks,
-                                            setIncompleteTasks,
-                                            setCompletedTasks,
-                                            onChangeOptions,
-                                            column,
+                                            onChange,
+                                            availableTags,
                                         )
                                     }
                                     onKeyDown={(e) => {
@@ -138,23 +88,85 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
                                         ) {
                                             e.preventDefault();
                                             handleToggleTask(
-                                                task,
+                                                taskId,
+                                                false,
+                                                incompleteTasks,
+                                                completedTasks,
+                                                setIncompleteTasks,
+                                                setCompletedTasks,
+                                                onChange,
+                                                availableTags,
+                                            );
+                                        }
+                                    }}
+                                    className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer
+                  ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}
+                  hover:opacity-80 transition-opacity flex items-center gap-1`}
+                                    aria-label={`Mark task "${tag.name}" as complete`}
+                                >
+                                    {tag.name}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+                <div>
+                    <h3
+                        className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                    >
+                        Completed
+                    </h3>
+                    <div className="flex flex-wrap gap-1">
+                        {completedTasks.map((taskId) => {
+                            const tag = getTagById(taskId);
+                            if (!tag) return null;
+
+                            const colorOption =
+                                colorOptions.find(
+                                    (opt) => opt.name === tag.color,
+                                ) || colorOptions[1];
+
+                            return (
+                                <div
+                                    key={taskId}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() =>
+                                        handleToggleTask(
+                                            taskId,
+                                            true,
+                                            incompleteTasks,
+                                            completedTasks,
+                                            setIncompleteTasks,
+                                            setCompletedTasks,
+                                            onChange,
+                                            availableTags,
+                                        )
+                                    }
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault();
+                                            handleToggleTask(
+                                                taskId,
                                                 true,
                                                 incompleteTasks,
                                                 completedTasks,
                                                 setIncompleteTasks,
                                                 setCompletedTasks,
-                                                onChangeOptions,
-                                                column,
+                                                onChange,
+                                                availableTags,
                                             );
                                         }
                                     }}
-                                    aria-label={`Mark task "${task}" as incomplete`}
+                                    aria-label={`Mark task "${tag.name}" as incomplete`}
                                     className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer line-through 
                     ${colorOption.bg} ${colorOption.text}
                     hover:opacity-100 transition-opacity flex items-center gap-1`}
                                 >
-                                    {task}
+                                    {tag.name}
                                 </div>
                             );
                         })}
