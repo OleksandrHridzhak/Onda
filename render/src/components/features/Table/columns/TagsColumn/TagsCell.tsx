@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getColorOptions } from '../../../../../utils/colorOptions';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
+import { Tag } from '../../../../../types/newColumn.types';
 
 interface RootState {
     newTheme: {
@@ -10,43 +11,63 @@ interface RootState {
 }
 
 interface TagsCellProps {
-    value: string;
-    onChange: (value: string) => void;
-    options: string[];
-    tagColors?: Record<string, string>;
+    selectedTagIds: string[];
+    onChange: (tagIds: string[]) => void;
+    availableTags: Tag[];
 }
 
+/**
+ * TagsCell component
+ * Displays selected tags with a dropdown to add/remove tags.
+ * Works directly with Tag objects and IDs (no name-based operations).
+ */
 export const TagsCell: React.FC<TagsCellProps> = ({
-    value,
+    selectedTagIds,
     onChange,
-    options,
-    tagColors = {},
+    availableTags,
 }) => {
     const { themeMode } = useSelector((state: RootState) => state.newTheme);
     const darkMode = themeMode === 'dark' ? true : false;
 
+    // Convert selected IDs to display value (comma-separated names)
+    const displayValue = selectedTagIds
+        .map((id) => availableTags.find((tag) => tag.id === id)?.name)
+        .filter(Boolean)
+        .join(', ');
+
     const {
         isOpen,
         setIsOpen,
-        selectedValues: selectedTags,
-        setSelectedValues: setSelectedTags,
+        selectedValues,
+        setSelectedValues,
         dropdownRef,
-    } = useDropdownMultiSelect(value);
+    } = useDropdownMultiSelect(displayValue);
 
     const colorOptions = getColorOptions({ darkMode });
-    const handleTagChange = (
-        tag: string,
-        selectedTags: string[],
-        setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>,
-        onChange: (value: string) => void,
-    ): void => {
-        setSelectedTags((prevTags) => {
-            const updatedTags = prevTags.includes(tag)
-                ? prevTags.filter((t) => t !== tag)
-                : [...prevTags, tag];
-            onChange(updatedTags.join(', '));
-            return updatedTags;
-        });
+
+    // Get Tag object by ID
+    const getTagById = (tagId: string) => {
+        return availableTags.find((tag) => tag.id === tagId);
+    };
+
+    const handleTagToggle = (tagId: string): void => {
+        const newTagIds = selectedTagIds.includes(tagId)
+            ? selectedTagIds.filter((id) => id !== tagId)
+            : [...selectedTagIds, tagId];
+
+        onChange(newTagIds);
+
+        // Update local state for display
+        const newDisplayValue = newTagIds
+            .map((id) => availableTags.find((tag) => tag.id === id)?.name)
+            .filter(Boolean)
+            .join(', ');
+        setSelectedValues(
+            newDisplayValue
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean),
+        );
     };
 
     return (
@@ -55,19 +76,22 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                 onClick={() => setIsOpen(!isOpen)}
                 className="px-2 py-1 md:px-0 md:py-0 rounded-md cursor-pointer flex items-center justify-between h-full w-full min-h-[2.5rem] md:min-h-[2rem] bg-transparent hover:bg-transparent transition-colors"
             >
-                {selectedTags.length > 0 ? (
+                {selectedTagIds.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
-                        {selectedTags.map((tag) => {
-                            const color = tagColors[tag] || 'blue';
+                        {selectedTagIds.map((tagId) => {
+                            const tag = getTagById(tagId);
+                            if (!tag) return null;
+
                             const colorOption = colorOptions.find(
-                                (opt) => opt.name === color,
+                                (opt) => opt.name === tag.color,
                             );
+
                             return (
                                 <span
-                                    key={tag}
+                                    key={tagId}
                                     className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption?.bg} ${colorOption?.text}`}
                                 >
-                                    {tag}
+                                    {tag.name}
                                 </span>
                             );
                         })}
@@ -81,35 +105,25 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                 <div
                     className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'} rounded-md shadow-lg max-h-48 overflow-auto`}
                 >
-                    {(options || []).map((option) => {
-                        const color = tagColors[option] || 'blue';
+                    {availableTags.map((tag) => {
                         const colorOption = colorOptions.find(
-                            (opt) => opt.name === color,
+                            (opt) => opt.name === tag.color,
                         );
+
                         return (
                             <div
-                                key={option}
+                                key={tag.id}
                                 role="button"
                                 tabIndex={0}
                                 className={`px-3 py-2 ${darkMode ? 'hover:bg-gray-700 text-gray-200' : 'hover:bg-blue-50 text-gray-800'} cursor-pointer text-sm whitespace-nowrap`}
                                 onClick={() => {
-                                    handleTagChange(
-                                        option,
-                                        selectedTags,
-                                        setSelectedTags,
-                                        onChange,
-                                    );
+                                    handleTagToggle(tag.id);
                                     setIsOpen(false);
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault();
-                                        handleTagChange(
-                                            option,
-                                            selectedTags,
-                                            setSelectedTags,
-                                            onChange,
-                                        );
+                                        handleTagToggle(tag.id);
                                         setIsOpen(false);
                                     }
                                 }}
@@ -118,7 +132,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                                     <span
                                         className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption?.bg} ${colorOption?.text} mr-2`}
                                     >
-                                        {option}
+                                        {tag.name}
                                     </span>
                                 </div>
                             </div>
