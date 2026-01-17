@@ -2,7 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
 import { useCircleCanvas } from './useCircleCanvas';
-import { getColorForOption, handleOptionChange } from './logic';
+import { getColorForTag, handleOptionToggle } from './logic';
+import { Tag } from '../../../../../types/newColumn.types';
 
 interface RootState {
     newTheme: {
@@ -11,33 +12,41 @@ interface RootState {
 }
 
 interface MultiCheckboxCellProps {
-    value: string;
-    onChange: (value: string) => void;
-    options: string[];
-    tagColors?: Record<string, string>;
+    selectedOptionIds: string[];
+    onChange: (optionIds: string[]) => void;
+    availableOptions: Tag[];
 }
 
+/**
+ * MultiCheckboxCell component
+ * Displays a circular indicator with multiple color segments.
+ * Works directly with Tag objects and IDs (no name-based operations).
+ */
 export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
-    value,
+    selectedOptionIds,
     onChange,
-    options,
-    tagColors = {},
+    availableOptions,
 }) => {
     const { themeMode } = useSelector((state: RootState) => state.newTheme);
     const darkMode = themeMode === 'dark' ? true : false;
 
+    // Convert selected IDs to display value for useDropdownMultiSelect
+    const displayValue = selectedOptionIds
+        .map((id) => availableOptions.find((opt) => opt.id === id)?.name)
+        .filter(Boolean)
+        .join(', ');
+
     const {
         isOpen,
         setIsOpen,
-        selectedValues: selectedOptions,
-        setSelectedValues: setSelectedOptions,
+        selectedValues,
+        setSelectedValues,
         dropdownRef,
-    } = useDropdownMultiSelect(value);
+    } = useDropdownMultiSelect(displayValue);
 
     const { canvasRef, colorOptions, colorOrder } = useCircleCanvas(
-        selectedOptions,
-        options,
-        tagColors,
+        selectedOptionIds,
+        availableOptions,
     );
 
     return (
@@ -77,20 +86,21 @@ export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
                     } rounded-lg max-h-64 overflow-auto`}
                     style={{ top: '100%' }}
                 >
-                    {(options || []).map((option, index) => {
-                        const color = getColorForOption(
+                    {availableOptions.map((option, index) => {
+                        const color = getColorForTag(
                             option,
                             index,
-                            tagColors,
                             colorOrder,
                         );
                         const colorOption =
                             colorOptions[color] || colorOptions.green;
-                        const isSelected = selectedOptions.includes(option);
+                        const isSelected = selectedOptionIds.includes(
+                            option.id,
+                        );
 
                         return (
                             <div
-                                key={option}
+                                key={option.id}
                                 role="button"
                                 tabIndex={0}
                                 className={`px-3 py-2 ${
@@ -99,25 +109,27 @@ export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
                                         : 'hover:bg-gray-100'
                                 } cursor-pointer text-sm flex items-center`}
                                 onClick={() =>
-                                    handleOptionChange(
-                                        option,
-                                        selectedOptions,
-                                        setSelectedOptions,
+                                    handleOptionToggle(
+                                        option.id,
+                                        selectedOptionIds,
                                         onChange,
+                                        availableOptions,
+                                        setSelectedValues,
                                     )
                                 }
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault();
-                                        handleOptionChange(
-                                            option,
-                                            selectedOptions,
-                                            setSelectedOptions,
+                                        handleOptionToggle(
+                                            option.id,
+                                            selectedOptionIds,
                                             onChange,
+                                            availableOptions,
+                                            setSelectedValues,
                                         );
                                     }
                                 }}
-                                aria-label={`Toggle ${option}`}
+                                aria-label={`Toggle ${option.name}`}
                             >
                                 <div
                                     className={`w-3 h-3 rounded-full mr-3 ${colorOption.bg} ${
@@ -126,7 +138,7 @@ export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
                                             : 'opacity-30'
                                     }`}
                                 />
-                                <span className="flex-1">{option}</span>
+                                <span className="flex-1">{option.name}</span>
                                 {isSelected && (
                                     <svg
                                         className="w-4 h-4 ml-2"

@@ -4,6 +4,8 @@ import {
     getCheckBoxColorOptions,
     CheckBoxColorOptions,
 } from '../../../../../utils/colorOptions';
+import { Tag } from '../../../../../types/newColumn.types';
+import { getColorForTag } from './logic';
 
 interface RootState {
     newTheme: {
@@ -17,16 +19,22 @@ interface CircleCanvasResult {
     colorOrder: string[];
 }
 
+/**
+ * Hook to render a circular progress indicator with color segments
+ * Works directly with Tag IDs and objects
+ */
 export const useCircleCanvas = (
-    selectedOptions: string[],
-    options: string[],
-    tagColors: Record<string, string>,
+    selectedOptionIds: string[],
+    availableOptions: Tag[],
 ): CircleCanvasResult => {
     const { themeMode } = useSelector((state: RootState) => state.newTheme);
     const darkMode = themeMode === 'dark' ? true : false;
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const colorOptions = getCheckBoxColorOptions({ darkMode });
-    const colorOrder = useMemo(() => ['green', 'blue', 'purple', 'orange'], []);
+    const colorOrder = useMemo(
+        () => ['green', 'blue', 'purple', 'orange'],
+        [],
+    );
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -45,8 +53,8 @@ export const useCircleCanvas = (
         const centerY = size / 2;
         const radius = size / 2 - 4;
         const lineWidth = 4.5;
-        const totalOptions = options.length || 1;
-        const progress = selectedOptions.length / totalOptions;
+        const totalOptions = availableOptions.length || 1;
+        const progress = selectedOptionIds.length / totalOptions;
         const gapDegrees = 0;
         const gapRadians = (gapDegrees * Math.PI) / 180;
 
@@ -62,19 +70,22 @@ export const useCircleCanvas = (
 
         // Draw selected segments
         const totalAngle = 2 * Math.PI * progress;
-        const segmentCount = selectedOptions.length;
+        const segmentCount = selectedOptionIds.length;
         const anglePerSegment =
             segmentCount > 1
                 ? (totalAngle - gapRadians * (segmentCount - 1)) / segmentCount
                 : totalAngle;
 
-        selectedOptions.forEach((option, index) => {
+        selectedOptionIds.forEach((optionId, index) => {
+            const tag = availableOptions.find((opt) => opt.id === optionId);
+            if (!tag) return;
+
             const startAngle =
                 index * (anglePerSegment + gapRadians) - Math.PI / 2;
             const endAngle = startAngle + anglePerSegment;
-            const color =
-                tagColors[option] || colorOrder[index % colorOrder.length];
-            const arcColor = colorOptions[color]?.hex || colorOptions.green.hex;
+            const color = getColorForTag(tag, index, colorOrder);
+            const arcColor =
+                colorOptions[color]?.hex || colorOptions.green.hex;
 
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, startAngle, endAngle);
@@ -84,10 +95,9 @@ export const useCircleCanvas = (
             ctx.stroke();
         });
     }, [
-        selectedOptions,
+        selectedOptionIds,
         darkMode,
-        options,
-        tagColors,
+        availableOptions,
         colorOptions,
         colorOrder,
     ]);
