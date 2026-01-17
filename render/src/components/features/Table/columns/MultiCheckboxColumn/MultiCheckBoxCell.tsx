@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useMultiCheckboxDropdown } from './hooks/useMultiCheckboxDropdown';
+import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
 import { useCircleCanvas } from './hooks/useCircleCanvas';
 import { getColorForOption, handleOptionChange } from './logic';
 
@@ -29,10 +29,10 @@ export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
     const {
         isOpen,
         setIsOpen,
-        selectedOptions,
-        setSelectedOptions,
+        selectedValues: selectedOptions,
+        setSelectedValues: setSelectedOptions,
         dropdownRef,
-    } = useMultiCheckboxDropdown(value);
+    } = useDropdownMultiSelect(value);
 
     const { canvasRef, colorOptions, colorOrder } = useCircleCanvas(
         selectedOptions,

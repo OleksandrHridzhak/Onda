@@ -1,20 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
 
-interface MultiCheckboxDropdownState {
+interface DropdownMultiSelectState {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    selectedOptions: string[];
-    setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
+    selectedValues: string[];
+    setSelectedValues: React.Dispatch<React.SetStateAction<string[]>>;
     dropdownRef: React.RefObject<HTMLDivElement>;
 }
 
-export const useMultiCheckboxDropdown = (
+/**
+ * Generic multi-select dropdown hook used by Tags and MultiCheckbox columns.
+ */
+export const useDropdownMultiSelect = (
     value: string,
-): MultiCheckboxDropdownState => {
+): DropdownMultiSelectState => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    const [selectedValues, setSelectedValues] = useState<string[]>(
         typeof value === 'string' && value.trim() !== ''
-            ? value.split(', ').filter((opt) => opt.trim() !== '')
+            ? value.split(', ').filter((v) => v.trim() !== '')
             : [],
     );
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -28,6 +31,7 @@ export const useMultiCheckboxDropdown = (
                 setIsOpen(false);
             }
         };
+
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -37,8 +41,8 @@ export const useMultiCheckboxDropdown = (
     return {
         isOpen,
         setIsOpen,
-        selectedOptions,
-        setSelectedOptions,
+        selectedValues,
+        setSelectedValues,
         dropdownRef,
     };
 };
