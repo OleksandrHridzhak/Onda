@@ -31,47 +31,9 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
         return null;
     }
 
-    // Map new Dexie Todo format to legacy TodoCell format
-    // We include the id as a custom property to track todos across changes
-    const todosForCell = (column.uniqueProps.todos || []).map((todo) => ({
-        text: todo.text,
-        completed: todo.done,
-        category: todo.categoryId
-            ? column.uniqueProps.availableCategories?.find(
-                  (cat) => cat.id === todo.categoryId,
-              )?.name
-            : undefined,
-        // Include ID for tracking (not used by TodoCell but preserved in state)
-        _id: todo.id,
-    }));
-
-    // Map legacy TodoCell format back to new Dexie Todo format
-    const handleTodosChange = (
-        newTodos: Array<{
-            text: string;
-            completed: boolean;
-            category?: string;
-            _id?: string;
-        }>,
-    ) => {
-        const todosForDb: Todo[] = newTodos.map((todo) => {
-            const categoryId = todo.category
-                ? column.uniqueProps.availableCategories?.find(
-                      (cat) => cat.name === todo.category,
-                  )?.id
-                : undefined;
-
-            return {
-                // Preserve existing ID or generate new UUID (same as createColumn helper)
-                id: todo._id || crypto.randomUUID(),
-                text: todo.text,
-                done: todo.completed,
-                categoryId,
-            };
-        });
-
+    const handleTodosChange = (newTodos: Todo[]) => {
         updateColumnFields(columnId, {
-            'uniqueProps.todos': todosForDb,
+            'uniqueProps.todos': newTodos,
         });
     };
 
@@ -88,24 +50,12 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
                         rowSpan={DAYS.length}
                     >
                         <TodoCell
-                            value={todosForCell}
+                            value={column.uniqueProps.todos || []}
                             onChange={handleTodosChange}
-                            column={{
-                                id: columnId,
-                                type: column.type,
-                                options:
-                                    column.uniqueProps.availableCategories?.map(
-                                        (cat) => cat.name,
-                                    ) || [],
-                                tagColors:
-                                    column.uniqueProps.availableCategories?.reduce(
-                                        (acc, cat) => ({
-                                            ...acc,
-                                            [cat.name]: cat.color,
-                                        }),
-                                        {},
-                                    ) || {},
-                            }}
+                            availableCategories={
+                                column.uniqueProps.availableCategories || []
+                            }
+                            columnId={columnId}
                         />
                     </td>
                 </tr>
