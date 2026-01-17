@@ -1,94 +1,79 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { ColumnHeader } from '../ColumnHeader';
 import { TodoCell } from './TodoCell';
 import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
 import {
-    updateColumnNested,
-    updateCommonColumnProperties,
-} from '../../../../../store/tableSlice/tableSlice';
+    TodoListColumn as TodoListColumnType,
+    Todo,
+} from '../../../../../types/newColumn.types';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
 
 interface TodoColumnProps {
     columnId: string;
 }
 
+/**
+ * TodoColumn component
+ * Displays a todo list that spans all days of the week.
+ * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
+ */
 export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
-    const customClearColumn = () => {
-        dispatch(
-            updateColumnNested({
-                columnId,
-                path: ['Chosen', 'global'],
-                value: [],
-            }),
-        );
-    };
+    const { column, isLoading, isError } =
+        useReactiveColumn<TodoListColumnType>(columnId, 'todoListColumn');
 
-    const customHandleChangeOptions = (
-        id: string,
-        options: string[],
-        tagColors: Record<string, string>,
-        doneTags?: string[],
+    // TODO: Try to add skeleton loading state later
+    if (isLoading) {
+        return <div></div>;
+    }
+
+    if (isError || !column) {
+        return null;
+    }
+
+    // Map new Dexie Todo format to legacy TodoCell format
+    const todosForCell = (column.uniqueProps.todos || []).map((todo) => ({
+        text: todo.text,
+        completed: todo.done,
+        category: todo.categoryId
+            ? column.uniqueProps.availableCategories?.find(
+                  (cat) => cat.id === todo.categoryId,
+              )?.name
+            : undefined,
+    }));
+
+    // Map legacy TodoCell format back to new Dexie Todo format
+    const handleTodosChange = (
+        newTodos: Array<{
+            text: string;
+            completed: boolean;
+            category?: string;
+        }>,
     ) => {
-        dispatch(
-            updateCommonColumnProperties({
-                columnId: id,
-                properties: {
-                    uniqueProperties: {
-                        ...columnData?.uniqueProperties,
-                        Categorys: options,
-                        CategoryColors: tagColors,
-                    },
-                },
-            }),
-        );
-    };
+        const todosForDb: Todo[] = newTodos.map((todo, index) => {
+            const existingTodo = column.uniqueProps.todos[index];
+            const categoryId = todo.category
+                ? column.uniqueProps.availableCategories?.find(
+                      (cat) => cat.name === todo.category,
+                  )?.id
+                : undefined;
 
-    const {
-        columnData,
-        dispatch,
-        handleMoveColumn,
-        handleChangeWidth,
-        columnMenuLogic,
-        columns,
-        columnForHeader: baseColumnForHeader,
-    } = useColumnLogic({
-        columnId,
-        customClearColumn,
-        customHandleChangeOptions,
-    });
+            return {
+                id: existingTodo?.id || crypto.randomUUID(),
+                text: todo.text,
+                done: todo.completed,
+                categoryId,
+            };
+        });
 
-    const handleCellChange = (newValue: any) => {
-        dispatch(
-            updateColumnNested({
-                columnId,
-                path: ['Chosen', 'global'],
-                value: newValue,
-            }),
-        );
-    };
-
-    const columnForHeader = {
-        ...baseColumnForHeader,
-        options: columnData?.uniqueProperties?.Categorys,
-        tagColors: columnData?.uniqueProperties?.CategoryColors,
-        Chosen: columnData?.uniqueProperties?.Chosen,
+        updateColumnFields(columnId, {
+            'uniqueProps.todos': todosForDb,
+        });
     };
 
     return (
         <table className="checkbox-nested-table font-poppins">
-            <thead className="bg-tableHeader">
-                <tr>
-                    <th className="border-b border-border">
-                        <ColumnHeaderContent
-                            column={columnForHeader}
-                            columnMenuLogic={columnMenuLogic}
-                            handleMoveColumn={handleMoveColumn}
-                            handleChangeWidth={handleChangeWidth}
-                            columns={columns}
-                        />
-                    </th>
-                </tr>
-            </thead>
+            <ColumnHeader columnId={columnId} />
             <tbody className="bg-tableBodyBg">
                 <tr>
                     <td
@@ -97,22 +82,23 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
                         rowSpan={DAYS.length}
                     >
                         <TodoCell
-                            value={
-                                columnData.uniqueProperties?.Chosen?.global ||
-                                []
-                            }
-                            onChange={handleCellChange}
+                            value={todosForCell}
+                            onChange={handleTodosChange}
                             column={{
                                 id: columnId,
-                                type: columnData.type || 'todo',
-                                ...columnData,
+                                type: column.type,
                                 options:
-                                    columnData?.uniqueProperties?.Categorys ||
-                                    columnData.options,
+                                    column.uniqueProps.availableCategories?.map(
+                                        (cat) => cat.name,
+                                    ) || [],
                                 tagColors:
-                                    columnData?.uniqueProperties
-                                        ?.CategoryColors ||
-                                    columnData?.tagColors,
+                                    column.uniqueProps.availableCategories?.reduce(
+                                        (acc, cat) => ({
+                                            ...acc,
+                                            [cat.name]: cat.color,
+                                        }),
+                                        {},
+                                    ) || {},
                             }}
                         />
                     </td>
