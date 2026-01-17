@@ -1,114 +1,96 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
-import { TagsCell } from '.';
-import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
-import {
-    updateColumnNested,
-    updateCommonColumnProperties,
-} from '../../../../../store/tableSlice/tableSlice';
+import { ColumnHeader } from '../ColumnHeader';
+import { TagsCell } from './TagsCell';
+import { DayColumnLayout } from '../DayColumnLayout';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
+import { TagsColumn as TagsColumnType } from '../../../../../types/newColumn.types';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
+import { getCheckBoxColorOptions } from '../../../../../utils/colorOptions';
 
 interface TagsColumnProps {
     columnId: string;
 }
 
 export const TagsColumn: React.FC<TagsColumnProps> = ({ columnId }) => {
-    const customHandleChangeOptions = (
-        id: string,
-        options: string[],
-        tagColors: Record<string, string>,
-        doneTags?: string[],
-    ) => {
-        dispatch(
-            updateCommonColumnProperties({
-                columnId: id,
-                properties: {
-                    uniqueProperties: {
-                        ...columnData?.uniqueProperties,
-                        Tags: options,
-                        TagsColors: tagColors,
-                    },
-                },
-            }),
-        );
-    };
-
-    const {
-        columnData,
-        dispatch,
-        handleMoveColumn,
-        handleChangeWidth,
-        columnMenuLogic,
-        columns,
-        columnForHeader: baseColumnForHeader,
-    } = useColumnLogic({
+    const { column, isLoading, isError } = useReactiveColumn<TagsColumnType>(
         columnId,
-        clearValue: '',
-        customHandleChangeOptions,
+        'tagsColumn',
+    );
+
+    // TODO: Add proper skeleton/error UI later
+    if (isLoading) {
+        return <div></div>;
+    }
+
+    if (isError || !column) {
+        return null;
+    }
+
+    const availableTags = column.uniqueProps.availableTags || [];
+    const days = column.uniqueProps.days;
+
+    // Build helper maps between tag ids, names and colors
+    const nameToId: Record<string, string> = {};
+    const idToName: Record<string, string> = {};
+    availableTags.forEach((tag) => {
+        nameToId[tag.name] = tag.id;
+        idToName[tag.id] = tag.name;
+    });
+
+    // Map stored hex colors to semantic color names understood by getColorOptions
+    const checkboxColors = getCheckBoxColorOptions({ darkMode: false });
+    const hexToName: Record<string, string> = {};
+    Object.entries(checkboxColors).forEach(([name, cfg]) => {
+        if (cfg.hex) {
+            hexToName[cfg.hex.toLowerCase()] = name;
+        }
+    });
+
+    const tagColors: Record<string, string> = {};
+    availableTags.forEach((tag) => {
+        const hex = (tag.color || '').toLowerCase();
+        const colorName = hexToName[hex] || 'blue';
+        tagColors[tag.name] = colorName;
     });
 
     const handleCellChange = (day: string, newValue: string) => {
-        dispatch(
-            updateColumnNested({
-                columnId,
-                path: ['Days', day],
-                value: newValue,
-            }),
-        );
-    };
+        const names = newValue
+            .split(',')
+            .map((n) => n.trim())
+            .filter(Boolean);
 
-    const columnForHeader = {
-        ...baseColumnForHeader,
-        options: columnData.uniqueProperties?.Tags,
-        tagColors: columnData.uniqueProperties?.TagsColors,
+        const ids = names
+            .map((name) => nameToId[name])
+            .filter((id): id is string => Boolean(id));
+
+        updateColumnFields(columnId, {
+            [`uniqueProps.days.${day}`]: ids,
+        });
     };
 
     return (
         <table className="checkbox-nested-table font-poppins">
-            <thead className="bg-tableHeader">
-                <tr>
-                    <th className="border-b border-border">
-                        <ColumnHeaderContent
-                            column={columnForHeader}
-                            columnMenuLogic={columnMenuLogic}
-                            handleMoveColumn={handleMoveColumn}
-                            handleChangeWidth={handleChangeWidth}
-                            columns={columns}
+            <ColumnHeader columnId={columnId} />
+            <DayColumnLayout>
+                {(day) => {
+                    const idsForDay = days[day as keyof typeof days] || [];
+                    const value = idsForDay
+                        .map((id) => idToName[id])
+                        .filter(Boolean)
+                        .join(', ');
+
+                    return (
+                        <TagsCell
+                            value={value}
+                            onChange={(newValue) =>
+                                handleCellChange(day, newValue)
+                            }
+                            options={availableTags.map((tag) => tag.name)}
+                            tagColors={tagColors}
                         />
-                    </th>
-                </tr>
-            </thead>
-            <tbody className="bg-tableBodyBg">
-                {DAYS.map((day, idx) => (
-                    <tr
-                        key={day}
-                        className={
-                            idx !== DAYS.length - 1
-                                ? 'border-b border-border'
-                                : ''
-                        }
-                    >
-                        <td className="px-2 py-3 text-sm text-textTableRealValues">
-                            <TagsCell
-                                value={
-                                    columnData.uniqueProperties?.Days?.[day] ||
-                                    ''
-                                }
-                                onChange={(newValue) =>
-                                    handleCellChange(day, newValue)
-                                }
-                                options={
-                                    columnData.uniqueProperties?.Tags || []
-                                }
-                                tagColors={
-                                    columnData.uniqueProperties?.TagsColors ||
-                                    {}
-                                }
-                            />
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
+                    );
+                }}
+            </DayColumnLayout>
         </table>
     );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
-import { useCircleCanvas } from './hooks/useCircleCanvas';
+import { useCircleCanvas } from './useCircleCanvas';
 import { getColorForOption, handleOptionChange } from './logic';
 
 interface RootState {

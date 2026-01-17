@@ -4,10 +4,10 @@ import { MoreVertical } from 'lucide-react';
 import { CheckboxCell } from '../columns/CheckboxColumn/CheckboxCell';
 import { NumberboxCell } from '../columns/NumberboxColumn/NumberboxCell';
 import { TextboxCell } from '../columns/TextboxColumn/TextboxCell';
-import { TagsCell } from '../columns/TagsColumn';
+import { TagsCell } from '../columns/TagsColumn/TagsCell';
 import { MultiCheckboxCell } from '../columns/MultiCheckboxColumn/MultiCheckBoxCell';
 import { TodoCell } from '../columns/TodoColumn/TodoCell';
-import { TaskTableCell } from '../columns/TaskTableColumn/TaskTableCell';
+import { TaskTableCell } from '../columns/TaskTableColumn';
 import {
     updateColumnNested,
     updateCommonColumnProperties,

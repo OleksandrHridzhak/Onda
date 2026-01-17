@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getColorOptions } from '../../../../../utils/colorOptions';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
-import { handleTagChange } from './logic';
 
 interface RootState {
     newTheme: {
@@ -35,6 +34,20 @@ export const TagsCell: React.FC<TagsCellProps> = ({
     } = useDropdownMultiSelect(value);
 
     const colorOptions = getColorOptions({ darkMode });
+    const handleTagChange = (
+        tag: string,
+        selectedTags: string[],
+        setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>,
+        onChange: (value: string) => void,
+    ): void => {
+        setSelectedTags((prevTags) => {
+            const updatedTags = prevTags.includes(tag)
+                ? prevTags.filter((t) => t !== tag)
+                : [...prevTags, tag];
+            onChange(updatedTags.join(', '));
+            return updatedTags;
+        });
+    };
 
     return (
         <div className="relative" ref={dropdownRef}>
