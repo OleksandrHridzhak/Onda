@@ -62,7 +62,7 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
                 : undefined;
 
             return {
-                // Preserve existing ID or generate new one for new todos
+                // Preserve existing ID or generate new UUID (same as createColumn helper)
                 id: todo._id || crypto.randomUUID(),
                 text: todo.text,
                 done: todo.completed,
@@ -75,6 +75,8 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
         });
     };
 
+    // Note: TodoColumn doesn't use DayColumnLayout because the todo list
+    // spans all days (rowSpan={DAYS.length}), unlike day-based columns
     return (
         <table className="checkbox-nested-table font-poppins">
             <ColumnHeader columnId={columnId} />
