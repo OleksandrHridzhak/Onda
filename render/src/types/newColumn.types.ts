@@ -61,7 +61,7 @@ export interface TextboxColumn extends BaseColumn {
  * Stores numeric values for each weekday.
  */
 export interface NumberBoxColumn extends BaseColumn {
-    type: 'numberBoxColumn';
+    type: 'numberboxColumn';
     uniqueProps: {
         days: WeeklyValues<number>;
     };

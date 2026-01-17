@@ -5,7 +5,7 @@
 export const COLUMN_TYPES = {
     CHECKBOX: 'checkboxColumn',
     TEXTBOX: 'textboxColumn',
-    NUMBERBOX: 'numberBoxColumn',
+    NUMBERBOX: 'numberboxColumn',
     TAGS: 'tagsColumn',
     TODO: 'todoListColumn',
     MULTI_CHECKBOX: 'multiCheckBoxColumn',

@@ -52,7 +52,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         emojiIconName: 'Star',
         width: 60,
         uniqueProps: {
-            days: createWeeklyValues(0),
+            days: createWeeklyValues(null),
         },
     },
 

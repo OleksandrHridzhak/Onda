@@ -2,7 +2,7 @@ export { ColumnHeaderContent } from './ColumnHeaderContent';
 export { CheckboxColumn } from './CheckboxColumn/CheckboxColumn';
 export { DaysColumn } from './serviceColumns/DaysColumn';
 export { FillerColumn } from './serviceColumns/FillerColumn';
-export { NumberColumn } from './NumberColumn/NumberColumn';
+export { NumberboxColumn } from './NumberboxColumn/NumberboxColumn';
 export { TagsColumn } from './TagsColumn/TagsColumn';
 export { TextboxColumn } from './TextboxColumn/TextboxColumn';
 export { MultiCheckboxColumn } from './MultiCheckboxColumn/MultiCheckboxColumn';
