@@ -7,6 +7,7 @@ interface PlannerHeaderProps {
   darkTheme?: boolean;
   layout?: string[];
 }
+// PlannerHeader component
 
 const PlannerHeader: React.FC<PlannerHeaderProps> = ({
   darkTheme = false,
