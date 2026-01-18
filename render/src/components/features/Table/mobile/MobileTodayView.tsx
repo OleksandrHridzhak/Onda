@@ -19,6 +19,7 @@ import {
     getWeekDays,
     formatDateDisplay,
 } from '../../../../utils/dateUtils';
+import { Tag, Todo } from '../../../../types/newColumn.types';
 
 export const MobileTodayView: React.FC = () => {
     const dispatch = useDispatch();
@@ -74,7 +75,7 @@ export const MobileTodayView: React.FC = () => {
 
     // Handler for Todo column changes
     const handleTodoChange = useCallback(
-        (columnId: string, newValue: any) => {
+        (columnId: string, newValue: Todo[]) => {
             dispatch(
                 updateColumnNested({
                     columnId,
@@ -89,21 +90,23 @@ export const MobileTodayView: React.FC = () => {
     // Handler for TaskTable column changes - curried version to avoid inline functions
     const createTaskTableHandler = useCallback(
         (columnId: string, columnData: any) => {
-            return (
-                id: string,
-                incomplete: string[],
-                tagColors: Record<string, string>,
-                completed: string[],
-            ) => {
+            return (availableTags: Tag[], doneTasks: string[]) => {
+                const options = availableTags.map((tag) => tag.name);
+                const optionsColors: Record<string, string> = {};
+
+                availableTags.forEach((tag) => {
+                    optionsColors[tag.name] = tag.color || 'blue';
+                });
+
                 dispatch(
                     updateCommonColumnProperties({
-                        columnId: id,
+                        columnId,
                         properties: {
                             uniqueProperties: {
                                 ...columnData.uniqueProperties,
-                                Options: incomplete,
-                                OptionsColors: tagColors,
-                                DoneTags: completed,
+                                Options: options,
+                                OptionsColors: optionsColors,
+                                DoneTags: doneTasks,
                             },
                         },
                     }),
@@ -153,76 +156,132 @@ export const MobileTodayView: React.FC = () => {
                         />
                     );
 
-                case 'multiselect':
+                case 'multiselect': {
+                    const tagNames: string[] =
+                        columnData.uniqueProperties?.Tags || [];
+                    const tagColors: Record<string, string> =
+                        columnData.uniqueProperties?.TagsColors || {};
+
+                    const availableTags: Tag[] = tagNames.map(
+                        (name: string) => ({
+                            id: name,
+                            name,
+                            color: tagColors[name] || 'blue',
+                        }),
+                    );
+
+                    const selectedTagIds: string[] = Array.isArray(cellValue)
+                        ? cellValue
+                        : typeof cellValue === 'string' && cellValue
+                          ? cellValue
+                                .split(',')
+                                .map((s: string) => s.trim())
+                                .filter(Boolean)
+                          : [];
+
                     return (
                         <TagsCell
-                            value={cellValue || ''}
-                            onChange={(newValue) =>
-                                handleCellChange(columnId, newValue)
+                            selectedTagIds={selectedTagIds}
+                            onChange={(newTagIds) =>
+                                handleCellChange(columnId, newTagIds)
                             }
-                            options={columnData.uniqueProperties?.Tags || []}
-                            tagColors={
-                                columnData.uniqueProperties?.TagsColors || {}
-                            }
+                            availableTags={availableTags}
                         />
                     );
+                }
 
-                case 'multicheckbox':
+                case 'multicheckbox': {
+                    const optionNames: string[] =
+                        columnData.uniqueProperties?.Options || [];
+                    const optionColors: Record<string, string> =
+                        columnData.uniqueProperties?.TagsColors ||
+                        columnData.uniqueProperties?.OptionsColors ||
+                        {};
+
+                    const availableOptions: Tag[] = optionNames.map(
+                        (name: string) => ({
+                            id: name,
+                            name,
+                            color: optionColors[name] || 'blue',
+                        }),
+                    );
+
+                    const selectedOptionIds: string[] = Array.isArray(cellValue)
+                        ? cellValue
+                        : typeof cellValue === 'string' && cellValue
+                          ? cellValue
+                                .split(',')
+                                .map((s: string) => s.trim())
+                                .filter(Boolean)
+                          : [];
+
                     return (
                         <MultiCheckboxCell
-                            value={cellValue || ''}
-                            onChange={(newValue) =>
-                                handleCellChange(columnId, newValue)
+                            selectedOptionIds={selectedOptionIds}
+                            onChange={(newIds) =>
+                                handleCellChange(columnId, newIds)
                             }
-                            options={columnData.uniqueProperties?.Options || []}
-                            tagColors={
-                                columnData.uniqueProperties?.TagsColors || {}
-                            }
+                            availableOptions={availableOptions}
                         />
                     );
+                }
 
                 case 'todo':
-                    const globalTodos =
-                        columnData.uniqueProperties?.Chosen?.global || [];
+                    const globalTodos = (columnData.uniqueProperties?.Chosen
+                        ?.global || []) as Todo[];
+
+                    const categoryNames: string[] =
+                        columnData.uniqueProperties?.Categorys || [];
+                    const categoryColors: Record<string, string> =
+                        columnData.uniqueProperties?.CategoryColors || {};
+
+                    const availableCategories: Tag[] = categoryNames.map(
+                        (name: string) => ({
+                            id: name,
+                            name,
+                            color: categoryColors[name] || 'blue',
+                        }),
+                    );
 
                     return (
                         <TodoCell
                             value={globalTodos}
-                            column={{
-                                id: columnId,
-                                type: 'todo',
-                                options:
-                                    columnData.uniqueProperties?.Categorys ||
-                                    [],
-                                tagColors:
-                                    columnData.uniqueProperties
-                                        ?.CategoryColors || {},
-                            }}
+                            availableCategories={availableCategories}
+                            columnId={columnId}
                             onChange={(newValue) =>
                                 handleTodoChange(columnId, newValue)
                             }
                         />
                     );
 
-                case 'tasktable':
+                case 'tasktable': {
+                    const optionNames: string[] =
+                        columnData.uniqueProperties?.Options || [];
+                    const optionColors: Record<string, string> =
+                        columnData.uniqueProperties?.OptionsColors || {};
+
+                    const availableTags: Tag[] = optionNames.map(
+                        (name: string) => ({
+                            id: name,
+                            name,
+                            color: optionColors[name] || 'blue',
+                        }),
+                    );
+
+                    const doneTasks: string[] =
+                        columnData.uniqueProperties?.DoneTags || [];
+
                     return (
                         <TaskTableCell
-                            column={{
-                                id: columnId,
-                                options:
-                                    columnData.uniqueProperties?.Options || [],
-                                doneTags:
-                                    columnData.uniqueProperties?.DoneTags || [],
-                                tagColors:
-                                    columnData.uniqueProperties
-                                        ?.OptionsColors || {},
-                            }}
-                            onChangeOptions={createTaskTableHandler(
+                            availableTags={availableTags}
+                            doneTasks={doneTasks}
+                            onChange={createTaskTableHandler(
                                 columnId,
                                 columnData,
                             )}
                         />
                     );
+                }
 
                 default:
                     return null;
