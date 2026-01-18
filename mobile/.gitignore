@@ -10,6 +10,13 @@ android/.idea
 android/local.properties
 android/app/google-services.json
 
+# iOS
+ios/App/build
+ios/App/Pods
+ios/App/App.xcworkspace/xcuserdata
+ios/App/App.xcodeproj/xcuserdata
+ios/App/DerivedData
+
 # Node
 node_modules/
 npm-debug.log

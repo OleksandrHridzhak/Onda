@@ -6,6 +6,7 @@ const config: CapacitorConfig = {
   webDir: '../render/build',
   server: {
     androidScheme: 'https',
+    iosScheme: 'https',
   },
   android: {
     buildOptions: {
@@ -14,6 +15,9 @@ const config: CapacitorConfig = {
       javaSourceCompatibility: '21',
       javaTargetCompatibility: '21',
     },
+  },
+  ios: {
+    scheme: 'App',
   },
 };
 

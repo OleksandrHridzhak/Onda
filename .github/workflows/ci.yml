@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -98,4 +101,86 @@ jobs:
         shell: powershell
         run: |
           Get-ChildItem extracted\app -Recurse | ForEach-Object { "$($_.FullName) - $([math]::Round($_.Length/1MB, 2)) MB" }
+
+  build-ios:
+    runs-on: macos-latest
+    if: contains(github.event.head_commit.message, '[build-ios]')
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Build React frontend first
+      - name: Build React frontend
+        working-directory: ./render
+        env:
+          CI: false
+        run: |
+          npm ci
+          npm run build
+
+      # Setup Capacitor iOS
+      - name: Install mobile dependencies
+        working-directory: ./mobile
+        run: npm ci
+
+      # Add iOS platform and sync
+      - name: Add iOS platform
+        working-directory: ./mobile
+        run: |
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
+
+      - name: Sync iOS
+        working-directory: ./mobile
+        run: npx cap sync ios
+
+      # Install CocoaPods dependencies
+      - name: Install CocoaPods
+        working-directory: ./mobile/ios/App
+        run: pod install
+
+      # Build iOS app (unsigned for simulator)
+      - name: Build iOS app for simulator
+        working-directory: ./mobile/ios/App
+        run: |
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      # Archive for device (unsigned .app)
+      - name: Archive iOS app
+        working-directory: ./mobile/ios/App
+        run: |
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/App.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            archive
+
+      # Upload iOS build artifacts
+      - name: Upload iOS simulator build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-build
+          path: ./mobile/ios/App/build/Build/Products/Release-iphonesimulator/App.app
+
+      - name: Upload iOS archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-archive
+          path: ./mobile/ios/App/build/App.xcarchive
 
