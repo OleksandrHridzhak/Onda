@@ -1,74 +1,45 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
-import { CheckboxCell } from './CheckboxCell';
-import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
-import { updateColumnNested } from '../../../../../store/tableSlice/tableSlice';
+import { ColumnHeader } from '../ColumnHeader';
+import { CheckboxCell } from './CheckBoxCell';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
+import { CheckboxColumn as CheckboxColumnType } from '../../../../../types/newColumn.types';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
+import { DayColumnLayout } from '../DayColumnLayout';
 
 interface CheckboxColumnProps {
-  columnId: string;
+    columnId: string;
 }
+/**
+ * Just a checkbox column.
+ */
 
 export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
-  const {
-    columnData,
-    dispatch,
-    handleMoveColumn,
-    handleChangeWidth,
-    columnMenuLogic,
-    columns,
-    columnForHeader: baseColumnForHeader,
-  } = useColumnLogic({
-    columnId,
-    clearValue: false,
-  });
+    const { column, isLoading, isError } =
+        useReactiveColumn<CheckboxColumnType>(columnId, 'checkboxColumn');
 
-  const handleCheckboxChange = (day: string, newValue: boolean) => {
-    dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Days', day],
-        value: newValue,
-      }),
+    // TODO: Try to add skeleton loading state later
+    if (isLoading) {
+        return <div></div>;
+    }
+
+    const handleCheckboxChange = (day: string, newValue: boolean) => {
+        updateColumnFields(columnId, { [`uniqueProps.days.${day}`]: newValue });
+    };
+
+    return (
+        <table className="checkbox-nested-table column-checkbox font-poppins">
+            <ColumnHeader columnId={columnId} />
+            <DayColumnLayout>
+                {(day) => (
+                    <CheckboxCell
+                        checked={column?.uniqueProps?.days?.[day] || false}
+                        onChange={(newValue) =>
+                            handleCheckboxChange(day, newValue)
+                        }
+                        color={column?.uniqueProps?.checkboxColor || 'green'}
+                    />
+                )}
+            </DayColumnLayout>
+        </table>
     );
-  };
-
-  const columnForHeader = {
-    ...baseColumnForHeader,
-    checkboxColor: columnData.uniqueProperties?.CheckboxColor,
-  };
-
-  return (
-    <table className="checkbox-nested-table column-checkbox font-poppins">
-      <thead className="bg-tableHeader">
-        <tr>
-          <th className="border-b border-border">
-            <ColumnHeaderContent
-              column={columnForHeader}
-              columnMenuLogic={columnMenuLogic}
-              handleMoveColumn={handleMoveColumn}
-              handleChangeWidth={handleChangeWidth}
-              columns={columns}
-            />
-          </th>
-        </tr>
-      </thead>
-      <tbody className="bg-tableBodyBg">
-        {DAYS.map((day, idx) => (
-          <tr
-            key={day}
-            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
-          >
-            <td>
-              <CheckboxCell
-                checked={columnData.uniqueProperties?.Days?.[day] || false}
-                onChange={(newValue) => handleCheckboxChange(day, newValue)}
-                color={columnData.uniqueProperties?.CheckboxColor || '#3b82f6'}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
 };

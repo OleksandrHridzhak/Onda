@@ -1,96 +1,100 @@
 {
-  "name": "onda-app-dev",
-  "version": "2.2.0",
-  "main": "main.bundle.js",
-  "scripts": {
-    "start": "concurrently \"npm:watch:webpack\" \"npm:start:react\" \"npm:start:electron\" \"npm:start:sync-server\"",
-    "start:react": "cd render && npm start",
-    "start:electron": "nodemon electron .",
-    "start:sync-server": "cd sync-server && npm run dev",
-    "build:react": "cd render && npm run build",
-    "build:webpack": "webpack --config webpack.config.js",
-    "build:sync-server": "cd sync-server && npm run build",
-    "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
-    "dist": "npm run build:react && npm run build:webpack && electron-builder",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "prepare": "husky"
-  },
-  "keywords": [
-    "planner",
-    "task manager",
-    "sprint",
-    "weekly planning",
-    "productivity",
-    "tasks",
-    "organization"
-  ],
-  "author": "Oleksandr Hridzhak <3",
-  "license": "Proprietary – non-commercial use only",
-  "description": "Task management tool with sprint-based weekly planning.",
-  "devDependencies": {
-    "@commitlint/cli": "^20.1.0",
-    "@commitlint/config-conventional": "^20.0.0",
-    "@eslint/js": "^9.39.1",
-    "@typescript-eslint/eslint-plugin": "^8.46.4",
-    "@typescript-eslint/parser": "^8.46.4",
-    "concurrently": "^9.2.1",
-    "dotenv": "^17.2.3",
-    "electron": "^35.1.4",
-    "electron-builder": "^26.0.12",
-    "electron-packager": "^17.1.2",
-    "eslint": "^9.39.1",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "globals": "^16.5.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.6",
-    "node-cron": "^4.2.1",
-    "playwright": "^1.55.1",
-    "prettier": "^3.6.2",
-    "typescript-eslint": "^8.46.4",
-    "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1"
-  },
-  "build": {
-    "asar": false,
-    "appId": "com.onda.onda.dev",
-    "productName": "Onda 2.2 Dev",
-    "electronLanguages": [
-      "en-US",
-      "uk"
-    ],
-    "publish": null,
-    "directories": {
-      "buildResources": "assets",
-      "output": "dist"
+    "name": "onda-app-dev",
+    "version": "2.2.0",
+    "main": "main.bundle.js",
+    "scripts": {
+        "start": "concurrently \"npm:watch:webpack\" \"npm:start:react\" \"npm:start:electron\" \"npm:start:sync-server\"",
+        "start:react": "cd render && npm start",
+        "start:electron": "nodemon electron .",
+        "start:sync-server": "cd sync-server && npm run dev",
+        "build:react": "cd render && npm run build",
+        "build:webpack": "webpack --config webpack.config.js",
+        "build:sync-server": "cd sync-server && npm run build",
+        "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
+        "dist": "npm run build:react && npm run build:webpack && electron-builder",
+        "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+        "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+        "prepare": "husky"
     },
-    "win": {
-      "target": "nsis",
-      "icon": "assets/logo256.ico",
-      "compression": "maximum"
-    },
-    "files": [
-      "render/build/",
-      "tray_icon.png",
-      "package.json",
-      "main.bundle.js",
-      "preload.bundle.js",
-      "userData/**",
-      "assets/**",
-      "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
-      "!**/*.{md,txt,log}",
-      "!**/node_modules/electron-devtools-installer/**",
-      "!**/node_modules/electron-debug/**",
-      "!.env"
-    ]
-  },
-  "lint-staged": {
-    "render/src/**/*.{js,jsx,ts,tsx}": [
-      "prettier --write"
+    "keywords": [
+        "planner",
+        "task manager",
+        "sprint",
+        "weekly planning",
+        "productivity",
+        "tasks",
+        "organization"
     ],
-    "**/*.{json,css,md}": [
-      "prettier --write"
-    ]
-  }
+    "author": "Oleksandr Hridzhak <3",
+    "license": "Proprietary – non-commercial use only",
+    "description": "Task management tool with sprint-based weekly planning.",
+    "devDependencies": {
+        "@commitlint/cli": "^20.1.0",
+        "@commitlint/config-conventional": "^20.0.0",
+        "@eslint/js": "^9.39.1",
+        "@typescript-eslint/eslint-plugin": "^8.46.4",
+        "@typescript-eslint/parser": "^8.46.4",
+        "concurrently": "^9.2.1",
+        "dotenv": "^17.2.3",
+        "electron": "^35.1.4",
+        "electron-builder": "^26.0.12",
+        "electron-packager": "^17.1.2",
+        "eslint": "^9.39.1",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^7.0.1",
+        "globals": "^16.5.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.6",
+        "node-cron": "^4.2.1",
+        "playwright": "^1.55.1",
+        "prettier": "^3.6.2",
+        "typescript-eslint": "^8.46.4",
+        "webpack": "^5.102.1",
+        "webpack-cli": "^6.0.1"
+    },
+    "build": {
+        "asar": false,
+        "appId": "com.onda.onda.dev",
+        "productName": "Onda 2.2 Dev",
+        "electronLanguages": [
+            "en-US",
+            "uk"
+        ],
+        "publish": null,
+        "directories": {
+            "buildResources": "assets",
+            "output": "dist"
+        },
+        "win": {
+            "target": "nsis",
+            "icon": "assets/logo256.ico",
+            "compression": "maximum"
+        },
+        "files": [
+            "render/build/",
+            "tray_icon.png",
+            "package.json",
+            "main.bundle.js",
+            "preload.bundle.js",
+            "userData/**",
+            "assets/**",
+            "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
+            "!**/*.{md,txt,log}",
+            "!**/node_modules/electron-devtools-installer/**",
+            "!**/node_modules/electron-debug/**",
+            "!.env"
+        ]
+    },
+    "lint-staged": {
+        "render/src/**/*.{js,jsx,ts,tsx}": [
+            "prettier --write"
+        ],
+        "**/*.{json,css,md}": [
+            "prettier --write"
+        ]
+    },
+    "dependencies": {
+        "dexie": "^4.2.1",
+        "dexie-react-hooks": "^4.2.0"
+    }
 }

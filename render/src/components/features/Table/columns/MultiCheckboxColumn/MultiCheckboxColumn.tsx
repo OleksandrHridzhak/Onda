@@ -1,102 +1,63 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
-import { MultiCheckboxCell } from './MultiCheckboxCell';
-import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
-import {
-  updateColumnNested,
-  updateCommonColumnProperties,
-} from '../../../../../store/tableSlice/tableSlice';
+import { ColumnHeader } from '../ColumnHeader';
+import { MultiCheckboxCell } from './MultiCheckBoxCell';
+import { DayColumnLayout } from '../DayColumnLayout';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
+import { MultiCheckboxColumn as MultiCheckboxColumnType } from '../../../../../types/newColumn.types';
 
 interface MultiCheckboxColumnProps {
-  columnId: string;
+    columnId: string;
 }
 
+/**
+ * MultiCheckboxColumn component
+ * Displays multiple checkbox options that can be selected for each day of the week.
+ * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
+ */
 export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
-  columnId,
-}) => {
-  const customHandleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties: {
-          uniqueProperties: {
-            ...columnData?.uniqueProperties,
-            Options: options,
-            OptionsColors: tagColors,
-          },
-        },
-      }),
-    );
-  };
-
-  const {
-    columnData,
-    dispatch,
-    handleMoveColumn,
-    handleChangeWidth,
-    columnMenuLogic,
-    columns,
-    columnForHeader: baseColumnForHeader,
-  } = useColumnLogic({
     columnId,
-    clearValue: '',
-    customHandleChangeOptions,
-  });
+}) => {
+    const { column, isLoading, isError } =
+        useReactiveColumn<MultiCheckboxColumnType>(
+            columnId,
+            'multiCheckBoxColumn',
+        );
 
-  const handleCellChange = (day: string, newValue: string) => {
-    dispatch(
-      updateColumnNested({
-        columnId,
-        path: ['Days', day],
-        value: newValue,
-      }),
+    // TODO: Replace with a proper skeleton loader
+    if (isLoading) {
+        return <div></div>;
+    }
+
+    if (isError || !column) {
+        return null;
+    }
+
+    const handleCellChange = (day: string, selectedIds: string[]) => {
+        updateColumnFields(columnId, {
+            [`uniqueProps.days.${day}`]: selectedIds,
+        });
+    };
+
+    return (
+        <table className="checkbox-nested-table column-multicheckbox font-poppins">
+            <ColumnHeader columnId={columnId} />
+            <DayColumnLayout>
+                {(day) => {
+                    const selectedIds =
+                        column.uniqueProps.days?.[day] || [];
+
+                    return (
+                        <MultiCheckboxCell
+                            selectedOptionIds={selectedIds}
+                            onChange={(newIds) => handleCellChange(day, newIds)}
+                            availableOptions={
+                                column.uniqueProps.availableOptions
+                            }
+                        />
+                    );
+                }}
+            </DayColumnLayout>
+        </table>
     );
-  };
-
-  const columnForHeader = {
-    ...baseColumnForHeader,
-    options: columnData.uniqueProperties?.Options,
-    tagColors: columnData.uniqueProperties?.OptionsColors,
-  };
-
-  return (
-    <table className="checkbox-nested-table column-multicheckbox font-poppins">
-      <thead className="bg-tableHeader">
-        <tr>
-          <th className="border-b border-border">
-            <ColumnHeaderContent
-              column={columnForHeader}
-              columnMenuLogic={columnMenuLogic}
-              handleMoveColumn={handleMoveColumn}
-              handleChangeWidth={handleChangeWidth}
-              columns={columns}
-            />
-          </th>
-        </tr>
-      </thead>
-      <tbody className="bg-tableBodyBg">
-        {DAYS.map((day, idx) => (
-          <tr
-            key={day}
-            className={idx !== DAYS.length - 1 ? 'border-b border-border' : ''}
-          >
-            <td className="px-2 py-3 text-sm text-textTableRealValues">
-              <MultiCheckboxCell
-                value={columnData.uniqueProperties?.Days?.[day] || ''}
-                onChange={(newValue) => handleCellChange(day, newValue)}
-                options={columnData.uniqueProperties?.Options || []}
-                tagColors={columnData.uniqueProperties?.OptionsColors || {}}
-              />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
 };

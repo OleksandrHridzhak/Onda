@@ -1,113 +1,87 @@
 import React from 'react';
-import {
-  CheckboxColumn,
-  DaysColumn,
-  FillerColumn,
-  NumberColumn,
-  TagsColumn,
-  NotesColumn,
-  MultiCheckboxColumn,
-  TodoColumn,
-  TaskTableColumn,
-} from './columns';
+import { componentsMap } from './Table.constants';
+import { daysColumn, fillerColumn } from './Table.constants';
+import { useLiveQuery } from 'dexie-react-hooks';
 import TableItemWrapper from './columns/TableItemWrapper';
+import { getAllColumns } from '../../../db/helpers/columns';
+import { getSettings } from '../../../db/helpers/settings';
 import './Table.css';
-import { useSelector } from 'react-redux';
 import { useRowHeightSync } from './hooks/useRowHeightSync';
+import DynamicColumn from './columns/DynamicColumn';
 
 const Table: React.FC = () => {
-  const columnOrder: string[] = useSelector(
-    (state: Record<string, any>) => state.tableData?.columnOrder ?? [],
-  );
-  const columnsData = useSelector(
-    (state: Record<string, any>) => state.tableData?.columns ?? {},
-  );
+    /**
+     * Fetch the ordered list of column IDs from the settings.
+     * This determines the visual sequence of columns in the table.
+     */
+    const columnOrder = useLiveQuery(async () => {
+        const res = await getSettings();
+        return res?.data?.layout?.columnsOrder ?? [];
+    });
 
-  const componentsMap: Record<string, React.FC<any>> = {
-    days: DaysColumn,
-    checkbox: CheckboxColumn,
-    numberbox: NumberColumn,
-    multiselect: TagsColumn,
-    text: NotesColumn,
-    multicheckbox: MultiCheckboxColumn,
-    todo: TodoColumn,
-    tasktable: TaskTableColumn,
-  };
+    /**
+     * Fetch all column data objects from the database.
+     * Required as a dependency for useRowHeightSync to recalculate
+     * row heights when column content or configuration changes.
+     */
+    const columnsData = useLiveQuery(async () => {
+        const res = await getAllColumns();
+        return res.success ? res.data : [];
+    });
 
-  // Find days column id and data (fallback to default if missing)
-  const daysColumnId = Object.keys(columnsData).find(
-    (id) => columnsData[id]?.type?.toLowerCase() === 'days',
-  );
-  const daysColumnData = daysColumnId ? columnsData[daysColumnId] : null;
-  const daysColumn = {
-    id: daysColumnId || 'days',
-    name: daysColumnData?.name || 'Days',
-    type: 'days',
-    width: daysColumnData?.width || 135,
-  };
+    // Synchronize row heights across all nested tables
+    useRowHeightSync([columnsData]);
 
-  // Sync row heights across all table columns
-  useRowHeightSync([columnsData, columnOrder]);
+    // To avoid rendering issues, ensure required data is loaded
+    if (columnOrder === undefined || columnsData === undefined) {
+        return null; // Add a loading skeleton here if needed
+    }
 
-  return (
-    <div
-      className={`overflow-x-auto font-poppins border border-border rounded-xl m-2 custom-scroll`}
-    >
-      <div className="overflow-x-auto custom-scroll">
-        <table className="w-full">
-          <thead>
-            <tr
-              className={`border-border bg-tableHeader text-textTableValues border-b`}
-            >
-              <TableItemWrapper
-                key={'days-column'}
-                column={daysColumn}
-                className="border-r border-border"
-              >
-                <DaysColumn column={daysColumn} />
-              </TableItemWrapper>
+    /**
+     * ARCHITECTURE NOTE:
+     * We use nested tables for each column instead of standard cell rendering.
+     * This provides each column type with structural independence.
+     * * Structure:
+     * <MainTable>
+     * <Row>
+     * <DaysColumn (Nested Table) />
+     * <DynamicColumns (Nested Tables) />
+     * <FillerColumn (Nested Table) />
+     * </Row>
+     * </MainTable>
+     */
+    return (
+        <div className="overflow-x-auto font-poppins border border-border rounded-xl m-2 custom-scroll">
+            <div className="overflow-x-auto custom-scroll">
+                <table className="w-full">
+                    <thead>
+                        <tr className="border-border bg-tableHeader text-textTableValues border-b">
+                            {/* Static: Days of the week column */}
+                            <TableItemWrapper
+                                key="days-column"
+                                column={daysColumn}
+                                className="border-r border-border"
+                            >
+                                <componentsMap.days />
+                            </TableItemWrapper>
 
-              {columnOrder
-                .map((columnId: string) => {
-                  const columnData = columnsData[columnId];
-                  const columnType = columnData?.type?.toLowerCase();
-                  return { columnId, columnData, columnType };
-                })
-                .filter(({ columnData, columnType }) => 
-                  Boolean(columnData) && Boolean(columnType) && Boolean(componentsMap[columnType])
-                ) // Filter out missing columns and unsupported types
-                .map(({ columnId, columnData, columnType }) => {
-                const Component = componentsMap[columnType];
+                            {/* Dynamic: User-defined optional columns */}
+                            {columnOrder.map((id) => (
+                                <DynamicColumn key={id} columnId={id} />
+                            ))}
 
-                const column = {
-                  id: columnId,
-                  type: columnType,
-                  width: columnData.width,
-                };
-
-                return (
-                  <TableItemWrapper
-                    key={columnId}
-                    column={column}
-                    className="border-r border-border"
-                  >
-                    <Component columnId={columnId} />
-                  </TableItemWrapper>
-                );
-              })}
-
-              <TableItemWrapper
-                key={'filler'}
-                column={{ id: 'filler', type: 'filler', width: 'auto' }}
-              >
-                <FillerColumn />
-              </TableItemWrapper>
-            </tr>
-          </thead>
-        </table>
-      </div>
-    </div>
-  );
+                            {/* Utility: Filler column to occupy remaining space */}
+                            <TableItemWrapper
+                                key="filler"
+                                column={fillerColumn}
+                            >
+                                <componentsMap.fillerColumn />
+                            </TableItemWrapper>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    );
 };
-
 export default Table;

@@ -1,131 +1,65 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { ColumnHeader } from '../ColumnHeader';
 import { TaskTableCell } from './TaskTableCell';
 import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
-import { updateCommonColumnProperties } from '../../../../../store/tableSlice/tableSlice';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
+import { TaskTableColumn as TaskTableColumnType } from '../../../../../types/newColumn.types';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
 
 interface TaskTableColumnProps {
-  columnId: string;
+    columnId: string;
 }
 
+/**
+ * TaskTableColumn component
+ * Displays a task table with available tags that can be marked as complete/incomplete.
+ * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
+ */
 export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
-  columnId,
-}) => {
-  const customClearColumn = () => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId,
-        properties: {
-          uniqueProperties: {
-            ...columnData.uniqueProperties,
-            Options: [],
-            OptionsColors: {},
-            DoneTags: [],
-          },
-        },
-      }),
-    );
-  };
-
-  const customHandleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties: {
-          uniqueProperties: {
-            ...columnData?.uniqueProperties,
-            Options: options,
-            OptionsColors: tagColors,
-            DoneTags: doneTags || [],
-          },
-        },
-      }),
-    );
-  };
-
-  const {
-    columnData,
-    dispatch,
-    handleMoveColumn,
-    handleChangeWidth,
-    columnMenuLogic,
-    columns,
-    columnForHeader: baseColumnForHeader,
-  } = useColumnLogic({
     columnId,
-    customClearColumn,
-    customHandleChangeOptions,
-  });
+}) => {
+    const { column, isLoading, isError } =
+        useReactiveColumn<TaskTableColumnType>(columnId, 'taskTableColumn');
 
-  const handleChangeOptions = (
-    id: string,
-    options: string[],
-    tagColors: Record<string, string>,
-    doneTags?: string[],
-  ) => {
-    dispatch(
-      updateCommonColumnProperties({
-        columnId: id,
-        properties: {
-          uniqueProperties: {
-            ...columnData.uniqueProperties,
-            Options: options,
-            OptionsColors: tagColors,
-            DoneTags: doneTags || [],
-          },
-        },
-      }),
+    // TODO: Try to add skeleton loading state later
+    if (isLoading) {
+        return <div></div>;
+    }
+
+    if (isError || !column) {
+        return null;
+    }
+
+    const handleTasksChange = (
+        availableTags: typeof column.uniqueProps.availableTags,
+        doneTasks: string[],
+    ) => {
+        updateColumnFields(columnId, {
+            'uniqueProps.availableTags': availableTags,
+            'uniqueProps.doneTasks': doneTasks,
+        });
+    };
+
+    // Note: TaskTableColumn doesn't use DayColumnLayout because the task list
+    // spans all days (rowSpan={DAYS.length}), unlike day-based columns
+    return (
+        <table className="checkbox-nested-table font-poppins">
+            <ColumnHeader columnId={columnId} />
+            <tbody className="bg-tableBodyBg">
+                <tr>
+                    <td
+                        className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
+                        style={{ verticalAlign: 'top' }}
+                        rowSpan={DAYS.length}
+                    >
+                        <TaskTableCell
+                            availableTags={column.uniqueProps.availableTags}
+                            doneTasks={column.uniqueProps.doneTasks}
+                            onChange={handleTasksChange}
+                        />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     );
-  };
-
-  const columnForHeader = {
-    ...baseColumnForHeader,
-    options: columnData.uniqueProperties?.Options,
-    tagColors: columnData.uniqueProperties?.OptionsColors,
-    doneTags: columnData.uniqueProperties?.DoneTags,
-  };
-
-  return (
-    <table className="checkbox-nested-table font-poppins">
-      <thead className="bg-tableHeader">
-        <tr>
-          <th className="border-b border-border">
-            <ColumnHeaderContent
-              column={columnForHeader}
-              columnMenuLogic={columnMenuLogic}
-              handleMoveColumn={handleMoveColumn}
-              handleChangeWidth={handleChangeWidth}
-              columns={columns}
-            />
-          </th>
-        </tr>
-      </thead>
-      <tbody className="bg-tableBodyBg">
-        <tr>
-          <td
-            className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
-            style={{ verticalAlign: 'top' }}
-            rowSpan={DAYS.length}
-          >
-            <TaskTableCell
-              column={{
-                id: columnId,
-                ...columnData,
-                tagColors: columnData.uniqueProperties?.OptionsColors || {},
-                options: columnData.uniqueProperties?.Options || [],
-                doneTags: columnData.uniqueProperties?.DoneTags || [],
-              }}
-              onChangeOptions={handleChangeOptions}
-            />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  );
 };
