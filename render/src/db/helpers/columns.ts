@@ -217,3 +217,158 @@ export async function deleteColumn(
         return { success: false, error: (error as Error).message };
     }
 }
+
+/**
+ * Move a column left or right in the columns order
+ * @param columnId - The unique ID of the column to move
+ * @param direction - 'left' or 'right'
+ * @returns DbResult with the new columns order
+ * @example
+ * // Success:
+ * { success: true, data: { columnsOrder: ['id1', 'id2', 'id3'] } }
+ *
+ * // Error:
+ * { success: false, error: 'Cannot move column further left' }
+ */
+export async function moveColumn(
+    columnId: string,
+    direction: 'left' | 'right',
+): Promise<DbResult<{ columnsOrder: string[] }>> {
+    try {
+        const settings = await db.settings.get('global');
+        if (!settings) {
+            return { success: false, error: 'Settings not found' };
+        }
+
+        const currentOrder = settings.layout.columnsOrder;
+        const currentIndex = currentOrder.indexOf(columnId);
+
+        if (currentIndex === -1) {
+            return { success: false, error: 'Column not found in order' };
+        }
+
+        const newIndex = direction === 'left' ? currentIndex - 1 : currentIndex + 1;
+
+        if (newIndex < 0) {
+            return { success: false, error: 'Cannot move column further left' };
+        }
+
+        if (newIndex >= currentOrder.length) {
+            return { success: false, error: 'Cannot move column further right' };
+        }
+
+        // Swap positions
+        const newOrder = [...currentOrder];
+        [newOrder[currentIndex], newOrder[newIndex]] = [newOrder[newIndex], newOrder[currentIndex]];
+
+        await db.settings.update('global', {
+            layout: { columnsOrder: newOrder },
+        });
+
+        console.log(`[Onda DB] Column ${columnId} moved ${direction}`);
+        return { success: true, data: { columnsOrder: newOrder } };
+    } catch (error) {
+        console.error('Error moving column:', error);
+        return { success: false, error: (error as Error).message };
+    }
+}
+
+/**
+ * Clear all data in a column (reset to default values based on type)
+ * @param columnId - The unique ID of the column to clear
+ * @returns DbResult with the updated column
+ * @example
+ * // Success:
+ * { success: true, data: { id: '123', name: 'Tasks', type: 'todoListColumn', ... } }
+ *
+ * // Error:
+ * { success: false, error: 'Column not found' }
+ */
+export async function clearColumn(
+    columnId: string,
+): Promise<DbResult<Column>> {
+    try {
+        const column = await db.tableColumns.get(columnId);
+        if (!column) {
+            return { success: false, error: 'Column not found' };
+        }
+
+        // Clear data based on column type
+        let updates: any = {};
+
+        switch (column.type) {
+            case 'checkboxColumn':
+                updates = {
+                    'uniqueProps.days': {
+                        Monday: false,
+                        Tuesday: false,
+                        Wednesday: false,
+                        Thursday: false,
+                        Friday: false,
+                        Saturday: false,
+                        Sunday: false,
+                    },
+                };
+                break;
+            case 'textboxColumn':
+                updates = {
+                    'uniqueProps.days': {
+                        Monday: '',
+                        Tuesday: '',
+                        Wednesday: '',
+                        Thursday: '',
+                        Friday: '',
+                        Saturday: '',
+                        Sunday: '',
+                    },
+                };
+                break;
+            case 'numberboxColumn':
+                updates = {
+                    'uniqueProps.days': {
+                        Monday: 0,
+                        Tuesday: 0,
+                        Wednesday: 0,
+                        Thursday: 0,
+                        Friday: 0,
+                        Saturday: 0,
+                        Sunday: 0,
+                    },
+                };
+                break;
+            case 'tagsColumn':
+            case 'multiCheckBoxColumn':
+                updates = {
+                    'uniqueProps.days': {
+                        Monday: [],
+                        Tuesday: [],
+                        Wednesday: [],
+                        Thursday: [],
+                        Friday: [],
+                        Saturday: [],
+                        Sunday: [],
+                    },
+                };
+                break;
+            case 'todoListColumn':
+                updates = {
+                    'uniqueProps.todos': [],
+                };
+                break;
+            case 'taskTableColumn':
+                updates = {
+                    'uniqueProps.doneTasks': [],
+                };
+                break;
+        }
+
+        await db.tableColumns.update(columnId, updates);
+        const updatedColumn = await db.tableColumns.get(columnId);
+
+        console.log(`[Onda DB] Column ${columnId} data cleared`);
+        return { success: true, data: updatedColumn! };
+    } catch (error) {
+        console.error('Error clearing column:', error);
+        return { success: false, error: (error as Error).message };
+    }
+}
