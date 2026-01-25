@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ColumnMenu from '../ColumnMenu/ColumnMenu';
+import ColumnMenu from '../columnMenu/ColumnMenu';
 import { getIconComponent } from '../../../../utils/icons';
 
 interface ColumnHeaderContentProps {

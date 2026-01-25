@@ -9,7 +9,7 @@ import { TransparentBtn } from '../../../shared/TransparentBtn';
 import { OptionsList } from './OptionList';
 import { TitleVisibilityToggle } from './TitleVisibilityToggle';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
-import { Column, Tag } from '../../../../types/newColumn.types';
+import { Tag } from '../../../../types/newColumn.types';
 import {
     getColumnById,
     updateColumnFields,
