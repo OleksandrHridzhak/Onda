@@ -1,64 +1,64 @@
 import { useState, useEffect } from 'react';
-
-interface Todo {
-  text: string;
-  completed: boolean;
-  category?: string;
-}
+import { Todo } from '../../../../../../../types/newColumn.types';
 
 interface TodoState {
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-  newTodo: string;
-  setNewTodo: React.Dispatch<React.SetStateAction<string>>;
-  newCategory: string;
-  setNewCategory: React.Dispatch<React.SetStateAction<string>>;
-  isEditing: boolean;
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  editingIndex: number | null;
-  setEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
-  editText: string;
-  setEditText: React.Dispatch<React.SetStateAction<string>>;
-  editCategory: string;
-  setEditCategory: React.Dispatch<React.SetStateAction<string>>;
-  selectedFilterCategory: string;
-  setSelectedFilterCategory: React.Dispatch<React.SetStateAction<string>>;
+    todos: Todo[];
+    setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+    newTodo: string;
+    setNewTodo: React.Dispatch<React.SetStateAction<string>>;
+    newCategoryId: string;
+    setNewCategoryId: React.Dispatch<React.SetStateAction<string>>;
+    isEditing: boolean;
+    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+    editingId: string | null;
+    setEditingId: React.Dispatch<React.SetStateAction<string | null>>;
+    editText: string;
+    setEditText: React.Dispatch<React.SetStateAction<string>>;
+    editCategoryId: string;
+    setEditCategoryId: React.Dispatch<React.SetStateAction<string>>;
+    selectedFilterCategoryId: string;
+    setSelectedFilterCategoryId: React.Dispatch<React.SetStateAction<string>>;
 }
 
+/**
+ * Custom hook for managing todo state
+ * Handles local state for todos with automatic sorting by completion status
+ */
 export const useTodoState = (value: Todo[]): TodoState => {
-  const [todos, setTodos] = useState<Todo[]>(value || []);
-  const [newTodo, setNewTodo] = useState('');
-  const [newCategory, setNewCategory] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editText, setEditText] = useState('');
-  const [editCategory, setEditCategory] = useState('');
-  const [selectedFilterCategory, setSelectedFilterCategory] = useState('');
+    const [todos, setTodos] = useState<Todo[]>(value || []);
+    const [newTodo, setNewTodo] = useState('');
+    const [newCategoryId, setNewCategoryId] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editText, setEditText] = useState('');
+    const [editCategoryId, setEditCategoryId] = useState('');
+    const [selectedFilterCategoryId, setSelectedFilterCategoryId] =
+        useState('');
 
-  useEffect(() => {
-    const sortedTodos = [...(value || [])].sort((a, b) => {
-      if (a.completed === b.completed) return 0;
-      return a.completed ? 1 : -1;
-    });
-    setTodos(sortedTodos);
-  }, [value]);
+    useEffect(() => {
+        const sortedTodos = [...(value || [])].sort((a, b) => {
+            if (a.done === b.done) return 0;
+            return a.done ? 1 : -1;
+        });
+        setTodos(sortedTodos);
+    }, [value]);
 
-  return {
-    todos,
-    setTodos,
-    newTodo,
-    setNewTodo,
-    newCategory,
-    setNewCategory,
-    isEditing,
-    setIsEditing,
-    editingIndex,
-    setEditingIndex,
-    editText,
-    setEditText,
-    editCategory,
-    setEditCategory,
-    selectedFilterCategory,
-    setSelectedFilterCategory,
-  };
+    return {
+        todos,
+        setTodos,
+        newTodo,
+        setNewTodo,
+        newCategoryId,
+        setNewCategoryId,
+        isEditing,
+        setIsEditing,
+        editingId,
+        setEditingId,
+        editText,
+        setEditText,
+        editCategoryId,
+        setEditCategoryId,
+        selectedFilterCategoryId,
+        setSelectedFilterCategoryId,
+    };
 };

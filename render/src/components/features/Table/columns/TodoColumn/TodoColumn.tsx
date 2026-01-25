@@ -1,94 +1,47 @@
 import React from 'react';
-import { ColumnHeaderContent } from '../ColumnHeaderContent';
+import { ColumnHeader } from '../ColumnHeader';
 import { TodoCell } from './TodoCell';
 import { DAYS } from '../../TableLogic';
-import { useColumnLogic } from '../useColumnLogic';
+import { updateColumnFields } from '../../../../../db/helpers/columns';
 import {
-    updateColumnNested,
-    updateCommonColumnProperties,
-} from '../../../../../store/tableSlice/tableSlice';
+    TodoListColumn as TodoListColumnType,
+    Todo,
+} from '../../../../../types/newColumn.types';
+import { useReactiveColumn } from '../../hooks/useReactiveColumn';
 
 interface TodoColumnProps {
     columnId: string;
 }
 
+/**
+ * TodoColumn component
+ * Displays a todo list that spans all days of the week.
+ * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
+ */
 export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
-    const customClearColumn = () => {
-        dispatch(
-            updateColumnNested({
-                columnId,
-                path: ['Chosen', 'global'],
-                value: [],
-            }),
-        );
+    const { column, isLoading, isError } =
+        useReactiveColumn<TodoListColumnType>(columnId, 'todoListColumn');
+
+    // TODO: Try to add skeleton loading state later
+    if (isLoading) {
+        return <div></div>;
+    }
+
+    if (isError || !column) {
+        return null;
+    }
+
+    const handleTodosChange = (newTodos: Todo[]) => {
+        updateColumnFields(columnId, {
+            'uniqueProps.todos': newTodos,
+        });
     };
 
-    const customHandleChangeOptions = (
-        id: string,
-        options: string[],
-        tagColors: Record<string, string>,
-        doneTags?: string[],
-    ) => {
-        dispatch(
-            updateCommonColumnProperties({
-                columnId: id,
-                properties: {
-                    uniqueProperties: {
-                        ...columnData?.uniqueProperties,
-                        Categorys: options,
-                        CategoryColors: tagColors,
-                    },
-                },
-            }),
-        );
-    };
-
-    const {
-        columnData,
-        dispatch,
-        handleMoveColumn,
-        handleChangeWidth,
-        columnMenuLogic,
-        columns,
-        columnForHeader: baseColumnForHeader,
-    } = useColumnLogic({
-        columnId,
-        customClearColumn,
-        customHandleChangeOptions,
-    });
-
-    const handleCellChange = (newValue: any) => {
-        dispatch(
-            updateColumnNested({
-                columnId,
-                path: ['Chosen', 'global'],
-                value: newValue,
-            }),
-        );
-    };
-
-    const columnForHeader = {
-        ...baseColumnForHeader,
-        options: columnData?.uniqueProperties?.Categorys,
-        tagColors: columnData?.uniqueProperties?.CategoryColors,
-        Chosen: columnData?.uniqueProperties?.Chosen,
-    };
-
+    // Note: TodoColumn doesn't use DayColumnLayout because the todo list
+    // spans all days (rowSpan={DAYS.length}), unlike day-based columns
     return (
         <table className="checkbox-nested-table font-poppins">
-            <thead className="bg-tableHeader">
-                <tr>
-                    <th className="border-b border-border">
-                        <ColumnHeaderContent
-                            column={columnForHeader}
-                            columnMenuLogic={columnMenuLogic}
-                            handleMoveColumn={handleMoveColumn}
-                            handleChangeWidth={handleChangeWidth}
-                            columns={columns}
-                        />
-                    </th>
-                </tr>
-            </thead>
+            <ColumnHeader columnId={columnId} />
             <tbody className="bg-tableBodyBg">
                 <tr>
                     <td
@@ -97,23 +50,12 @@ export const TodoColumn: React.FC<TodoColumnProps> = ({ columnId }) => {
                         rowSpan={DAYS.length}
                     >
                         <TodoCell
-                            value={
-                                columnData.uniqueProperties?.Chosen?.global ||
-                                []
+                            value={column.uniqueProps.todos || []}
+                            onChange={handleTodosChange}
+                            availableCategories={
+                                column.uniqueProps.availableCategories || []
                             }
-                            onChange={handleCellChange}
-                            column={{
-                                id: columnId,
-                                type: columnData.type || 'todo',
-                                ...columnData,
-                                options:
-                                    columnData?.uniqueProperties?.Categorys ||
-                                    columnData.options,
-                                tagColors:
-                                    columnData?.uniqueProperties
-                                        ?.CategoryColors ||
-                                    columnData?.tagColors,
-                            }}
+                            columnId={columnId}
                         />
                     </td>
                 </tr>

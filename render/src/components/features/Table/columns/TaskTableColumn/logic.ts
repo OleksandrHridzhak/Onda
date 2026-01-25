@@ -1,42 +1,35 @@
-interface Column {
-    id: string;
-    tagColors?: Record<string, string>;
-}
+import { Tag } from '../../../../../types/newColumn.types';
 
+/**
+ * Toggle task completion status
+ * Moves task between incomplete and completed lists
+ */
 export const handleToggleTask = (
-    task: string,
+    taskId: string,
     isCompleted: boolean,
     incompleteTasks: string[],
     completedTasks: string[],
     setIncompleteTasks: React.Dispatch<React.SetStateAction<string[]>>,
     setCompletedTasks: React.Dispatch<React.SetStateAction<string[]>>,
-    onChangeOptions: (
-        id: string,
-        incomplete: string[],
-        tagColors: Record<string, string>,
-        completed: string[],
-    ) => void,
-    column: Column,
+    onChange: (availableTags: Tag[], doneTasks: string[]) => void,
+    availableTags: Tag[],
 ): void => {
     let updatedIncomplete = [...incompleteTasks];
     let updatedCompleted = [...completedTasks];
 
     if (isCompleted) {
-        // Move from DoneTags to Options (mark as incomplete)
-        updatedCompleted = updatedCompleted.filter((t) => t !== task);
-        updatedIncomplete = [...updatedIncomplete, task];
+        // Move from completed to incomplete
+        updatedCompleted = updatedCompleted.filter((id) => id !== taskId);
+        updatedIncomplete = [...updatedIncomplete, taskId];
     } else {
-        // Move from Options to DoneTags (mark as completed)
-        updatedIncomplete = updatedIncomplete.filter((t) => t !== task);
-        updatedCompleted = [...updatedCompleted, task];
+        // Move from incomplete to completed
+        updatedIncomplete = updatedIncomplete.filter((id) => id !== taskId);
+        updatedCompleted = [...updatedCompleted, taskId];
     }
 
     setIncompleteTasks(updatedIncomplete);
     setCompletedTasks(updatedCompleted);
-    onChangeOptions(
-        column.id,
-        updatedIncomplete,
-        column.tagColors,
-        updatedCompleted,
-    );
+
+    // Update database with new doneTasks list
+    onChange(availableTags, updatedCompleted);
 };

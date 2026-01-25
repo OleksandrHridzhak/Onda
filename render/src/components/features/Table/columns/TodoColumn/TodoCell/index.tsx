@@ -6,96 +6,97 @@ import { filterTodos } from './logic';
 import { TodoInput } from './TodoInput';
 import { TodoCategoryFilter } from './TodoCategoryFilter';
 import { TodoList } from './TodoList';
+import { Todo, Tag } from '../../../../../../types/newColumn.types';
 
 interface RootState {
-  newTheme: {
-    themeMode: string;
-  };
-  theme: {
-    mode: string;
-  };
-  pomodoro: unknown;
+    newTheme: {
+        themeMode: string;
+    };
+    theme: {
+        mode: string;
+    };
+    pomodoro: unknown;
 }
 
 interface TodoCellProps {
-  value: Array<{ text: string; completed: boolean; category?: string }>;
-  column: {
-    id: string;
-    type: string;
-    options?: string[];
-    tagColors?: Record<string, string>;
-  };
-  onChange: (
-    value: Array<{ text: string; completed: boolean; category?: string }>,
-  ) => void;
+    value: Todo[];
+    onChange: (value: Todo[]) => void;
+    availableCategories: Tag[];
+    columnId: string;
 }
 
+/**
+ * TodoCell component
+ * Manages the todo list UI with add, edit, delete, and filter functionality.
+ * Uses the new Dexie Todo format with proper ID tracking.
+ */
 export const TodoCell: React.FC<TodoCellProps> = ({
-  value,
-  column,
-  onChange,
+    value,
+    onChange,
+    availableCategories,
+    columnId,
 }) => {
-  const { themeMode } = useSelector((state: RootState) => state.newTheme);
-  const darkMode = themeMode === 'dark';
-  const colorOptions = getColorOptions({ darkMode });
+    const { themeMode } = useSelector((state: RootState) => state.newTheme);
+    const darkMode = themeMode === 'dark';
+    const colorOptions = getColorOptions({ darkMode });
 
-  const {
-    todos,
-    setTodos,
-    newTodo,
-    setNewTodo,
-    newCategory,
-    setNewCategory,
-    isEditing,
-    setIsEditing,
-    editingIndex,
-    setEditingIndex,
-    editText,
-    setEditText,
-    editCategory,
-    setEditCategory,
-    selectedFilterCategory,
-    setSelectedFilterCategory,
-  } = useTodoState(value);
+    const {
+        todos,
+        setTodos,
+        newTodo,
+        setNewTodo,
+        newCategoryId,
+        setNewCategoryId,
+        isEditing,
+        setIsEditing,
+        editingId,
+        setEditingId,
+        editText,
+        setEditText,
+        editCategoryId,
+        setEditCategoryId,
+        selectedFilterCategoryId,
+        setSelectedFilterCategoryId,
+    } = useTodoState(value);
 
-  const filteredTodos = filterTodos(todos, selectedFilterCategory);
+    const filteredTodos = filterTodos(todos, selectedFilterCategoryId);
 
-  return (
-    <div className="h-full flex flex-col">
-      <div className="flex flex-col gap-2 mb-2">
-        <TodoInput
-          newTodo={newTodo}
-          setNewTodo={setNewTodo}
-          newCategory={newCategory}
-          todos={todos}
-          setTodos={setTodos}
-          onChange={onChange}
-          darkMode={darkMode}
-        />
-        <TodoCategoryFilter
-          column={column}
-          darkMode={darkMode}
-          selectedFilterCategory={selectedFilterCategory}
-          setSelectedFilterCategory={setSelectedFilterCategory}
-          setNewCategory={setNewCategory}
-        />
-      </div>
-      <TodoList
-        todos={todos}
-        filteredTodos={filteredTodos}
-        column={column}
-        darkMode={darkMode}
-        isEditing={isEditing}
-        editingIndex={editingIndex}
-        editText={editText}
-        editCategory={editCategory}
-        setTodos={setTodos}
-        setIsEditing={setIsEditing}
-        setEditingIndex={setEditingIndex}
-        setEditText={setEditText}
-        setEditCategory={setEditCategory}
-        onChange={onChange}
-      />
-    </div>
-  );
+    return (
+        <div className="h-full flex flex-col">
+            <div className="flex flex-col gap-2 mb-2">
+                <TodoInput
+                    newTodo={newTodo}
+                    setNewTodo={setNewTodo}
+                    newCategoryId={newCategoryId}
+                    todos={todos}
+                    setTodos={setTodos}
+                    onChange={onChange}
+                    darkMode={darkMode}
+                />
+                <TodoCategoryFilter
+                    availableCategories={availableCategories}
+                    darkMode={darkMode}
+                    selectedFilterCategoryId={selectedFilterCategoryId}
+                    setSelectedFilterCategoryId={setSelectedFilterCategoryId}
+                    setNewCategoryId={setNewCategoryId}
+                />
+            </div>
+            <TodoList
+                todos={todos}
+                filteredTodos={filteredTodos}
+                availableCategories={availableCategories}
+                darkMode={darkMode}
+                isEditing={isEditing}
+                editingId={editingId}
+                editText={editText}
+                editCategoryId={editCategoryId}
+                setTodos={setTodos}
+                setIsEditing={setIsEditing}
+                setEditingId={setEditingId}
+                setEditText={setEditText}
+                setEditCategoryId={setEditCategoryId}
+                onChange={onChange}
+            />
+        </div>
+    );
 };

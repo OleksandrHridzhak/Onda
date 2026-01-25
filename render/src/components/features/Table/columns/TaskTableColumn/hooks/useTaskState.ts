@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
-
-interface Column {
-    options?: string[];
-    doneTags?: string[];
-}
+import { Tag } from '../../../../../../types/newColumn.types';
 
 interface TaskState {
     incompleteTasks: string[];
@@ -12,18 +8,32 @@ interface TaskState {
     setCompletedTasks: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export const useTaskState = (column: Column): TaskState => {
+/**
+ * Custom hook for managing task state
+ * Handles local state for tasks separating them into incomplete and completed
+ */
+export const useTaskState = (
+    availableTags: Tag[],
+    doneTasks: string[],
+): TaskState => {
+    // Incomplete tasks are all tags that are NOT in doneTasks
+    const getIncompleteTasks = () => {
+        return availableTags
+            .filter((tag) => !doneTasks.includes(tag.id))
+            .map((tag) => tag.id);
+    };
+
     const [incompleteTasks, setIncompleteTasks] = useState<string[]>(
-        column.options || [],
+        getIncompleteTasks(),
     );
     const [completedTasks, setCompletedTasks] = useState<string[]>(
-        column.doneTags || [],
+        doneTasks || [],
     );
 
     useEffect(() => {
-        setIncompleteTasks(column.options || []);
-        setCompletedTasks(column.doneTags || []);
-    }, [column]);
+        setIncompleteTasks(getIncompleteTasks());
+        setCompletedTasks(doneTasks || []);
+    }, [availableTags, doneTasks]);
 
     return {
         incompleteTasks,
