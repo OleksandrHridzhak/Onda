@@ -45,6 +45,7 @@ export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
     return (
         <table className="checkbox-nested-table font-poppins">
             <ColumnHeader columnId={columnId} />
+            <ColumnHeader columnId={columnId} />
             <tbody className="bg-tableBodyBg">
                 <tr>
                     <td
