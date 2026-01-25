@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnHeader } from '../ColumnHeader';
-import { TaskTableCell } from '.';
+import { TaskTableCell } from './TaskTableCell';
 import { DAYS } from '../../TableLogic';
 import { updateColumnFields } from '../../../../../db/helpers/columns';
 import { TaskTableColumn as TaskTableColumnType } from '../../../../../types/newColumn.types';
@@ -44,7 +44,6 @@ export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
     // spans all days (rowSpan={DAYS.length}), unlike day-based columns
     return (
         <table className="checkbox-nested-table font-poppins">
-            <ColumnHeader columnId={columnId} />
             <ColumnHeader columnId={columnId} />
             <tbody className="bg-tableBodyBg">
                 <tr>
