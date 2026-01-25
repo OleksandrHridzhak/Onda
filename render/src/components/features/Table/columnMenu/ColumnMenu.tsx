@@ -190,12 +190,12 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
 
     const saveOptions = async (opts: string[], colors: Record<string, string>) => {
         const tags: Tag[] = opts.map((name) => ({
-            id: crypto.randomUUID(),
+            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
             name,
             color: colors[name] || 'blue',
         }));
 
-        let updates: any = {};
+        const updates: Record<string, Tag[]> = {};
         if (column.type === 'tagsColumn') {
             updates['uniqueProps.availableTags'] = tags;
         } else if (column.type === 'multiCheckBoxColumn') {
@@ -212,7 +212,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const updates: any = {};
+            const updates: Record<string, string | number | boolean> = {};
 
             if (name !== column.name) {
                 updates.name = name;

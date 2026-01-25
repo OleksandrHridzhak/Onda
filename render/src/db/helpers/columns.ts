@@ -294,7 +294,7 @@ export async function clearColumn(
         }
 
         // Clear data based on column type
-        let updates: any = {};
+        let updates: Record<string, any> = {};
 
         switch (column.type) {
             case 'checkboxColumn':
