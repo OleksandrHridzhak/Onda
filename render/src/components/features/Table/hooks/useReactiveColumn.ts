@@ -4,8 +4,8 @@ import { Column } from '../../../../types/newColumn.types';
 
 /**
  * useReactiveColumn
- * * A custom hook that combines a live subscription to IndexedDB
- * with automatic type validation for a specific column.
+ * combines a live subscription to IndexedDB - because of DRY principles.
+ * with automatic type validation for a specific column - becasue of TS limitations.
  */
 export function useReactiveColumn<T extends Column>(
     columnId: string,
