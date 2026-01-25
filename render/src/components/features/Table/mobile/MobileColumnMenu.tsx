@@ -1,5 +1,5 @@
 import React from 'react';
-import ColumnMenu from '../columnMenu/ColumnMenu';
+import ColumnMenu from '../ColumnMenu/ColumnMenu';
 import { useColumnLogic } from '../columns/useColumnLogic';
 import { updateCommonColumnProperties } from '../../../../store/tableSlice/tableSlice';
 

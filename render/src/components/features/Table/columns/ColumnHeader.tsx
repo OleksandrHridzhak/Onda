@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ColumnMenu from '../columnMenu/ColumnMenu';
+import ColumnMenu from '../ColumnMenu/ColumnMenu';
 import { getIconComponent } from '../../../../utils/icons';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Column } from '../../../../types/newColumn.types';
