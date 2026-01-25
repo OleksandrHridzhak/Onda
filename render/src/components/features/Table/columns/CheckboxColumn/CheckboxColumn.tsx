@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnHeader } from '../ColumnHeader';
-import { CheckboxCell } from './CheckboxCell';
+import { CheckboxCell } from './CheckBoxCell';
 import { updateColumnFields } from '../../../../../db/helpers/columns';
 import { CheckboxColumn as CheckboxColumnType } from '../../../../../types/newColumn.types';
 import { useReactiveColumn } from '../../hooks/useReactiveColumn';
