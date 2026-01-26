@@ -10,14 +10,9 @@ import { OptionsList } from './OptionList';
 import { TitleVisibilityToggle } from './TitleVisibilityToggle';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
 import { Tag } from '../../../../types/newColumn.types';
-import {
-    getColumnById,
-    updateColumnFields,
-    deleteColumn,
-    clearColumn,
-    moveColumn,
-} from '../../../../db/helpers/columns';
+import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
+import { useColumnMenuHandlers } from './useColumnMenuHandlers';
 
 interface ColumnMenuProps {
     columnId: string;
@@ -50,13 +45,30 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     const [description, setDescription] = useState('');
     const [showTitle, setShowTitle] = useState(true);
     const [width, setWidth] = useState(0);
-    const [options, setOptions] = useState<string[]>([]);
-    const [optionColors, setOptionColors] = useState<Record<string, string>>({});
     const [checkboxColor, setCheckboxColor] = useState('green');
-    const [newOption, setNewOption] = useState('');
     const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
     const [isColorMenuOpen, setIsColorMenuOpen] = useState<Record<string, boolean>>({});
     const [isSaving, setIsSaving] = useState(false);
+
+    // Use custom hook for handlers
+    const {
+        options,
+        setOptions,
+        optionColors,
+        setOptionColors,
+        newOption,
+        setNewOption,
+        handleAddOption,
+        handleRemoveOption,
+        handleEditOption,
+        handleColorChange,
+        handleSave: hookHandleSave,
+        handleDelete,
+        handleClear,
+        handleMoveUp: hookHandleMoveUp,
+        handleMoveDown: hookHandleMoveDown,
+        handleWidthChange: hookHandleWidthChange,
+    } = useColumnMenuHandlers({ columnId, column, onClose });
 
     const menuRef = useRef<HTMLDivElement>(null);
     const darkMode = document.documentElement.getAttribute('data-theme-mode') === 'dark';
@@ -111,7 +123,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
         } else if (column.type === 'checkboxColumn') {
             setCheckboxColor(column.uniqueProps.checkboxColor || 'green');
         }
-    }, [column]);
+    }, [column, setOptions, setOptionColors]);
 
     // Close on outside click
     useEffect(() => {
@@ -137,150 +149,21 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
         column.type
     );
 
-    const handleAddOption = async () => {
-        if (!newOption.trim() || options.includes(newOption.trim())) {
-            return;
-        }
-
-        const updatedOptions = [...options, newOption.trim()];
-        const updatedColors = { ...optionColors, [newOption.trim()]: 'blue' };
-
-        setOptions(updatedOptions);
-        setOptionColors(updatedColors);
-        setNewOption('');
-
-        // Save to DB immediately
-        await saveOptions(updatedOptions, updatedColors);
+    const handleSave = () => {
+        hookHandleSave(name, selectedIcon, description, showTitle, width, checkboxColor, setIsSaving);
     };
 
-    const handleRemoveOption = async (option: string) => {
-        const updatedOptions = options.filter((o) => o !== option);
-        const updatedColors = { ...optionColors };
-        delete updatedColors[option];
-
-        setOptions(updatedOptions);
-        setOptionColors(updatedColors);
-
-        // Save to DB immediately
-        await saveOptions(updatedOptions, updatedColors);
+    const handleMoveUp = () => {
+        hookHandleMoveUp(canMoveUp);
     };
 
-    const handleEditOption = async (oldOption: string, newOption: string) => {
-        const updatedOptions = options.map((o) => (o === oldOption ? newOption : o));
-        const updatedColors = {
-            ...optionColors,
-            [newOption]: optionColors[oldOption],
-        };
-        delete updatedColors[oldOption];
-
-        setOptions(updatedOptions);
-        setOptionColors(updatedColors);
-
-        // Save to DB immediately
-        await saveOptions(updatedOptions, updatedColors);
-    };
-
-    const handleColorChange = async (option: string, color: string) => {
-        const updatedColors = { ...optionColors, [option]: color };
-        setOptionColors(updatedColors);
-
-        // Save to DB immediately
-        await saveOptions(options, updatedColors);
-    };
-
-    const saveOptions = async (opts: string[], colors: Record<string, string>) => {
-        const tags: Tag[] = opts.map((name) => ({
-            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
-            name,
-            color: colors[name] || 'blue',
-        }));
-
-        const updates: Record<string, Tag[]> = {};
-        if (column.type === 'tagsColumn') {
-            updates['uniqueProps.availableTags'] = tags;
-        } else if (column.type === 'multiCheckBoxColumn') {
-            updates['uniqueProps.availableOptions'] = tags;
-        } else if (column.type === 'todoListColumn') {
-            updates['uniqueProps.availableCategories'] = tags;
-        } else if (column.type === 'taskTableColumn') {
-            updates['uniqueProps.availableTags'] = tags;
-        }
-
-        await updateColumnFields(columnId, updates);
-    };
-
-    const handleSave = async () => {
-        setIsSaving(true);
-        try {
-            const updates: Record<string, string | number | boolean> = {};
-
-            if (name !== column.name) {
-                updates.name = name;
-            }
-
-            if (selectedIcon !== column.emojiIconName) {
-                updates.emojiIconName = selectedIcon;
-            }
-
-            if (description !== column.description) {
-                updates.description = description;
-            }
-
-            if (showTitle !== column.isNameVisible) {
-                updates.isNameVisible = showTitle;
-            }
-
-            if (width !== column.width) {
-                updates.width = width;
-            }
-
-            if (column.type === 'checkboxColumn' && checkboxColor !== column.uniqueProps.checkboxColor) {
-                updates['uniqueProps.checkboxColor'] = checkboxColor;
-            }
-
-            if (Object.keys(updates).length > 0) {
-                await updateColumnFields(columnId, updates);
-            }
-
-            onClose();
-        } catch (error) {
-            console.error('Error saving column changes:', error);
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleDelete = async () => {
-        if (
-            globalThis.confirm(
-                `Are you sure you want to delete "${column.name || 'this column'}"? This action cannot be undone.`
-            )
-        ) {
-            await deleteColumn(columnId);
-            onClose();
-        }
-    };
-
-    const handleClear = async () => {
-        await clearColumn(columnId);
-    };
-
-    const handleMoveUp = async () => {
-        if (canMoveUp) {
-            await moveColumn(columnId, 'left');
-        }
-    };
-
-    const handleMoveDown = async () => {
-        if (canMoveDown) {
-            await moveColumn(columnId, 'right');
-        }
+    const handleMoveDown = () => {
+        hookHandleMoveDown(canMoveDown);
     };
 
     const handleWidthChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newWidth = parseInt(e.target.value, 10) || 0;
+        const newWidth = await hookHandleWidthChange(e);
         setWidth(newWidth);
-        await updateColumnFields(columnId, { width: newWidth });
     };
 
     // Map column type for OptionsList (which expects old type names)
