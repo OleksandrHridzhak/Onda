@@ -24,7 +24,7 @@ export const useColumnMenuHandlers = ({
 
     const saveOptions = async (opts: string[], colors: Record<string, string>) => {
         const tags: Tag[] = opts.map((name) => ({
-            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
+            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             name,
             color: colors[name] || 'blue',
         }));
@@ -167,7 +167,7 @@ export const useColumnMenuHandlers = ({
     };
 
     const handleWidthChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newWidth = parseInt(e.target.value, 10) || 0;
+        const newWidth = parseInt(e.target.value, 10) || 100;
         await updateColumnFields(columnId, { width: newWidth });
         return newWidth;
     };

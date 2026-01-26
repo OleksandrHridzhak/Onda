@@ -123,7 +123,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
         } else if (column.type === 'checkboxColumn') {
             setCheckboxColor(column.uniqueProps.checkboxColor || 'green');
         }
-    }, [column, setOptions, setOptionColors]);
+    }, [column]);
 
     // Close on outside click
     useEffect(() => {
