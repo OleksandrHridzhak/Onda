@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import PlannerHeader from '../features/PlannerHeader';
-import { LoadingScreen } from '../shared/LoadingScreen';
 import { useTableLogic } from '../features/Table/TableLogic';
 import { useSelector } from 'react-redux';
 import Table from '../features/Table/Table';
@@ -46,7 +45,9 @@ const TableScreen: React.FC = () => {
 
     // Show loading screen while loading from dexie
     const isLoading =
-        tableLogic.loading || columnsData === undefined || settings === undefined;
+        tableLogic.loading ||
+        columnsData === undefined ||
+        settings === undefined;
 
     // Handle refresh for pull-to-refresh hook
     const handlePullRefresh = async () => {
@@ -66,10 +67,6 @@ const TableScreen: React.FC = () => {
         maxDistance: 150,
         minDuration: 500, // Мінімум 500ms тягу
     });
-
-    if (isLoading) {
-        return <LoadingScreen darkMode={themeMode === 'dark'} />;
-    }
 
     return (
         <div
