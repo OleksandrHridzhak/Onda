@@ -1,5 +1,5 @@
 import React from 'react';
-import ColumnMenu from '../columnMenu/ColumnMenu';
+import ColumnMenu from '../ColumnMenu/ColumnMenu';
 
 interface MobileColumnMenuProps {
     columnId: string;
