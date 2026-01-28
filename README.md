@@ -52,7 +52,6 @@ graph LR
     %% Спільний фронтенд
     subgraph ClientSide [Shared React App]
         ReactUI[React UI]
-        Redux[(Redux State)]
         SyncService[Sync Service]
         IDB[(IndexedDB)]
     end
@@ -67,8 +66,7 @@ graph LR
     Electron --> ReactUI
     Capacitor --> ReactUI
 
-    ReactUI <--> Redux
-    Redux <--> IDB
+    ReactUI <--> IDB
     SyncService <--> IDB
     SyncService <---- Network ----> Express
     Express <--> DB
