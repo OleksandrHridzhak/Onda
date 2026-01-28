@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
+import dayjs from 'dayjs';
 import {
     getAllCalendarEvents,
     saveCalendarEvent,
@@ -18,6 +19,17 @@ export interface NewEvent {
     repeatFrequency: string;
 }
 
+/** Default template for creating a new event */
+const DEFAULT_NEW_EVENT: NewEvent = {
+    title: '',
+    startTime: '09:00',
+    endTime: '10:00',
+    color: '#2563eb',
+    isRepeating: false,
+    repeatDays: [],
+    repeatFrequency: 'weekly',
+};
+
 export function useCalendar() {
     // Use liveQuery to reactively fetch all calendar events from Dexie DB
     const liveEvents = useLiveQuery(async () => {
@@ -35,15 +47,7 @@ export function useCalendar() {
     const [error, setError] = useState<unknown>(null);
     const [showEventModal, setShowEventModal] = useState<boolean>(false);
     const [editingEventId, setEditingEventId] = useState<string | null>(null);
-    const [newEvent, setNewEvent] = useState<NewEvent>({
-        title: '',
-        startTime: '09:00',
-        endTime: '10:00',
-        color: '#2563eb',
-        isRepeating: false,
-        repeatDays: [],
-        repeatFrequency: 'weekly',
-    });
+    const [newEvent, setNewEvent] = useState<NewEvent>({ ...DEFAULT_NEW_EVENT });
 
     const createOrUpdateEvent = async (
         payload: NewEvent & { id?: string | number },
@@ -67,15 +71,7 @@ export function useCalendar() {
             if (response.success) {
                 // No need to manually update state - liveQuery will automatically update
                 setShowEventModal(false);
-                setNewEvent({
-                    title: '',
-                    startTime: '09:00',
-                    endTime: '10:00',
-                    color: '#2563eb',
-                    isRepeating: false,
-                    repeatDays: [],
-                    repeatFrequency: 'weekly',
-                });
+                setNewEvent({ ...DEFAULT_NEW_EVENT });
                 setEditingEventId(null);
                 return eventData;
             } else {
@@ -96,15 +92,7 @@ export function useCalendar() {
             if (response.success) {
                 // No need to manually update state - liveQuery will automatically update
                 setShowEventModal(false);
-                setNewEvent({
-                    title: '',
-                    startTime: '09:00',
-                    endTime: '10:00',
-                    color: '#2563eb',
-                    isRepeating: false,
-                    repeatDays: [],
-                    repeatFrequency: 'weekly',
-                });
+                setNewEvent({ ...DEFAULT_NEW_EVENT });
                 setEditingEventId(null);
                 return true;
             } else {
@@ -122,22 +110,20 @@ export function useCalendar() {
         return regex.test(time);
     };
 
+    /**
+     * Shifts a time string by the given delta in minutes, wrapping around 24h.
+     */
+    const shiftTime = (time: string, delta: number): string => {
+        return dayjs(`1970-01-01 ${time}`)
+            .add(delta, 'minute')
+            .format('HH:mm');
+    };
+
     const adjustEventTimes = (delta: number): void => {
-        const shift = (time: string): string => {
-            const [h, m] = time.split(':').map(Number);
-            let total = h * 60 + m + delta;
-            if (total < 0) total += 24 * 60;
-            if (total >= 24 * 60) total -= 24 * 60;
-            const nh = Math.floor(total / 60)
-                .toString()
-                .padStart(2, '0');
-            const nm = (total % 60).toString().padStart(2, '0');
-            return nh + ':' + nm;
-        };
         setNewEvent((prev) => ({
             ...prev,
-            startTime: shift(prev.startTime),
-            endTime: shift(prev.endTime),
+            startTime: shiftTime(prev.startTime, delta),
+            endTime: shiftTime(prev.endTime, delta),
         }));
     };
 
@@ -147,14 +133,10 @@ export function useCalendar() {
         endTime?: string,
     ): void => {
         setNewEvent({
-            title: '',
+            ...DEFAULT_NEW_EVENT,
             date: date.toDateString(),
-            startTime: startTime || '09:00',
-            endTime: endTime || '10:00',
-            color: '#2563eb',
-            isRepeating: false,
-            repeatDays: [],
-            repeatFrequency: 'weekly',
+            startTime: startTime || DEFAULT_NEW_EVENT.startTime,
+            endTime: endTime || DEFAULT_NEW_EVENT.endTime,
         });
         setEditingEventId(null);
         setShowEventModal(true);
