@@ -5,9 +5,7 @@ import { icons } from '../../../../utils/icons';
 import { OptionsList } from './components/OptionList';
 import { CheckboxColorPicker } from './components/CheckBoxColorPicker';
 import { ColumnMenuHeader } from './components/ColumnMenuHeader';
-import { ColumnNameInput } from './components/ColumnNameInput';
-import { ColumnDescription } from './components/ColumnDescription';
-import { ColumnPositionControls } from './components/ColumnPositionControls';
+import { ColumnBasicSettings } from './components/ColumnBasicSettings';
 import { ColumnActions } from './components/ColumnActions';
 import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
@@ -182,7 +180,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                 <ColumnMenuHeader onClose={onClose} />
 
                 <div className="">
-                    <ColumnNameInput
+                    <ColumnBasicSettings
                         name={name}
                         setName={setName}
                         selectedIcon={selectedIcon}
@@ -194,15 +192,8 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                             setIsIconSectionExpanded(!isIconSectionExpanded)
                         }
                         icons={icons}
-                        darkMode={darkMode}
-                    />
-
-                    <ColumnDescription
                         description={description}
                         setDescription={setDescription}
-                    />
-
-                    <ColumnPositionControls
                         width={width}
                         handleWidthChange={handleWidthChange}
                         canMoveLeft={canMoveLeft}
