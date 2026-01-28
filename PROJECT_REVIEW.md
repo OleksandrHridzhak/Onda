@@ -32,14 +32,16 @@ Onda is a well-structured task management application with a modern tech stack (
 
 ### Code Quality Metrics
 
-| Metric               | Score  | Target | Status                 |
-| -------------------- | ------ | ------ | ---------------------- |
-| **Maintainability**  | 65/100 | >70    | ⚠️ Below target        |
-| **Test Coverage**    | 0%     | >80%   | ❌ **Critical**        |
-| **Type Safety**      | 84%    | >90%   | ⚠️ Good but improvable |
-| **Code Duplication** | ~8%    | <5%    | ⚠️ Moderate            |
-| **Documentation**    | 30%    | >60%   | ⚠️ Insufficient        |
-| **Security Score**   | 45/100 | >80    | ❌ **Critical**        |
+**Note:** Scores based on manual code review, static analysis patterns, and industry best practices. Security and Quality scores combine factors like vulnerability count, test coverage, type safety, error handling, and architectural patterns.
+
+| Metric               | Score  | Target | Status                                        |
+| -------------------- | ------ | ------ | --------------------------------------------- |
+| **Maintainability**  | 65/100 | >70    | ⚠️ Below target                               |
+| **Test Coverage**    | 0%     | >80%   | ❌ **Critical**                               |
+| **Type Safety**      | 84%    | >90%   | ⚠️ Good, can be improved                      |
+| **Code Duplication** | ~8%    | <5%    | ⚠️ Moderate                                   |
+| **Documentation**    | Low    | Good   | ⚠️ Insufficient (READMEs only)                |
+| **Security Score**   | 45/100 | >80    | ❌ **Critical** (14 vulns, disabled security) |
 
 ---
 
@@ -635,13 +637,21 @@ Keep in IndexedDB:
 
 Track these weekly:
 
-| Metric          | Current | Week 4 Target | Week 8 Target |
-| --------------- | ------- | ------------- | ------------- |
-| Test Coverage   | 0%      | 40%           | 80%           |
-| Security Score  | 45/100  | 75/100        | 90/100        |
-| Vulnerabilities | 14      | 3             | 0             |
-| Documentation   | 30%     | 50%           | 70%           |
-| Code Quality    | 65/100  | 75/100        | 85/100        |
+**Scoring Methodology:**
+
+- **Test Coverage:** Measured by code coverage tools (Jest/Istanbul)
+- **Vulnerabilities:** Count from `npm audit`
+- **Security Score:** Weighted: 40% vulnerabilities fixed, 30% security features enabled, 20% input validation, 10% dependency updates
+- **Documentation:** Qualitative assessment based on API docs, architecture docs, and code comments
+- **Code Quality:** Weighted: 30% test coverage, 25% type safety, 20% error handling, 15% modularity, 10% code duplication
+
+| Metric          | Current | Week 4 Target      | Week 8 Target |
+| --------------- | ------- | ------------------ | ------------- |
+| Test Coverage   | 0%      | 40%                | 80%           |
+| Security Score  | 45/100  | 75/100             | 90/100        |
+| Vulnerabilities | 14      | 3                  | 0             |
+| Documentation   | Minimal | Basic (API + Arch) | Comprehensive |
+| Code Quality    | 65/100  | 75/100             | 85/100        |
 
 ---
 
