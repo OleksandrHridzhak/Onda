@@ -8,6 +8,7 @@ import { getSettings } from '../../../db/helpers/settings';
 import './Table.css';
 import { useRowHeightSync } from './hooks/useRowHeightSync';
 import DynamicColumn from './columns/DynamicColumn';
+import { TableLoadingOverlay } from './components/TableLoadingOverlay';
 
 const Table: React.FC = () => {
     /**
@@ -30,7 +31,7 @@ const Table: React.FC = () => {
     });
 
     // Synchronize row heights across all nested tables
-    useRowHeightSync([columnsData]);
+    const { isLoading } = useRowHeightSync([columnsData]);
 
     // To avoid rendering issues, ensure required data is loaded
     if (columnOrder === undefined || columnsData === undefined) {
@@ -51,7 +52,7 @@ const Table: React.FC = () => {
      * </MainTable>
      */
     return (
-        <div className="overflow-x-auto font-poppins border border-border rounded-xl m-2 custom-scroll">
+        <div className="overflow-x-auto font-poppins border border-border rounded-xl m-2 custom-scroll relative">
             <div className="overflow-x-auto custom-scroll">
                 <table className="w-full">
                     <thead>
@@ -81,6 +82,9 @@ const Table: React.FC = () => {
                     </thead>
                 </table>
             </div>
+
+            {/* Loading overlay */}
+            <TableLoadingOverlay isVisible={isLoading} />
         </div>
     );
 };
