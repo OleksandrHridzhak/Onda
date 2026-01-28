@@ -21,7 +21,7 @@ const createWeeklyValues = <T>(defaultValue: T): WeeklyValues<T> => ({
 export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
     [COLUMN_TYPES.CHECKBOX]: {
         type: COLUMN_TYPES.CHECKBOX,
-        name: 'CheckBox Column',
+        name: 'CheckBox',
         isNameVisible: false,
         description: 'Track daily items with simple checkboxes.',
         emojiIconName: 'Star',
@@ -34,7 +34,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
 
     [COLUMN_TYPES.TEXTBOX]: {
         type: COLUMN_TYPES.TEXTBOX,
-        name: 'Textbox Column',
+        name: 'Textbox',
         isNameVisible: true,
         description: 'Store text strings for each day of the week.',
         emojiIconName: 'Star',
@@ -46,7 +46,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
 
     [COLUMN_TYPES.NUMBERBOX]: {
         type: COLUMN_TYPES.NUMBERBOX,
-        name: 'NumberBox Column',
+        name: 'NumberBox',
         isNameVisible: false,
         description: 'Log numeric values for each weekday.',
         emojiIconName: 'Star',
@@ -58,7 +58,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
 
     [COLUMN_TYPES.TAGS]: {
         type: COLUMN_TYPES.TAGS,
-        name: 'Tags Column',
+        name: 'Tags',
         isNameVisible: true,
         description: 'Assign specific tags to each day.',
         emojiIconName: 'Star',
@@ -74,7 +74,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
 
     [COLUMN_TYPES.TODO]: {
         type: COLUMN_TYPES.TODO,
-        name: 'TodoList Column',
+        name: 'TodoList',
         isNameVisible: true,
         description: 'Manage a list of tasks and categories.',
         emojiIconName: 'ListTodo',
@@ -89,7 +89,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
 
     [COLUMN_TYPES.MULTI_CHECKBOX]: {
         type: COLUMN_TYPES.MULTI_CHECKBOX,
-        name: 'MultiCheckBox Column',
+        name: 'MultiCheckBox',
         isNameVisible: false,
         description: 'Select multiple options per weekday.',
         emojiIconName: 'Circle',
@@ -105,7 +105,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
 
     [COLUMN_TYPES.TASK_TABLE]: {
         type: COLUMN_TYPES.TASK_TABLE,
-        name: 'TaskTable Column',
+        name: 'TaskTable',
         isNameVisible: true,
         description: 'Advanced task tracking with completion status.',
         emojiIconName: 'ListTodo',
