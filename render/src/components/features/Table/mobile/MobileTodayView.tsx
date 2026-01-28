@@ -14,11 +14,7 @@ import {
 } from '../../../../store/tableSlice/tableSlice';
 import { MobileColumnMenu } from './MobileColumnMenu';
 import { getIconComponent } from '../../../../utils/icons';
-import {
-    getMonday,
-    getWeekDays,
-    formatDateDisplay,
-} from '../../../../utils/dateUtils';
+import { getMonday, getWeekDays, formatDateDisplay } from './dateUtils';
 import { Tag, Todo } from '../../../../types/newColumn.types';
 
 export const MobileTodayView: React.FC = () => {

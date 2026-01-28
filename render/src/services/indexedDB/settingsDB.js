@@ -1,6 +1,11 @@
 import { dbPromise } from './index.js';
-import { getSettingsTemplate } from '../../utils/fileTemplates';
+
 import { notifyDataChange } from '../syncService';
+
+// Tempoorary function to provide default settings structure
+export function getSettingsTemplate() {
+    return 0;
+}
 
 const handleError = (err, message) => ({
     status: message,
@@ -191,7 +196,7 @@ export const settingsService = {
             const tx = db.transaction('settings', 'readwrite');
             const store = tx.objectStore('settings');
 
-            const settings = (await store.get(1)) || getSettingsTemplate();
+            const settings = await store.get(1);
             settings.table.columnOrder = columnOrder;
 
             await store.put({ id: 1, ...settings });

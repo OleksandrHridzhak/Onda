@@ -20,13 +20,13 @@ interface ColumnType {
     hoverColor: string;
 }
 
-interface ColumnTypeSelectorProps {
+interface ColumnCreatingPageProps {
     onSelect: (typeId: string) => void;
     onCancel: () => void;
     darkMode: boolean;
 }
 
-const ColumnTypeSelector: React.FC<ColumnTypeSelectorProps> = ({
+const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
     onSelect,
     onCancel,
     darkMode,
@@ -217,4 +217,4 @@ if (typeof document !== 'undefined') {
     document.head.appendChild(styleElement);
 }
 
-export default ColumnTypeSelector;
+export default ColumnCreatingPage;

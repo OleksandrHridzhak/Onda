@@ -3,8 +3,8 @@ import { Sun, Moon, Plus } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleThemeMode } from '../../store/slices/newThemeSlice';
-import ColumnTypeSelector from '../pages/ColumnTypeSelector';
-import { sideBarItems } from '../../utils/constants';
+import ColumnCreatingPage from '../pages/ColumnCreatingPage';
+import { sideBarItems } from './constants';
 import { createColumn } from '../../db/helpers/columns';
 import { ColumnType } from '../../constants/columnTypes';
 
@@ -157,7 +157,7 @@ const Sidebar: React.FC = () => {
 
                     {showColumnSelector && (
                         <div className="absolute left-12 z-50">
-                            <ColumnTypeSelector
+                            <ColumnCreatingPage
                                 onSelect={(type: ColumnType) => {
                                     createColumn(type);
                                     setShowColumnSelector(false);
