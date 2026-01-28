@@ -88,9 +88,9 @@ const settings = await getSettings();
 // Update sync settings
 await updateSettings({
   sync: {
-    isSyncEnabled: true,
-    syncServerUrl: 'https://...',
-    syncSecretKey: 'abc123'
+    enabled: true,
+    serverUrl: 'https://...',
+    secretKey: 'abc123'
   }
 });
 

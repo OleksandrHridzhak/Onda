@@ -25,6 +25,7 @@ export class OndaDB extends Dexie {
             tableColumns: 'id',
             calendar: 'id, date',
         });
+
         /**
          * Populate DB(only when calls constructor) with default settings on first creation to avoid
          * problems with settings and it`s id "global"

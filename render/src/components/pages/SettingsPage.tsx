@@ -4,46 +4,6 @@ import { Settings, Download, X, Cloud } from 'lucide-react';
 import FullCloseSection from '../features/Settings/sections/FullCloseSection';
 import DataSection from '../features/Settings/sections/DataSection';
 import SyncSection from '../features/Settings/sections/SyncSection';
-import { settingsService } from '../../services/indexedDB/settingsDB';
-
-interface ThemeSettings {
-  accentColor: string;
-  darkMode: boolean;
-  autoThemeSettings: {
-    enabled: boolean;
-    startTime: string;
-    endTime: string;
-  };
-}
-
-interface TableSettings {
-  columnOrder: unknown[];
-  showSummaryRow: boolean;
-  compactMode: boolean;
-  stickyHeader: boolean;
-}
-
-interface UiSettings {
-  animations: boolean;
-  tooltips: boolean;
-  confirmDelete: boolean;
-}
-
-interface HeaderSettings {
-  layout: string;
-}
-
-interface CalendarSettings {
-  notifications: boolean;
-}
-
-interface AppSettings {
-  theme: ThemeSettings;
-  table: TableSettings;
-  ui: UiSettings;
-  header: HeaderSettings;
-  calendar: CalendarSettings;
-}
 
 interface RootState {
   newTheme: {
@@ -63,52 +23,8 @@ export default function SettingsDashboard(): React.ReactElement {
   const darkMode = themeMode === 'dark';
 
   const [activeSection, setActiveSection] = useState(() => {
-    return localStorage.getItem('activeSection') || 'table';
+    return localStorage.getItem('activeSection') || 'data';
   });
-  const [settings, setSettings] = useState<AppSettings>({
-    theme: {
-      accentColor: 'standard',
-      darkMode: true,
-      autoThemeSettings: {
-        enabled: false,
-        startTime: '',
-        endTime: '',
-      },
-    },
-    table: {
-      columnOrder: [],
-      showSummaryRow: false,
-      compactMode: false,
-      stickyHeader: true,
-    },
-    ui: {
-      animations: true,
-      tooltips: true,
-      confirmDelete: true,
-    },
-    header: {
-      layout: 'withWidget',
-    },
-    calendar: {
-      notifications: true,
-    },
-  });
-
-  useEffect(() => {
-    settingsService
-      .getSettings()
-      .then(({ data }) => {
-        if (data) {
-          setSettings((prev) => ({
-            ...prev,
-            ...data,
-            header: data.header ?? prev.header,
-            calendar: data.calendar ?? prev.calendar,
-          }));
-        }
-      })
-      .catch(console.error);
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('activeSection', activeSection);

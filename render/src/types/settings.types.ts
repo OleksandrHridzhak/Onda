@@ -4,8 +4,12 @@ export interface Setting {
         columnsOrder: string[];
     };
     sync: {
-        syncServerUrl: string;
-        syncSecretKey: string;
-        isSyncEnabled: boolean;
+        serverUrl: string;
+        secretKey: string;
+        enabled: boolean;
+        version?: number;
+        lastSync?: string | null;
+        autoSync?: boolean;
+        syncInterval?: number;
     };
 }
