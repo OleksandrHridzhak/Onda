@@ -127,7 +127,8 @@ export function useCalendarLayout(events: CalendarEntry[] = []) {
                     dayEvents.push(event);
                 }
             } else {
-                const isCorrectDay = event.repeatDays.includes(dayIndex);
+                const isCorrectDay =
+                    event.repeatDays?.includes(dayIndex) ?? false;
                 const isCorrectWeek =
                     event.repeatFrequency === 'weekly' ||
                     (event.repeatFrequency === 'biweekly' &&
