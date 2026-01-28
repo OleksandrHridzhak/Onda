@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ColumnMenu from '../columnMenu/ColumnMenu';
+import ColumnMenu from '../ColumnMenu/ColumnMenu';
 import { getIconComponent } from '../../../../utils/icons';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Column } from '../../../../types/newColumn.types';
@@ -68,16 +68,20 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({ columnId }) => {
                                                 : ''
                                         }
                                     >
-                                        {getIconComponent(column.emojiIconName, 16)}
+                                        {getIconComponent(
+                                            column.emojiIconName,
+                                            16,
+                                        )}
                                     </span>
                                 )}
-                                {column.isNameVisible !== false && column.name && (
-                                    <span
-                                        className={`truncate block text-textTableValues max-w-full`}
-                                    >
-                                        {column.name}
-                                    </span>
-                                )}
+                                {column.isNameVisible !== false &&
+                                    column.name && (
+                                        <span
+                                            className={`truncate block text-textTableValues max-w-full`}
+                                        >
+                                            {column.name}
+                                        </span>
+                                    )}
                                 {isEmptyHeader && (
                                     <span className="opacity-0">∅</span>
                                 )}
@@ -86,7 +90,9 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({ columnId }) => {
                     </th>
                 </tr>
             </thead>
-            {showMenu && <ColumnMenu columnId={columnId} onClose={handleClose} />}
+            {showMenu && (
+                <ColumnMenu columnId={columnId} onClose={handleClose} />
+            )}
         </>
     );
 };
