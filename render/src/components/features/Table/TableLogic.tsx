@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 
 export const DAYS = [
   'Monday',
@@ -13,15 +12,13 @@ export const DAYS = [
 
 /**
  * Основний хук логіки таблиці
- * Управляє UI-станом таблиці (loading state отримується з Redux)
+ * Управляє UI-станом таблиці
  */
 export const useTableLogic = () => {
   const [showColumnSelector, setShowColumnSelector] = useState(false);
 
-  // Get loading state from Redux
-  const loading = useSelector(
-    (state: Record<string, any>) => state.tableData?.status === 'loading',
-  );
+  // Loading state is now handled by useLiveQuery in components
+  const loading = false;
 
   return {
     loading,
