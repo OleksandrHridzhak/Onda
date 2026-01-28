@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { X, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { icons } from '../../../../utils/icons';
-import { BubbleBtn } from '../../../shared/BubbleBtn';
-import { IconSelector } from './components/IconSelector';
-import { TransparentBtn } from '../../../shared/TransparentBtn';
 import { OptionsList } from './components/OptionList';
-import { TitleVisibilityToggle } from './components/TitleVisibilityToggle';
 import { CheckboxColorPicker } from './components/CheckBoxColorPicker';
+import { ColumnMenuHeader } from './components/ColumnMenuHeader';
+import { ColumnNameInput } from './components/ColumnNameInput';
+import { ColumnDescription } from './components/ColumnDescription';
+import { ColumnPositionControls } from './components/ColumnPositionControls';
+import { ColumnActions } from './components/ColumnActions';
 import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
 import { useColumnMenuHandlers } from './useColumnMenuHandlers';
@@ -179,92 +179,39 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                 className={`w-full max-w-md rounded-2xl bg-background border-border border shadow-md p-4`}
                 ref={menuRef}
             >
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className={`text-lg z-55 font-semibold text-text`}>
-                        Column Settings
-                    </h2>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onClose();
-                        }}
-                        aria-label="Close column settings"
-                        className={`p-1 rounded-full text-textTableValues hover:bg-hoverBg transition-colors duration-200`}
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
+                <ColumnMenuHeader onClose={onClose} />
+
                 <div className="">
-                    <div className="flex gap-2 w-full">
-                        <IconSelector
-                            selectedIcon={selectedIcon}
-                            setSelectedIcon={setSelectedIcon}
-                            isIconSectionExpanded={isIconSectionExpanded}
-                            setIsIconSectionExpanded={() =>
-                                setIsIconSectionExpanded(!isIconSectionExpanded)
-                            }
-                            icons={icons}
-                            darkMode={darkMode}
-                        />
-                        <div className="w-full flex relative">
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className={`w-full h-[50px] px-4 py-2 border border-border bg-background text-text rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200`}
-                                placeholder="Column name"
-                            />
-                            <TitleVisibilityToggle
-                                showTitle={showTitle}
-                                setShowTitle={setShowTitle}
-                                darkMode={darkMode}
-                            />
-                        </div>
-                    </div>
-                    <div className="">
-                        <textarea
-                            value={description}
-                            placeholder="Description"
-                            onChange={(e) => setDescription(e.target.value)}
-                            className={`w-full px-4 py-2 border border-border bg-background text-text rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200 resize-none`}
-                            rows={3}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label
-                            className={`block text-sm font-medium text-textTableValues mb-1`}
-                        >
-                            Column Position and width
-                        </label>
-                        <div className="flex space-x-2">
-                            <div className="w-full">
-                                <input
-                                    type="number"
-                                    value={width}
-                                    onChange={handleWidthChange}
-                                    min="0"
-                                    max="1000"
-                                    className={`w-full px-3 py-2.5 flex items-center text-sm border bg-transparent border-border text-text rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primaryColor`}
-                                    placeholder="Enter width in pixels"
-                                    aria-label="Column width"
-                                />
-                            </div>
-                            <TransparentBtn
-                                onClick={handleMoveLeft}
-                                disabled={!canMoveLeft}
-                                darkTheme={darkMode}
-                            >
-                                <ArrowLeft size={18} /> LEFT
-                            </TransparentBtn>
-                            <TransparentBtn
-                                onClick={handleMoveRight}
-                                disabled={!canMoveRight}
-                                darkTheme={darkMode}
-                            >
-                                RIGHT <ArrowRight size={18} />
-                            </TransparentBtn>
-                        </div>
-                    </div>
+                    <ColumnNameInput
+                        name={name}
+                        setName={setName}
+                        selectedIcon={selectedIcon}
+                        setSelectedIcon={setSelectedIcon}
+                        showTitle={showTitle}
+                        setShowTitle={setShowTitle}
+                        isIconSectionExpanded={isIconSectionExpanded}
+                        setIsIconSectionExpanded={() =>
+                            setIsIconSectionExpanded(!isIconSectionExpanded)
+                        }
+                        icons={icons}
+                        darkMode={darkMode}
+                    />
+
+                    <ColumnDescription
+                        description={description}
+                        setDescription={setDescription}
+                    />
+
+                    <ColumnPositionControls
+                        width={width}
+                        handleWidthChange={handleWidthChange}
+                        canMoveLeft={canMoveLeft}
+                        canMoveRight={canMoveRight}
+                        handleMoveLeft={handleMoveLeft}
+                        handleMoveRight={handleMoveRight}
+                        darkMode={darkMode}
+                    />
+
                     {hasOptions && (
                         <OptionsList
                             columnType={getColumnTypeForOptions()}
@@ -285,6 +232,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                             }
                         />
                     )}
+
                     {column.type === COLUMN_TYPES.CHECKBOX && (
                         <CheckboxColorPicker
                             checkboxColor={checkboxColor}
@@ -299,31 +247,13 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                             }
                         />
                     )}
-                    <div className="flex justify-between gap-2 mt-6">
-                        <div className="flex gap-2">
-                            <BubbleBtn
-                                onClick={handleDelete}
-                                disabled={isSaving}
-                                variant="delete"
-                            >
-                                Delete
-                            </BubbleBtn>
-                            <BubbleBtn
-                                onClick={handleClear}
-                                disabled={isSaving}
-                                variant="clear"
-                            >
-                                Clear column
-                            </BubbleBtn>
-                        </div>
-                        <BubbleBtn
-                            onClick={handleSave}
-                            disabled={isSaving}
-                            variant="standard"
-                        >
-                            Save Changes
-                        </BubbleBtn>
-                    </div>
+
+                    <ColumnActions
+                        handleDelete={handleDelete}
+                        handleClear={handleClear}
+                        handleSave={handleSave}
+                        isSaving={isSaving}
+                    />
                 </div>
             </div>
         </div>,
