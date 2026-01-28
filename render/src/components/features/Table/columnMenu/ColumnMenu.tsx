@@ -12,7 +12,7 @@ import { CheckboxColorPicker } from './CheckBoxColorPicker';
 import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
 import { useColumnMenuHandlers } from './useColumnMenuHandlers';
-import { COLUMN_TYPES, hasOptionsSupport } from '../../../../types/newColumn.types';
+import { COLUMN_TYPES, hasOptionsSupport } from '../../../../constants/columnTypes';
 
 interface ColumnMenuProps {
     columnId: string;
@@ -86,7 +86,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
             setTags(column.uniqueProps.availableTags || []);
         } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
             setTags(column.uniqueProps.availableOptions || []);
-        } else if (column.type === COLUMN_TYPES.TODO_LIST) {
+        } else if (column.type === COLUMN_TYPES.TODO) {
             setTags(column.uniqueProps.availableCategories || []);
         } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
             setTags(column.uniqueProps.availableTags || []);

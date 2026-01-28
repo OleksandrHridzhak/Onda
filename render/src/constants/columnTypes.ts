@@ -18,9 +18,26 @@ export const COLUMN_TYPES = {
  */
 export type ColumnType =
     | 'checkboxColumn'
-    | 'textBoxColumn'
-    | 'numberBoxColumn'
+    | 'textboxColumn'
+    | 'numberboxColumn'
     | 'tagsColumn'
     | 'todoListColumn'
     | 'multiCheckBoxColumn'
     | 'taskTableColumn';
+
+/**
+ * Column types that have tag/option management capabilities
+ */
+export const COLUMN_TYPES_WITH_OPTIONS: ColumnType[] = [
+    COLUMN_TYPES.TAGS,
+    COLUMN_TYPES.TODO,
+    COLUMN_TYPES.MULTI_CHECKBOX,
+    COLUMN_TYPES.TASK_TABLE,
+];
+
+/**
+ * Type guard to check if a column has options/tags
+ */
+export function hasOptionsSupport(columnType: ColumnType): boolean {
+    return COLUMN_TYPES_WITH_OPTIONS.includes(columnType);
+}

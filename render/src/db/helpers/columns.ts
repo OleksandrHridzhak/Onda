@@ -1,9 +1,6 @@
 import { db } from '../index';
-import {
-    Column,
-    COLUMN_TYPES,
-    createEmptyWeeklyValues,
-} from '../../types/newColumn.types';
+import { Column, createEmptyWeeklyValues } from '../../types/newColumn.types';
+import { COLUMN_TYPES } from '../../constants/columnTypes';
 import { COLUMN_TEMPLATES } from '../column.templates';
 import { ColumnType } from '../../constants/columnTypes';
 import { DbResult } from '../types';
@@ -322,7 +319,7 @@ export async function clearColumn(
                     'uniqueProps.days': createEmptyWeeklyValues<string[]>([]),
                 };
                 break;
-            case COLUMN_TYPES.TODO_LIST:
+            case COLUMN_TYPES.TODO:
                 updates = {
                     'uniqueProps.todos': [],
                 };

@@ -159,26 +159,6 @@ export type Column =
     | TaskTableColumn;
 
 /**
- * ColumnType
- * Extract the 'type' literal from all Column types.
- * Use this for type-safe column type checking.
- */
-export type ColumnType = Column['type'];
-
-/**
- * Column type constants for type-safe comparisons
- */
-export const COLUMN_TYPES = {
-    CHECKBOX: 'checkboxColumn',
-    TEXTBOX: 'textboxColumn',
-    NUMBERBOX: 'numberboxColumn',
-    TAGS: 'tagsColumn',
-    TODO_LIST: 'todoListColumn',
-    MULTI_CHECKBOX: 'multiCheckBoxColumn',
-    TASK_TABLE: 'taskTableColumn',
-} as const;
-
-/**
  * Helper function to create empty WeeklyValues for a given type
  */
 export function createEmptyWeeklyValues<T>(defaultValue: T): WeeklyValues<T> {
@@ -191,21 +171,4 @@ export function createEmptyWeeklyValues<T>(defaultValue: T): WeeklyValues<T> {
         Saturday: defaultValue,
         Sunday: defaultValue,
     };
-}
-
-/**
- * Column types that have tag/option management capabilities
- */
-export const COLUMN_TYPES_WITH_OPTIONS: ColumnType[] = [
-    COLUMN_TYPES.TAGS,
-    COLUMN_TYPES.TODO_LIST,
-    COLUMN_TYPES.MULTI_CHECKBOX,
-    COLUMN_TYPES.TASK_TABLE,
-];
-
-/**
- * Type guard to check if a column has options/tags
- */
-export function hasOptionsSupport(columnType: ColumnType): boolean {
-    return COLUMN_TYPES_WITH_OPTIONS.includes(columnType);
 }

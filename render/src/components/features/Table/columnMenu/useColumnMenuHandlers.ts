@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Tag, COLUMN_TYPES } from '../../../../types/newColumn.types';
+import { Tag } from '../../../../types/newColumn.types';
+import { COLUMN_TYPES } from '../../../../constants/columnTypes';
 import {
     updateColumnFields,
     deleteColumn,
@@ -27,7 +28,7 @@ export const useColumnMenuHandlers = ({
             updates['uniqueProps.availableTags'] = updatedTags;
         } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
             updates['uniqueProps.availableOptions'] = updatedTags;
-        } else if (column.type === COLUMN_TYPES.TODO_LIST) {
+        } else if (column.type === COLUMN_TYPES.TODO) {
             updates['uniqueProps.availableCategories'] = updatedTags;
         } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
             updates['uniqueProps.availableTags'] = updatedTags;
