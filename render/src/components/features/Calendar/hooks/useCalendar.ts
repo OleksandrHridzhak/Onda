@@ -7,18 +7,6 @@ import {
 } from '../../../../db/helpers/calendar';
 import { CalendarEntry } from '../../../../types/calendar.types';
 
-export interface CalendarEvent {
-    id: string | number;
-    title: string;
-    date: string; // stored as a date string
-    startTime: string; // HH:mm
-    endTime: string; // HH:mm
-    color: string;
-    isRepeating: boolean;
-    repeatDays: number[];
-    repeatFrequency: string; // 'weekly' | 'biweekly'
-}
-
 export interface NewEvent {
     title: string;
     date?: string;
@@ -30,35 +18,18 @@ export interface NewEvent {
     repeatFrequency: string;
 }
 
-/**
- * Converts a CalendarEntry from the database to a CalendarEvent used in the UI.
- */
-function toCalendarEvent(entry: CalendarEntry): CalendarEvent {
-    return {
-        id: entry.id,
-        title: entry.title,
-        date: entry.date,
-        startTime: entry.startTime,
-        endTime: entry.endTime,
-        color: entry.color,
-        isRepeating: entry.isRepeating ?? false,
-        repeatDays: entry.repeatDays ?? [],
-        repeatFrequency: entry.repeatFrequency ?? 'weekly',
-    };
-}
-
 export function useCalendar() {
     // Use liveQuery to reactively fetch all calendar events from Dexie DB
     const liveEvents = useLiveQuery(async () => {
         const result = await getAllCalendarEvents();
         if (result.success && result.data) {
-            return result.data.map(toCalendarEvent);
+            return result.data;
         }
         return [];
     }, []);
 
     // Events are now reactive - no need for manual state management
-    const events: CalendarEvent[] = liveEvents ?? [];
+    const events: CalendarEntry[] = liveEvents ?? [];
     const isLoading = liveEvents === undefined;
 
     const [error, setError] = useState<unknown>(null);
@@ -76,7 +47,7 @@ export function useCalendar() {
 
     const createOrUpdateEvent = async (
         payload: NewEvent & { id?: string | number },
-    ): Promise<CalendarEvent | null> => {
+    ): Promise<CalendarEntry | null> => {
         try {
             const eventData: CalendarEntry = {
                 id: payload.id?.toString() || Date.now().toString(),
@@ -106,7 +77,7 @@ export function useCalendar() {
                     repeatFrequency: 'weekly',
                 });
                 setEditingEventId(null);
-                return toCalendarEvent(eventData);
+                return eventData;
             } else {
                 setError(response.error || 'Failed to save event');
                 return null;
@@ -189,7 +160,7 @@ export function useCalendar() {
         setShowEventModal(true);
     };
 
-    const startEditing = (event: CalendarEvent): void => {
+    const startEditing = (event: CalendarEntry): void => {
         setNewEvent({
             ...event,
             repeatDays: event.repeatDays || [],

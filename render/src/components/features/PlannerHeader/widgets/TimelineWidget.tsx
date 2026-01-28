@@ -4,33 +4,6 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { getAllCalendarEvents } from '../../../../db/helpers/calendar';
 import { CalendarEntry } from '../../../../types/calendar.types';
 
-interface Event {
-    id: string | number;
-    title: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    color: string;
-    isRepeating: boolean;
-    repeatDays?: number[];
-}
-
-/**
- * Converts a CalendarEntry from the database to the local Event type.
- */
-function toEvent(entry: CalendarEntry): Event {
-    return {
-        id: entry.id,
-        title: entry.title,
-        date: entry.date,
-        startTime: entry.startTime,
-        endTime: entry.endTime,
-        color: entry.color,
-        isRepeating: entry.isRepeating ?? false,
-        repeatDays: entry.repeatDays ?? [],
-    };
-}
-
 const TimelineWidget: React.FC = () => {
     const getCurrentTimeString = (): string => {
         const now = new Date();
@@ -43,12 +16,14 @@ const TimelineWidget: React.FC = () => {
     const allEvents = useLiveQuery(async () => {
         const result = await getAllCalendarEvents();
         if (result.success && result.data) {
-            return result.data.map(toEvent);
+            return result.data;
         }
         return [];
     }, []);
 
-    const [hoveredEvent, setHoveredEvent] = useState<Event | null>(null);
+    const [hoveredEvent, setHoveredEvent] = useState<CalendarEntry | null>(
+        null,
+    );
     const [currentTime, setCurrentTime] = useState(getCurrentTimeString());
 
     useEffect(() => {
@@ -71,7 +46,7 @@ const TimelineWidget: React.FC = () => {
             d1.getMonth() === d2.getMonth() &&
             d1.getDate() === d2.getDate();
 
-        const filteredEvents = allEvents.filter((event: Event) => {
+        const filteredEvents = allEvents.filter((event: CalendarEntry) => {
             const isRepeatingToday =
                 event.isRepeating &&
                 Array.isArray(event.repeatDays) &&
@@ -83,7 +58,7 @@ const TimelineWidget: React.FC = () => {
             return isSameDate(eventDate, now);
         });
 
-        filteredEvents.sort((a: Event, b: Event) => {
+        filteredEvents.sort((a: CalendarEntry, b: CalendarEntry) => {
             const [hA, mA] = a.startTime.split(':').map(Number);
             const [hB, mB] = b.startTime.split(':').map(Number);
             return hA * 60 + mA - (hB * 60 + mB);
