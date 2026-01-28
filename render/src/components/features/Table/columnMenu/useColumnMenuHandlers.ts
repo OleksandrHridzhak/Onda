@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Tag } from '../../../../types/newColumn.types';
+import { Tag, COLUMN_TYPES } from '../../../../types/newColumn.types';
 import {
     updateColumnFields,
     deleteColumn,
@@ -23,13 +23,13 @@ export const useColumnMenuHandlers = ({
 
     const saveOptions = async (updatedTags: Tag[]) => {
         const updates: Record<string, Tag[]> = {};
-        if (column.type === 'tagsColumn') {
+        if (column.type === COLUMN_TYPES.TAGS) {
             updates['uniqueProps.availableTags'] = updatedTags;
-        } else if (column.type === 'multiCheckBoxColumn') {
+        } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
             updates['uniqueProps.availableOptions'] = updatedTags;
-        } else if (column.type === 'todoListColumn') {
+        } else if (column.type === COLUMN_TYPES.TODO_LIST) {
             updates['uniqueProps.availableCategories'] = updatedTags;
-        } else if (column.type === 'taskTableColumn') {
+        } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
             updates['uniqueProps.availableTags'] = updatedTags;
         }
 
@@ -109,7 +109,7 @@ export const useColumnMenuHandlers = ({
                 updates.width = width;
             }
 
-            if (column.type === 'checkboxColumn' && checkboxColor !== column.uniqueProps.checkboxColor) {
+            if (column.type === COLUMN_TYPES.CHECKBOX && checkboxColor !== column.uniqueProps.checkboxColor) {
                 updates['uniqueProps.checkboxColor'] = checkboxColor;
             }
 

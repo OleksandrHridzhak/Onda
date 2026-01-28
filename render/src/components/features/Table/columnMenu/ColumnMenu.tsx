@@ -12,6 +12,7 @@ import { CheckboxColorPicker } from './CheckBoxColorPicker';
 import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
 import { useColumnMenuHandlers } from './useColumnMenuHandlers';
+import { COLUMN_TYPES, hasOptionsSupport } from '../../../../types/newColumn.types';
 
 interface ColumnMenuProps {
     columnId: string;
@@ -81,15 +82,15 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
         setWidth(column.width || 0);
 
         // Extract tags based on column type
-        if (column.type === 'tagsColumn') {
+        if (column.type === COLUMN_TYPES.TAGS) {
             setTags(column.uniqueProps.availableTags || []);
-        } else if (column.type === 'multiCheckBoxColumn') {
+        } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
             setTags(column.uniqueProps.availableOptions || []);
-        } else if (column.type === 'todoListColumn') {
+        } else if (column.type === COLUMN_TYPES.TODO_LIST) {
             setTags(column.uniqueProps.availableCategories || []);
-        } else if (column.type === 'taskTableColumn') {
+        } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
             setTags(column.uniqueProps.availableTags || []);
-        } else if (column.type === 'checkboxColumn') {
+        } else if (column.type === COLUMN_TYPES.CHECKBOX) {
             setCheckboxColor(column.uniqueProps.checkboxColor || 'green');
         }
     }, [column, setTags]);
@@ -114,9 +115,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     const canMoveDown = currentIndex < columnsOrder.length - 1;
 
     // Determine column type for options list
-    const hasOptions = ['tagsColumn', 'todoListColumn', 'multiCheckBoxColumn', 'taskTableColumn'].includes(
-        column.type
-    );
+    const hasOptions = hasOptionsSupport(column.type);
 
     const handleSave = () => {
         hookHandleSave(name, selectedIcon, description, showTitle, width, checkboxColor, setIsSaving);
@@ -252,7 +251,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                             }
                         />
                     )}
-                    {column.type === 'checkboxColumn' && (
+                    {column.type === COLUMN_TYPES.CHECKBOX && (
                         <CheckboxColorPicker
                             checkboxColor={checkboxColor}
                             setCheckboxColor={setCheckboxColor}

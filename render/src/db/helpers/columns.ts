@@ -1,5 +1,9 @@
 import { db } from '../index';
-import { Column } from '../../types/newColumn.types';
+import {
+    Column,
+    COLUMN_TYPES,
+    createEmptyWeeklyValues,
+} from '../../types/newColumn.types';
 import { COLUMN_TEMPLATES } from '../column.templates';
 import { ColumnType } from '../../constants/columnTypes';
 import { DbResult } from '../types';
@@ -297,65 +301,33 @@ export async function clearColumn(
         let updates: Record<string, any> = {};
 
         switch (column.type) {
-            case 'checkboxColumn':
+            case COLUMN_TYPES.CHECKBOX:
                 updates = {
-                    'uniqueProps.days': {
-                        Monday: false,
-                        Tuesday: false,
-                        Wednesday: false,
-                        Thursday: false,
-                        Friday: false,
-                        Saturday: false,
-                        Sunday: false,
-                    },
+                    'uniqueProps.days': createEmptyWeeklyValues(false),
                 };
                 break;
-            case 'textboxColumn':
+            case COLUMN_TYPES.TEXTBOX:
                 updates = {
-                    'uniqueProps.days': {
-                        Monday: '',
-                        Tuesday: '',
-                        Wednesday: '',
-                        Thursday: '',
-                        Friday: '',
-                        Saturday: '',
-                        Sunday: '',
-                    },
+                    'uniqueProps.days': createEmptyWeeklyValues(''),
                 };
                 break;
-            case 'numberboxColumn':
+            case COLUMN_TYPES.NUMBERBOX:
                 updates = {
-                    'uniqueProps.days': {
-                        Monday: 0,
-                        Tuesday: 0,
-                        Wednesday: 0,
-                        Thursday: 0,
-                        Friday: 0,
-                        Saturday: 0,
-                        Sunday: 0,
-                    },
+                    'uniqueProps.days': createEmptyWeeklyValues(0),
                 };
                 break;
-            case 'tagsColumn':
-            case 'multiCheckBoxColumn':
+            case COLUMN_TYPES.TAGS:
+            case COLUMN_TYPES.MULTI_CHECKBOX:
                 updates = {
-                    'uniqueProps.days': {
-                        Monday: [],
-                        Tuesday: [],
-                        Wednesday: [],
-                        Thursday: [],
-                        Friday: [],
-                        Saturday: [],
-                        Sunday: [],
-                    },
+                    'uniqueProps.days': createEmptyWeeklyValues<string[]>([]),
                 };
                 break;
-            case 'todoListColumn':
+            case COLUMN_TYPES.TODO_LIST:
                 updates = {
                     'uniqueProps.todos': [],
                 };
                 break;
-            case 'taskTableColumn':
+            case COLUMN_TYPES.TASK_TABLE:
                 updates = {
                     'uniqueProps.doneTasks': [],
                 };
