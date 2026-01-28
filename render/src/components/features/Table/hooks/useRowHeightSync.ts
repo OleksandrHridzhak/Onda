@@ -7,80 +7,95 @@ import { useEffect } from 'react';
  * @param dependencies - Array of dependencies to trigger resync (e.g., columnsData, columnOrder)
  */
 export const useRowHeightSync = (dependencies: any[]) => {
-  useEffect(() => {
-    const syncRowHeights = () => {
-      const allTables = document.querySelectorAll(
-        '.checkbox-nested-table tbody',
-      );
-      if (allTables.length === 0) return;
+    useEffect(() => {
+        let outerRafId: number;
+        let innerRafId: number;
 
-      // Filter only tables with multiple rows (excludes todo, tasktable)
-      const tables = Array.from(allTables).filter(
-        (tbody) => tbody.querySelectorAll('tr').length > 1,
-      );
+        const syncRowHeights = () => {
+            const allTables = document.querySelectorAll(
+                '.checkbox-nested-table tbody',
+            );
+            if (allTables.length === 0) return;
 
-      if (tables.length === 0) return;
+            // Filter only tables with multiple rows (excludes todo, tasktable)
+            const tables = Array.from(allTables).filter(
+                (tbody) => tbody.querySelectorAll('tr').length > 1,
+            );
 
-      // Find maximum number of rows across all tables
-      const maxRows = Math.max(
-        ...tables.map((tbody) => tbody.querySelectorAll('tr').length),
-      );
+            if (tables.length === 0) return;
 
-      // Collect max heights per row so we can compute total height for single-row tables
-      const maxHeights: number[] = [];
+            // Find maximum number of rows across all tables
+            const maxRows = Math.max(
+                ...tables.map((tbody) => tbody.querySelectorAll('tr').length),
+            );
 
-      // For each row index, find and apply maximum height
-      for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
-        const rows: HTMLElement[] = [];
+            // Collect max heights per row so we can compute total height for single-row tables
+            const maxHeights: number[] = [];
 
-        tables.forEach((tbody) => {
-          const row = tbody.querySelectorAll('tr')[rowIndex] as HTMLElement;
-          if (row) {
-            // Reset height first to measure natural height
-            row.style.height = 'auto';
-            rows.push(row);
-          }
+            // For each row index, find and apply maximum height
+            for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
+                const rows: HTMLElement[] = [];
+
+                tables.forEach((tbody) => {
+                    const row = tbody.querySelectorAll('tr')[
+                        rowIndex
+                    ] as HTMLElement;
+                    if (row) {
+                        // Reset height first to measure natural height
+                        row.style.height = 'auto';
+                        rows.push(row);
+                    }
+                });
+
+                // Find maximum height among all rows with this index
+                if (rows.length > 0) {
+                    const maxHeight = Math.max(
+                        ...rows.map((row) => row.offsetHeight),
+                    );
+                    // Apply maximum height to all rows
+                    rows.forEach((row) => {
+                        row.style.height = `${maxHeight}px`;
+                    });
+                    maxHeights.push(maxHeight);
+                } else {
+                    maxHeights.push(0);
+                }
+            }
+
+            // Sum max heights to get combined height for single-row tables (todo/tasktable)
+            const totalHeight = maxHeights.reduce((a, b) => a + b, 0);
+
+            // Apply total height to any single-row table so its single row matches the combined height
+            Array.from(allTables).forEach((tbody) => {
+                const rows = tbody.querySelectorAll('tr');
+                if (rows.length === 1) {
+                    const row = rows[0] as HTMLElement;
+                    row.style.height = `${totalHeight}px`;
+                }
+            });
+        };
+
+        // Defer sync until after DOM has been painted
+        // Use double requestAnimationFrame to ensure all async-loaded columns
+        // have rendered before measuring (after Dexie async data loading)
+        outerRafId = requestAnimationFrame(() => {
+            innerRafId = requestAnimationFrame(() => {
+                syncRowHeights();
+            });
         });
 
-        // Find maximum height among all rows with this index
-        if (rows.length > 0) {
-          const maxHeight = Math.max(...rows.map((row) => row.offsetHeight));
-          // Apply maximum height to all rows
-          rows.forEach((row) => {
-            row.style.height = `${maxHeight}px`;
-          });
-          maxHeights.push(maxHeight);
-        } else {
-          maxHeights.push(0);
-        }
-      }
+        // Add ResizeObserver to track size changes
+        const observer = new ResizeObserver(() => {
+            syncRowHeights();
+        });
 
-      // Sum max heights to get combined height for single-row tables (todo/tasktable)
-      const totalHeight = maxHeights.reduce((a, b) => a + b, 0);
+        const tables = document.querySelectorAll('.checkbox-nested-table');
+        tables.forEach((table) => observer.observe(table));
 
-      // Apply total height to any single-row table so its single row matches the combined height
-      Array.from(allTables).forEach((tbody) => {
-        const rows = tbody.querySelectorAll('tr');
-        if (rows.length === 1) {
-          const row = rows[0] as HTMLElement;
-          row.style.height = `${totalHeight}px`;
-        }
-      });
-    };
-
-    // Trigger sync when data changes
-    syncRowHeights();
-
-    // Add ResizeObserver to track size changes
-    const observer = new ResizeObserver(() => {
-      syncRowHeights();
-    });
-
-    const tables = document.querySelectorAll('.checkbox-nested-table');
-    tables.forEach((table) => observer.observe(table));
-
-    return () => {
-      observer.disconnect();
-    };
-  }, dependencies);
+        return () => {
+            cancelAnimationFrame(outerRafId);
+            cancelAnimationFrame(innerRafId);
+            observer.disconnect();
+        };
+    }, dependencies);
 };
