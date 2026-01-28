@@ -1,17 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Calendar, Clock } from 'lucide-react';
-import { calendarService } from '../../../../services/indexedDB/calendarDB';
-
-interface Event {
-    id: string | number;
-    title: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    color: string;
-    isRepeating: boolean;
-    repeatDays?: number[];
-}
+import { useLiveQuery } from 'dexie-react-hooks';
+import { getAllCalendarEvents } from '../../../../db/helpers/calendar';
+import { CalendarEntry } from '../../../../types/calendar.types';
 
 const TimelineWidget: React.FC = () => {
     const getCurrentTimeString = (): string => {
@@ -21,8 +12,18 @@ const TimelineWidget: React.FC = () => {
         return `${hours}:${minutes}`;
     };
 
-    const [events, setEvents] = useState<Event[]>([]);
-    const [hoveredEvent, setHoveredEvent] = useState<Event | null>(null);
+    // Use liveQuery for reactive calendar data from Dexie DB
+    const allEvents = useLiveQuery(async () => {
+        const result = await getAllCalendarEvents();
+        if (result.success && result.data) {
+            return result.data;
+        }
+        return [];
+    }, []);
+
+    const [hoveredEvent, setHoveredEvent] = useState<CalendarEntry | null>(
+        null,
+    );
     const [currentTime, setCurrentTime] = useState(getCurrentTimeString());
 
     useEffect(() => {
@@ -33,50 +34,38 @@ const TimelineWidget: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
 
-    useEffect(() => {
-        const loadTodayEvents = async (): Promise<void> => {
-            try {
-                const response = await calendarService.getCalendar();
-                if (response.status === 'success') {
-                    const now = new Date();
-                    const todayDay = now.getDay();
+    // Filter and sort events for today using useMemo for performance
+    const events = useMemo(() => {
+        if (!allEvents) return [];
 
-                    const isSameDate = (d1: Date, d2: Date): boolean =>
-                        d1.getFullYear() === d2.getFullYear() &&
-                        d1.getMonth() === d2.getMonth() &&
-                        d1.getDate() === d2.getDate();
+        const now = new Date();
+        const todayDay = now.getDay();
 
-                    const filteredEvents = response.data.filter(
-                        (event: Event) => {
-                            const isRepeatingToday =
-                                event.isRepeating &&
-                                Array.isArray(event.repeatDays) &&
-                                event.repeatDays.includes(todayDay);
+        const isSameDate = (d1: Date, d2: Date): boolean =>
+            d1.getFullYear() === d2.getFullYear() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getDate() === d2.getDate();
 
-                            if (isRepeatingToday) return true;
+        const filteredEvents = allEvents.filter((event: CalendarEntry) => {
+            const isRepeatingToday =
+                event.isRepeating &&
+                Array.isArray(event.repeatDays) &&
+                event.repeatDays.includes(todayDay);
 
-                            const eventDate = new Date(event.date);
-                            return isSameDate(eventDate, now);
-                        },
-                    );
+            if (isRepeatingToday) return true;
 
-                    filteredEvents.sort((a: Event, b: Event) => {
-                        const [hA, mA] = a.startTime.split(':').map(Number);
-                        const [hB, mB] = b.startTime.split(':').map(Number);
-                        return hA * 60 + mA - (hB * 60 + mB);
-                    });
+            const eventDate = new Date(event.date);
+            return isSameDate(eventDate, now);
+        });
 
-                    setEvents(filteredEvents);
-                }
-            } catch (err) {
-                console.error('Error loading events:', err);
-            }
-        };
+        filteredEvents.sort((a: CalendarEntry, b: CalendarEntry) => {
+            const [hA, mA] = a.startTime.split(':').map(Number);
+            const [hB, mB] = b.startTime.split(':').map(Number);
+            return hA * 60 + mA - (hB * 60 + mB);
+        });
 
-        loadTodayEvents();
-        const interval = setInterval(loadTodayEvents, 60 * 1000);
-        return () => clearInterval(interval);
-    }, []);
+        return filteredEvents;
+    }, [allEvents]);
 
     const getColorClass = (color: string): string => {
         const colorMap: Record<string, string> = {

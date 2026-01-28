@@ -5,6 +5,7 @@ export interface CalendarEntry {
     date: string;
     startTime: string;
     endTime: string;
-    repeatDays?: string[];
-    repeatFrequency?: 'daily' | 'weekly' | null;
+    isRepeating?: boolean;
+    repeatDays?: number[];
+    repeatFrequency?: 'daily' | 'weekly' | 'biweekly' | null;
 }
