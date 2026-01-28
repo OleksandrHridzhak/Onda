@@ -27,7 +27,9 @@ export const useColumnMenuHandlers = ({
     const [width, setWidth] = useState(0);
     const [checkboxColor, setCheckboxColor] = useState('green');
     const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
-    const [isColorMenuOpen, setIsColorMenuOpen] = useState<Record<string, boolean>>({});
+    const [isColorMenuOpen, setIsColorMenuOpen] = useState<
+        Record<string, boolean>
+    >({});
     const [isSaving, setIsSaving] = useState(false);
     const [tags, setTags] = useState<Tag[]>([]);
     const [newOption, setNewOption] = useState('');
@@ -189,38 +191,41 @@ export const useColumnMenuHandlers = ({
     };
 
     return {
-        // State
-        name,
-        setName,
-        selectedIcon,
-        setSelectedIcon,
-        description,
-        setDescription,
-        showTitle,
-        setShowTitle,
-        width,
-        setWidth,
-        checkboxColor,
-        setCheckboxColor,
-        isIconSectionExpanded,
-        setIsIconSectionExpanded,
-        isColorMenuOpen,
-        setIsColorMenuOpen,
-        isSaving,
-        tags,
-        setTags,
-        newOption,
-        setNewOption,
-        // Handlers
-        handleAddOption,
-        handleRemoveOption,
-        handleEditOption,
-        handleColorChange,
-        handleSave,
-        handleDelete,
-        handleClear,
-        handleMoveLeft,
-        handleMoveRight,
-        handleWidthChange,
+        form: {
+            name,
+            selectedIcon,
+            description,
+            showTitle,
+            width,
+            checkboxColor,
+            tags,
+            newOption,
+        },
+        actions: {
+            setName,
+            setSelectedIcon,
+            setDescription,
+            setShowTitle,
+            setCheckboxColor,
+            setTags,
+            setNewOption,
+            handleSave,
+            handleDelete,
+            handleClear,
+            handleMoveLeft,
+            handleMoveRight,
+            handleWidthChange,
+            handleAddOption,
+            handleRemoveOption,
+            handleEditOption,
+            handleColorChange,
+        },
+        ui: {
+            isIconSectionExpanded,
+            setIsIconSectionExpanded,
+            isColorMenuOpen,
+            setIsColorMenuOpen,
+            isSaving,
+        },
     };
 };

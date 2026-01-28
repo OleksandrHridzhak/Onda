@@ -1,7 +1,7 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
 import { OptionItem } from './OptionItem';
-import { Tag } from '../../../../../types/newColumn.types';
+import { Tag } from '../../../../../../types/newColumn.types';
 
 interface OptionsListProps {
     columnType: string;

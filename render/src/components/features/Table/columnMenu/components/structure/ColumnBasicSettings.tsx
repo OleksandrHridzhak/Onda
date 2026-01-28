@@ -1,9 +1,9 @@
 import React from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import { IconSelector } from './IconSelector';
-import { TitleVisibilityToggle } from './TitleVisibilityToggle';
-import { TransparentBtn } from '../../../../shared/TransparentBtn';
-import { Icon } from '../../../../../utils/icons';
+import { IconSelector } from '../ui/IconSelector';
+import { TitleVisibilityToggle } from '../ui/TitleVisibilityToggle';
+import { TransparentBtn } from '../../../../../shared/TransparentBtn';
+import { Icon } from '../../../../../../utils/icons';
 
 interface ColumnBasicSettingsProps {
     // Name input props
@@ -16,11 +16,11 @@ interface ColumnBasicSettingsProps {
     isIconSectionExpanded: boolean;
     setIsIconSectionExpanded: () => void;
     icons: Icon[];
-    
+
     // Description props
     description: string;
     setDescription: (value: string) => void;
-    
+
     // Position controls props
     width: number;
     handleWidthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -28,7 +28,7 @@ interface ColumnBasicSettingsProps {
     canMoveRight: boolean;
     handleMoveLeft: () => void;
     handleMoveRight: () => void;
-    
+
     darkMode: boolean;
 }
 

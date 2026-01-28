@@ -4,7 +4,7 @@ import {
     icons as allIcons,
     getIconComponent,
     Icon,
-} from '../../../../../utils/icons';
+} from '../../../../../../utils/icons';
 
 interface IconSelectorProps {
     selectedIcon: string;

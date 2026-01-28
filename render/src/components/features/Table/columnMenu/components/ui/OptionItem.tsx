@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import { getColorOptions } from '../../../../../utils/colorOptions';
-import { Tag } from '../../../../../types/newColumn.types';
+import { getColorOptions } from '../../../../../../utils/colorOptions';
+import { Tag } from '../../../../../../types/newColumn.types';
 
 interface OptionItemProps {
     tag: Tag;

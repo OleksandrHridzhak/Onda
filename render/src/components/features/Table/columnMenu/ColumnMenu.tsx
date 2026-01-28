@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { icons } from '../../../../utils/icons';
-import { OptionsList } from './components/OptionList';
-import { CheckboxColorPicker } from './components/CheckBoxColorPicker';
-import { ColumnMenuHeader } from './components/ColumnMenuHeader';
-import { ColumnBasicSettings } from './components/ColumnBasicSettings';
-import { ColumnActions } from './components/ColumnActions';
+import { OptionsList } from './components/ui/OptionList';
+import { CheckboxColorPicker } from './components/ui/CheckBoxColorPicker';
+import { ColumnMenuHeader } from './components/structure/ColumnMenuHeader';
+import { ColumnBasicSettings } from './components/structure/ColumnBasicSettings';
+import { ColumnActions } from './components/structure/ColumnActions';
 import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
 import { useColumnMenuHandlers } from './useColumnMenuHandlers';
@@ -41,37 +41,11 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     }, []);
 
     // All state and handlers from custom hook
-    const {
-        name,
-        setName,
-        selectedIcon,
-        setSelectedIcon,
-        description,
-        setDescription,
-        showTitle,
-        setShowTitle,
-        width,
-        checkboxColor,
-        setCheckboxColor,
-        isIconSectionExpanded,
-        setIsIconSectionExpanded,
-        isColorMenuOpen,
-        setIsColorMenuOpen,
-        isSaving,
-        tags,
-        newOption,
-        setNewOption,
-        handleAddOption,
-        handleRemoveOption,
-        handleEditOption,
-        handleColorChange,
-        handleSave,
-        handleDelete,
-        handleClear,
-        handleMoveLeft,
-        handleMoveRight,
-        handleWidthChange,
-    } = useColumnMenuHandlers({ columnId, column, onClose });
+    const { form, actions, ui } = useColumnMenuHandlers({
+        columnId,
+        column,
+        onClose,
+    });
 
     const menuRef = useRef<HTMLDivElement>(null);
     const darkMode =
@@ -116,44 +90,46 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
 
                 <div className="">
                     <ColumnBasicSettings
-                        name={name}
-                        setName={setName}
-                        selectedIcon={selectedIcon}
-                        setSelectedIcon={setSelectedIcon}
-                        showTitle={showTitle}
-                        setShowTitle={setShowTitle}
-                        isIconSectionExpanded={isIconSectionExpanded}
+                        name={form.name}
+                        setName={actions.setName}
+                        selectedIcon={form.selectedIcon}
+                        setSelectedIcon={actions.setSelectedIcon}
+                        showTitle={form.showTitle}
+                        setShowTitle={actions.setShowTitle}
+                        isIconSectionExpanded={ui.isIconSectionExpanded}
                         setIsIconSectionExpanded={() =>
-                            setIsIconSectionExpanded(!isIconSectionExpanded)
+                            ui.setIsIconSectionExpanded(
+                                !ui.isIconSectionExpanded,
+                            )
                         }
                         icons={icons}
-                        description={description}
-                        setDescription={setDescription}
-                        width={width}
-                        handleWidthChange={handleWidthChange}
+                        description={form.description}
+                        setDescription={actions.setDescription}
+                        width={form.width}
+                        handleWidthChange={actions.handleWidthChange}
                         canMoveLeft={canMoveLeft}
                         canMoveRight={canMoveRight}
-                        handleMoveLeft={handleMoveLeft}
-                        handleMoveRight={handleMoveRight}
+                        handleMoveLeft={actions.handleMoveLeft}
+                        handleMoveRight={actions.handleMoveRight}
                         darkMode={darkMode}
                     />
 
                     {hasOptions && (
                         <OptionsList
                             columnType={column.type}
-                            tags={tags}
-                            newOption={newOption}
-                            setNewOption={setNewOption}
-                            handleAddOption={handleAddOption}
-                            handleRemoveOption={handleRemoveOption}
-                            handleEditOption={handleEditOption}
-                            handleColorChange={handleColorChange}
+                            tags={form.tags}
+                            newOption={form.newOption}
+                            setNewOption={actions.setNewOption}
+                            handleAddOption={actions.handleAddOption}
+                            handleRemoveOption={actions.handleRemoveOption}
+                            handleEditOption={actions.handleEditOption}
+                            handleColorChange={actions.handleColorChange}
                             darkMode={darkMode}
-                            isColorMenuOpen={isColorMenuOpen}
+                            isColorMenuOpen={ui.isColorMenuOpen}
                             toggleColorMenu={(tagId) =>
-                                setIsColorMenuOpen({
-                                    ...isColorMenuOpen,
-                                    [tagId]: !isColorMenuOpen[tagId],
+                                ui.setIsColorMenuOpen({
+                                    ...ui.isColorMenuOpen,
+                                    [tagId]: !ui.isColorMenuOpen[tagId],
                                 })
                             }
                         />
@@ -161,24 +137,24 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
 
                     {column.type === COLUMN_TYPES.CHECKBOX && (
                         <CheckboxColorPicker
-                            checkboxColor={checkboxColor}
-                            setCheckboxColor={setCheckboxColor}
+                            checkboxColor={form.checkboxColor}
+                            setCheckboxColor={actions.setCheckboxColor}
                             darkMode={darkMode}
-                            isColorMenuOpen={isColorMenuOpen.checkbox}
+                            isColorMenuOpen={ui.isColorMenuOpen.checkbox}
                             toggleColorMenu={() =>
-                                setIsColorMenuOpen({
-                                    ...isColorMenuOpen,
-                                    checkbox: !isColorMenuOpen.checkbox,
+                                ui.setIsColorMenuOpen({
+                                    ...ui.isColorMenuOpen,
+                                    checkbox: !ui.isColorMenuOpen.checkbox,
                                 })
                             }
                         />
                     )}
 
                     <ColumnActions
-                        handleDelete={handleDelete}
-                        handleClear={handleClear}
-                        handleSave={handleSave}
-                        isSaving={isSaving}
+                        handleDelete={actions.handleDelete}
+                        handleClear={actions.handleClear}
+                        handleSave={actions.handleSave}
+                        isSaving={ui.isSaving}
                     />
                 </div>
             </div>

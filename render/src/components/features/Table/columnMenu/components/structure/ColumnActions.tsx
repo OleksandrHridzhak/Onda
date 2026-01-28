@@ -1,5 +1,5 @@
 import React from 'react';
-import { BubbleBtn } from '../../../../shared/BubbleBtn';
+import { BubbleBtn } from '../../../../../shared/BubbleBtn';
 
 interface ColumnActionsProps {
     handleDelete: () => void;
