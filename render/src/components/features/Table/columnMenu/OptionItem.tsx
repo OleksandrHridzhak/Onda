@@ -1,47 +1,42 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { getColorOptions } from '../../../../utils/colorOptions';
+import { Tag } from '../../../../types/newColumn.types';
 
 interface OptionItemProps {
-  option: string;
-  options: string[];
+  tag: Tag;
+  allTags: Tag[];
   doneTags: string[];
-  optionColors: Record<string, string>;
   darkMode: boolean;
-  handleColorChange: (option: string, color: string) => void;
-  handleRemoveOption: (option: string) => void;
-  handleEditOption: (oldOption: string, newOption: string) => void;
+  handleColorChange: (tagId: string, color: string) => void;
+  handleRemoveOption: (tagId: string) => void;
+  handleEditOption: (tagId: string, newName: string) => void;
 }
 
 export const OptionItem: React.FC<OptionItemProps> = ({
-  option,
-  options,
+  tag,
+  allTags,
   doneTags,
-  optionColors,
   darkMode,
   handleColorChange,
   handleRemoveOption,
   handleEditOption,
 }) => {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
-  const [editingOption, setEditingOption] = useState<string | null>(null);
+  const [editingTagId, setEditingTagId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const menuRef = useRef<HTMLDivElement>(null);
 
   const startEditing = (): void => {
-    setEditingOption(option);
-    setEditValue(option);
+    setEditingTagId(tag.id);
+    setEditValue(tag.name);
   };
 
   const saveEdit = (): void => {
-    if (
-      editValue.trim() &&
-      !options.includes(editValue.trim()) &&
-      !doneTags.includes(editValue.trim())
-    ) {
-      handleEditOption(option, editValue.trim());
+    if (editValue.trim()) {
+      handleEditOption(tag.id, editValue.trim());
     }
-    setEditingOption(null);
+    setEditingTagId(null);
     setEditValue('');
     setIsContextMenuOpen(false);
   };
@@ -63,8 +58,8 @@ export const OptionItem: React.FC<OptionItemProps> = ({
   }, [isContextMenuOpen]);
 
   return (
-    <div key={option} className="relative">
-      {editingOption === option ? (
+    <div key={tag.id} className="relative">
+      {editingTagId === tag.id ? (
         <div className="flex items-center">
           <input
             type="text"
@@ -72,12 +67,12 @@ export const OptionItem: React.FC<OptionItemProps> = ({
             onChange={(e) => setEditValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
             className={`px-2 py-1 rounded-full text-xs font-medium border border-border bg-background text-text focus:outline-none focus:ring-2 focus:ring-primaryColor`}
-            aria-label={`Edit ${option}`}
+            aria-label={`Edit ${tag.name}`}
           />
           <button
             onClick={saveEdit}
             className={`ml-2 p-1 rounded-lg text-primaryColor hover:bg-hoverBg transition-colors duration-200`}
-            aria-label={`Save edit for ${option}`}
+            aria-label={`Save edit for ${tag.name}`}
           >
             <Plus size={14} />
           </button>
@@ -86,10 +81,10 @@ export const OptionItem: React.FC<OptionItemProps> = ({
         <>
           <button
             onClick={() => setIsContextMenuOpen(!isContextMenuOpen)}
-            className={`px-2 py-1 rounded-full text-xs font-medium ${getColorOptions({ darkMode }).find((c) => c.name === optionColors[option])?.bg} ${getColorOptions({ darkMode }).find((c) => c.name === optionColors[option])?.text || 'text-text'}`}
-            aria-label={`Options for ${option}`}
+            className={`px-2 py-1 rounded-full text-xs font-medium ${getColorOptions({ darkMode }).find((c) => c.name === tag.color)?.bg} ${getColorOptions({ darkMode }).find((c) => c.name === tag.color)?.text || 'text-text'}`}
+            aria-label={`Options for ${tag.name}`}
           >
-            {option} {doneTags.includes(option) && '(Completed)'}
+            {tag.name} {doneTags.includes(tag.id) && '(Completed)'}
           </button>
           {isContextMenuOpen && (
             <div
@@ -101,11 +96,11 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                   <button
                     key={color.name}
                     onClick={() => {
-                      handleColorChange(option, color.name);
+                      handleColorChange(tag.id, color.name);
                       setIsContextMenuOpen(false);
                     }}
-                    className={`w-6 h-6 rounded-full ${color.bg} ${color.text || 'text-text'} border-2 ${optionColors[option] === color.name ? 'ring-2 ring-primaryColor ring-offset-2' : 'border-transparent'} hover:scale-110 hover:shadow-md transition-all duration-200`}
-                    aria-label={`Select ${color.name} color for ${option}`}
+                    className={`w-6 h-6 rounded-full ${color.bg} ${color.text || 'text-text'} border-2 ${tag.color === color.name ? 'ring-2 ring-primaryColor ring-offset-2' : 'border-transparent'} hover:scale-110 hover:shadow-md transition-all duration-200`}
+                    aria-label={`Select ${color.name} color for ${tag.name}`}
                   />
                 ))}
               </div>
@@ -116,17 +111,17 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                     setIsContextMenuOpen(false);
                   }}
                   className={`p-1 rounded-lg text-primaryColor hover:bg-hoverBg transition-colors duration-200`}
-                  aria-label={`Edit ${option}`}
+                  aria-label={`Edit ${tag.name}`}
                 >
                   <Edit2 size={14} />
                 </button>
                 <button
                   onClick={() => {
-                    handleRemoveOption(option);
+                    handleRemoveOption(tag.id);
                     setIsContextMenuOpen(false);
                   }}
                   className={`p-1 rounded-lg text-red-500 hover:bg-hoverBg transition-colors duration-200`}
-                  aria-label={`Remove ${option}`}
+                  aria-label={`Remove ${tag.name}`}
                 >
                   <Trash2 size={14} />
                 </button>

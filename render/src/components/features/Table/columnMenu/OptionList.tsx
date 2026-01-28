@@ -1,26 +1,26 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
 import { OptionItem } from './OptionItem';
+import { Tag } from '../../../../types/newColumn.types';
 
 interface OptionsListProps {
   columnType: string;
-  options: string[];
+  tags: Tag[];
   doneTags: string[];
   newOption: string;
   setNewOption: (value: string) => void;
   handleAddOption: () => void;
-  handleRemoveOption: (option: string) => void;
-  handleEditOption: (oldOption: string, newOption: string) => void;
-  handleColorChange: (option: string, color: string) => void;
-  optionColors: Record<string, string>;
+  handleRemoveOption: (tagId: string) => void;
+  handleEditOption: (tagId: string, newName: string) => void;
+  handleColorChange: (tagId: string, color: string) => void;
   darkMode: boolean;
   isColorMenuOpen?: Record<string, boolean>;
-  toggleColorMenu: (option: string) => void;
+  toggleColorMenu: (tagId: string) => void;
 }
 
 export const OptionsList: React.FC<OptionsListProps> = ({
   columnType,
-  options,
+  tags,
   doneTags,
   newOption,
   setNewOption,
@@ -28,7 +28,6 @@ export const OptionsList: React.FC<OptionsListProps> = ({
   handleRemoveOption,
   handleEditOption,
   handleColorChange,
-  optionColors,
   darkMode,
   toggleColorMenu,
 }) => {
@@ -64,13 +63,12 @@ export const OptionsList: React.FC<OptionsListProps> = ({
           </button>
         </div>
         <div className="flex flex-wrap gap-2.5">
-          {[...options, ...doneTags].map((option) => (
+          {tags.map((tag) => (
             <OptionItem
-              key={option}
-              option={option}
-              options={options}
+              key={tag.id}
+              tag={tag}
+              allTags={tags}
               doneTags={doneTags}
-              optionColors={optionColors}
               darkMode={darkMode}
               handleColorChange={handleColorChange}
               handleRemoveOption={handleRemoveOption}

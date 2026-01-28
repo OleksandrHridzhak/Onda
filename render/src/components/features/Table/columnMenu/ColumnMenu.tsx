@@ -9,7 +9,6 @@ import { TransparentBtn } from '../../../shared/TransparentBtn';
 import { OptionsList } from './OptionList';
 import { TitleVisibilityToggle } from './TitleVisibilityToggle';
 import { CheckboxColorPicker } from './CheckBoxColorPicker';
-import { Tag } from '../../../../types/newColumn.types';
 import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
 import { useColumnMenuHandlers } from './useColumnMenuHandlers';
@@ -52,10 +51,8 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
 
     // Use custom hook for handlers
     const {
-        options,
-        setOptions,
-        optionColors,
-        setOptionColors,
+        tags,
+        setTags,
         newOption,
         setNewOption,
         handleAddOption,
@@ -83,47 +80,19 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
         setShowTitle(column.isNameVisible !== false);
         setWidth(column.width || 0);
 
-        // Extract options/tags based on column type
+        // Extract tags based on column type
         if (column.type === 'tagsColumn') {
-            const tags = column.uniqueProps.availableTags || [];
-            setOptions(tags.map((t: Tag) => t.name));
-            setOptionColors(
-                tags.reduce((acc: Record<string, string>, t: Tag) => {
-                    acc[t.name] = t.color;
-                    return acc;
-                }, {})
-            );
+            setTags(column.uniqueProps.availableTags || []);
         } else if (column.type === 'multiCheckBoxColumn') {
-            const opts = column.uniqueProps.availableOptions || [];
-            setOptions(opts.map((o: Tag) => o.name));
-            setOptionColors(
-                opts.reduce((acc: Record<string, string>, o: Tag) => {
-                    acc[o.name] = o.color;
-                    return acc;
-                }, {})
-            );
+            setTags(column.uniqueProps.availableOptions || []);
         } else if (column.type === 'todoListColumn') {
-            const categories = column.uniqueProps.availableCategories || [];
-            setOptions(categories.map((c: Tag) => c.name));
-            setOptionColors(
-                categories.reduce((acc: Record<string, string>, c: Tag) => {
-                    acc[c.name] = c.color;
-                    return acc;
-                }, {})
-            );
+            setTags(column.uniqueProps.availableCategories || []);
         } else if (column.type === 'taskTableColumn') {
-            const tags = column.uniqueProps.availableTags || [];
-            setOptions(tags.map((t: Tag) => t.name));
-            setOptionColors(
-                tags.reduce((acc: Record<string, string>, t: Tag) => {
-                    acc[t.name] = t.color;
-                    return acc;
-                }, {})
-            );
+            setTags(column.uniqueProps.availableTags || []);
         } else if (column.type === 'checkboxColumn') {
             setCheckboxColor(column.uniqueProps.checkboxColor || 'green');
         }
-    }, [column]);
+    }, [column, setTags]);
 
     // Close on outside click
     useEffect(() => {
@@ -266,7 +235,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                     {hasOptions && (
                         <OptionsList
                             columnType={getColumnTypeForOptions()}
-                            options={options}
+                            tags={tags}
                             doneTags={[]} // Not used in new structure
                             newOption={newOption}
                             setNewOption={setNewOption}
@@ -274,13 +243,12 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                             handleRemoveOption={handleRemoveOption}
                             handleEditOption={handleEditOption}
                             handleColorChange={handleColorChange}
-                            optionColors={optionColors}
                             darkMode={darkMode}
                             isColorMenuOpen={isColorMenuOpen}
-                            toggleColorMenu={(option) =>
+                            toggleColorMenu={(tagId) =>
                                 setIsColorMenuOpen({
                                     ...isColorMenuOpen,
-                                    [option]: !isColorMenuOpen[option],
+                                    [tagId]: !isColorMenuOpen[tagId],
                                 })
                             }
                         />

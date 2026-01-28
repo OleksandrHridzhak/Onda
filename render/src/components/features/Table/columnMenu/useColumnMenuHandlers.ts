@@ -18,76 +18,62 @@ export const useColumnMenuHandlers = ({
     column,
     onClose,
 }: UseColumnMenuHandlersProps) => {
-    const [options, setOptions] = useState<string[]>([]);
-    const [optionColors, setOptionColors] = useState<Record<string, string>>({});
+    const [tags, setTags] = useState<Tag[]>([]);
     const [newOption, setNewOption] = useState('');
 
-    const saveOptions = async (opts: string[], colors: Record<string, string>) => {
-        const tags: Tag[] = opts.map((name) => ({
-            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            name,
-            color: colors[name] || 'blue',
-        }));
-
+    const saveOptions = async (updatedTags: Tag[]) => {
         const updates: Record<string, Tag[]> = {};
         if (column.type === 'tagsColumn') {
-            updates['uniqueProps.availableTags'] = tags;
+            updates['uniqueProps.availableTags'] = updatedTags;
         } else if (column.type === 'multiCheckBoxColumn') {
-            updates['uniqueProps.availableOptions'] = tags;
+            updates['uniqueProps.availableOptions'] = updatedTags;
         } else if (column.type === 'todoListColumn') {
-            updates['uniqueProps.availableCategories'] = tags;
+            updates['uniqueProps.availableCategories'] = updatedTags;
         } else if (column.type === 'taskTableColumn') {
-            updates['uniqueProps.availableTags'] = tags;
+            updates['uniqueProps.availableTags'] = updatedTags;
         }
 
         await updateColumnFields(columnId, updates);
     };
 
     const handleAddOption = async () => {
-        if (!newOption.trim() || options.includes(newOption.trim())) {
+        if (!newOption.trim()) {
             return;
         }
 
-        const updatedOptions = [...options, newOption.trim()];
-        const updatedColors = { ...optionColors, [newOption.trim()]: 'blue' };
+        const newTag: Tag = {
+            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            name: newOption.trim(),
+            color: 'blue',
+        };
 
-        setOptions(updatedOptions);
-        setOptionColors(updatedColors);
+        const updatedTags = [...tags, newTag];
+        setTags(updatedTags);
         setNewOption('');
 
-        await saveOptions(updatedOptions, updatedColors);
+        await saveOptions(updatedTags);
     };
 
-    const handleRemoveOption = async (option: string) => {
-        const updatedOptions = options.filter((o) => o !== option);
-        const updatedColors = { ...optionColors };
-        delete updatedColors[option];
-
-        setOptions(updatedOptions);
-        setOptionColors(updatedColors);
-
-        await saveOptions(updatedOptions, updatedColors);
+    const handleRemoveOption = async (tagId: string) => {
+        const updatedTags = tags.filter((tag) => tag.id !== tagId);
+        setTags(updatedTags);
+        await saveOptions(updatedTags);
     };
 
-    const handleEditOption = async (oldOption: string, newOption: string) => {
-        const updatedOptions = options.map((o) => (o === oldOption ? newOption : o));
-        const updatedColors = {
-            ...optionColors,
-            [newOption]: optionColors[oldOption],
-        };
-        delete updatedColors[oldOption];
-
-        setOptions(updatedOptions);
-        setOptionColors(updatedColors);
-
-        await saveOptions(updatedOptions, updatedColors);
+    const handleEditOption = async (tagId: string, newName: string) => {
+        const updatedTags = tags.map((tag) =>
+            tag.id === tagId ? { ...tag, name: newName } : tag
+        );
+        setTags(updatedTags);
+        await saveOptions(updatedTags);
     };
 
-    const handleColorChange = async (option: string, color: string) => {
-        const updatedColors = { ...optionColors, [option]: color };
-        setOptionColors(updatedColors);
-
-        await saveOptions(options, updatedColors);
+    const handleColorChange = async (tagId: string, color: string) => {
+        const updatedTags = tags.map((tag) =>
+            tag.id === tagId ? { ...tag, color } : tag
+        );
+        setTags(updatedTags);
+        await saveOptions(updatedTags);
     };
 
     const handleSave = async (
@@ -173,10 +159,8 @@ export const useColumnMenuHandlers = ({
     };
 
     return {
-        options,
-        setOptions,
-        optionColors,
-        setOptionColors,
+        tags,
+        setTags,
         newOption,
         setNewOption,
         handleAddOption,
