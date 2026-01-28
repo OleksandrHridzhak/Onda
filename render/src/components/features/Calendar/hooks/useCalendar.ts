@@ -163,6 +163,7 @@ export function useCalendar() {
     const startEditing = (event: CalendarEntry): void => {
         setNewEvent({
             ...event,
+            isRepeating: event.isRepeating ?? false,
             repeatDays: event.repeatDays || [],
             repeatFrequency: event.repeatFrequency || 'weekly',
         });
