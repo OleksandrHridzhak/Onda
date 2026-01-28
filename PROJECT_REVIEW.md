@@ -27,7 +27,7 @@ Onda is a well-structured task management application with a modern tech stack (
 | **Project Size**        | 5.8 MB (source)           | ✅ Reasonable   |
 | **Commits**             | 2 commits                 | ⚠️ Very new     |
 | **Contributors**        | 2                         | ℹ️ Solo/Pair    |
-| **Dependencies**        | 42 (14 vulns)             | ⚠️ Moderate     |
+| **Dependencies**        | 42 (14 vulnerabilities)   | ⚠️ Moderate     |
 | **Platforms**           | 4 (Win/Linux/Android/iOS) | ✅ Excellent    |
 
 ### Code Quality Metrics
@@ -216,7 +216,7 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
 - Map grows indefinitely
 - Server crashes after hours/days
-- DOS attack vector (spam IPs to fill memory)
+- DoS attack vector (spam IPs to fill memory)
 
 **Fix:**
 
@@ -340,16 +340,16 @@ export const config = {
 
 **Fix:**
 
-```typescript
-// Consolidate critical state in Redux
-- UI state (modals, sidebars, loading)
-- User preferences (theme, language)
-- Sync status
-- Active selection/filters
+```
+Consolidate critical state in Redux:
+  • UI state (modals, sidebars, loading)
+  • User preferences (theme, language)
+  • Sync status
+  • Active selection/filters
 
-// Keep in IndexedDB:
-- Large datasets (tasks, calendar entries)
-- Persistent storage needs
+Keep in IndexedDB:
+  • Large datasets (tasks, calendar entries)
+  • Persistent storage needs
 ```
 
 **Decision Matrix:**
