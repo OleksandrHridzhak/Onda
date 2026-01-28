@@ -404,8 +404,13 @@ export const MobileTodayView: React.FC = () => {
                 )}
                 {columnOrder.map((columnId: string) => {
                     const columnData = columnsData[columnId];
+                    
+                    // Skip if column data hasn't loaded yet
+                    if (!columnData) {
+                        return null;
+                    }
+                    
                     const cardKey = `${columnId}-${selectedDayName}`;
-
                     const columnType = columnData.type?.toLowerCase();
 
                     // Get the rendered cell to check if it's null
