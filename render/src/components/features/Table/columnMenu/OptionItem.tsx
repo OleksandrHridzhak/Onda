@@ -5,8 +5,6 @@ import { Tag } from '../../../../types/newColumn.types';
 
 interface OptionItemProps {
   tag: Tag;
-  allTags: Tag[];
-  doneTags: string[];
   darkMode: boolean;
   handleColorChange: (tagId: string, color: string) => void;
   handleRemoveOption: (tagId: string) => void;
@@ -15,8 +13,6 @@ interface OptionItemProps {
 
 export const OptionItem: React.FC<OptionItemProps> = ({
   tag,
-  allTags,
-  doneTags,
   darkMode,
   handleColorChange,
   handleRemoveOption,
@@ -57,6 +53,8 @@ export const OptionItem: React.FC<OptionItemProps> = ({
     };
   }, [isContextMenuOpen]);
 
+  const colorOption = getColorOptions({ darkMode }).find((c) => c.name === tag.color);
+  
   return (
     <div key={tag.id} className="relative">
       {editingTagId === tag.id ? (
@@ -81,10 +79,10 @@ export const OptionItem: React.FC<OptionItemProps> = ({
         <>
           <button
             onClick={() => setIsContextMenuOpen(!isContextMenuOpen)}
-            className={`px-2 py-1 rounded-full text-xs font-medium ${getColorOptions({ darkMode }).find((c) => c.name === tag.color)?.bg} ${getColorOptions({ darkMode }).find((c) => c.name === tag.color)?.text || 'text-text'}`}
+            className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption?.bg} ${colorOption?.text || 'text-text'}`}
             aria-label={`Options for ${tag.name}`}
           >
-            {tag.name} {doneTags.includes(tag.id) && '(Completed)'}
+            {tag.name}
           </button>
           {isContextMenuOpen && (
             <div

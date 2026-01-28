@@ -236,7 +236,6 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                         <OptionsList
                             columnType={getColumnTypeForOptions()}
                             tags={tags}
-                            doneTags={[]} // Not used in new structure
                             newOption={newOption}
                             setNewOption={setNewOption}
                             handleAddOption={handleAddOption}

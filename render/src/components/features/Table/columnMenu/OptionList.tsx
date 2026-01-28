@@ -6,7 +6,6 @@ import { Tag } from '../../../../types/newColumn.types';
 interface OptionsListProps {
   columnType: string;
   tags: Tag[];
-  doneTags: string[];
   newOption: string;
   setNewOption: (value: string) => void;
   handleAddOption: () => void;
@@ -21,7 +20,6 @@ interface OptionsListProps {
 export const OptionsList: React.FC<OptionsListProps> = ({
   columnType,
   tags,
-  doneTags,
   newOption,
   setNewOption,
   handleAddOption,
@@ -67,8 +65,6 @@ export const OptionsList: React.FC<OptionsListProps> = ({
             <OptionItem
               key={tag.id}
               tag={tag}
-              allTags={tags}
-              doneTags={doneTags}
               darkMode={darkMode}
               handleColorChange={handleColorChange}
               handleRemoveOption={handleRemoveOption}

@@ -42,7 +42,7 @@ export const useColumnMenuHandlers = ({
         }
 
         const newTag: Tag = {
-            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
             name: newOption.trim(),
             color: 'blue',
         };
