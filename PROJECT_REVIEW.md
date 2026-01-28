@@ -208,7 +208,8 @@ webPreferences: {
 **Location:** `sync-server/src/middleware/rateLimiter.ts:9`
 
 ```typescript
-const rateLimitMap = new Map<string, ...>();  // Never cleaned!
+// Current implementation - never cleans up old entries
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 ```
 
 **Why It's Bad:**
