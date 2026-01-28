@@ -1,3 +1,4 @@
+// Temporary mobile today view for the table and it stoped working properly
 import React, { useMemo, useCallback } from 'react';
 import { MoreVertical } from 'lucide-react';
 import { CheckboxCell } from '../columns/CheckboxColumn/CheckBoxCell';
@@ -12,33 +13,41 @@ import { getIconComponent } from '../../../../utils/icons';
 import { getMonday, getWeekDays, formatDateDisplay } from './dateUtils';
 import { Tag, Todo } from '../../../../types/newColumn.types';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { getAllColumns, updateColumnFields } from '../../../../db/helpers/columns';
+import {
+    getAllColumns,
+    updateColumnFields,
+} from '../../../../db/helpers/columns';
 import { getSettings } from '../../../../db/helpers/settings';
 
 export const MobileTodayView: React.FC = () => {
     // Use dexie live queries to load columns and settings
-    const columnOrder: string[] = useLiveQuery(async () => {
-        const res = await getSettings();
-        if (!res.success) {
-            console.error('Failed to load settings for column order:', res.error);
-            return [];
-        }
-        return res.data?.layout?.columnsOrder ?? [];
-    }, []) ?? [];
+    const columnOrder: string[] =
+        useLiveQuery(async () => {
+            const res = await getSettings();
+            if (!res.success) {
+                console.error(
+                    'Failed to load settings for column order:',
+                    res.error,
+                );
+                return [];
+            }
+            return res.data?.layout?.columnsOrder ?? [];
+        }, []) ?? [];
 
-    const columnsArray = useLiveQuery(async () => {
-        const res = await getAllColumns();
-        if (!res.success) {
-            console.error('Failed to load columns:', res.error);
-            return [];
-        }
-        return res.data;
-    }, []) ?? [];
+    const columnsArray =
+        useLiveQuery(async () => {
+            const res = await getAllColumns();
+            if (!res.success) {
+                console.error('Failed to load columns:', res.error);
+                return [];
+            }
+            return res.data;
+        }, []) ?? [];
 
     // Convert columns array to dictionary for easier lookup
     const columnsData = useMemo(() => {
         const data: Record<string, any> = {};
-        columnsArray.forEach(col => {
+        columnsArray.forEach((col) => {
             data[col.id] = col;
         });
         return data;
@@ -79,14 +88,14 @@ export const MobileTodayView: React.FC = () => {
             const column = columnsData[columnId];
             if (!column) return;
 
-            // Preserve all existing uniqueProps, only update the specific day
+            // Preserve all existing uniqueProperties, only update the specific day
             const updatedDays = {
-                ...(column.uniqueProps?.days || {}),
+                ...(column.uniqueProperties?.Days || {}),
                 [selectedDayName]: value,
             };
 
             const result = await updateColumnFields(columnId, {
-                'uniqueProps.days': updatedDays,
+                'uniqueProperties.Days': updatedDays,
             });
 
             if (!result.success) {
@@ -102,9 +111,14 @@ export const MobileTodayView: React.FC = () => {
             const column = columnsData[columnId];
             if (!column) return;
 
-            // Update the todos array directly (new structure)
+            // Preserve all existing uniqueProperties, only update the specific path
+            const updatedChosen = {
+                ...(column.uniqueProperties?.Chosen || {}),
+                global: newValue,
+            };
+
             const result = await updateColumnFields(columnId, {
-                'uniqueProps.todos': newValue,
+                'uniqueProperties.Chosen': updatedChosen,
             });
 
             if (!result.success) {
@@ -118,12 +132,20 @@ export const MobileTodayView: React.FC = () => {
     const createTaskTableHandler = useCallback(
         (columnId: string, columnData: any) => {
             return async (availableTags: Tag[], doneTasks: string[]) => {
-                // Preserve all existing uniqueProps, only update specific fields
+                const options = availableTags.map((tag) => tag.name);
+                const optionsColors: Record<string, string> = {};
+
+                availableTags.forEach((tag) => {
+                    optionsColors[tag.name] = tag.color || 'blue';
+                });
+
+                // Preserve all existing uniqueProperties, only update specific fields
                 const result = await updateColumnFields(columnId, {
-                    uniqueProps: {
-                        ...columnData.uniqueProps,
-                        availableTags: availableTags,
-                        doneTasks: doneTasks,
+                    uniqueProperties: {
+                        ...columnData.uniqueProperties,
+                        Options: options,
+                        OptionsColors: optionsColors,
+                        DoneTags: doneTasks,
                     },
                 });
 
@@ -137,10 +159,13 @@ export const MobileTodayView: React.FC = () => {
 
     const renderCell = useCallback(
         (columnId: string, columnType: string, columnData: any) => {
-            const cellValue =
-                columnData.uniqueProps?.days?.[selectedDayName];
+            // Strip 'Column' suffix from type (e.g., 'checkboxColumn' -> 'checkbox')
+            const cleanType = columnType.replace(/column$/i, '');
 
-            switch (columnType) {
+            const cellValue =
+                columnData.uniqueProperties?.Days?.[selectedDayName];
+
+            switch (cleanType) {
                 case 'checkbox':
                     return (
                         <CheckboxCell
@@ -149,7 +174,7 @@ export const MobileTodayView: React.FC = () => {
                                 handleCellChange(columnId, newValue)
                             }
                             color={
-                                columnData.uniqueProps?.checkboxColor ||
+                                columnData.uniqueProperties?.CheckboxColor ||
                                 '#3b82f6'
                             }
                         />
@@ -165,7 +190,7 @@ export const MobileTodayView: React.FC = () => {
                         />
                     );
 
-                case 'text':
+                case 'textbox':
                     return (
                         <TextboxCell
                             value={cellValue || ''}
@@ -175,9 +200,19 @@ export const MobileTodayView: React.FC = () => {
                         />
                     );
 
-                case 'multiselect': {
-                    const availableTags: Tag[] =
-                        columnData.uniqueProps?.availableTags || [];
+                case 'tags': {
+                    const tagNames: string[] =
+                        columnData.uniqueProperties?.Tags || [];
+                    const tagColors: Record<string, string> =
+                        columnData.uniqueProperties?.TagsColors || {};
+
+                    const availableTags: Tag[] = tagNames.map(
+                        (name: string) => ({
+                            id: name,
+                            name,
+                            color: tagColors[name] || 'blue',
+                        }),
+                    );
 
                     const selectedTagIds: string[] = Array.isArray(cellValue)
                         ? cellValue
@@ -200,8 +235,20 @@ export const MobileTodayView: React.FC = () => {
                 }
 
                 case 'multicheckbox': {
-                    const availableOptions: Tag[] =
-                        columnData.uniqueProps?.availableOptions || [];
+                    const optionNames: string[] =
+                        columnData.uniqueProperties?.Options || [];
+                    const optionColors: Record<string, string> =
+                        columnData.uniqueProperties?.TagsColors ||
+                        columnData.uniqueProperties?.OptionsColors ||
+                        {};
+
+                    const availableOptions: Tag[] = optionNames.map(
+                        (name: string) => ({
+                            id: name,
+                            name,
+                            color: optionColors[name] || 'blue',
+                        }),
+                    );
 
                     const selectedOptionIds: string[] = Array.isArray(cellValue)
                         ? cellValue
@@ -223,11 +270,22 @@ export const MobileTodayView: React.FC = () => {
                     );
                 }
 
-                case 'todo':
-                    const globalTodos = (columnData.uniqueProps?.todos || []) as Todo[];
+                case 'todolist':
+                    const globalTodos = (columnData.uniqueProperties?.Chosen
+                        ?.global || []) as Todo[];
 
-                    const availableCategories: Tag[] =
-                        columnData.uniqueProps?.availableCategories || [];
+                    const categoryNames: string[] =
+                        columnData.uniqueProperties?.Categorys || [];
+                    const categoryColors: Record<string, string> =
+                        columnData.uniqueProperties?.CategoryColors || {};
+
+                    const availableCategories: Tag[] = categoryNames.map(
+                        (name: string) => ({
+                            id: name,
+                            name,
+                            color: categoryColors[name] || 'blue',
+                        }),
+                    );
 
                     return (
                         <TodoCell
@@ -241,11 +299,21 @@ export const MobileTodayView: React.FC = () => {
                     );
 
                 case 'tasktable': {
-                    const availableTags: Tag[] =
-                        columnData.uniqueProps?.availableTags || [];
+                    const optionNames: string[] =
+                        columnData.uniqueProperties?.Options || [];
+                    const optionColors: Record<string, string> =
+                        columnData.uniqueProperties?.OptionsColors || {};
+
+                    const availableTags: Tag[] = optionNames.map(
+                        (name: string) => ({
+                            id: name,
+                            name,
+                            color: optionColors[name] || 'blue',
+                        }),
+                    );
 
                     const doneTasks: string[] =
-                        columnData.uniqueProps?.doneTasks || [];
+                        columnData.uniqueProperties?.DoneTags || [];
 
                     return (
                         <TaskTableCell
@@ -348,12 +416,12 @@ export const MobileTodayView: React.FC = () => {
                 )}
                 {columnOrder.map((columnId: string) => {
                     const columnData = columnsData[columnId];
-                    
+
                     // Skip if column data hasn't loaded yet
                     if (!columnData) {
                         return null;
                     }
-                    
+
                     const cardKey = `${columnId}-${selectedDayName}`;
                     const columnType = columnData.type?.toLowerCase();
 
