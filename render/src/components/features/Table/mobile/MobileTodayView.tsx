@@ -79,14 +79,14 @@ export const MobileTodayView: React.FC = () => {
             const column = columnsData[columnId];
             if (!column) return;
 
-            // Preserve all existing uniqueProperties, only update the specific day
+            // Preserve all existing uniqueProps, only update the specific day
             const updatedDays = {
-                ...(column.uniqueProperties?.Days || {}),
+                ...(column.uniqueProps?.days || {}),
                 [selectedDayName]: value,
             };
 
             const result = await updateColumnFields(columnId, {
-                'uniqueProperties.Days': updatedDays,
+                'uniqueProps.days': updatedDays,
             });
 
             if (!result.success) {
@@ -102,14 +102,9 @@ export const MobileTodayView: React.FC = () => {
             const column = columnsData[columnId];
             if (!column) return;
 
-            // Preserve all existing uniqueProperties, only update the specific path
-            const updatedChosen = {
-                ...(column.uniqueProperties?.Chosen || {}),
-                global: newValue,
-            };
-
+            // Update the todos array directly (new structure)
             const result = await updateColumnFields(columnId, {
-                'uniqueProperties.Chosen': updatedChosen,
+                'uniqueProps.todos': newValue,
             });
 
             if (!result.success) {
@@ -123,20 +118,12 @@ export const MobileTodayView: React.FC = () => {
     const createTaskTableHandler = useCallback(
         (columnId: string, columnData: any) => {
             return async (availableTags: Tag[], doneTasks: string[]) => {
-                const options = availableTags.map((tag) => tag.name);
-                const optionsColors: Record<string, string> = {};
-
-                availableTags.forEach((tag) => {
-                    optionsColors[tag.name] = tag.color || 'blue';
-                });
-
-                // Preserve all existing uniqueProperties, only update specific fields
+                // Preserve all existing uniqueProps, only update specific fields
                 const result = await updateColumnFields(columnId, {
-                    uniqueProperties: {
-                        ...columnData.uniqueProperties,
-                        Options: options,
-                        OptionsColors: optionsColors,
-                        DoneTags: doneTasks,
+                    uniqueProps: {
+                        ...columnData.uniqueProps,
+                        availableTags: availableTags,
+                        doneTasks: doneTasks,
                     },
                 });
 
@@ -151,7 +138,7 @@ export const MobileTodayView: React.FC = () => {
     const renderCell = useCallback(
         (columnId: string, columnType: string, columnData: any) => {
             const cellValue =
-                columnData.uniqueProperties?.Days?.[selectedDayName];
+                columnData.uniqueProps?.days?.[selectedDayName];
 
             switch (columnType) {
                 case 'checkbox':
@@ -162,7 +149,7 @@ export const MobileTodayView: React.FC = () => {
                                 handleCellChange(columnId, newValue)
                             }
                             color={
-                                columnData.uniqueProperties?.CheckboxColor ||
+                                columnData.uniqueProps?.checkboxColor ||
                                 '#3b82f6'
                             }
                         />
@@ -189,18 +176,8 @@ export const MobileTodayView: React.FC = () => {
                     );
 
                 case 'multiselect': {
-                    const tagNames: string[] =
-                        columnData.uniqueProperties?.Tags || [];
-                    const tagColors: Record<string, string> =
-                        columnData.uniqueProperties?.TagsColors || {};
-
-                    const availableTags: Tag[] = tagNames.map(
-                        (name: string) => ({
-                            id: name,
-                            name,
-                            color: tagColors[name] || 'blue',
-                        }),
-                    );
+                    const availableTags: Tag[] =
+                        columnData.uniqueProps?.availableTags || [];
 
                     const selectedTagIds: string[] = Array.isArray(cellValue)
                         ? cellValue
@@ -223,20 +200,8 @@ export const MobileTodayView: React.FC = () => {
                 }
 
                 case 'multicheckbox': {
-                    const optionNames: string[] =
-                        columnData.uniqueProperties?.Options || [];
-                    const optionColors: Record<string, string> =
-                        columnData.uniqueProperties?.TagsColors ||
-                        columnData.uniqueProperties?.OptionsColors ||
-                        {};
-
-                    const availableOptions: Tag[] = optionNames.map(
-                        (name: string) => ({
-                            id: name,
-                            name,
-                            color: optionColors[name] || 'blue',
-                        }),
-                    );
+                    const availableOptions: Tag[] =
+                        columnData.uniqueProps?.availableOptions || [];
 
                     const selectedOptionIds: string[] = Array.isArray(cellValue)
                         ? cellValue
@@ -259,21 +224,10 @@ export const MobileTodayView: React.FC = () => {
                 }
 
                 case 'todo':
-                    const globalTodos = (columnData.uniqueProperties?.Chosen
-                        ?.global || []) as Todo[];
+                    const globalTodos = (columnData.uniqueProps?.todos || []) as Todo[];
 
-                    const categoryNames: string[] =
-                        columnData.uniqueProperties?.Categorys || [];
-                    const categoryColors: Record<string, string> =
-                        columnData.uniqueProperties?.CategoryColors || {};
-
-                    const availableCategories: Tag[] = categoryNames.map(
-                        (name: string) => ({
-                            id: name,
-                            name,
-                            color: categoryColors[name] || 'blue',
-                        }),
-                    );
+                    const availableCategories: Tag[] =
+                        columnData.uniqueProps?.availableCategories || [];
 
                     return (
                         <TodoCell
@@ -287,21 +241,11 @@ export const MobileTodayView: React.FC = () => {
                     );
 
                 case 'tasktable': {
-                    const optionNames: string[] =
-                        columnData.uniqueProperties?.Options || [];
-                    const optionColors: Record<string, string> =
-                        columnData.uniqueProperties?.OptionsColors || {};
-
-                    const availableTags: Tag[] = optionNames.map(
-                        (name: string) => ({
-                            id: name,
-                            name,
-                            color: optionColors[name] || 'blue',
-                        }),
-                    );
+                    const availableTags: Tag[] =
+                        columnData.uniqueProps?.availableTags || [];
 
                     const doneTasks: string[] =
-                        columnData.uniqueProperties?.DoneTags || [];
+                        columnData.uniqueProps?.doneTasks || [];
 
                     return (
                         <TaskTableCell
