@@ -10,8 +10,8 @@ export const DEFAULT_SETTINGS: Setting = {
         columnsOrder: [],
     },
     sync: {
-        syncServerUrl: 'https://onda-39t4.onrender.com',
-        syncSecretKey: '',
-        isSyncEnabled: false,
+        serverUrl: 'https://onda-39t4.onrender.com',
+        secretKey: '',
+        enabled: false,
     },
 };

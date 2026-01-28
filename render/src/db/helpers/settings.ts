@@ -38,7 +38,7 @@ export async function getSettings(): Promise<DbResult<Setting>> {
  * { success: true, data: { updatedCount: 1 } }
  *
  * // Update sync settings:
- * await updateSettings({ sync: { isSyncEnabled: true, syncServerUrl: 'https://...' } })
+ * await updateSettings({ sync: { enabled: true, serverUrl: 'https://...' } })
  *
  * // Error:
  * { success: false, error: 'Update failed' }

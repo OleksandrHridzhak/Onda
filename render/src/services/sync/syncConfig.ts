@@ -17,16 +17,7 @@ export class SyncConfigManager {
                 return null;
             }
 
-            // Map from Dexie schema to SyncConfig
-            return {
-                enabled: settings.sync.isSyncEnabled,
-                serverUrl: settings.sync.syncServerUrl,
-                secretKey: settings.sync.syncSecretKey,
-                version: settings.sync.version,
-                lastSync: settings.sync.lastSync,
-                autoSync: settings.sync.autoSync,
-                syncInterval: settings.sync.syncInterval,
-            };
+            return settings.sync;
         } catch (error) {
             console.error('Error getting sync config:', error);
             return null;
@@ -48,24 +39,9 @@ export class SyncConfigManager {
                 return { status: 'error', message: 'Settings not found' };
             }
 
-            // Map from SyncConfig to Dexie schema and merge with existing
             const updatedSync = {
                 ...settings.sync,
-                ...(config.enabled !== undefined && {
-                    isSyncEnabled: config.enabled,
-                }),
-                ...(config.serverUrl !== undefined && {
-                    syncServerUrl: config.serverUrl,
-                }),
-                ...(config.secretKey !== undefined && {
-                    syncSecretKey: config.secretKey,
-                }),
-                ...(config.autoSync !== undefined && {
-                    autoSync: config.autoSync,
-                }),
-                ...(config.syncInterval !== undefined && {
-                    syncInterval: config.syncInterval,
-                }),
+                ...config,
                 version: currentVersion,
                 lastSync: currentLastSync,
             };
