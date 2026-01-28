@@ -35,55 +35,64 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({ columnId }) => {
     };
 
     return (
-        <thead className="bg-tableHeader">
-            <tr>
-                <th className="border-b border-border">
-                    <div
-                        role="button"
-                        tabIndex={column.id !== 'days' ? 0 : -1}
-                        className={`font-poppins flex items-center justify-between group cursor-pointer px-3 py-3 text-left text-sm font-medium ${column.isNameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
-                        onClick={() =>
-                            column.id !== 'days' && setShowMenu(true)
-                        }
-                        onKeyDown={(e) => {
-                            if (
-                                (e.key === 'Enter' || e.key === ' ') &&
-                                column.id !== 'days'
-                            ) {
-                                e.preventDefault();
-                                setShowMenu(true);
-                            }
-                        }}
-                        aria-label={column.name || 'Column settings'}
-                    >
+        <>
+            <thead className="bg-tableHeader">
+                <tr>
+                    <th className="border-b border-border">
                         <div
-                            className={`flex items-center ${column.isNameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
+                            role="button"
+                            tabIndex={column.id !== 'days' ? 0 : -1}
+                            className={`font-poppins flex items-center justify-between group cursor-pointer px-3 py-3 text-left text-sm font-medium ${column.isNameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
+                            onClick={() =>
+                                column.id !== 'days' && setShowMenu(true)
+                            }
+                            onKeyDown={(e) => {
+                                if (
+                                    (e.key === 'Enter' || e.key === ' ') &&
+                                    column.id !== 'days'
+                                ) {
+                                    e.preventDefault();
+                                    setShowMenu(true);
+                                }
+                            }}
+                            aria-label={column.name || 'Column settings'}
                         >
-                            {column.emojiIconName && (
-                                <span
-                                    className={
-                                        column.isNameVisible !== false
-                                            ? 'mr-1'
-                                            : ''
-                                    }
-                                >
-                                    {getIconComponent(column.emojiIconName, 16)}
-                                </span>
-                            )}
-                            {column.isNameVisible !== false && column.name && (
-                                <span
-                                    className={`truncate block text-textTableValues max-w-full`}
-                                >
-                                    {column.name}
-                                </span>
-                            )}
-                            {isEmptyHeader && (
-                                <span className="opacity-0">∅</span>
-                            )}
+                            <div
+                                className={`flex items-center ${column.isNameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
+                            >
+                                {column.emojiIconName && (
+                                    <span
+                                        className={
+                                            column.isNameVisible !== false
+                                                ? 'mr-1'
+                                                : ''
+                                        }
+                                    >
+                                        {getIconComponent(
+                                            column.emojiIconName,
+                                            16,
+                                        )}
+                                    </span>
+                                )}
+                                {column.isNameVisible !== false &&
+                                    column.name && (
+                                        <span
+                                            className={`truncate block text-textTableValues max-w-full`}
+                                        >
+                                            {column.name}
+                                        </span>
+                                    )}
+                                {isEmptyHeader && (
+                                    <span className="opacity-0">∅</span>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </th>
-            </tr>
-        </thead>
+                    </th>
+                </tr>
+            </thead>
+            {showMenu && (
+                <ColumnMenu columnId={columnId} onClose={handleClose} />
+            )}
+        </>
     );
 };

@@ -1,5 +1,6 @@
 import { db } from '../index';
-import { Column } from '../../types/newColumn.types';
+import { Column, createEmptyWeeklyValues } from '../../types/newColumn.types';
+import { COLUMN_TYPES } from '../../constants/columnTypes';
 import { COLUMN_TEMPLATES } from '../column.templates';
 import { ColumnType } from '../../constants/columnTypes';
 import { DbResult } from '../types';
@@ -214,6 +215,129 @@ export async function deleteColumn(
         return { success: true, data: { columnId } };
     } catch (error) {
         console.error('Error during column deletion:', error);
+        return { success: false, error: (error as Error).message };
+    }
+}
+
+/**
+ * Move a column left or right in the columns order
+ * @param columnId - The unique ID of the column to move
+ * @param direction - 'left' or 'right'
+ * @returns DbResult with the new columns order
+ * @example
+ * // Success:
+ * { success: true, data: { columnsOrder: ['id1', 'id2', 'id3'] } }
+ *
+ * // Error:
+ * { success: false, error: 'Cannot move column further left' }
+ */
+export async function moveColumn(
+    columnId: string,
+    direction: 'left' | 'right',
+): Promise<DbResult<{ columnsOrder: string[] }>> {
+    try {
+        const settings = await db.settings.get('global');
+        if (!settings) {
+            return { success: false, error: 'Settings not found' };
+        }
+
+        const currentOrder = settings.layout.columnsOrder;
+        const currentIndex = currentOrder.indexOf(columnId);
+
+        if (currentIndex === -1) {
+            return { success: false, error: 'Column not found in order' };
+        }
+
+        const newIndex = direction === 'left' ? currentIndex - 1 : currentIndex + 1;
+
+        if (newIndex < 0) {
+            return { success: false, error: 'Cannot move column further left' };
+        }
+
+        if (newIndex >= currentOrder.length) {
+            return { success: false, error: 'Cannot move column further right' };
+        }
+
+        // Swap positions
+        const newOrder = [...currentOrder];
+        [newOrder[currentIndex], newOrder[newIndex]] = [newOrder[newIndex], newOrder[currentIndex]];
+
+        await db.settings.update('global', {
+            layout: { columnsOrder: newOrder },
+        });
+
+        console.log(`[Onda DB] Column ${columnId} moved ${direction}`);
+        return { success: true, data: { columnsOrder: newOrder } };
+    } catch (error) {
+        console.error('Error moving column:', error);
+        return { success: false, error: (error as Error).message };
+    }
+}
+
+/**
+ * Clear all data in a column (reset to default values based on type)
+ * @param columnId - The unique ID of the column to clear
+ * @returns DbResult with the updated column
+ * @example
+ * // Success:
+ * { success: true, data: { id: '123', name: 'Tasks', type: 'todoListColumn', ... } }
+ *
+ * // Error:
+ * { success: false, error: 'Column not found' }
+ */
+export async function clearColumn(
+    columnId: string,
+): Promise<DbResult<Column>> {
+    try {
+        const column = await db.tableColumns.get(columnId);
+        if (!column) {
+            return { success: false, error: 'Column not found' };
+        }
+
+        // Clear data based on column type
+        let updates: Record<string, any> = {};
+
+        switch (column.type) {
+            case COLUMN_TYPES.CHECKBOX:
+                updates = {
+                    'uniqueProps.days': createEmptyWeeklyValues(false),
+                };
+                break;
+            case COLUMN_TYPES.TEXTBOX:
+                updates = {
+                    'uniqueProps.days': createEmptyWeeklyValues(''),
+                };
+                break;
+            case COLUMN_TYPES.NUMBERBOX:
+                updates = {
+                    'uniqueProps.days': createEmptyWeeklyValues(0),
+                };
+                break;
+            case COLUMN_TYPES.TAGS:
+            case COLUMN_TYPES.MULTI_CHECKBOX:
+                updates = {
+                    'uniqueProps.days': createEmptyWeeklyValues<string[]>([]),
+                };
+                break;
+            case COLUMN_TYPES.TODO:
+                updates = {
+                    'uniqueProps.todos': [],
+                };
+                break;
+            case COLUMN_TYPES.TASK_TABLE:
+                updates = {
+                    'uniqueProps.doneTasks': [],
+                };
+                break;
+        }
+
+        await db.tableColumns.update(columnId, updates);
+        const updatedColumn = await db.tableColumns.get(columnId);
+
+        console.log(`[Onda DB] Column ${columnId} data cleared`);
+        return { success: true, data: updatedColumn! };
+    } catch (error) {
+        console.error('Error clearing column:', error);
         return { success: false, error: (error as Error).message };
     }
 }

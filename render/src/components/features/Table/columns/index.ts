@@ -1,4 +1,3 @@
-export { ColumnHeaderContent } from './ColumnHeaderContent';
 export { CheckboxColumn } from './CheckboxColumn/CheckboxColumn';
 export { DaysColumn } from './serviceColumns/DaysColumn';
 export { FillerColumn } from './serviceColumns/FillerColumn';

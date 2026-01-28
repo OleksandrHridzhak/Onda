@@ -157,3 +157,18 @@ export type Column =
     | TodoListColumn
     | MultiCheckboxColumn
     | TaskTableColumn;
+
+/**
+ * Helper function to create empty WeeklyValues for a given type
+ */
+export function createEmptyWeeklyValues<T>(defaultValue: T): WeeklyValues<T> {
+    return {
+        Monday: defaultValue,
+        Tuesday: defaultValue,
+        Wednesday: defaultValue,
+        Thursday: defaultValue,
+        Friday: defaultValue,
+        Saturday: defaultValue,
+        Sunday: defaultValue,
+    };
+}
