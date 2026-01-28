@@ -1,4 +1,4 @@
-import { exportData, importData } from '../indexedDB/index.js';
+import { exportData, importData } from '../../db/helpers/backup';
 import type {
     PullResult,
     PushResult,

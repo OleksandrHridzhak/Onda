@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Download, Upload, Trash2 } from 'lucide-react';
 import SettingsTemplate from '../SettingsTemplate';
 import { BubbleBtn } from '../../../shared/BubbleBtn';
-import { exportData, importData } from '../../../../services/indexedDB';
-import { clearAllData } from '../../../../services/indexedDB/general';
+import { exportData, importData } from '../../../../db/helpers/backup';
+import { clearAllData } from '../../../../db/helpers/settings';
 import { ConfirmModal } from '../../../shared/ConfirmModal';
 
 export default function DataSection(): React.ReactElement {
@@ -84,15 +84,17 @@ export default function DataSection(): React.ReactElement {
 
             const result = await clearAllData();
 
-            if (result.status === 'success') {
+            if (result.success) {
                 setTimeout(() => {
                     globalThis.location.reload();
                 }, 1000);
             } else {
+                setStatus(`❌ Clear failed: ${result.error}`);
                 setTimeout(() => setStatus(''), 3000);
             }
         } catch (error) {
             console.error('Error clearing data:', error);
+            setStatus('❌ Clear failed!');
             setTimeout(() => setStatus(''), 3000);
         }
     };

@@ -7,5 +7,9 @@ export interface Setting {
         syncServerUrl: string;
         syncSecretKey: string;
         isSyncEnabled: boolean;
+        version?: number;
+        lastSync?: string | null;
+        autoSync?: boolean;
+        syncInterval?: number;
     };
 }
