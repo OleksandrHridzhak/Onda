@@ -29,11 +29,36 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     darkMode,
     toggleColorMenu,
 }) => {
+    // Map column type to display label
     const getLabelText = () => {
-        if (columnType === 'tasktable') return 'Tasks';
-        if (columnType === 'multiselect') return 'Tags';
-        if (columnType === 'todo') return 'Categories';
-        return 'Checkboxes';
+        switch (columnType) {
+            case 'tagsColumn':
+                return 'Tags';
+            case 'todoListColumn':
+                return 'Categories';
+            case 'multiCheckBoxColumn':
+                return 'Checkboxes';
+            case 'taskTableColumn':
+                return 'Tasks';
+            default:
+                return 'Options';
+        }
+    };
+
+    // Map column type for placeholder text
+    const getPlaceholderType = () => {
+        switch (columnType) {
+            case 'tagsColumn':
+                return 'tag';
+            case 'todoListColumn':
+                return 'category';
+            case 'multiCheckBoxColumn':
+                return 'checkbox';
+            case 'taskTableColumn':
+                return 'task';
+            default:
+                return 'option';
+        }
     };
 
     return (
@@ -52,9 +77,9 @@ export const OptionsList: React.FC<OptionsListProps> = ({
                         onKeyPress={(e) =>
                             e.key === 'Enter' && handleAddOption()
                         }
-                        placeholder={`Add new ${columnType === 'multicheckbox' ? 'checkbox' : 'option'}...`}
+                        placeholder={`Add new ${getPlaceholderType()}...`}
                         className={`flex-1 px-4 py-2 h-12 border border-border bg-background text-text placeholder-textTableValues rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200`}
-                        aria-label={`Add new ${columnType}`}
+                        aria-label={`Add new ${getPlaceholderType()}`}
                     />
                     <button
                         onClick={handleAddOption}

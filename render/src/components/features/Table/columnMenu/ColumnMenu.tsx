@@ -40,64 +40,42 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
         return [];
     }, []);
 
-    // Local state for editing
-    const [name, setName] = useState('');
-    const [selectedIcon, setSelectedIcon] = useState('');
-    const [description, setDescription] = useState('');
-    const [showTitle, setShowTitle] = useState(true);
-    const [width, setWidth] = useState(0);
-    const [checkboxColor, setCheckboxColor] = useState('green');
-    const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
-    const [isColorMenuOpen, setIsColorMenuOpen] = useState<
-        Record<string, boolean>
-    >({});
-    const [isSaving, setIsSaving] = useState(false);
-
-    // Use custom hook for handlers
+    // All state and handlers from custom hook
     const {
+        name,
+        setName,
+        selectedIcon,
+        setSelectedIcon,
+        description,
+        setDescription,
+        showTitle,
+        setShowTitle,
+        width,
+        checkboxColor,
+        setCheckboxColor,
+        isIconSectionExpanded,
+        setIsIconSectionExpanded,
+        isColorMenuOpen,
+        setIsColorMenuOpen,
+        isSaving,
         tags,
-        setTags,
         newOption,
         setNewOption,
         handleAddOption,
         handleRemoveOption,
         handleEditOption,
         handleColorChange,
-        handleSave: hookHandleSave,
+        handleSave,
         handleDelete,
         handleClear,
-        handleMoveLeft: hookHandleMoveLeft,
-        handleMoveRight: hookHandleMoveRight,
-        handleWidthChange: hookHandleWidthChange,
+        handleMoveLeft,
+        handleMoveRight,
+        handleWidthChange,
     } = useColumnMenuHandlers({ columnId, column, onClose });
 
     const menuRef = useRef<HTMLDivElement>(null);
     const darkMode =
         document.documentElement.getAttribute('data-theme-mode') === 'dark';
-
-    // Initialize local state when column data loads
-    useEffect(() => {
-        if (!column) return;
-
-        setName(column.name);
-        setSelectedIcon(column.emojiIconName || '');
-        setDescription(column.description || '');
-        setShowTitle(column.isNameVisible !== false);
-        setWidth(column.width || 0);
-
-        // Extract tags based on column type
-        if (column.type === COLUMN_TYPES.TAGS) {
-            setTags(column.uniqueProps.availableTags || []);
-        } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
-            setTags(column.uniqueProps.availableOptions || []);
-        } else if (column.type === COLUMN_TYPES.TODO) {
-            setTags(column.uniqueProps.availableCategories || []);
-        } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
-            setTags(column.uniqueProps.availableTags || []);
-        } else if (column.type === COLUMN_TYPES.CHECKBOX) {
-            setCheckboxColor(column.uniqueProps.checkboxColor || 'green');
-        }
-    }, [column, setTags]);
 
     // Close on outside click
     useEffect(() => {
@@ -124,49 +102,6 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
 
     // Determine column type for options list
     const hasOptions = hasOptionsSupport(column.type);
-
-    const handleSave = () => {
-        hookHandleSave(
-            name,
-            selectedIcon,
-            description,
-            showTitle,
-            width,
-            checkboxColor,
-            setIsSaving,
-        );
-    };
-
-    const handleMoveLeft = () => {
-        hookHandleMoveLeft(canMoveLeft);
-    };
-
-    const handleMoveRight = () => {
-        hookHandleMoveRight(canMoveRight);
-    };
-
-    const handleWidthChange = async (
-        e: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-        const newWidth = await hookHandleWidthChange(e);
-        setWidth(newWidth);
-    };
-
-    // Map column type for OptionsList (which expects old type names)
-    const getColumnTypeForOptions = () => {
-        switch (column.type) {
-            case 'tagsColumn':
-                return 'multiselect';
-            case 'todoListColumn':
-                return 'todo';
-            case 'multiCheckBoxColumn':
-                return 'multicheckbox';
-            case 'taskTableColumn':
-                return 'tasktable';
-            default:
-                return column.type;
-        }
-    };
 
     return ReactDOM.createPortal(
         <div
@@ -205,7 +140,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
 
                     {hasOptions && (
                         <OptionsList
-                            columnType={getColumnTypeForOptions()}
+                            columnType={column.type}
                             tags={tags}
                             newOption={newOption}
                             setNewOption={setNewOption}

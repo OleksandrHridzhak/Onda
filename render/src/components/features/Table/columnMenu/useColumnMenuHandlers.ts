@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tag } from '../../../../types/newColumn.types';
 import { COLUMN_TYPES } from '../../../../constants/columnTypes';
 import {
@@ -19,8 +19,42 @@ export const useColumnMenuHandlers = ({
     column,
     onClose,
 }: UseColumnMenuHandlersProps) => {
+    // All state management in one place
+    const [name, setName] = useState('');
+    const [selectedIcon, setSelectedIcon] = useState('');
+    const [description, setDescription] = useState('');
+    const [showTitle, setShowTitle] = useState(true);
+    const [width, setWidth] = useState(0);
+    const [checkboxColor, setCheckboxColor] = useState('green');
+    const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
+    const [isColorMenuOpen, setIsColorMenuOpen] = useState<Record<string, boolean>>({});
+    const [isSaving, setIsSaving] = useState(false);
     const [tags, setTags] = useState<Tag[]>([]);
     const [newOption, setNewOption] = useState('');
+
+    // Initialize state when column data loads
+    useEffect(() => {
+        if (!column) return;
+
+        setName(column.name);
+        setSelectedIcon(column.emojiIconName || '');
+        setDescription(column.description || '');
+        setShowTitle(column.isNameVisible !== false);
+        setWidth(column.width || 0);
+
+        // Extract tags based on column type
+        if (column.type === COLUMN_TYPES.TAGS) {
+            setTags(column.uniqueProps.availableTags || []);
+        } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
+            setTags(column.uniqueProps.availableOptions || []);
+        } else if (column.type === COLUMN_TYPES.TODO) {
+            setTags(column.uniqueProps.availableCategories || []);
+        } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
+            setTags(column.uniqueProps.availableTags || []);
+        } else if (column.type === COLUMN_TYPES.CHECKBOX) {
+            setCheckboxColor(column.uniqueProps.checkboxColor || 'green');
+        }
+    }, [column]);
 
     const saveOptions = async (updatedTags: Tag[]) => {
         const updates: Record<string, Tag[]> = {};
@@ -79,15 +113,7 @@ export const useColumnMenuHandlers = ({
         await saveOptions(updatedTags);
     };
 
-    const handleSave = async (
-        name: string,
-        selectedIcon: string,
-        description: string,
-        showTitle: boolean,
-        width: number,
-        checkboxColor: string,
-        setIsSaving: (value: boolean) => void,
-    ) => {
+    const handleSave = async () => {
         setIsSaving(true);
         try {
             const updates: Record<string, string | number | boolean> = {};
@@ -146,31 +172,46 @@ export const useColumnMenuHandlers = ({
         await clearColumn(columnId);
     };
 
-    const handleMoveLeft = async (canMoveLeft: boolean) => {
-        if (canMoveLeft) {
-            await moveColumn(columnId, 'left');
-        }
+    const handleMoveLeft = async () => {
+        await moveColumn(columnId, 'left');
     };
 
-    const handleMoveRight = async (canMoveRight: boolean) => {
-        if (canMoveRight) {
-            await moveColumn(columnId, 'right');
-        }
+    const handleMoveRight = async () => {
+        await moveColumn(columnId, 'right');
     };
 
     const handleWidthChange = async (
         e: React.ChangeEvent<HTMLInputElement>,
     ) => {
         const newWidth = parseInt(e.target.value, 10) || 100;
+        setWidth(newWidth);
         await updateColumnFields(columnId, { width: newWidth });
-        return newWidth;
     };
 
     return {
+        // State
+        name,
+        setName,
+        selectedIcon,
+        setSelectedIcon,
+        description,
+        setDescription,
+        showTitle,
+        setShowTitle,
+        width,
+        setWidth,
+        checkboxColor,
+        setCheckboxColor,
+        isIconSectionExpanded,
+        setIsIconSectionExpanded,
+        isColorMenuOpen,
+        setIsColorMenuOpen,
+        isSaving,
         tags,
         setTags,
         newOption,
         setNewOption,
+        // Handlers
         handleAddOption,
         handleRemoveOption,
         handleEditOption,
