@@ -26,7 +26,7 @@ export const ColumnPositionControls: React.FC<ColumnPositionControlsProps> = ({
             <label
                 className={`block text-sm font-medium text-textTableValues mb-1`}
             >
-                Column Position and width
+                Column Position and Width
             </label>
             <div className="flex space-x-2">
                 <div className="w-full">

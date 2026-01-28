@@ -1,6 +1,7 @@
 import React from 'react';
 import { IconSelector } from './IconSelector';
 import { TitleVisibilityToggle } from './TitleVisibilityToggle';
+import { Icon } from '../../../../../utils/icons';
 
 interface ColumnNameInputProps {
     name: string;
@@ -11,7 +12,7 @@ interface ColumnNameInputProps {
     setShowTitle: (value: boolean) => void;
     isIconSectionExpanded: boolean;
     setIsIconSectionExpanded: () => void;
-    icons: any[];
+    icons: Icon[];
     darkMode: boolean;
 }
 
@@ -44,6 +45,7 @@ export const ColumnNameInput: React.FC<ColumnNameInputProps> = ({
                     onChange={(e) => setName(e.target.value)}
                     className={`w-full h-[50px] px-4 py-2 border border-border bg-background text-text rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200`}
                     placeholder="Column name"
+                    aria-label="Column name"
                 />
                 <TitleVisibilityToggle
                     showTitle={showTitle}
