@@ -1,15 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * Custom hook to synchronize row heights across multiple table columns.
  * Only syncs tables with multiple rows (excludes single-cell columns like todo/tasktable).
  *
  * @param dependencies - Array of dependencies to trigger resync (e.g., columnsData, columnOrder)
+ * @returns { isLoading } - Loading state while syncing
  */
 export const useRowHeightSync = (dependencies: any[]) => {
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         let outerRafId: number;
         let innerRafId: number;
+        let resizeTimeoutId: number;
+        let mutationTimeoutId: number;
 
         const syncRowHeights = () => {
             const allTables = document.querySelectorAll(
@@ -73,6 +78,12 @@ export const useRowHeightSync = (dependencies: any[]) => {
                     row.style.height = `${totalHeight}px`;
                 }
             });
+
+            // Delay marking loading as complete to allow browser paint
+            // This ensures the UI has time to render the size changes
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 300);
         };
 
         // Defer sync until after DOM has been painted
@@ -84,9 +95,27 @@ export const useRowHeightSync = (dependencies: any[]) => {
             });
         });
 
-        // Add ResizeObserver to track size changes
+        // Add MutationObserver to detect DOM changes (for page switching)
+        const mutationObserver = new MutationObserver(() => {
+            clearTimeout(mutationTimeoutId);
+            mutationTimeoutId = window.setTimeout(() => {
+                syncRowHeights();
+            }, 150); // Debounce mutations to batch changes
+        });
+
+        mutationObserver.observe(document.body, {
+            childList: true,
+            subtree: true,
+            characterData: false,
+            attributes: false,
+        });
+
+        // Add ResizeObserver to track size changes (with debouncing to prevent infinite loop)
         const observer = new ResizeObserver(() => {
-            syncRowHeights();
+            clearTimeout(resizeTimeoutId);
+            resizeTimeoutId = window.setTimeout(() => {
+                syncRowHeights();
+            }, 100); // Debounce by 100ms to batch resize events
         });
 
         const tables = document.querySelectorAll('.checkbox-nested-table');
@@ -95,7 +124,12 @@ export const useRowHeightSync = (dependencies: any[]) => {
         return () => {
             cancelAnimationFrame(outerRafId);
             cancelAnimationFrame(innerRafId);
+            clearTimeout(resizeTimeoutId);
+            clearTimeout(mutationTimeoutId);
             observer.disconnect();
+            mutationObserver.disconnect();
         };
     }, dependencies);
+
+    return { isLoading };
 };
