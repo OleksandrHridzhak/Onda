@@ -3,7 +3,7 @@ import { Sun, Moon, Plus } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleThemeMode } from '../../store/slices/newThemeSlice';
-import ColumnTypeSelector from '../features/PlannerHeader/ColumnTypeSelector';
+import ColumnTypeSelector from '../pages/ColumnTypeSelector';
 import { sideBarItems } from '../../utils/constants';
 import { createColumn } from '../../db/helpers/columns';
 import { ColumnType } from '../../constants/columnTypes';

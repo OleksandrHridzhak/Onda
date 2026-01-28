@@ -9,7 +9,7 @@ import {
     Circle,
     Table,
 } from 'lucide-react';
-import { COLUMN_TYPES } from '../../../constants/columnTypes';
+import { COLUMN_TYPES } from '../../constants/columnTypes';
 
 interface ColumnType {
     id: string;
