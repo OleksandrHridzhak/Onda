@@ -19,12 +19,20 @@ export const MobileTodayView: React.FC = () => {
     // Use dexie live queries to load columns and settings
     const columnOrder: string[] = useLiveQuery(async () => {
         const res = await getSettings();
-        return res?.data?.layout?.columnsOrder ?? [];
+        if (!res.success) {
+            console.error('Failed to load settings for column order:', res.error);
+            return [];
+        }
+        return res.data?.layout?.columnsOrder ?? [];
     }, []) ?? [];
 
     const columnsArray = useLiveQuery(async () => {
         const res = await getAllColumns();
-        return res.success ? res.data : [];
+        if (!res.success) {
+            console.error('Failed to load columns:', res.error);
+            return [];
+        }
+        return res.data;
     }, []) ?? [];
 
     // Convert columns array to dictionary for easier lookup
@@ -71,15 +79,19 @@ export const MobileTodayView: React.FC = () => {
             const column = columnsData[columnId];
             if (!column) return;
 
-            // Update the nested property in the column
+            // Preserve all existing uniqueProperties, only update the specific day
             const updatedDays = {
                 ...(column.uniqueProperties?.Days || {}),
                 [selectedDayName]: value,
             };
 
-            await updateColumnFields(columnId, {
+            const result = await updateColumnFields(columnId, {
                 'uniqueProperties.Days': updatedDays,
             });
+
+            if (!result.success) {
+                console.error('Failed to update cell:', result.error);
+            }
         },
         [columnsData, selectedDayName],
     );
@@ -90,15 +102,19 @@ export const MobileTodayView: React.FC = () => {
             const column = columnsData[columnId];
             if (!column) return;
 
-            // Update the nested property in the column
+            // Preserve all existing uniqueProperties, only update the specific path
             const updatedChosen = {
                 ...(column.uniqueProperties?.Chosen || {}),
                 global: newValue,
             };
 
-            await updateColumnFields(columnId, {
+            const result = await updateColumnFields(columnId, {
                 'uniqueProperties.Chosen': updatedChosen,
             });
+
+            if (!result.success) {
+                console.error('Failed to update todo:', result.error);
+            }
         },
         [columnsData],
     );
@@ -114,7 +130,8 @@ export const MobileTodayView: React.FC = () => {
                     optionsColors[tag.name] = tag.color || 'blue';
                 });
 
-                await updateColumnFields(columnId, {
+                // Preserve all existing uniqueProperties, only update specific fields
+                const result = await updateColumnFields(columnId, {
                     uniqueProperties: {
                         ...columnData.uniqueProperties,
                         Options: options,
@@ -122,6 +139,10 @@ export const MobileTodayView: React.FC = () => {
                         DoneTags: doneTasks,
                     },
                 });
+
+                if (!result.success) {
+                    console.error('Failed to update task table:', result.error);
+                }
             };
         },
         [],

@@ -20,12 +20,20 @@ const TableScreen: React.FC = () => {
     // Use dexie live queries to load columns and settings
     const columnsData = useLiveQuery(async () => {
         const res = await getAllColumns();
-        return res.success ? res.data : [];
+        if (!res.success) {
+            console.error('Failed to load columns:', res.error);
+            return [];
+        }
+        return res.data;
     });
 
     const settings = useLiveQuery(async () => {
         const res = await getSettings();
-        return res.success ? res.data : null;
+        if (!res.success) {
+            console.error('Failed to load settings:', res.error);
+            return null;
+        }
+        return res.data;
     });
 
     // Check if mobile
