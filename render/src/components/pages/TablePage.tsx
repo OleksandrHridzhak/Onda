@@ -2,37 +2,31 @@ import React, { useEffect, useState } from 'react';
 import PlannerHeader from '../features/PlannerHeader';
 import { LoadingScreen } from '../shared/LoadingScreen';
 import { useTableLogic } from '../features/Table/TableLogic';
-import { useSelector, useDispatch } from 'react-redux';
-import { store } from '../../store';
-import { loadColumnsFromDB } from '../../store/tableSlice/tableSlice';
+import { useSelector } from 'react-redux';
 import Table from '../features/Table/Table';
 import { MobileTodayView } from '../features/Table/mobile/MobileTodayView';
 import { syncService } from '../../services/syncService';
 import { usePullToRefresh } from '../../hooks/usePullToRefresh';
-
-// Type for the Redux dispatch inferred from the store
-type AppDispatch = typeof store.dispatch;
+import { useLiveQuery } from 'dexie-react-hooks';
+import { getAllColumns } from '../../db/helpers/columns';
+import { getSettings } from '../../db/helpers/settings';
 
 const TableScreen: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
     const tableLogic = useTableLogic();
     const [isMobile, setIsMobile] = useState(false);
 
     const { themeMode } = useSelector((state: any) => state.newTheme);
 
-    const reduxLoaded = useSelector(
-        (state: Record<string, any>) => state.tableData?.loaded ?? false,
-    );
-    const reduxStatus = useSelector(
-        (state: Record<string, any>) => state.tableData?.status ?? 'idle',
-    );
+    // Use dexie live queries to load columns and settings
+    const columnsData = useLiveQuery(async () => {
+        const res = await getAllColumns();
+        return res.success ? res.data : [];
+    });
 
-    // Load columns from IndexedDB when component mounts
-    useEffect(() => {
-        if (!reduxLoaded && reduxStatus === 'idle') {
-            dispatch(loadColumnsFromDB());
-        }
-    }, [dispatch, reduxLoaded, reduxStatus]);
+    const settings = useLiveQuery(async () => {
+        const res = await getSettings();
+        return res.success ? res.data : null;
+    });
 
     // Check if mobile
     useEffect(() => {
@@ -42,15 +36,15 @@ const TableScreen: React.FC = () => {
         return () => window.removeEventListener('resize', check);
     }, []);
 
-    // Show loading screen while loading from IndexedDB
+    // Show loading screen while loading from dexie
     const isLoading =
-        tableLogic.loading || (!reduxLoaded && reduxStatus === 'loading');
+        tableLogic.loading || columnsData === undefined || settings === undefined;
 
     // Handle refresh for pull-to-refresh hook
     const handlePullRefresh = async () => {
         try {
             await syncService.sync();
-            dispatch(loadColumnsFromDB());
+            // Dexie live queries will automatically refresh when data changes
         } catch (error) {
             console.error('Refresh failed:', error);
         }
