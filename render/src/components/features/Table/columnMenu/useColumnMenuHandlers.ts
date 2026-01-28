@@ -43,7 +43,9 @@ export const useColumnMenuHandlers = ({
         }
 
         const newTag: Tag = {
-            id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
+            id:
+                globalThis.crypto?.randomUUID?.() ||
+                `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
             name: newOption.trim(),
             color: 'blue',
         };
@@ -63,7 +65,7 @@ export const useColumnMenuHandlers = ({
 
     const handleEditOption = async (tagId: string, newName: string) => {
         const updatedTags = tags.map((tag) =>
-            tag.id === tagId ? { ...tag, name: newName } : tag
+            tag.id === tagId ? { ...tag, name: newName } : tag,
         );
         setTags(updatedTags);
         await saveOptions(updatedTags);
@@ -71,7 +73,7 @@ export const useColumnMenuHandlers = ({
 
     const handleColorChange = async (tagId: string, color: string) => {
         const updatedTags = tags.map((tag) =>
-            tag.id === tagId ? { ...tag, color } : tag
+            tag.id === tagId ? { ...tag, color } : tag,
         );
         setTags(updatedTags);
         await saveOptions(updatedTags);
@@ -84,7 +86,7 @@ export const useColumnMenuHandlers = ({
         showTitle: boolean,
         width: number,
         checkboxColor: string,
-        setIsSaving: (value: boolean) => void
+        setIsSaving: (value: boolean) => void,
     ) => {
         setIsSaving(true);
         try {
@@ -110,7 +112,10 @@ export const useColumnMenuHandlers = ({
                 updates.width = width;
             }
 
-            if (column.type === COLUMN_TYPES.CHECKBOX && checkboxColor !== column.uniqueProps.checkboxColor) {
+            if (
+                column.type === COLUMN_TYPES.CHECKBOX &&
+                checkboxColor !== column.uniqueProps.checkboxColor
+            ) {
                 updates['uniqueProps.checkboxColor'] = checkboxColor;
             }
 
@@ -129,7 +134,7 @@ export const useColumnMenuHandlers = ({
     const handleDelete = async () => {
         if (
             globalThis.confirm(
-                `Are you sure you want to delete "${column.name || 'this column'}"? This action cannot be undone.`
+                `Are you sure you want to delete "${column.name || 'this column'}"? This action cannot be undone.`,
             )
         ) {
             await deleteColumn(columnId);
@@ -141,19 +146,21 @@ export const useColumnMenuHandlers = ({
         await clearColumn(columnId);
     };
 
-    const handleMoveUp = async (canMoveUp: boolean) => {
-        if (canMoveUp) {
+    const handleMoveLeft = async (canMoveLeft: boolean) => {
+        if (canMoveLeft) {
             await moveColumn(columnId, 'left');
         }
     };
 
-    const handleMoveDown = async (canMoveDown: boolean) => {
-        if (canMoveDown) {
+    const handleMoveRight = async (canMoveRight: boolean) => {
+        if (canMoveRight) {
             await moveColumn(columnId, 'right');
         }
     };
 
-    const handleWidthChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleWidthChange = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         const newWidth = parseInt(e.target.value, 10) || 100;
         await updateColumnFields(columnId, { width: newWidth });
         return newWidth;
@@ -171,8 +178,8 @@ export const useColumnMenuHandlers = ({
         handleSave,
         handleDelete,
         handleClear,
-        handleMoveUp,
-        handleMoveDown,
+        handleMoveLeft,
+        handleMoveRight,
         handleWidthChange,
     };
 };

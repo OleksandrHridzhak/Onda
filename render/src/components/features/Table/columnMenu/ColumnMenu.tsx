@@ -12,7 +12,10 @@ import { CheckboxColorPicker } from './CheckBoxColorPicker';
 import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
 import { useColumnMenuHandlers } from './useColumnMenuHandlers';
-import { COLUMN_TYPES, hasOptionsSupport } from '../../../../constants/columnTypes';
+import {
+    COLUMN_TYPES,
+    hasOptionsSupport,
+} from '../../../../constants/columnTypes';
 
 interface ColumnMenuProps {
     columnId: string;
@@ -47,7 +50,9 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     const [width, setWidth] = useState(0);
     const [checkboxColor, setCheckboxColor] = useState('green');
     const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
-    const [isColorMenuOpen, setIsColorMenuOpen] = useState<Record<string, boolean>>({});
+    const [isColorMenuOpen, setIsColorMenuOpen] = useState<
+        Record<string, boolean>
+    >({});
     const [isSaving, setIsSaving] = useState(false);
 
     // Use custom hook for handlers
@@ -63,13 +68,14 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
         handleSave: hookHandleSave,
         handleDelete,
         handleClear,
-        handleMoveUp: hookHandleMoveUp,
-        handleMoveDown: hookHandleMoveDown,
+        handleMoveLeft: hookHandleMoveLeft,
+        handleMoveRight: hookHandleMoveRight,
         handleWidthChange: hookHandleWidthChange,
     } = useColumnMenuHandlers({ columnId, column, onClose });
 
     const menuRef = useRef<HTMLDivElement>(null);
-    const darkMode = document.documentElement.getAttribute('data-theme-mode') === 'dark';
+    const darkMode =
+        document.documentElement.getAttribute('data-theme-mode') === 'dark';
 
     // Initialize local state when column data loads
     useEffect(() => {
@@ -98,12 +104,16 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     // Close on outside click
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+            ) {
                 onClose();
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
     }, [onClose]);
 
     if (!column || !columnsOrder) {
@@ -111,25 +121,35 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     }
 
     const currentIndex = columnsOrder.indexOf(columnId);
-    const canMoveUp = currentIndex > 0;
-    const canMoveDown = currentIndex < columnsOrder.length - 1;
+    const canMoveLeft = currentIndex > 0;
+    const canMoveRight = currentIndex < columnsOrder.length - 1;
 
     // Determine column type for options list
     const hasOptions = hasOptionsSupport(column.type);
 
     const handleSave = () => {
-        hookHandleSave(name, selectedIcon, description, showTitle, width, checkboxColor, setIsSaving);
+        hookHandleSave(
+            name,
+            selectedIcon,
+            description,
+            showTitle,
+            width,
+            checkboxColor,
+            setIsSaving,
+        );
     };
 
-    const handleMoveUp = () => {
-        hookHandleMoveUp(canMoveUp);
+    const handleMoveLeft = () => {
+        hookHandleMoveLeft(canMoveLeft);
     };
 
-    const handleMoveDown = () => {
-        hookHandleMoveDown(canMoveDown);
+    const handleMoveRight = () => {
+        hookHandleMoveRight(canMoveRight);
     };
 
-    const handleWidthChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleWidthChange = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         const newWidth = await hookHandleWidthChange(e);
         setWidth(newWidth);
     };
@@ -160,7 +180,9 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                 ref={menuRef}
             >
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className={`text-lg z-55 font-semibold text-text`}>Column Settings</h2>
+                    <h2 className={`text-lg z-55 font-semibold text-text`}>
+                        Column Settings
+                    </h2>
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -178,7 +200,9 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                             selectedIcon={selectedIcon}
                             setSelectedIcon={setSelectedIcon}
                             isIconSectionExpanded={isIconSectionExpanded}
-                            setIsIconSectionExpanded={() => setIsIconSectionExpanded(!isIconSectionExpanded)}
+                            setIsIconSectionExpanded={() =>
+                                setIsIconSectionExpanded(!isIconSectionExpanded)
+                            }
                             icons={icons}
                             darkMode={darkMode}
                         />
@@ -207,7 +231,9 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                         />
                     </div>
                     <div className="mb-4">
-                        <label className={`block text-sm font-medium text-textTableValues mb-1`}>
+                        <label
+                            className={`block text-sm font-medium text-textTableValues mb-1`}
+                        >
                             Column Position and width
                         </label>
                         <div className="flex space-x-2">
@@ -223,10 +249,18 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                                     aria-label="Column width"
                                 />
                             </div>
-                            <TransparentBtn onClick={handleMoveUp} disabled={!canMoveUp} darkTheme={darkMode}>
+                            <TransparentBtn
+                                onClick={handleMoveLeft}
+                                disabled={!canMoveLeft}
+                                darkTheme={darkMode}
+                            >
                                 <ArrowLeft size={18} /> LEFT
                             </TransparentBtn>
-                            <TransparentBtn onClick={handleMoveDown} disabled={!canMoveDown} darkTheme={darkMode}>
+                            <TransparentBtn
+                                onClick={handleMoveRight}
+                                disabled={!canMoveRight}
+                                darkTheme={darkMode}
+                            >
                                 RIGHT <ArrowRight size={18} />
                             </TransparentBtn>
                         </div>
@@ -267,21 +301,33 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                     )}
                     <div className="flex justify-between gap-2 mt-6">
                         <div className="flex gap-2">
-                            <BubbleBtn onClick={handleDelete} disabled={isSaving} variant="delete">
+                            <BubbleBtn
+                                onClick={handleDelete}
+                                disabled={isSaving}
+                                variant="delete"
+                            >
                                 Delete
                             </BubbleBtn>
-                            <BubbleBtn onClick={handleClear} disabled={isSaving} variant="clear">
+                            <BubbleBtn
+                                onClick={handleClear}
+                                disabled={isSaving}
+                                variant="clear"
+                            >
                                 Clear column
                             </BubbleBtn>
                         </div>
-                        <BubbleBtn onClick={handleSave} disabled={isSaving} variant="standard">
+                        <BubbleBtn
+                            onClick={handleSave}
+                            disabled={isSaving}
+                            variant="standard"
+                        >
                             Save Changes
                         </BubbleBtn>
                     </div>
                 </div>
             </div>
         </div>,
-        document.body
+        document.body,
     );
 };
 
