@@ -55,13 +55,13 @@ export const FormulaCell: React.FC<FormulaCellProps> = ({
     // Format the result for display
     const displayValue = (() => {
         if (isEditing) return null;
-        
-        if (formula && !formula.trim()) {
+
+        if (!formula || formula.trim() === '') {
             return '';
         }
 
         if (result === null || result === undefined) {
-            return formula ? '—' : '';
+            return '—';
         }
 
         if (typeof result === 'string' && result.startsWith('Error:')) {
@@ -69,11 +69,14 @@ export const FormulaCell: React.FC<FormulaCellProps> = ({
         }
 
         if (typeof result === 'number') {
-            // Format numbers nicely
+            // Format numbers with smarter precision
             if (Number.isInteger(result)) {
                 return result;
             }
-            return result.toFixed(2);
+            // Use up to 6 significant digits for better precision
+            const formatted = result.toPrecision(6);
+            // Remove trailing zeros
+            return parseFloat(formatted);
         }
 
         return String(result);

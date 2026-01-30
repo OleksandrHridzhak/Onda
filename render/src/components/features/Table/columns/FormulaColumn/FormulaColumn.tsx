@@ -53,6 +53,8 @@ export const FormulaColumn: React.FC<FormulaColumnProps> = ({ columnId }) => {
             if (col.id === columnId) return; // Skip self
 
             // Extract value based on column type
+            // Note: Only supported column types are included.
+            // New column types need to be added here for formula compatibility.
             if (col.type === 'checkboxColumn') {
                 columnValues[col.id] =
                     col.uniqueProps.days[
@@ -74,7 +76,7 @@ export const FormulaColumn: React.FC<FormulaColumnProps> = ({ columnId }) => {
                         day as keyof typeof col.uniqueProps.days
                     ]?.result ?? null;
             }
-            // Add more column types as needed
+            // TODO: Add support for more column types (tags, multi-checkbox, etc.)
         });
 
         // Evaluate the formula

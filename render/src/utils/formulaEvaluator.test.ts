@@ -92,6 +92,14 @@ describe('formulaEvaluator', () => {
             ).toBe(20);
         });
 
+        it('should throw error for avg with no arguments', () => {
+            const result = evaluateFormula('avg()', { columnValues: {} });
+            expect(typeof result).toBe('string');
+            expect(
+                (result as string).includes('requires at least one argument'),
+            ).toBe(true);
+        });
+
         it('should evaluate min function', () => {
             expect(
                 evaluateFormula('min(5, 2, 8, 1)', { columnValues: {} }),

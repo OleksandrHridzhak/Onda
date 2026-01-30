@@ -181,9 +181,9 @@ function parseExpression(expr: string): string | number | boolean | null {
             const right = parseAdditive();
             switch (op) {
                 case '==':
-                    return left == right;
+                    return left === right;
                 case '!=':
-                    return left != right;
+                    return left !== right;
                 case '>':
                     return Number(left) > Number(right);
                 case '<':
@@ -370,7 +370,9 @@ function parseExpression(expr: string): string | number | boolean | null {
                     0 as number,
                 );
             case 'avg': {
-                if (args.length === 0) return 0;
+                if (args.length === 0) {
+                    throw new Error('avg() requires at least one argument');
+                }
                 const sum = args.reduce(
                     (a, b) => Number(a) + Number(b),
                     0 as number,
@@ -394,8 +396,12 @@ function parseExpression(expr: string): string | number | boolean | null {
                 return Math.abs(Number(args[0]));
             case 'sqrt':
                 return Math.sqrt(Number(args[0]));
-            case 'if':
+            case 'if': {
+                if (args.length !== 3) {
+                    throw new Error('if() requires exactly 3 arguments');
+                }
                 return args[0] ? args[1] : args[2];
+            }
             case 'length':
                 return String(args[0]).length;
             case 'upper':
