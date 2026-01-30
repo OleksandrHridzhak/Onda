@@ -115,4 +115,19 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
             doneTasks: [],
         },
     },
+
+    [COLUMN_TYPES.FORMULA]: {
+        type: COLUMN_TYPES.FORMULA,
+        name: 'Formula',
+        isNameVisible: true,
+        description: 'Calculate values based on other cells in the row.',
+        emojiIconName: 'Calculator',
+        width: 130,
+        uniqueProps: {
+            days: createWeeklyValues({
+                formula: '',
+                result: null,
+            }),
+        },
+    },
 };
