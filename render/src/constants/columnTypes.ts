@@ -7,6 +7,7 @@ export const COLUMN_TYPES = {
     TEXTBOX: 'textboxColumn',
     NUMBERBOX: 'numberboxColumn',
     TAGS: 'tagsColumn',
+    RANDOM_TAGS: 'randomTagsColumn',
     TODO: 'todoListColumn',
     MULTI_CHECKBOX: 'multiCheckBoxColumn',
     TASK_TABLE: 'taskTableColumn',
@@ -21,6 +22,7 @@ export type ColumnType =
     | 'textboxColumn'
     | 'numberboxColumn'
     | 'tagsColumn'
+    | 'randomTagsColumn'
     | 'todoListColumn'
     | 'multiCheckBoxColumn'
     | 'taskTableColumn';
@@ -30,6 +32,7 @@ export type ColumnType =
  */
 export const COLUMN_TYPES_WITH_OPTIONS: ColumnType[] = [
     COLUMN_TYPES.TAGS,
+    COLUMN_TYPES.RANDOM_TAGS,
     COLUMN_TYPES.TODO,
     COLUMN_TYPES.MULTI_CHECKBOX,
     COLUMN_TYPES.TASK_TABLE,

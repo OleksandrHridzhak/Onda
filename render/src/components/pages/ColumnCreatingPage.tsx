@@ -8,6 +8,7 @@ import {
     ListTodo,
     Circle,
     Table,
+    Sparkles,
 } from 'lucide-react';
 import { COLUMN_TYPES } from '../../constants/columnTypes';
 
@@ -88,6 +89,21 @@ const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
             hoverColor: darkMode
                 ? 'hover:bg-purple-700 hover:bg-opacity-50'
                 : 'hover:bg-purple-300',
+        },
+
+        {
+            id: COLUMN_TYPES.RANDOM_TAGS,
+            label: 'Random Tags',
+            description: 'Tags assigned automatically based on probability.',
+            icon: (
+                <Sparkles
+                    className={`w-5 h-5 ${darkMode ? 'text-pink-200' : 'text-pink-600'}`}
+                />
+            ),
+            bgColor: darkMode ? 'bg-pink-800 bg-opacity-40' : 'bg-pink-200',
+            hoverColor: darkMode
+                ? 'hover:bg-pink-700 hover:bg-opacity-50'
+                : 'hover:bg-pink-300',
         },
 
         {
