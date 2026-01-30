@@ -12,8 +12,12 @@ import TableItemWrapper from './TableItemWrapper';
  * directly to its specific database record using useLiveQuery.
  *
  * @param columnId - Unique identifier of the column to render
+ * @param isCompletedToday - Whether this column is completed for today (affects styling)
  */
-const DynamicColumn: React.FC<{ columnId: string }> = ({ columnId }) => {
+const DynamicColumn: React.FC<{
+    columnId: string;
+    isCompletedToday?: boolean;
+}> = ({ columnId, isCompletedToday = false }) => {
     // Each column subscribes ONLY to its own record
     const data = useLiveQuery(() => db.tableColumns.get(columnId));
 
@@ -22,8 +26,16 @@ const DynamicColumn: React.FC<{ columnId: string }> = ({ columnId }) => {
     const Component = componentsMap[data.type];
     if (!Component) return null;
 
+    // Apply blur and dark styling for completed columns
+    const completedClassName = isCompletedToday
+        ? 'opacity-50 blur-[0.5px] dark:opacity-40'
+        : '';
+
     return (
-        <TableItemWrapper column={data} className="border-r border-border">
+        <TableItemWrapper
+            column={data}
+            className={`border-r border-border ${completedClassName}`}
+        >
             <Component columnId={columnId} />
         </TableItemWrapper>
     );
