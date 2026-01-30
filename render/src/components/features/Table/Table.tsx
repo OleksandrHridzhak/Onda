@@ -34,21 +34,23 @@ const Table: React.FC = () => {
     const { isLoading } = useRowHeightSync([columnsData]);
 
     /**
-     * Get today's day name (e.g., "Monday", "Tuesday")
-     * Used to determine which columns are completed for today
+     * Memoize today's day name to prevent unnecessary recalculations
+     * Only recalculates when the day actually changes
      */
-    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    const today = React.useMemo(() => {
+        return new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    }, []);
 
     /**
-     * Reorder columns: incomplete columns first, completed columns last
-     * A column is considered "completed for today" if it's a checkboxColumn
-     * and the checkbox for today's day is checked
+     * Reorder columns and determine completion status
+     * Returns an array of objects with column IDs and their completion status
+     * This avoids O(n²) complexity in the render loop
      */
-    const reorderedColumnIds = React.useMemo(() => {
+    const orderedColumnsWithStatus = React.useMemo(() => {
         if (!columnOrder || !columnsData) return [];
 
-        const incomplete: string[] = [];
-        const completed: string[] = [];
+        const incomplete: Array<{ id: string; isCompletedToday: boolean }> = [];
+        const completed: Array<{ id: string; isCompletedToday: boolean }> = [];
 
         columnOrder.forEach((id) => {
             const columnData = columnsData.find((col) => col.id === id);
@@ -58,10 +60,12 @@ const Table: React.FC = () => {
                 columnData?.type === 'checkboxColumn' &&
                 columnData?.uniqueProps?.days?.[today] === true;
 
+            const columnInfo = { id, isCompletedToday };
+
             if (isCompletedToday) {
-                completed.push(id);
+                completed.push(columnInfo);
             } else {
-                incomplete.push(id);
+                incomplete.push(columnInfo);
             }
         });
 
@@ -103,23 +107,15 @@ const Table: React.FC = () => {
                             </TableItemWrapper>
 
                             {/* Dynamic: User-defined optional columns */}
-                            {reorderedColumnIds.map((id) => {
-                                const columnData = columnsData.find(
-                                    (col) => col.id === id,
-                                );
-                                const isCompletedToday =
-                                    columnData?.type === 'checkboxColumn' &&
-                                    columnData?.uniqueProps?.days?.[today] ===
-                                        true;
-
-                                return (
+                            {orderedColumnsWithStatus.map(
+                                ({ id, isCompletedToday }) => (
                                     <DynamicColumn
                                         key={id}
                                         columnId={id}
                                         isCompletedToday={isCompletedToday}
                                     />
-                                );
-                            })}
+                                ),
+                            )}
 
                             {/* Utility: Filler column to occupy remaining space */}
                             <TableItemWrapper
