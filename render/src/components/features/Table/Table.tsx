@@ -33,6 +33,46 @@ const Table: React.FC = () => {
     // Synchronize row heights across all nested tables
     const { isLoading } = useRowHeightSync([columnsData]);
 
+    /**
+     * Memoize today's day name to prevent unnecessary recalculations
+     * Only recalculates when the day actually changes
+     */
+    const today = React.useMemo(() => {
+        return new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    }, []);
+
+    /**
+     * Reorder columns and determine completion status
+     * Returns an array of objects with column IDs and their completion status
+     * This avoids O(n²) complexity in the render loop
+     */
+    const orderedColumnsWithStatus = React.useMemo(() => {
+        if (!columnOrder || !columnsData) return [];
+
+        const incomplete: Array<{ id: string; isCompletedToday: boolean }> = [];
+        const completed: Array<{ id: string; isCompletedToday: boolean }> = [];
+
+        columnOrder.forEach((id) => {
+            const columnData = columnsData.find((col) => col.id === id);
+
+            // Check if this column is completed for today
+            const isCompletedToday =
+                columnData?.type === 'checkboxColumn' &&
+                columnData?.uniqueProps?.days?.[today] === true;
+
+            const columnInfo = { id, isCompletedToday };
+
+            if (isCompletedToday) {
+                completed.push(columnInfo);
+            } else {
+                incomplete.push(columnInfo);
+            }
+        });
+
+        // Return incomplete columns first, then completed columns
+        return [...incomplete, ...completed];
+    }, [columnOrder, columnsData, today]);
+
     // To avoid rendering issues, ensure required data is loaded
     if (columnOrder === undefined || columnsData === undefined) {
         return null; // Add a loading skeleton here if needed
@@ -67,9 +107,15 @@ const Table: React.FC = () => {
                             </TableItemWrapper>
 
                             {/* Dynamic: User-defined optional columns */}
-                            {columnOrder.map((id) => (
-                                <DynamicColumn key={id} columnId={id} />
-                            ))}
+                            {orderedColumnsWithStatus.map(
+                                ({ id, isCompletedToday }) => (
+                                    <DynamicColumn
+                                        key={id}
+                                        columnId={id}
+                                        isCompletedToday={isCompletedToday}
+                                    />
+                                ),
+                            )}
 
                             {/* Utility: Filler column to occupy remaining space */}
                             <TableItemWrapper
