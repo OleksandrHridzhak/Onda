@@ -115,4 +115,17 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
             doneTasks: [],
         },
     },
+
+    [COLUMN_TYPES.GROUP_DIVIDER]: {
+        type: COLUMN_TYPES.GROUP_DIVIDER,
+        name: 'Group',
+        isNameVisible: true,
+        description: 'Visual divider to organize columns into groups.',
+        emojiIconName: 'FolderOpen',
+        width: 150,
+        uniqueProps: {
+            groupName: 'New Group',
+            backgroundColor: '#94A3B8',
+        },
+    },
 };

@@ -329,6 +329,12 @@ export async function clearColumn(
                     'uniqueProps.doneTasks': [],
                 };
                 break;
+            case COLUMN_TYPES.GROUP_DIVIDER:
+                // Group divider has no data to clear, just reset to defaults
+                updates = {
+                    'uniqueProps.groupName': 'New Group',
+                };
+                break;
         }
 
         await db.tableColumns.update(columnId, updates);
