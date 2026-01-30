@@ -9,12 +9,20 @@ import { usePullToRefresh } from '../../hooks/usePullToRefresh';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getAllColumns } from '../../db/helpers/columns';
 import { getSettings } from '../../db/helpers/settings';
+import {
+    WeekNavigationProvider,
+    useWeekNavigationContext,
+} from '../features/WeekNavigation/WeekNavigationContext';
+import { WeekNavigationHeader } from '../features/WeekNavigation/WeekNavigationHeader';
 
-const TableScreen: React.FC = () => {
+const TableContent: React.FC = () => {
     const tableLogic = useTableLogic();
     const [isMobile, setIsMobile] = useState(false);
 
     const { themeMode } = useSelector((state: any) => state.newTheme);
+
+    // Week navigation from context
+    const weekNavigation = useWeekNavigationContext();
 
     // Use dexie live queries to load columns and settings
     const columnsData = useLiveQuery(async () => {
@@ -98,12 +106,33 @@ const TableScreen: React.FC = () => {
                 {!isMobile && (
                     <div>
                         <PlannerHeader />
+                        {/* Week Navigation Header */}
+                        <WeekNavigationHeader
+                            weekRange={weekNavigation.formatWeekRange}
+                            weekNumber={weekNavigation.weekNumber}
+                            isCurrentWeek={weekNavigation.isCurrentWeek}
+                            onPreviousWeek={weekNavigation.goToPreviousWeek}
+                            onNextWeek={weekNavigation.goToNextWeek}
+                            onCurrentWeek={weekNavigation.goToCurrentWeek}
+                        />
                     </div>
                 )}
 
-                {isMobile ? <MobileTodayView /> : <Table />}
+                {isMobile ? (
+                    <MobileTodayView />
+                ) : (
+                    <Table key={weekNavigation.weekId} />
+                )}
             </div>
         </div>
+    );
+};
+
+const TableScreen: React.FC = () => {
+    return (
+        <WeekNavigationProvider>
+            <TableContent />
+        </WeekNavigationProvider>
     );
 };
 

@@ -15,6 +15,14 @@ export type WeeklyValues<T> = {
 };
 
 /**
+ * WeeksHistory<T>
+ * Map of week IDs (YYYY-MM-DD format) to WeeklyValues
+ * Used for storing historical week data
+ * Example: { '2024-01-01': { Monday: true, Tuesday: false, ... }, '2024-01-08': { ... } }
+ */
+export type WeeksHistory<T> = Record<string, WeeklyValues<T>>;
+
+/**
  * BaseColumn
  * Common metadata shared by all column types.
  * - `id`: unique identifier
@@ -41,6 +49,7 @@ export interface CheckboxColumn extends BaseColumn {
     type: 'checkboxColumn';
     uniqueProps: {
         days: WeeklyValues<boolean>;
+        weeksHistory?: WeeksHistory<boolean>;
         checkboxColor: string;
     };
 }
@@ -53,6 +62,7 @@ export interface TextboxColumn extends BaseColumn {
     type: 'textboxColumn';
     uniqueProps: {
         days: WeeklyValues<string>;
+        weeksHistory?: WeeksHistory<string>;
     };
 }
 
@@ -64,6 +74,7 @@ export interface NumberBoxColumn extends BaseColumn {
     type: 'numberboxColumn';
     uniqueProps: {
         days: WeeklyValues<number>;
+        weeksHistory?: WeeksHistory<number>;
     };
 }
 
@@ -91,6 +102,7 @@ export interface TagsColumn extends BaseColumn {
     uniqueProps: {
         availableTags: Tag[];
         days: WeeklyValues<string[]>;
+        weeksHistory?: WeeksHistory<string[]>;
     };
 }
 
@@ -126,6 +138,7 @@ export interface MultiCheckboxColumn extends BaseColumn {
     uniqueProps: {
         availableOptions: Tag[];
         days: WeeklyValues<string[]>;
+        weeksHistory?: WeeksHistory<string[]>;
     };
 }
 /**
