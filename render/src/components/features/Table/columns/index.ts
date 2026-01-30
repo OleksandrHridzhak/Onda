@@ -3,6 +3,7 @@ export { DaysColumn } from './serviceColumns/DaysColumn';
 export { FillerColumn } from './serviceColumns/FillerColumn';
 export { NumberboxColumn } from './NumberboxColumn/NumberboxColumn';
 export { TagsColumn } from './TagsColumn/TagsColumn';
+export { RandomTagsColumn } from './RandomTagsColumn/RandomTagsColumn';
 export { TextboxColumn } from './TextboxColumn/TextboxColumn';
 export { MultiCheckboxColumn } from './MultiCheckboxColumn/MultiCheckboxColumn';
 export { TodoColumn } from './TodoColumn/TodoColumn';

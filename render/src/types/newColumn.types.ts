@@ -80,6 +80,14 @@ export interface Tag {
     name: string;
     color: string;
 }
+
+/**
+ * TagWithProbability
+ * Tag object with probability field for random selection.
+ */
+export interface TagWithProbability extends Tag {
+    probability: number; // 0-100
+}
 /**
  * TagsColumn
  * Lets users assign one or more `Tag` ids to each weekday.
@@ -90,6 +98,20 @@ export interface TagsColumn extends BaseColumn {
     type: 'tagsColumn';
     uniqueProps: {
         availableTags: Tag[];
+        days: WeeklyValues<string[]>;
+    };
+}
+
+/**
+ * RandomTagsColumn
+ * Automatically assigns tags to each weekday based on configured probabilities.
+ * - `availableTags`: tag definitions with probability values (0-100)
+ * - `days`: per-day arrays of tag ids (generated based on probability)
+ */
+export interface RandomTagsColumn extends BaseColumn {
+    type: 'randomTagsColumn';
+    uniqueProps: {
+        availableTags: TagWithProbability[];
         days: WeeklyValues<string[]>;
     };
 }
@@ -154,6 +176,7 @@ export type Column =
     | TextboxColumn
     | NumberBoxColumn
     | TagsColumn
+    | RandomTagsColumn
     | TodoListColumn
     | MultiCheckboxColumn
     | TaskTableColumn;

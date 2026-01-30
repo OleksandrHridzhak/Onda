@@ -12,6 +12,7 @@ interface OptionsListProps {
     handleRemoveOption: (tagId: string) => void;
     handleEditOption: (tagId: string, newName: string) => void;
     handleColorChange: (tagId: string, color: string) => void;
+    handleProbabilityChange?: (tagId: string, probability: number) => void;
     darkMode: boolean;
     isColorMenuOpen?: Record<string, boolean>;
     toggleColorMenu: (tagId: string) => void;
@@ -26,6 +27,7 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     handleRemoveOption,
     handleEditOption,
     handleColorChange,
+    handleProbabilityChange,
     darkMode,
     toggleColorMenu,
 }) => {
@@ -34,6 +36,8 @@ export const OptionsList: React.FC<OptionsListProps> = ({
         switch (columnType) {
             case 'tagsColumn':
                 return 'Tags';
+            case 'randomTagsColumn':
+                return 'Tags (with Probability)';
             case 'todoListColumn':
                 return 'Categories';
             case 'multiCheckBoxColumn':
@@ -49,6 +53,8 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     const getPlaceholderType = () => {
         switch (columnType) {
             case 'tagsColumn':
+                return 'tag';
+            case 'randomTagsColumn':
                 return 'tag';
             case 'todoListColumn':
                 return 'category';
@@ -98,6 +104,8 @@ export const OptionsList: React.FC<OptionsListProps> = ({
                             handleColorChange={handleColorChange}
                             handleRemoveOption={handleRemoveOption}
                             handleEditOption={handleEditOption}
+                            handleProbabilityChange={handleProbabilityChange}
+                            columnType={columnType}
                         />
                     ))}
                 </div>
