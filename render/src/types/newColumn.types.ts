@@ -141,6 +141,21 @@ export interface TaskTableColumn extends BaseColumn {
 }
 
 /**
+ * FormulaColumn
+ * Stores formula expressions and calculated results for each weekday.
+ * Formulas can reference other cells in the same row using cell references.
+ */
+export interface FormulaColumn extends BaseColumn {
+    type: 'formulaColumn';
+    uniqueProps: {
+        days: WeeklyValues<{
+            formula: string;
+            result: string | number | null;
+        }>;
+    };
+}
+
+/**
  * Column
  * Union of all concrete column types used in the app.
  * Use this when storing or operating on heterogeneous column arrays.
@@ -156,7 +171,8 @@ export type Column =
     | TagsColumn
     | TodoListColumn
     | MultiCheckboxColumn
-    | TaskTableColumn;
+    | TaskTableColumn
+    | FormulaColumn;
 
 /**
  * Helper function to create empty WeeklyValues for a given type
