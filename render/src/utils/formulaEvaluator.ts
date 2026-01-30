@@ -364,13 +364,18 @@ function parseExpression(expr: string): string | number | boolean | null {
     ): string | number | boolean | null {
         switch (name) {
             case 'sum':
-                return args.reduce((a, b) => Number(a) + Number(b), 0);
-            case 'avg':
-                if (args.length === 0) return 0;
-                return (
-                    args.reduce((a, b) => Number(a) + Number(b), 0) /
-                    args.length
+                return args.reduce(
+                    (a, b) => Number(a) + Number(b),
+                    0 as number,
                 );
+            case 'avg': {
+                if (args.length === 0) return 0;
+                const sum = args.reduce(
+                    (a, b) => Number(a) + Number(b),
+                    0 as number,
+                ) as number;
+                return sum / args.length;
+            }
             case 'min':
                 return Math.min(...args.map(Number));
             case 'max':
