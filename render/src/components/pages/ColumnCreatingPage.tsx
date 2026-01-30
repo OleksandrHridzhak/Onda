@@ -8,6 +8,7 @@ import {
     ListTodo,
     Circle,
     Table,
+    FolderOpen,
 } from 'lucide-react';
 import { COLUMN_TYPES } from '../../constants/columnTypes';
 
@@ -131,6 +132,20 @@ const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
             hoverColor: darkMode
                 ? 'hover:bg-gray-700 hover:bg-opacity-50'
                 : 'hover:bg-gray-300',
+        },
+        {
+            id: COLUMN_TYPES.GROUP_DIVIDER,
+            label: 'Group Divider',
+            description: 'Visual separator to organize columns into groups.',
+            icon: (
+                <FolderOpen
+                    className={`w-5 h-5 ${darkMode ? 'text-slate-200' : 'text-slate-600'}`}
+                />
+            ),
+            bgColor: darkMode ? 'bg-slate-800 bg-opacity-36' : 'bg-slate-200',
+            hoverColor: darkMode
+                ? 'hover:bg-slate-700 hover:bg-opacity-50'
+                : 'hover:bg-slate-300',
         },
     ];
 

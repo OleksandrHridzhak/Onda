@@ -7,3 +7,4 @@ export { TextboxColumn } from './TextboxColumn/TextboxColumn';
 export { MultiCheckboxColumn } from './MultiCheckboxColumn/MultiCheckboxColumn';
 export { TodoColumn } from './TodoColumn/TodoColumn';
 export { TaskTableColumn } from './TaskTableColumn/TaskTableColumn';
+export { GroupDividerColumn } from './GroupDividerColumn/GroupDividerColumn';

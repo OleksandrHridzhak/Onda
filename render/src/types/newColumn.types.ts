@@ -141,6 +141,18 @@ export interface TaskTableColumn extends BaseColumn {
 }
 
 /**
+ * GroupDividerColumn
+ * A visual divider column that separates and groups other columns.
+ * Used for organizing columns into logical sections.
+ */
+export interface GroupDividerColumn extends BaseColumn {
+    type: 'groupDividerColumn';
+    uniqueProps: {
+        backgroundColor: string;
+    };
+}
+
+/**
  * Column
  * Union of all concrete column types used in the app.
  * Use this when storing or operating on heterogeneous column arrays.
@@ -156,7 +168,8 @@ export type Column =
     | TagsColumn
     | TodoListColumn
     | MultiCheckboxColumn
-    | TaskTableColumn;
+    | TaskTableColumn
+    | GroupDividerColumn;
 
 /**
  * Helper function to create empty WeeklyValues for a given type
