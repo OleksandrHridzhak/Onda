@@ -1,4 +1,4 @@
-import { WeeklyValues, createEmptyWeeklyValues } from '../../types/newColumn.types';
+import { WeeklyValues, createEmptyWeeklyValues } from '../types/newColumn.types';
 
 /**
  * Get the current week ID (Monday's date in YYYY-MM-DD format)

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { useWeekNavigation } from '../../hooks/useWeekNavigation';
+import { useWeekNavigation } from '../../../hooks/useWeekNavigation';
 
 interface WeekNavigationContextType {
     currentWeekStart: Date;
