@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { getColorOptions } from '../../../../../../utils/colorOptions';
-import { Tag } from '../../../../../../types/newColumn.types';
+import {
+    Tag,
+    TagWithProbability,
+} from '../../../../../../types/newColumn.types';
 
 interface OptionItemProps {
     tag: Tag;
@@ -9,6 +12,8 @@ interface OptionItemProps {
     handleColorChange: (tagId: string, color: string) => void;
     handleRemoveOption: (tagId: string) => void;
     handleEditOption: (tagId: string, newName: string) => void;
+    handleProbabilityChange?: (tagId: string, probability: number) => void;
+    columnType?: string;
 }
 
 export const OptionItem: React.FC<OptionItemProps> = ({
@@ -17,15 +22,27 @@ export const OptionItem: React.FC<OptionItemProps> = ({
     handleColorChange,
     handleRemoveOption,
     handleEditOption,
+    handleProbabilityChange,
+    columnType,
 }) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
     const [editingTagId, setEditingTagId] = useState<string | null>(null);
     const [editValue, setEditValue] = useState('');
+    const [editingProbability, setEditingProbability] = useState(false);
+    const [probabilityValue, setProbabilityValue] = useState(0);
     const menuRef = useRef<HTMLDivElement>(null);
+
+    const isRandomTagsColumn = columnType === 'randomTagsColumn';
+    const tagWithProb = tag as TagWithProbability;
 
     const startEditing = (): void => {
         setEditingTagId(tag.id);
         setEditValue(tag.name);
+    };
+
+    const startEditingProbability = (): void => {
+        setEditingProbability(true);
+        setProbabilityValue(tagWithProb.probability || 0);
     };
 
     const saveEdit = (): void => {
@@ -34,6 +51,15 @@ export const OptionItem: React.FC<OptionItemProps> = ({
         }
         setEditingTagId(null);
         setEditValue('');
+        setIsContextMenuOpen(false);
+    };
+
+    const saveProbability = (): void => {
+        if (handleProbabilityChange) {
+            const clampedValue = Math.max(0, Math.min(100, probabilityValue));
+            handleProbabilityChange(tag.id, clampedValue);
+        }
+        setEditingProbability(false);
         setIsContextMenuOpen(false);
     };
 
@@ -80,6 +106,31 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                         <Plus size={14} />
                     </button>
                 </div>
+            ) : editingProbability ? (
+                <div className="flex items-center gap-2">
+                    <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={probabilityValue}
+                        onChange={(e) =>
+                            setProbabilityValue(parseInt(e.target.value) || 0)
+                        }
+                        onKeyPress={(e) =>
+                            e.key === 'Enter' && saveProbability()
+                        }
+                        className={`w-16 px-2 py-1 rounded text-xs font-medium border border-border bg-background text-text focus:outline-none focus:ring-2 focus:ring-primaryColor`}
+                        aria-label={`Edit probability for ${tag.name}`}
+                    />
+                    <span className="text-xs">%</span>
+                    <button
+                        onClick={saveProbability}
+                        className={`p-1 rounded-lg text-primaryColor hover:bg-hoverBg transition-colors duration-200`}
+                        aria-label={`Save probability for ${tag.name}`}
+                    >
+                        <Plus size={14} />
+                    </button>
+                </div>
             ) : (
                 <>
                     <button
@@ -88,6 +139,12 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                         aria-label={`Options for ${tag.name}`}
                     >
                         {tag.name}
+                        {isRandomTagsColumn &&
+                            tagWithProb.probability !== undefined && (
+                                <span className="ml-1 opacity-75">
+                                    ({tagWithProb.probability}%)
+                                </span>
+                            )}
                     </button>
                     {isContextMenuOpen && (
                         <div
@@ -121,6 +178,19 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                                 >
                                     <Edit2 size={14} />
                                 </button>
+                                {isRandomTagsColumn && (
+                                    <button
+                                        onClick={() => {
+                                            startEditingProbability();
+                                            setIsContextMenuOpen(false);
+                                        }}
+                                        className={`p-1 rounded-lg text-blue-500 hover:bg-hoverBg transition-colors duration-200`}
+                                        aria-label={`Edit probability for ${tag.name}`}
+                                        title="Edit probability"
+                                    >
+                                        %
+                                    </button>
+                                )}
                                 <button
                                     onClick={() => {
                                         handleRemoveOption(tag.id);

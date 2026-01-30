@@ -124,6 +124,9 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                             handleRemoveOption={actions.handleRemoveOption}
                             handleEditOption={actions.handleEditOption}
                             handleColorChange={actions.handleColorChange}
+                            handleProbabilityChange={
+                                actions.handleProbabilityChange
+                            }
                             darkMode={darkMode}
                             isColorMenuOpen={ui.isColorMenuOpen}
                             toggleColorMenu={(tagId) =>
