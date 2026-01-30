@@ -44,7 +44,7 @@ export const TodoInput: React.FC<TodoInputProps> = ({
                 onChange={(e) => setNewTodo(e.target.value)}
                 onKeyUp={(e) => e.key === 'Enter' && onAddTodo()}
                 placeholder="Add new todo..."
-                className={`w-full px-3 py-2 pr-10 text-sm rounded-md transition-all duration-200
+                className={`w-full px-3 py-2 pr-10 text-sm rounded-md
           ${
               darkMode
                   ? 'bg-gray-700 text-gray-200 placeholder-gray-400 border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
@@ -53,7 +53,7 @@ export const TodoInput: React.FC<TodoInputProps> = ({
             />
             <button
                 onClick={onAddTodo}
-                className={`absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md transition-colors duration-200 ${
+                className={`absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md ${
                     darkMode
                         ? 'bg-blue-600 hover:bg-blue-700 text-white'
                         : 'bg-blue-500 hover:bg-blue-600 text-white'
