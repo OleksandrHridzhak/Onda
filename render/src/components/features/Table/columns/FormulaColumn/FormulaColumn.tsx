@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { ColumnHeader } from '../ColumnHeader';
 import { FormulaCell } from './FormulaCell';
 import { updateColumnFields } from '../../../../../db/helpers/columns';
@@ -14,8 +14,10 @@ interface FormulaColumnProps {
 }
 
 export const FormulaColumn: React.FC<FormulaColumnProps> = ({ columnId }) => {
-    const { column, isLoading, isError } =
-        useReactiveColumn<FormulaColumnType>(columnId, 'formulaColumn');
+    const { column, isLoading, isError } = useReactiveColumn<FormulaColumnType>(
+        columnId,
+        'formulaColumn',
+    );
 
     // Fetch all columns to evaluate formulas with cell references
     const allColumns = useLiveQuery(async () => {
@@ -44,7 +46,8 @@ export const FormulaColumn: React.FC<FormulaColumnProps> = ({ columnId }) => {
 
     const evaluateAndUpdateResult = (day: string, formula: string) => {
         // Build context with values from other columns in the same row (same day)
-        const columnValues: Record<string, string | number | boolean | null> = {};
+        const columnValues: Record<string, string | number | boolean | null> =
+            {};
 
         allColumns?.forEach((col) => {
             if (col.id === columnId) return; // Skip self
@@ -52,17 +55,24 @@ export const FormulaColumn: React.FC<FormulaColumnProps> = ({ columnId }) => {
             // Extract value based on column type
             if (col.type === 'checkboxColumn') {
                 columnValues[col.id] =
-                    col.uniqueProps.days[day as keyof typeof col.uniqueProps.days];
+                    col.uniqueProps.days[
+                        day as keyof typeof col.uniqueProps.days
+                    ];
             } else if (col.type === 'textboxColumn') {
                 columnValues[col.id] =
-                    col.uniqueProps.days[day as keyof typeof col.uniqueProps.days];
+                    col.uniqueProps.days[
+                        day as keyof typeof col.uniqueProps.days
+                    ];
             } else if (col.type === 'numberboxColumn') {
                 columnValues[col.id] =
-                    col.uniqueProps.days[day as keyof typeof col.uniqueProps.days];
+                    col.uniqueProps.days[
+                        day as keyof typeof col.uniqueProps.days
+                    ];
             } else if (col.type === 'formulaColumn') {
                 columnValues[col.id] =
-                    col.uniqueProps.days[day as keyof typeof col.uniqueProps.days]
-                        ?.result ?? null;
+                    col.uniqueProps.days[
+                        day as keyof typeof col.uniqueProps.days
+                    ]?.result ?? null;
             }
             // Add more column types as needed
         });

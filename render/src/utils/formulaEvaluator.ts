@@ -1,6 +1,6 @@
 /**
  * Formula Evaluator
- * 
+ *
  * Evaluates formula expressions similar to Notion formulas.
  * Supports:
  * - Basic arithmetic: +, -, *, /, %, ^
@@ -35,19 +35,22 @@ export function evaluateFormula(
     try {
         // Replace cell references with values
         let processedFormula = formula;
-        
+
         // Replace [columnId] with actual values
         const cellRefPattern = /\[([^\]]+)\]/g;
-        processedFormula = processedFormula.replace(cellRefPattern, (match, columnId) => {
-            const value = context.columnValues[columnId];
-            if (value === null || value === undefined) {
-                return 'null';
-            }
-            if (typeof value === 'string') {
-                return `"${value.replace(/"/g, '\\"')}"`;
-            }
-            return String(value);
-        });
+        processedFormula = processedFormula.replace(
+            cellRefPattern,
+            (match, columnId) => {
+                const value = context.columnValues[columnId];
+                if (value === null || value === undefined) {
+                    return 'null';
+                }
+                if (typeof value === 'string') {
+                    return `"${value.replace(/"/g, '\\"')}"`;
+                }
+                return String(value);
+            },
+        );
 
         // Parse and evaluate the expression
         const result = parseExpression(processedFormula);
@@ -104,7 +107,7 @@ function tokenize(expr: string): string[] {
                 tokens.push(current);
                 current = '';
             }
-            
+
             // Handle two-character operators
             if (i < expr.length - 1) {
                 const twoChar = char + expr[i + 1];
@@ -114,7 +117,7 @@ function tokenize(expr: string): string[] {
                     continue;
                 }
             }
-            
+
             tokens.push(char);
             continue;
         }
@@ -132,7 +135,7 @@ function tokenize(expr: string): string[] {
 /**
  * Parse and evaluate expression using a simple recursive descent parser
  */
-function parseExpression(expr: string): any {
+function parseExpression(expr: string): string | number | boolean | null {
     const tokens = tokenize(expr.trim());
     let pos = 0;
 
@@ -144,7 +147,7 @@ function parseExpression(expr: string): any {
         return tokens[pos++];
     }
 
-    function parseOr(): any {
+    function parseOr(): string | number | boolean | null {
         let left = parseAnd();
 
         while (peek() === 'or') {
@@ -156,7 +159,7 @@ function parseExpression(expr: string): any {
         return left;
     }
 
-    function parseAnd(): any {
+    function parseAnd(): string | number | boolean | null {
         let left = parseComparison();
 
         while (peek() === 'and') {
@@ -168,27 +171,33 @@ function parseExpression(expr: string): any {
         return left;
     }
 
-    function parseComparison(): any {
-        let left = parseAdditive();
+    function parseComparison(): string | number | boolean | null {
+        const left = parseAdditive();
 
         const op = peek();
         if (['==', '!=', '>', '<', '>=', '<='].includes(op || '')) {
             consume();
             const right = parseAdditive();
             switch (op) {
-                case '==': return left == right;
-                case '!=': return left != right;
-                case '>': return Number(left) > Number(right);
-                case '<': return Number(left) < Number(right);
-                case '>=': return Number(left) >= Number(right);
-                case '<=': return Number(left) <= Number(right);
+                case '==':
+                    return left == right;
+                case '!=':
+                    return left != right;
+                case '>':
+                    return Number(left) > Number(right);
+                case '<':
+                    return Number(left) < Number(right);
+                case '>=':
+                    return Number(left) >= Number(right);
+                case '<=':
+                    return Number(left) <= Number(right);
             }
         }
 
         return left;
     }
 
-    function parseAdditive(): any {
+    function parseAdditive(): string | number | boolean | null {
         let left = parseMultiplicative();
 
         while (true) {
@@ -211,7 +220,7 @@ function parseExpression(expr: string): any {
         return left;
     }
 
-    function parseMultiplicative(): any {
+    function parseMultiplicative(): string | number | boolean | null {
         let left = parseExponential();
 
         while (true) {
@@ -234,7 +243,7 @@ function parseExpression(expr: string): any {
         return left;
     }
 
-    function parseExponential(): any {
+    function parseExponential(): string | number | boolean | null {
         let left = parseUnary();
 
         if (peek() === '^') {
@@ -246,14 +255,14 @@ function parseExpression(expr: string): any {
         return left;
     }
 
-    function parseUnary(): any {
+    function parseUnary(): string | number | boolean | null {
         const token = peek();
-        
+
         if (token === 'not') {
             consume();
             return !parseUnary();
         }
-        
+
         if (token === '-') {
             consume();
             return -Number(parseUnary());
@@ -267,7 +276,7 @@ function parseExpression(expr: string): any {
         return parsePrimary();
     }
 
-    function parsePrimary(): any {
+    function parsePrimary(): string | number | boolean | null {
         const token = peek();
 
         if (!token) {
@@ -324,12 +333,12 @@ function parseExpression(expr: string): any {
         throw new Error(`Unexpected token: ${token}`);
     }
 
-    function parseFunction(): any {
+    function parseFunction(): string | number | boolean | null {
         const funcName = consume().toLowerCase();
         consume(); // (
 
-        const args: any[] = [];
-        
+        const args: Array<string | number | boolean | null> = [];
+
         if (peek() !== ')') {
             while (true) {
                 args.push(parseOr());
@@ -349,20 +358,32 @@ function parseExpression(expr: string): any {
         return evaluateFunction(funcName, args);
     }
 
-    function evaluateFunction(name: string, args: any[]): any {
+    function evaluateFunction(
+        name: string,
+        args: Array<string | number | boolean | null>,
+    ): string | number | boolean | null {
         switch (name) {
             case 'sum':
                 return args.reduce((a, b) => Number(a) + Number(b), 0);
             case 'avg':
                 if (args.length === 0) return 0;
-                return args.reduce((a, b) => Number(a) + Number(b), 0) / args.length;
+                return (
+                    args.reduce((a, b) => Number(a) + Number(b), 0) /
+                    args.length
+                );
             case 'min':
                 return Math.min(...args.map(Number));
             case 'max':
                 return Math.max(...args.map(Number));
-            case 'round':
+            case 'round': {
                 const decimals = args[1] !== undefined ? Number(args[1]) : 0;
-                return Number((Math.round(Number(args[0]) * Math.pow(10, decimals)) / Math.pow(10, decimals)).toFixed(decimals));
+                return Number(
+                    (
+                        Math.round(Number(args[0]) * Math.pow(10, decimals)) /
+                        Math.pow(10, decimals)
+                    ).toFixed(decimals),
+                );
+            }
             case 'abs':
                 return Math.abs(Number(args[0]));
             case 'sqrt':
@@ -392,10 +413,10 @@ export function getFormulaReferences(formula: string): string[] {
     const refs: string[] = [];
     const cellRefPattern = /\[([^\]]+)\]/g;
     let match;
-    
+
     while ((match = cellRefPattern.exec(formula)) !== null) {
         refs.push(match[1]);
     }
-    
+
     return refs;
 }
