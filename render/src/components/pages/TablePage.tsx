@@ -9,12 +9,18 @@ import { usePullToRefresh } from '../../hooks/usePullToRefresh';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getAllColumns } from '../../db/helpers/columns';
 import { getSettings } from '../../db/helpers/settings';
+import { WeekNavigationProvider } from '../features/WeekNavigation/WeekNavigationContext';
+import { WeekNavigationHeader } from '../features/WeekNavigation/WeekNavigationHeader';
+import { useWeekNavigation } from '../../hooks/useWeekNavigation';
 
 const TableScreen: React.FC = () => {
     const tableLogic = useTableLogic();
     const [isMobile, setIsMobile] = useState(false);
 
     const { themeMode } = useSelector((state: any) => state.newTheme);
+
+    // Week navigation
+    const weekNavigation = useWeekNavigation();
 
     // Use dexie live queries to load columns and settings
     const columnsData = useLiveQuery(async () => {
@@ -69,41 +75,52 @@ const TableScreen: React.FC = () => {
     });
 
     return (
-        <div
-            ref={containerRef}
-            className={`font-poppins relative w-full max-w-6xl mx-auto bg-background overflow-y-auto`}
-            style={{ height: isMobile ? '100vh' : 'auto' }}
-        >
-            {/* Pull-to-refresh indicator */}
-            {isMobile && pullDistance > 0 && (
-                <div className="fixed top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 z-50 transition-all">
-                    {pullDistance > 100
-                        ? '↻ Release to refresh'
-                        : '↓ Pull to refresh'}
-                </div>
-            )}
-
-            {isRefreshing && (
-                <div className="fixed top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 z-50">
-                    ↻ Refreshing...
-                </div>
-            )}
-
+        <WeekNavigationProvider>
             <div
-                style={{
-                    transform: `translateY(${Math.min(pullDistance, 60)}px)`,
-                    transition: pullDistance === 0 ? 'transform 0.3s' : 'none',
-                }}
+                ref={containerRef}
+                className={`font-poppins relative w-full max-w-6xl mx-auto bg-background overflow-y-auto`}
+                style={{ height: isMobile ? '100vh' : 'auto' }}
             >
-                {!isMobile && (
-                    <div>
-                        <PlannerHeader />
+                {/* Pull-to-refresh indicator */}
+                {isMobile && pullDistance > 0 && (
+                    <div className="fixed top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 z-50 transition-all">
+                        {pullDistance > 100
+                            ? '↻ Release to refresh'
+                            : '↓ Pull to refresh'}
                     </div>
                 )}
 
-                {isMobile ? <MobileTodayView /> : <Table />}
+                {isRefreshing && (
+                    <div className="fixed top-0 left-0 right-0 bg-blue-500 text-white text-center py-2 z-50">
+                        ↻ Refreshing...
+                    </div>
+                )}
+
+                <div
+                    style={{
+                        transform: `translateY(${Math.min(pullDistance, 60)}px)`,
+                        transition: pullDistance === 0 ? 'transform 0.3s' : 'none',
+                    }}
+                >
+                    {!isMobile && (
+                        <div>
+                            <PlannerHeader />
+                            {/* Week Navigation Header */}
+                            <WeekNavigationHeader
+                                weekRange={weekNavigation.formatWeekRange}
+                                weekNumber={weekNavigation.weekNumber}
+                                isCurrentWeek={weekNavigation.isCurrentWeek}
+                                onPreviousWeek={weekNavigation.goToPreviousWeek}
+                                onNextWeek={weekNavigation.goToNextWeek}
+                                onCurrentWeek={weekNavigation.goToCurrentWeek}
+                            />
+                        </div>
+                    )}
+
+                    {isMobile ? <MobileTodayView /> : <Table />}
+                </div>
             </div>
-        </div>
+        </WeekNavigationProvider>
     );
 };
 
