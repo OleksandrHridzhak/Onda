@@ -9,7 +9,10 @@ import { usePullToRefresh } from '../../hooks/usePullToRefresh';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getAllColumns } from '../../db/helpers/columns';
 import { getSettings } from '../../db/helpers/settings';
-import { WeekNavigationProvider, useWeekNavigationContext } from '../features/WeekNavigation/WeekNavigationContext';
+import {
+    WeekNavigationProvider,
+    useWeekNavigationContext,
+} from '../features/WeekNavigation/WeekNavigationContext';
 import { WeekNavigationHeader } from '../features/WeekNavigation/WeekNavigationHeader';
 
 const TableContent: React.FC = () => {
@@ -115,7 +118,11 @@ const TableContent: React.FC = () => {
                     </div>
                 )}
 
-                {isMobile ? <MobileTodayView /> : <Table key={weekNavigation.weekId} />}
+                {isMobile ? (
+                    <MobileTodayView />
+                ) : (
+                    <Table key={weekNavigation.weekId} />
+                )}
             </div>
         </div>
     );

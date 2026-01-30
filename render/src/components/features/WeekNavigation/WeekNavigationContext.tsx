@@ -33,7 +33,7 @@ export const useWeekNavigationContext = (): WeekNavigationContextType => {
     const context = useContext(WeekNavigationContext);
     if (!context) {
         throw new Error(
-            'useWeekNavigationContext must be used within WeekNavigationProvider'
+            'useWeekNavigationContext must be used within WeekNavigationProvider',
         );
     }
     return context;

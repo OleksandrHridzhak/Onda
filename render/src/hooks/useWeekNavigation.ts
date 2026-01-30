@@ -53,11 +53,11 @@ export function useWeekNavigation() {
 
     // Initialize with current week's Monday
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
-        getMonday(new Date())
+        getMonday(new Date()),
     );
 
     const [weekDays, setWeekDays] = useState<Date[]>(
-        getWeekDays(getMonday(new Date()))
+        getWeekDays(getMonday(new Date())),
     );
 
     // Update week days whenever current week start changes

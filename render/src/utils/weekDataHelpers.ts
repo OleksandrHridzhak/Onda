@@ -1,4 +1,7 @@
-import { WeeklyValues, createEmptyWeeklyValues } from '../types/newColumn.types';
+import {
+    WeeklyValues,
+    createEmptyWeeklyValues,
+} from '../types/newColumn.types';
 
 /**
  * Get the current week ID (Monday's date in YYYY-MM-DD format)
@@ -30,7 +33,7 @@ export function getWeekData<T>(
         weeksHistory?: Record<string, WeeklyValues<T>>;
     },
     weekId: string,
-    defaultValue: T
+    defaultValue: T,
 ): WeeklyValues<T> {
     const currentWeekId = getCurrentWeekId();
 
@@ -54,7 +57,7 @@ export function getWeekData<T>(
  */
 export function saveWeekData<T>(
     weekId: string,
-    weekData: WeeklyValues<T>
+    weekData: WeeklyValues<T>,
 ): Record<string, any> {
     const currentWeekId = getCurrentWeekId();
 
@@ -82,7 +85,7 @@ export function updateWeekDayValue<T>(
     weekId: string,
     day: keyof WeeklyValues<T>,
     value: T,
-    defaultValue: T
+    defaultValue: T,
 ): Record<string, any> {
     const weekData = getWeekData(columnData, weekId, defaultValue);
     const updatedWeekData = { ...weekData, [day]: value };
