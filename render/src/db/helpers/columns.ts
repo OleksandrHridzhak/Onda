@@ -248,19 +248,26 @@ export async function moveColumn(
             return { success: false, error: 'Column not found in order' };
         }
 
-        const newIndex = direction === 'left' ? currentIndex - 1 : currentIndex + 1;
+        const newIndex =
+            direction === 'left' ? currentIndex - 1 : currentIndex + 1;
 
         if (newIndex < 0) {
             return { success: false, error: 'Cannot move column further left' };
         }
 
         if (newIndex >= currentOrder.length) {
-            return { success: false, error: 'Cannot move column further right' };
+            return {
+                success: false,
+                error: 'Cannot move column further right',
+            };
         }
 
         // Swap positions
         const newOrder = [...currentOrder];
-        [newOrder[currentIndex], newOrder[newIndex]] = [newOrder[newIndex], newOrder[currentIndex]];
+        [newOrder[currentIndex], newOrder[newIndex]] = [
+            newOrder[newIndex],
+            newOrder[currentIndex],
+        ];
 
         await db.settings.update('global', {
             layout: { columnsOrder: newOrder },
@@ -285,9 +292,7 @@ export async function moveColumn(
  * // Error:
  * { success: false, error: 'Column not found' }
  */
-export async function clearColumn(
-    columnId: string,
-): Promise<DbResult<Column>> {
+export async function clearColumn(columnId: string): Promise<DbResult<Column>> {
     try {
         const column = await db.tableColumns.get(columnId);
         if (!column) {
@@ -330,10 +335,8 @@ export async function clearColumn(
                 };
                 break;
             case COLUMN_TYPES.GROUP_DIVIDER:
-                // Group divider has no data to clear, just reset to defaults
-                updates = {
-                    'uniqueProps.groupName': 'New Group',
-                };
+                // Group divider has no data to clear, just keep existing state
+                updates = {};
                 break;
         }
 

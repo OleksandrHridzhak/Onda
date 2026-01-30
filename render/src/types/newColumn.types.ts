@@ -148,7 +148,6 @@ export interface TaskTableColumn extends BaseColumn {
 export interface GroupDividerColumn extends BaseColumn {
     type: 'groupDividerColumn';
     uniqueProps: {
-        groupName: string;
         backgroundColor: string;
     };
 }

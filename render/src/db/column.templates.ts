@@ -124,7 +124,6 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         emojiIconName: 'FolderOpen',
         width: 150,
         uniqueProps: {
-            groupName: 'New Group',
             backgroundColor: '#94A3B8',
         },
     },
