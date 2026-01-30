@@ -46,7 +46,8 @@ export function evaluateFormula(
                     return 'null';
                 }
                 if (typeof value === 'string') {
-                    return `"${value.replace(/"/g, '\\"')}"`;
+                    // Properly escape backslashes and quotes
+                    return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
                 }
                 return String(value);
             },
