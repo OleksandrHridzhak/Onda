@@ -8,14 +8,14 @@ import { DAYS } from '../../TableLogic';
 export const FillerColumn: React.FC = () => {
     return (
         <table className="checkbox-nested-table font-poppins">
-            <thead className="bg-tableHeader">
+            <thead className="bg-surfaceMuted">
                 <tr>
                     <th className="border-b border-border">
                         <div />
                     </th>
                 </tr>
             </thead>
-            <tbody className="bg-tableBodyBg">
+            <tbody className="bg-surface">
                 {DAYS.map((day, idx) => (
                     <tr
                         key={day}

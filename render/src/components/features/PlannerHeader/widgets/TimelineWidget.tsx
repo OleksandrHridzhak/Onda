@@ -115,7 +115,7 @@ const TimelineWidget: React.FC = () => {
 
     return (
         <div
-            className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border bg-tableBodyBg border-border text-textTableValues`}
+            className={`w-[300px] h-[50px] p-2 rounded-xl flex items-center border bg-surface border-border text-text`}
         >
             <div className="flex items-center justify-between w-full">
                 <div className="flex items-center justify-center w-6 h-6 rounded-full ">

@@ -45,10 +45,10 @@ export const TaskTableColumn: React.FC<TaskTableColumnProps> = ({
     return (
         <table className="checkbox-nested-table font-poppins">
             <ColumnHeader columnId={columnId} />
-            <tbody className="bg-tableBodyBg">
+            <tbody className="bg-surface">
                 <tr>
                     <td
-                        className="px-2 py-3 text-sm text-textTableRealValues todo-cell"
+                        className="px-2 py-3 text-sm text-text todo-cell"
                         style={{ verticalAlign: 'top' }}
                         rowSpan={DAYS.length}
                     >

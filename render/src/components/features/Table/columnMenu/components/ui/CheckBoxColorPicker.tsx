@@ -17,9 +17,7 @@ export const CheckboxColorPicker: React.FC<CheckboxColorPickerProps> = ({
     toggleColorMenu,
 }) => (
     <div className="mb-4">
-        <label
-            className={`block text-sm font-medium text-textTableValues mb-1`}
-        >
+        <label className={`block text-sm font-medium text-textMuted mb-1`}>
             Checkbox Color
         </label>
         <div className="">

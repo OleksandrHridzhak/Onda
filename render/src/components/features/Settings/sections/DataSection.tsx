@@ -102,7 +102,7 @@ export default function DataSection(): React.ReactElement {
     return (
         <SettingsTemplate title="Data Management">
             <div className="flex flex-col gap-2">
-                <span className={`text-sm text-textTableValues`}>
+                <span className={`text-sm text-textMuted`}>
                     Export Data / Import Data
                 </span>
                 <div className="flex flex-row gap-2">
@@ -138,9 +138,7 @@ export default function DataSection(): React.ReactElement {
             </div>
 
             <div className="flex flex-col gap-2 mt-6">
-                <span className={`text-sm text-textTableValues`}>
-                    Danger Zone
-                </span>
+                <span className={`text-sm text-textMuted`}>Danger Zone</span>
                 <div className="flex flex-row gap-2">
                     <BubbleBtn
                         onClick={() => setShowClearModal(true)}

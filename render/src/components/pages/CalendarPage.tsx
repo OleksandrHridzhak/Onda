@@ -99,7 +99,7 @@ export default function Calendar(): React.ReactElement {
 
     return (
         <div
-            className={`font-poppins min-h-screen bg-tableHeader overflow-y-hidden`}
+            className={`font-poppins min-h-screen bg-surfaceMuted overflow-y-hidden`}
         >
             <style>{`
         .custom-checkbox {
@@ -114,8 +114,8 @@ export default function Calendar(): React.ReactElement {
           transition: all 0.2s ease;
         }
         .custom-checkbox:checked {
-          background: var(--primary-color);
-          border-color: var(--primary-color);
+          background: var(--primary);
+          border-color: var(--primary);
         }
         .custom-checkbox:checked::after {
           content: '✔';
@@ -123,15 +123,15 @@ export default function Calendar(): React.ReactElement {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          color: var(--icon-active);
+          color: var(--sidebar-icon-active);
           font-size: 12px;
         }
         .custom-checkbox:hover {
-          border-color: var(--text-table-values);
+          border-color: var(--text-muted);
         }
         .custom-checkbox:focus {
           outline: none;
-          box-shadow: 0 0 0 3px var(--hover-bg);
+          box-shadow: 0 0 0 3px var(--primary);
         }
         .short-event .event-time {
           display: none;

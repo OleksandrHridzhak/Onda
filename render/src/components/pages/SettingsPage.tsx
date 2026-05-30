@@ -6,135 +6,139 @@ import DataSection from '../features/Settings/sections/DataSection';
 import SyncSection from '../features/Settings/sections/SyncSection';
 
 interface RootState {
-  newTheme: {
-    themeMode: string;
-  };
+    newTheme: {
+        themeMode: string;
+    };
 }
 
 interface Section {
-  id: string;
-  name: string;
-  icon: React.ReactElement;
-  component: React.ReactElement;
+    id: string;
+    name: string;
+    icon: React.ReactElement;
+    component: React.ReactElement;
 }
 
 export default function SettingsDashboard(): React.ReactElement {
-  const { themeMode } = useSelector((state: RootState) => state.newTheme);
-  const darkMode = themeMode === 'dark';
+    const { themeMode } = useSelector((state: RootState) => state.newTheme);
+    const darkMode = themeMode === 'dark';
 
-  const [activeSection, setActiveSection] = useState(() => {
-    return localStorage.getItem('activeSection') || 'data';
-  });
+    const [activeSection, setActiveSection] = useState(() => {
+        return localStorage.getItem('activeSection') || 'data';
+    });
 
-  useEffect(() => {
-    localStorage.setItem('activeSection', activeSection);
-  }, [activeSection]);
+    useEffect(() => {
+        localStorage.setItem('activeSection', activeSection);
+    }, [activeSection]);
 
-  const sections: Section[] = [
-    {
-      id: 'data',
-      name: 'Data',
-      icon: <Download className="w-4 h-4" />,
-      component: <DataSection />,
-    },
-    {
-      id: 'sync',
-      name: 'Sync',
-      icon: <Cloud className="w-4 h-4" />,
-      component: <SyncSection />,
-    },
-    {
-      id: 'fullClose',
-      name: 'System',
-      icon: <X className="w-4 h-4" />,
-      component: <FullCloseSection />,
-    },
-  ];
+    const sections: Section[] = [
+        {
+            id: 'data',
+            name: 'Data',
+            icon: <Download className="w-4 h-4" />,
+            component: <DataSection />,
+        },
+        {
+            id: 'sync',
+            name: 'Sync',
+            icon: <Cloud className="w-4 h-4" />,
+            component: <SyncSection />,
+        },
+        {
+            id: 'fullClose',
+            name: 'System',
+            icon: <X className="w-4 h-4" />,
+            component: <FullCloseSection />,
+        },
+    ];
 
-  const renderSection = (): React.ReactElement | null =>
-    sections.find((s) => s.id === activeSection)?.component || null;
+    const renderSection = (): React.ReactElement | null =>
+        sections.find((s) => s.id === activeSection)?.component || null;
 
-  return (
-    <div
-      className={`font-poppins flex flex-col h-full custom-scroll bg-background`}
-    >
-      <div
-        className={`sticky top-0 z-20 bg-tableBodyBg border-b border-border`}
-      >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
-            <div
-              className={`hidden sm:flex p-2 sm:p-3 rounded-2xl bg-hoverBg items-center justify-center`}
-            >
-              <Settings className="w-5 h-5 text-primaryColor" />
-            </div>
-            <h1 className="text-lg sm:text-xl font-medium text-text leading-tight truncate">
-              Settings
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile sections nav (tabs) - visible only on small screens */}
-      <div className="md:hidden bg-tableBodyBg border-b border-border">
-        <nav
-          role="tablist"
-          aria-label="Settings sections"
-          className="flex gap-2 overflow-x-auto px-4 py-2"
-        >
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              role="tab"
-              aria-selected={activeSection === section.id}
-              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap ${
-                activeSection === section.id
-                  ? 'bg-settingsSectionSelectorBg text-text'
-                  : 'text-textTableValues'
-              }`}
-            >
-              {section.icon}
-              <span className="ml-2 text-sm">{section.name}</span>
-            </button>
-          ))}
-        </nav>
-      </div>
-
-      <div className="flex flex-1 overflow-hidden">
-        <div className={`hidden md:block w-64 border-r border-border p-4`}>
-          <nav
-            className="space-y-1"
-            role="tablist"
-            aria-label="Settings sections"
-          >
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id)}
-                role="tab"
-                aria-selected={activeSection === section.id}
-                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                  activeSection === section.id
-                    ? `bg-settingsSectionSelectorBg text-text`
-                    : `text-textTableValues`
-                }`}
-              >
-                {section.icon}
-                <span className="ml-3">{section.name}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-
+    return (
         <div
-          className={`flex-1 overflow-y-auto p-4 md:p-6 ${
-            darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'
-          }`}
+            className={`font-poppins flex flex-col h-full custom-scroll bg-background`}
         >
-          {renderSection()}
+            <div
+                className={`sticky top-0 z-20 bg-surface border-b border-border`}
+            >
+                <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
+                        <div
+                            className={`hidden sm:flex p-2 sm:p-3 rounded-2xl bg-primaryColor items-center justify-center`}
+                        >
+                            <Settings className="w-5 h-5 text-primaryColor" />
+                        </div>
+                        <h1 className="text-lg sm:text-xl font-medium text-text leading-tight truncate">
+                            Settings
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile sections nav (tabs) - visible only on small screens */}
+            <div className="md:hidden bg-surface border-b border-border">
+                <nav
+                    role="tablist"
+                    aria-label="Settings sections"
+                    className="flex gap-2 overflow-x-auto px-4 py-2"
+                >
+                    {sections.map((section) => (
+                        <button
+                            key={section.id}
+                            onClick={() => setActiveSection(section.id)}
+                            role="tab"
+                            aria-selected={activeSection === section.id}
+                            className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap ${
+                                activeSection === section.id
+                                    ? 'bg-backgrundHover text-text'
+                                    : 'text-textMuted'
+                            }`}
+                        >
+                            {section.icon}
+                            <span className="ml-2 text-sm">{section.name}</span>
+                        </button>
+                    ))}
+                </nav>
+            </div>
+
+            <div className="flex flex-1 overflow-hidden">
+                <div
+                    className={`hidden md:block w-64 border-r border-border p-4`}
+                >
+                    <nav
+                        className="space-y-1"
+                        role="tablist"
+                        aria-label="Settings sections"
+                    >
+                        {sections.map((section) => (
+                            <button
+                                key={section.id}
+                                onClick={() => setActiveSection(section.id)}
+                                role="tab"
+                                aria-selected={activeSection === section.id}
+                                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                                    activeSection === section.id
+                                        ? `bg-backgrundHover text-text`
+                                        : `text-textMuted`
+                                }`}
+                            >
+                                {section.icon}
+                                <span className="ml-3">{section.name}</span>
+                            </button>
+                        ))}
+                    </nav>
+                </div>
+
+                <div
+                    className={`flex-1 overflow-y-auto p-4 md:p-6 ${
+                        darkMode
+                            ? 'custom-scroll-y-dark'
+                            : 'custom-scroll-y-light'
+                    }`}
+                >
+                    {renderSection()}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

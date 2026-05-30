@@ -44,7 +44,7 @@ export const TextboxCell: React.FC<TextboxCellProps> = ({
                 onChange={(e) => setTempValue(e.target.value)}
                 onBlur={handleSave}
                 onKeyDown={handleKeyDown}
-                className="w-full px-2 py-1 text-sm bg-transparent font-poppins rounded-md focus:outline-none resize-none text-textTableValues"
+                className="w-full px-2 py-1 text-sm bg-transparent font-poppins rounded-md focus:outline-none resize-none text-text"
                 rows={1}
                 autoFocus
             />
@@ -57,7 +57,7 @@ export const TextboxCell: React.FC<TextboxCellProps> = ({
                 handleStartEditing(value, setIsEditing, setTempValue)
             }
             onKeyDown={handleKeyDownDiv}
-            className="w-full min-h-8 px-2 py-1 rounded-md cursor-text text-sm flex items-center group transition-colors text-textTableValues"
+            className="w-full min-h-8 px-2 py-1 rounded-md cursor-text text-sm flex items-center group transition-colors text-text"
             aria-label="Edit note"
         >
             <div className="flex-1 min-w-0 overflow-hidden overflow-ellipsis whitespace-nowrap">

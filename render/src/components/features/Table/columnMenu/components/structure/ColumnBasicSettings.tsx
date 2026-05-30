@@ -3,6 +3,7 @@ import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { IconSelector } from '../ui/IconSelector';
 import { TitleVisibilityToggle } from '../ui/TitleVisibilityToggle';
 import { TransparentBtn } from '../../../../../shared/TransparentBtn';
+import { Button } from '../../../../../shared/Button';
 import { Icon } from '../../../../../../utils/icons';
 
 interface ColumnBasicSettingsProps {
@@ -94,7 +95,7 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
             {/* Position Controls Section */}
             <div className="mb-4">
                 <label
-                    className={`block text-sm font-medium text-textTableValues mb-1`}
+                    className={`block text-sm font-medium text-textMuted mb-1`}
                 >
                     Column Position and Width
                 </label>
@@ -111,20 +112,20 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
                             aria-label="Column width"
                         />
                     </div>
-                    <TransparentBtn
+                    <Button
+                        variant="secondary"
                         onClick={handleMoveLeft}
                         disabled={!canMoveLeft}
-                        darkTheme={darkMode}
                     >
                         <ArrowLeft size={18} /> LEFT
-                    </TransparentBtn>
-                    <TransparentBtn
+                    </Button>
+                    <Button
+                        variant="secondary"
                         onClick={handleMoveRight}
                         disabled={!canMoveRight}
-                        darkTheme={darkMode}
                     >
                         RIGHT <ArrowRight size={18} />
-                    </TransparentBtn>
+                    </Button>
                 </div>
             </div>
         </>

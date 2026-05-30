@@ -86,14 +86,14 @@ const Sidebar: React.FC = () => {
                                     className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${
                                         isActive
                                             ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText'
-                                            : 'text-linkInactiveText hover:scale-105 hover:bg-linkInactiveHoverBg'
+                                            : 'hover:scale-105 hover:bg-backgrundHover'
                                     }`}
                                 >
                                     <Icon
                                         className={`w-6 h-6 transition-colors duration-300 ${
                                             isActive
-                                                ? 'text-iconActive'
-                                                : 'text-iconInactive'
+                                                ? 'text-sidebarIconActive'
+                                                : 'text-sidebarIconInactive'
                                         } `}
                                         strokeWidth={1.5}
                                     />
@@ -108,7 +108,7 @@ const Sidebar: React.FC = () => {
                         tabIndex={0}
                         className={`transition-all duration-300 ease-in-out transform p-2.5 rounded-full flex items-center justify-center focus:outline-none focus:ring-2  ${
                             active === 'settings'
-                                ? 'opacity-50 cursor-not-allowed bg-primaryColor text-linkInactiveText hover:scale-100 hover:bg-gray'
+                                ? 'opacity-50 cursor-not-allowed bg-primaryColor hover:scale-100 hover:bg-gray'
                                 : showColumnSelector
                                   ? 'bg-primaryColor text-white scale-100 ring-1 ring-primaryColor/30'
                                   : 'bg-primaryColor text-white hover:scale-105 shadow-md'
@@ -182,12 +182,12 @@ const Sidebar: React.FC = () => {
                     >
                         {themeMode === 'dark' ? (
                             <Moon
-                                className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
+                                className={`w-6 h-6 text-primaryColor transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
                                 strokeWidth={1.5}
                             />
                         ) : (
                             <Sun
-                                className={`w-6 h-6 text-toggleIcon transition-all duration-300 transform rotate-0 hover:rotate-180`}
+                                className={`w-6 h-6 text-primaryColor transition-all duration-300 transform rotate-0 hover:rotate-180`}
                                 strokeWidth={1.5}
                             />
                         )}

@@ -139,7 +139,7 @@ export const TodoList: React.FC<TodoListProps> = ({
                                                 setEditCategoryId,
                                             )
                                         }
-                                        className="flex-1 px-2 py-1 text-sm rounded-md z-20 bg-[var(--table-body-bg)] text-[var(--text)] border border-[var(--border)] focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)] outline-none focus:outline-none min-w-0"
+                                        className="flex-1 px-2 py-1 text-sm rounded-md z-20 bg-[var(--surface)] text-[var(--text)] border border-[var(--border)] focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] outline-none focus:outline-none min-w-0"
                                         autoFocus
                                     />
                                 </div>

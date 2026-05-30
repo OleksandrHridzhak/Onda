@@ -56,7 +56,7 @@ const Table: React.FC = () => {
             <div className="overflow-x-auto custom-scroll">
                 <table className="w-full">
                     <thead>
-                        <tr className="border-border bg-tableHeader text-textTableValues border-b">
+                        <tr className="border-border bg-surfaceMuted text-textMuted border-b">
                             {/* Static: Days of the week column */}
                             <TableItemWrapper
                                 key="days-column"

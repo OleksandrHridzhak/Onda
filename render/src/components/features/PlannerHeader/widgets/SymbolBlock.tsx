@@ -7,8 +7,8 @@ export const SymbolBlock: React.FC = ({}) => {
             className={`
       relative w-12 h-12 ml-2 flex items-center justify-center
       rounded-lg  z-10
-      bg-tableBodyBg
-      text-toggleIcon
+      bg-surface
+      text-primaryColor
       border-border
       border-t border-l border-r border-b
     `}

@@ -81,7 +81,7 @@ export default function CalendarTimeline({
                             {hours.map((hour) => (
                                 <div
                                     key={hour}
-                                    className={`flex items-center justify-end pr-2 sm:pr-3 text-xs sm:text-sm text-textTableValues`}
+                                    className={`flex items-center justify-end pr-2 sm:pr-3 text-xs sm:text-sm text-textMuted`}
                                     style={{
                                         height: `${slotHeight}px`,
                                         lineHeight: `${slotHeight}px`,
@@ -102,7 +102,7 @@ export default function CalendarTimeline({
                                         className={`sticky top-0 bg-background z-40 py-3 text-center border-b border-border`}
                                     >
                                         <div
-                                            className={`text-xs text-textTableValues`}
+                                            className={`text-xs text-textMuted`}
                                         >
                                             {dayNames[day.getDay()]}
                                         </div>
@@ -128,7 +128,7 @@ export default function CalendarTimeline({
                                                 key={hour}
                                                 role="button"
                                                 tabIndex={0}
-                                                className={`absolute w-full border-t border-border hover:bg-hoverBg cursor-pointer z-10`}
+                                                className={`absolute w-full border-t border-border hover:bg-primaryColor cursor-pointer z-10`}
                                                 style={{
                                                     top: `${hour * slotHeight}px`,
                                                     height: `${slotHeight}px`,

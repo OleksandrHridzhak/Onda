@@ -74,7 +74,7 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                     />
                     <button
                         onClick={saveEdit}
-                        className={`ml-2 p-1 rounded-lg text-primaryColor hover:bg-hoverBg transition-colors duration-200`}
+                        className={`ml-2 p-1 rounded-lg text-primaryColor hover:bg-primaryColor transition-colors duration-200`}
                         aria-label={`Save edit for ${tag.name}`}
                     >
                         <Plus size={14} />
@@ -116,7 +116,7 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                                         startEditing();
                                         setIsContextMenuOpen(false);
                                     }}
-                                    className={`p-1 rounded-lg text-primaryColor hover:bg-hoverBg transition-colors duration-200`}
+                                    className={`p-1 rounded-lg text-primaryColor hover:bg-primaryColor transition-colors duration-200`}
                                     aria-label={`Edit ${tag.name}`}
                                 >
                                     <Edit2 size={14} />
@@ -126,7 +126,7 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                                         handleRemoveOption(tag.id);
                                         setIsContextMenuOpen(false);
                                     }}
-                                    className={`p-1 rounded-lg text-red-500 hover:bg-hoverBg transition-colors duration-200`}
+                                    className={`p-1 rounded-lg text-red-500 hover:bg-primaryColor transition-colors duration-200`}
                                     aria-label={`Remove ${tag.name}`}
                                 >
                                     <Trash2 size={14} />

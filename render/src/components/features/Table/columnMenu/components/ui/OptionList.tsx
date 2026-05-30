@@ -63,9 +63,7 @@ export const OptionsList: React.FC<OptionsListProps> = ({
 
     return (
         <div className="mb-4">
-            <label
-                className={`block text-sm font-medium text-textTableValues mb-1`}
-            >
+            <label className={`block text-sm font-medium text-textMuted mb-1`}>
                 {getLabelText()}
             </label>
             <div className="space-y-2">
@@ -78,12 +76,12 @@ export const OptionsList: React.FC<OptionsListProps> = ({
                             e.key === 'Enter' && handleAddOption()
                         }
                         placeholder={`Add new ${getPlaceholderType()}...`}
-                        className={`flex-1 px-4 py-2 h-12 border border-border bg-background text-text placeholder-textTableValues rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200`}
+                        className={`flex-1 px-4 py-2 h-12 border border-border bg-background text-text placeholder-textSubtle rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200`}
                         aria-label={`Add new ${getPlaceholderType()}`}
                     />
                     <button
                         onClick={handleAddOption}
-                        className={`flex items-center justify-center w-12 h-12 rounded-xl bg-primaryColor hover:bg-bubbleBtnStandardHover text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryColor`}
+                        className={`flex items-center justify-center w-12 h-12 rounded-xl bg-primaryColor hover:bg-primaryHover text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryColor`}
                         aria-label="Add new option"
                     >
                         <Plus size={18} className="stroke-2" />

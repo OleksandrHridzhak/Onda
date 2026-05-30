@@ -19,7 +19,7 @@ export const ColumnMenuHeader: React.FC<ColumnMenuHeaderProps> = ({
                     onClose();
                 }}
                 aria-label="Close column settings"
-                className={`p-1 rounded-full text-textTableValues hover:bg-hoverBg transition-colors duration-200`}
+                className={`p-1 rounded-full text-textMuted hover:bg-primaryColor transition-colors duration-200`}
             >
                 <X size={20} />
             </button>

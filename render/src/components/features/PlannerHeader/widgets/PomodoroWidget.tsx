@@ -111,13 +111,13 @@ const PomodoroWidget: React.FC = () => {
 
     return (
         <div
-            className={`w-[150px] h-[50px] ml-2 justify-center px-2 rounded-xl flex flex-col items-center space-y-2 border bg-tableBodyBg border-border text-textTableValues`}
+            className={`w-[150px] h-[50px] ml-2 justify-center px-2 rounded-xl flex flex-col items-center space-y-2 border bg-surface border-border text-text`}
         >
             {isEnded && (
                 <div className="flex flex-row items-center space-x-2">
                     <div className="font-medium">{initialMinutes} ended!</div>
                     <button
-                        className={`h-8 w-8 flex items-center justify-center rounded-full hover:hoverBg text-red-600`}
+                        className={`h-8 w-8 flex items-center justify-center rounded-full hover:bg-primaryColor text-red-600`}
                         onClick={handleClose}
                     >
                         <X className="h-5 w-5" />
@@ -126,14 +126,12 @@ const PomodoroWidget: React.FC = () => {
             )}
             {!isEnded && (isRunning || isPaused) && (
                 <div className="flex flex-row items-center justify-between w-full">
-                    <div
-                        className={`text-lg pl-1 font-poppins text-textTableValues`}
-                    >
+                    <div className={`text-lg pl-1 font-poppins text-text`}>
                         {formatTime(time)}
                     </div>
                     <div className="flex space-x-2">
                         <button
-                            className={`h-8 w-8 flex items-center justify-center rounded-full hover:hoverBg text-textTableValues`}
+                            className={`h-8 w-8 flex items-center justify-center rounded-full hover:bg-primaryColor text-textMuted`}
                             onClick={isRunning ? handlePause : handleResume}
                         >
                             {isRunning ? (
@@ -143,7 +141,7 @@ const PomodoroWidget: React.FC = () => {
                             )}
                         </button>
                         <button
-                            className={`h-8 w-8 flex items-center justify-center rounded-full hover:hoverBg text-textTableValues`}
+                            className={`h-8 w-8 flex items-center justify-center rounded-full hover:bg-primaryColor text-textMuted`}
                             onClick={handleEnd}
                         >
                             <X className="h-5 w-5" />
@@ -153,13 +151,13 @@ const PomodoroWidget: React.FC = () => {
             )}
             {!isEnded && !isRunning && !isPaused && (
                 <div className="flex items-center space-x-1">
-                    <span className={`text-textTableValues px-2 py-1`}>
+                    <span className={`text-text px-2 py-1`}>
                         <Clock className="h-5 w-5" />
                     </span>
                     {[30, 25, 5].map((m) => (
                         <button
                             key={m}
-                            className={`px-2 py-1 rounded-md cursor-pointer text-textTableValues hover:hoverBg`}
+                            className={`px-2 py-1 rounded-md cursor-pointer text-textMuted hover:bg-primaryColor`}
                             onClick={() => handleStart(m)}
                         >
                             {m}

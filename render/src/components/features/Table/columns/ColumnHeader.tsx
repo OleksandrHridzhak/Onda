@@ -36,7 +36,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({ columnId }) => {
 
     return (
         <>
-            <thead className="bg-tableHeader">
+            <thead className="bg-surfaceMuted">
                 <tr>
                     <th className="border-b border-border">
                         <div
@@ -77,7 +77,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({ columnId }) => {
                                 {column.isNameVisible !== false &&
                                     column.name && (
                                         <span
-                                            className={`truncate block text-textTableValues max-w-full`}
+                                            className={`truncate block text-textMuted max-w-full`}
                                         >
                                             {column.name}
                                         </span>

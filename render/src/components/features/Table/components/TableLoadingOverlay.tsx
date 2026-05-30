@@ -32,7 +32,7 @@ export const TableLoadingOverlay: React.FC<TableLoadingOverlayProps> = ({
                 </div>
 
                 {/* Loading text */}
-                <p className="text-sm font-medium text-textTableValues animate-pulse">
+                <p className="text-sm font-medium text-textMuted animate-pulse">
                     Syncing data...
                 </p>
             </div>
