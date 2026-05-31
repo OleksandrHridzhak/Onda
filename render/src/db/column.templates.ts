@@ -28,7 +28,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         width: 50,
         uniqueProps: {
             days: createWeeklyValues(false),
-            checkboxColor: 'green',
+            checkboxColor: 'accent1',
         },
     },
 
@@ -65,8 +65,8 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         width: 120,
         uniqueProps: {
             availableTags: [
-                { id: 't1', name: 'Work', color: 'red' },
-                { id: 't2', name: 'Personal', color: 'green' },
+                { id: 't1', name: 'Work', color: 'accent6' },
+                { id: 't2', name: 'Personal', color: 'accent1' },
             ],
             days: createWeeklyValues([]),
         },
@@ -81,7 +81,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         width: 150,
         uniqueProps: {
             availableCategories: [
-                { id: 'c1', name: 'Urgent', color: 'orange' },
+                { id: 'c1', name: 'Urgent', color: 'accent4' },
             ],
             todos: [],
         },
@@ -96,8 +96,8 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         width: 50,
         uniqueProps: {
             availableOptions: [
-                { id: 'o1', name: 'Option 1', color: 'purple' },
-                { id: 'o2', name: 'Option 2', color: 'pink' },
+                { id: 'o1', name: 'Option 1', color: 'accent3' },
+                { id: 'o2', name: 'Option 2', color: 'accent7' },
             ],
             days: createWeeklyValues([]),
         },

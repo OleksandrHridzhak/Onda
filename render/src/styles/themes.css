@@ -21,55 +21,55 @@
     --secondary-hover: #e5e7eb;
     --secondary-text: #4b5563;
 
-    --color-green-bg: #dcfce7;
-    --color-green-text: #166534;
-    --color-green-solid: #10b981;
-    --color-green-hover: #34d399;
+    --color-accent1-bg: #dcfce7;
+    --color-accent1-text: #166534;
+    --color-accent1-solid: #10b981;
+    --color-accent1-hover: #34d399;
 
-    --color-blue-bg: #dbeafe;
-    --color-blue-text: #1e40af;
-    --color-blue-solid: #3b82f6;
-    --color-blue-hover: #60a5fa;
+    --color-accent2-bg: #dbeafe;
+    --color-accent2-text: #1e40af;
+    --color-accent2-solid: #3b82f6;
+    --color-accent2-hover: #60a5fa;
 
-    --color-purple-bg: #ede9fe;
-    --color-purple-text: #6b21a8;
-    --color-purple-solid: #8b5cf6;
-    --color-purple-hover: #a78bfa;
+    --color-accent3-bg: #ede9fe;
+    --color-accent3-text: #6b21a8;
+    --color-accent3-solid: #8b5cf6;
+    --color-accent3-hover: #a78bfa;
 
-    --color-orange-bg: #ffedd5;
-    --color-orange-text: #9a3412;
-    --color-orange-solid: #f97316;
-    --color-orange-hover: #fb923c;
+    --color-accent4-bg: #ffedd5;
+    --color-accent4-text: #9a3412;
+    --color-accent4-solid: #f97316;
+    --color-accent4-hover: #fb923c;
 
-    --color-yellow-bg: #fef9c3;
-    --color-yellow-text: #854d0e;
-    --color-yellow-solid: #eab308;
-    --color-yellow-hover: #facc15;
+    --color-accent5-bg: #fef9c3;
+    --color-accent5-text: #854d0e;
+    --color-accent5-solid: #eab308;
+    --color-accent5-hover: #facc15;
 
-    --color-red-bg: #fee2e2;
-    --color-red-text: #991b1b;
-    --color-red-solid: #ef4444;
-    --color-red-hover: #f87171;
+    --color-accent6-bg: #fee2e2;
+    --color-accent6-text: #991b1b;
+    --color-accent6-solid: #ef4444;
+    --color-accent6-hover: #f87171;
 
-    --color-pink-bg: #fce7f3;
-    --color-pink-text: #9d174d;
-    --color-pink-solid: #ec4899;
-    --color-pink-hover: #f472b6;
+    --color-accent7-bg: #fce7f3;
+    --color-accent7-text: #9d174d;
+    --color-accent7-solid: #ec4899;
+    --color-accent7-hover: #f472b6;
 
-    --color-teal-bg: #ccfbf1;
-    --color-teal-text: #115e59;
-    --color-teal-solid: #14b8a6;
-    --color-teal-hover: #2dd4bf;
+    --color-accent8-bg: #ccfbf1;
+    --color-accent8-text: #115e59;
+    --color-accent8-solid: #14b8a6;
+    --color-accent8-hover: #2dd4bf;
 
-    --color-gray-bg: #f3f4f6;
-    --color-gray-text: #1f2937;
-    --color-gray-solid: #6b7280;
-    --color-gray-hover: #9ca3af;
+    --color-accent9-bg: #f3f4f6;
+    --color-accent9-text: #1f2937;
+    --color-accent9-solid: #6b7280;
+    --color-accent9-hover: #9ca3af;
 
-    --color-lime-bg: #ecfccb;
-    --color-lime-text: #3f6212;
-    --color-lime-solid: #84cc16;
-    --color-lime-hover: #a3e635;
+    --color-accent10-bg: #ecfccb;
+    --color-accent10-text: #3f6212;
+    --color-accent10-solid: #84cc16;
+    --color-accent10-hover: #a3e635;
 
     --scrollbar-track: rgba(241, 241, 241, 0.2);
     --scrollbar-thumb: rgba(156, 163, 175, 0.5);
@@ -103,55 +103,55 @@
     --secondary-hover: #4b5563;
     --secondary-text: #d1d5db;
 
-    --color-green-bg: #14532d;
-    --color-green-text: #dcfce7;
-    --color-green-solid: #10b981;
-    --color-green-hover: #059669;
+    --color-accent1-bg: #14532d;
+    --color-accent1-text: #dcfce7;
+    --color-accent1-solid: #10b981;
+    --color-accent1-hover: #059669;
 
-    --color-blue-bg: #1e3a8a;
-    --color-blue-text: #dbeafe;
-    --color-blue-solid: #3b82f6;
-    --color-blue-hover: #2563eb;
+    --color-accent2-bg: #1e3a8a;
+    --color-accent2-text: #dbeafe;
+    --color-accent2-solid: #3b82f6;
+    --color-accent2-hover: #2563eb;
 
-    --color-purple-bg: #581c87;
-    --color-purple-text: #f3e8ff;
-    --color-purple-solid: #8b5cf6;
-    --color-purple-hover: #7c3aed;
+    --color-accent3-bg: #581c87;
+    --color-accent3-text: #f3e8ff;
+    --color-accent3-solid: #8b5cf6;
+    --color-accent3-hover: #7c3aed;
 
-    --color-orange-bg: #7c2d12;
-    --color-orange-text: #ffedd5;
-    --color-orange-solid: #f97316;
-    --color-orange-hover: #ea580c;
+    --color-accent4-bg: #7c2d12;
+    --color-accent4-text: #ffedd5;
+    --color-accent4-solid: #f97316;
+    --color-accent4-hover: #ea580c;
 
-    --color-yellow-bg: #713f12;
-    --color-yellow-text: #fef9c3;
-    --color-yellow-solid: #eab308;
-    --color-yellow-hover: #ca8a04;
+    --color-accent5-bg: #713f12;
+    --color-accent5-text: #fef9c3;
+    --color-accent5-solid: #eab308;
+    --color-accent5-hover: #ca8a04;
 
-    --color-red-bg: #7f1d1d;
-    --color-red-text: #fee2e2;
-    --color-red-solid: #ef4444;
-    --color-red-hover: #dc2626;
+    --color-accent6-bg: #7f1d1d;
+    --color-accent6-text: #fee2e2;
+    --color-accent6-solid: #ef4444;
+    --color-accent6-hover: #dc2626;
 
-    --color-pink-bg: #831843;
-    --color-pink-text: #fce7f3;
-    --color-pink-solid: #ec4899;
-    --color-pink-hover: #db2777;
+    --color-accent7-bg: #831843;
+    --color-accent7-text: #fce7f3;
+    --color-accent7-solid: #ec4899;
+    --color-accent7-hover: #db2777;
 
-    --color-teal-bg: #134e4a;
-    --color-teal-text: #ccfbf1;
-    --color-teal-solid: #14b8a6;
-    --color-teal-hover: #0d9488;
+    --color-accent8-bg: #134e4a;
+    --color-accent8-text: #ccfbf1;
+    --color-accent8-solid: #14b8a6;
+    --color-accent8-hover: #0d9488;
 
-    --color-gray-bg: #111827;
-    --color-gray-text: #f3f4f6;
-    --color-gray-solid: #6b7280;
-    --color-gray-hover: #4b5563;
+    --color-accent9-bg: #111827;
+    --color-accent9-text: #f3f4f6;
+    --color-accent9-solid: #6b7280;
+    --color-accent9-hover: #4b5563;
 
-    --color-lime-bg: #365314;
-    --color-lime-text: #ecfccb;
-    --color-lime-solid: #84cc16;
-    --color-lime-hover: #65a30d;
+    --color-accent10-bg: #365314;
+    --color-accent10-text: #ecfccb;
+    --color-accent10-solid: #84cc16;
+    --color-accent10-hover: #65a30d;
 
     --scrollbar-track: rgba(55, 65, 81, 0.5);
     --scrollbar-thumb: rgba(156, 163, 175, 0.7);

@@ -22,8 +22,8 @@ export function Button({
         secondary: 'bg-secondary text-secondaryText',
         danger: 'bg-danger text-white',
         outline:
-            'border border-border bg-transparent text-text hover:bg-blue-600 hover:text-white',
-        ghost: 'bg-transparent text-text hover:bg-cellBg',
+            'border border-border bg-transparent text-text hover:bg-primaryHover hover:text-white',
+        ghost: 'bg-transparent text-text hover:bg-backgrundHover',
     };
 
     const stateClass = disabled ? 'opacity-60 cursor-not-allowed' : '';

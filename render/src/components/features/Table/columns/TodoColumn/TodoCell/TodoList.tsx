@@ -69,9 +69,7 @@ export const TodoList: React.FC<TodoListProps> = ({
                 return (
                     <div
                         key={todo.id}
-                        className={`group flex items-center justify-between p-2 rounded-md ${
-                            darkMode ? 'bg-gray-700' : 'bg-gray-50'
-                        } ${
+                        className={`group flex items-center justify-between p-2 rounded-md bg-surfaceMuted ${
                             filteredTodos.indexOf(todo) !==
                             filteredTodos.length - 1
                                 ? 'mb-[2px]'
@@ -90,12 +88,8 @@ export const TodoList: React.FC<TodoListProps> = ({
                                 }
                                 className={`mr-2 p-1 rounded-full z-20 ${
                                     todo.done
-                                        ? darkMode
-                                            ? 'bg-green-600 text-white'
-                                            : 'bg-green-500 text-white'
-                                        : darkMode
-                                          ? 'bg-gray-600 text-gray-400'
-                                          : 'bg-gray-200 text-gray-400'
+                                        ? 'bg-primaryColor text-white'
+                                        : 'bg-secondary text-textSubtle'
                                 }`}
                             >
                                 <Check size={14} />
@@ -147,15 +141,7 @@ export const TodoList: React.FC<TodoListProps> = ({
                                         className={`
                     flex-1 min-w-0 w-full
                     text-sm
-                    ${
-                        todo.done
-                            ? darkMode
-                                ? 'text-gray-500 line-through'
-                                : 'text-gray-400 line-through'
-                            : darkMode
-                              ? 'text-gray-200'
-                              : 'text-gray-700'
-                    }
+                    ${todo.done ? 'text-textSubtle line-through' : 'text-text'}
                     transition-opacity
                     duration-150
                     group-hover:opacity-0
@@ -194,11 +180,7 @@ export const TodoList: React.FC<TodoListProps> = ({
                                             setEditCategoryId,
                                         );
                                     }}
-                                    className={`p-2 rounded-md flex items-center justify-center ${
-                                        darkMode
-                                            ? 'bg-gray-800 text-gray-400 hover:text-gray-200'
-                                            : 'bg-gray-100 text-gray-500 hover:text-gray-700'
-                                    }`}
+                                    className={`p-2 rounded-md flex items-center justify-center ${'bg-surface text-textMuted hover:text-text'}`}
                                 >
                                     <Edit2 size={14} />
                                 </button>
@@ -213,11 +195,7 @@ export const TodoList: React.FC<TodoListProps> = ({
                                             onChange,
                                         );
                                     }}
-                                    className={`p-2  rounded-md flex items-center justify-center ${
-                                        darkMode
-                                            ? 'bg-gray-800 text-red-400 hover:text-red-300'
-                                            : 'bg-gray-100 text-red-500 hover:text-red-700'
-                                    }`}
+                                    className={`p-2  rounded-md flex items-center justify-center ${'bg-surface text-danger hover:bg-danger hover:text-white'}`}
                                 >
                                     <Trash2 size={14} />
                                 </button>

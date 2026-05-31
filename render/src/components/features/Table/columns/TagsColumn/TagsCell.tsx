@@ -1,14 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { COLOR_STYLES } from '../../../../../utils/colorOptions';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
 import { Tag } from '../../../../../types/newColumn.types';
-
-interface RootState {
-    newTheme: {
-        themeMode: string;
-    };
-}
 
 interface TagsCellProps {
     selectedTagIds: string[];
@@ -26,9 +19,6 @@ export const TagsCell: React.FC<TagsCellProps> = ({
     onChange,
     availableTags,
 }) => {
-    const { themeMode } = useSelector((state: RootState) => state.newTheme);
-    const darkMode = themeMode === 'dark' ? true : false;
-
     // Convert selected IDs to display value (comma-separated names)
     const displayValue = selectedTagIds
         .map((id) => availableTags.find((tag) => tag.id === id)?.name)
@@ -97,9 +87,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
             </div>
             {/* Dropdown menu */}
             {isOpen && (
-                <div
-                    className={`absolute z-10 mt-1 w-full ${darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'} rounded-md shadow-lg max-h-48 overflow-auto`}
-                >
+                <div className="absolute z-10 mt-1 w-full bg-surface text-text border border-border rounded-md shadow-lg max-h-48 overflow-auto">
                     {availableTags.map((tag) => {
                         const colorOption = getColorForTag(tag);
 
@@ -108,7 +96,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                                 key={tag.id}
                                 role="button"
                                 tabIndex={0}
-                                className={`px-3 py-2 ${darkMode ? 'hover:bg-gray-700 text-gray-200' : 'hover:bg-blue-50 text-gray-800'} cursor-pointer text-sm whitespace-nowrap`}
+                                className="px-3 py-2 hover:bg-backgrundHover cursor-pointer text-sm whitespace-nowrap"
                                 onClick={() => {
                                     handleTagToggle(tag.id);
                                     setIsOpen(false);

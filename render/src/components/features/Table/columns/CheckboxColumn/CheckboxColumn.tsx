@@ -36,7 +36,7 @@ export const CheckboxColumn: React.FC<CheckboxColumnProps> = ({ columnId }) => {
                         onChange={(newValue) =>
                             handleCheckboxChange(day, newValue)
                         }
-                        color={column?.uniqueProps?.checkboxColor || 'green'}
+                        color={column?.uniqueProps?.checkboxColor || 'accent1'}
                     />
                 )}
             </DayColumnLayout>

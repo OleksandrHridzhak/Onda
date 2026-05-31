@@ -69,11 +69,9 @@ export const TodoCell: React.FC<TodoCellProps> = ({
                     todos={todos}
                     setTodos={setTodos}
                     onChange={onChange}
-                    darkMode={darkMode}
                 />
                 <TodoCategoryFilter
                     availableCategories={availableCategories}
-                    darkMode={darkMode}
                     selectedFilterCategoryId={selectedFilterCategoryId}
                     setSelectedFilterCategoryId={setSelectedFilterCategoryId}
                     setNewCategoryId={setNewCategoryId}

@@ -1,15 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 const paletteColors = [
-  'green',
-  'blue',
-  'purple',
-  'orange',
-  'yellow',
-  'red',
-  'pink',
-  'teal',
-  'gray',
-  'lime',
+  'accent1',
+  'accent2',
+  'accent3',
+  'accent4',
+  'accent5',
+  'accent6',
+  'accent7',
+  'accent8',
+  'accent9',
+  'accent10',
 ];
 
 const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);

@@ -26,7 +26,7 @@ export const useColumnMenuHandlers = ({
     const [description, setDescription] = useState('');
     const [showTitle, setShowTitle] = useState(true);
     const [width, setWidth] = useState(0);
-    const [checkboxColor, setCheckboxColor] = useState<ColorName>('green');
+    const [checkboxColor, setCheckboxColor] = useState<ColorName>('accent1');
     const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
     const [isColorMenuOpen, setIsColorMenuOpen] = useState<
         Record<string, boolean>
@@ -55,7 +55,7 @@ export const useColumnMenuHandlers = ({
         } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
             setTags(column.uniqueProps.availableTags || []);
         } else if (column.type === COLUMN_TYPES.CHECKBOX) {
-            setCheckboxColor(column.uniqueProps.checkboxColor || 'green');
+            setCheckboxColor(column.uniqueProps.checkboxColor || 'accent1');
         }
     }, [column]);
 
@@ -84,7 +84,7 @@ export const useColumnMenuHandlers = ({
                 globalThis.crypto?.randomUUID?.() ||
                 `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
             name: newOption.trim(),
-            color: 'blue',
+            color: 'accent2',
         };
 
         const updatedTags = [...tags, newTag];

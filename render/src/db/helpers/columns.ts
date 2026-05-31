@@ -135,7 +135,7 @@ export async function createColumn(
 /**
  * Updates specific fields of a column using its ID.
  * Supports both top-level properties (e.g., { name: 'New Name' })
- * and nested properties via dot notation (e.g., { 'uniqueProps.checkboxColor': 'blue' }).
+ * and nested properties via dot notation (e.g., { 'uniqueProps.checkboxColor': 'accent2' }).
  * @param columnId - The unique ID of the column to update.
  * @param changes - An object containing the fields and their new values.
  * @returns DbResult with the count of updated records
@@ -248,19 +248,26 @@ export async function moveColumn(
             return { success: false, error: 'Column not found in order' };
         }
 
-        const newIndex = direction === 'left' ? currentIndex - 1 : currentIndex + 1;
+        const newIndex =
+            direction === 'left' ? currentIndex - 1 : currentIndex + 1;
 
         if (newIndex < 0) {
             return { success: false, error: 'Cannot move column further left' };
         }
 
         if (newIndex >= currentOrder.length) {
-            return { success: false, error: 'Cannot move column further right' };
+            return {
+                success: false,
+                error: 'Cannot move column further right',
+            };
         }
 
         // Swap positions
         const newOrder = [...currentOrder];
-        [newOrder[currentIndex], newOrder[newIndex]] = [newOrder[newIndex], newOrder[currentIndex]];
+        [newOrder[currentIndex], newOrder[newIndex]] = [
+            newOrder[newIndex],
+            newOrder[currentIndex],
+        ];
 
         await db.settings.update('global', {
             layout: { columnsOrder: newOrder },
@@ -285,9 +292,7 @@ export async function moveColumn(
  * // Error:
  * { success: false, error: 'Column not found' }
  */
-export async function clearColumn(
-    columnId: string,
-): Promise<DbResult<Column>> {
+export async function clearColumn(columnId: string): Promise<DbResult<Column>> {
     try {
         const column = await db.tableColumns.get(columnId);
         if (!column) {

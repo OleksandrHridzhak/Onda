@@ -2,6 +2,7 @@ import React from 'react';
 import { Check } from 'lucide-react';
 import { handleAddTodo } from './logic';
 import { Todo } from '../../../../../../types/newColumn.types';
+import { Button } from '../../../../../shared/Button';
 
 interface TodoInputProps {
     newTodo: string;
@@ -10,7 +11,6 @@ interface TodoInputProps {
     todos: Todo[];
     setTodos: (todos: Todo[]) => void;
     onChange: (value: Todo[]) => void;
-    darkMode: boolean;
 }
 
 /**
@@ -24,7 +24,6 @@ export const TodoInput: React.FC<TodoInputProps> = ({
     todos,
     setTodos,
     onChange,
-    darkMode,
 }) => {
     const onAddTodo = () =>
         handleAddTodo(
@@ -44,23 +43,14 @@ export const TodoInput: React.FC<TodoInputProps> = ({
                 onChange={(e) => setNewTodo(e.target.value)}
                 onKeyUp={(e) => e.key === 'Enter' && onAddTodo()}
                 placeholder="Add new todo..."
-                className={`w-full px-3 py-2 pr-10 text-sm rounded-md
-          ${
-              darkMode
-                  ? 'bg-gray-700 text-gray-200 placeholder-gray-400 border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-                  : 'bg-white text-gray-700 placeholder-gray-400 border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-          } border outline-none`}
+                className="w-full px-3 py-2 pr-10 text-sm rounded-md bg-surface text-text placeholder-textSubtle border border-border outline-none focus:border-primaryColor focus:ring-1 focus:ring-primaryColor"
             />
-            <button
+            <Button
                 onClick={onAddTodo}
-                className={`absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md ${
-                    darkMode
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                        : 'bg-blue-500 hover:bg-blue-600 text-white'
-                }`}
+                className="absolute right-1 top-1/2 -translate-y-1/2 !p-2 min-w-0 rounded-md"
             >
                 <Check size={16} />
-            </button>
+            </Button>
         </div>
     );
 };

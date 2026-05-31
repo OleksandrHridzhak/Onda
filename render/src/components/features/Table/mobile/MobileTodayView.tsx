@@ -151,7 +151,7 @@ export const MobileTodayView: React.FC = () => {
                 const optionsColors: Record<string, string> = {};
 
                 availableTags.forEach((tag) => {
-                    optionsColors[tag.name] = tag.color || 'blue';
+                    optionsColors[tag.name] = tag.color || 'accent2';
                 });
 
                 // Preserve all existing uniqueProperties, only update specific fields

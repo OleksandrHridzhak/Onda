@@ -4,7 +4,6 @@ import { Tag } from '../../../../../../types/newColumn.types';
 
 interface TodoCategoryFilterProps {
     availableCategories: Tag[];
-    darkMode: boolean;
     selectedFilterCategoryId: string;
     setSelectedFilterCategoryId: (categoryId: string) => void;
     setNewCategoryId: (categoryId: string) => void;
@@ -16,7 +15,6 @@ interface TodoCategoryFilterProps {
  */
 export const TodoCategoryFilter: React.FC<TodoCategoryFilterProps> = ({
     availableCategories,
-    darkMode,
     selectedFilterCategoryId,
     setSelectedFilterCategoryId,
     setNewCategoryId,
@@ -32,12 +30,8 @@ export const TodoCategoryFilter: React.FC<TodoCategoryFilterProps> = ({
                 }}
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                     selectedFilterCategoryId === ''
-                        ? darkMode
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-blue-500 text-white'
-                        : darkMode
-                          ? 'bg-gray-600 text-gray-200'
-                          : 'bg-gray-200 text-gray-700'
+                        ? 'bg-primaryColor text-white'
+                        : 'bg-secondary text-secondaryText'
                 }`}
             >
                 All Todos
@@ -47,9 +41,7 @@ export const TodoCategoryFilter: React.FC<TodoCategoryFilterProps> = ({
                 const categoryClasses =
                     selectedFilterCategoryId === category.id
                         ? `${colorOption?.bg} ${colorOption?.text}`
-                        : darkMode
-                          ? 'bg-gray-600 text-gray-200'
-                          : 'bg-gray-200 text-gray-700';
+                        : 'bg-secondary text-secondaryText';
 
                 return (
                     <button
