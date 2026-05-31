@@ -1,3 +1,5 @@
+import type { ColorName } from '../utils/colorOptions';
+
 /**
  * WeeklyValues<T>
  * Generic mapping of weekday names to a value of type `T`.
@@ -41,7 +43,7 @@ export interface CheckboxColumn extends BaseColumn {
     type: 'checkboxColumn';
     uniqueProps: {
         days: WeeklyValues<boolean>;
-        checkboxColor: string;
+        checkboxColor: ColorName;
     };
 }
 
@@ -78,7 +80,7 @@ export interface NumberBoxColumn extends BaseColumn {
 export interface Tag {
     id: string;
     name: string;
-    color: string;
+    color: ColorName;
 }
 /**
  * TagsColumn

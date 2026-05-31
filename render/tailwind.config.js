@@ -1,4 +1,30 @@
 /** @type {import('tailwindcss').Config} */
+const paletteColors = [
+  'green',
+  'blue',
+  'purple',
+  'orange',
+  'yellow',
+  'red',
+  'pink',
+  'teal',
+  'gray',
+  'lime',
+];
+
+const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+
+const paletteTokens = paletteColors.reduce((acc, color) => {
+  const capitalized = capitalize(color);
+
+  acc[`color${capitalized}Bg`] = `var(--color-${color}-bg)`;
+  acc[`color${capitalized}Text`] = `var(--color-${color}-text)`;
+  acc[`color${capitalized}Solid`] = `var(--color-${color}-solid)`;
+  acc[`color${capitalized}Hover`] = `var(--color-${color}-hover)`;
+
+  return acc;
+}, {});
+
 module.exports = {
   darkMode: ['selector', '[data-theme-mode="dark"]'],
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
@@ -19,22 +45,19 @@ module.exports = {
         textMuted: 'var(--text-muted)',
         textSubtle: 'var(--text-subtle)',
         textAccent: 'var(--text-accent)',
-        
-        // Sidebar
+
         backgrundHover: 'var(--backgrund-hover)',
         sidebarIconActive: 'var(--sidebar-icon-active)',
         sidebarIconInactive: 'var(--sidebar-icon-inactive)',
-        
-        // Таблиці
+
         surfaceMuted: 'var(--surface-muted)',
         surface: 'var(--surface)',
-        
-        // Налаштування
-        
-        // Кнопки
+
         secondary: 'var(--secondary)',
         secondaryHover: 'var(--secondary-hover)',
         secondaryText: 'var(--secondary-text)',
+
+        ...paletteTokens,
       },
     },
   },

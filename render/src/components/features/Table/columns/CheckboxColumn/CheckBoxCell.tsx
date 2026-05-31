@@ -1,11 +1,12 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import { CHECKBOX_COLORS } from './checkBoxColors';
+import { ColorName } from '../../../../../utils/colorOptions';
 
 interface CheckboxCellProps {
     checked: boolean;
     onChange: (value: boolean) => void;
-    color?: string;
+    color?: ColorName;
 }
 
 /**

@@ -12,12 +12,27 @@ import { MobileColumnMenu } from './MobileColumnMenu';
 import { getIconComponent } from '../../../../utils/icons';
 import { getMonday, getWeekDays, formatDateDisplay } from './dateUtils';
 import { Tag, Todo } from '../../../../types/newColumn.types';
+import {
+    COLOR_STYLES,
+    ColorName,
+    DEFAULT_COLOR_NAME,
+} from '../../../../utils/colorOptions';
 import { useLiveQuery } from 'dexie-react-hooks';
 import {
     getAllColumns,
     updateColumnFields,
 } from '../../../../db/helpers/columns';
 import { getSettings } from '../../../../db/helpers/settings';
+
+const normalizeColorName = (value?: string): ColorName => {
+    const normalizedValue = value?.trim().toLowerCase();
+
+    if (normalizedValue && normalizedValue in COLOR_STYLES) {
+        return normalizedValue as ColorName;
+    }
+
+    return DEFAULT_COLOR_NAME;
+};
 
 export const MobileTodayView: React.FC = () => {
     // Use dexie live queries to load columns and settings
@@ -173,10 +188,9 @@ export const MobileTodayView: React.FC = () => {
                             onChange={(newValue) =>
                                 handleCellChange(columnId, newValue)
                             }
-                            color={
-                                columnData.uniqueProperties?.CheckboxColor ||
-                                '#3b82f6'
-                            }
+                            color={normalizeColorName(
+                                columnData.uniqueProperties?.CheckboxColor,
+                            )}
                         />
                     );
 
@@ -210,7 +224,7 @@ export const MobileTodayView: React.FC = () => {
                         (name: string) => ({
                             id: name,
                             name,
-                            color: tagColors[name] || 'blue',
+                            color: normalizeColorName(tagColors[name]),
                         }),
                     );
 
@@ -246,7 +260,7 @@ export const MobileTodayView: React.FC = () => {
                         (name: string) => ({
                             id: name,
                             name,
-                            color: optionColors[name] || 'blue',
+                            color: normalizeColorName(optionColors[name]),
                         }),
                     );
 
@@ -283,7 +297,7 @@ export const MobileTodayView: React.FC = () => {
                         (name: string) => ({
                             id: name,
                             name,
-                            color: categoryColors[name] || 'blue',
+                            color: normalizeColorName(categoryColors[name]),
                         }),
                     );
 
@@ -308,7 +322,7 @@ export const MobileTodayView: React.FC = () => {
                         (name: string) => ({
                             id: name,
                             name,
-                            color: optionColors[name] || 'blue',
+                            color: normalizeColorName(optionColors[name]),
                         }),
                     );
 

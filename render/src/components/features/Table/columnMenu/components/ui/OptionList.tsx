@@ -2,6 +2,7 @@ import React from 'react';
 import { Plus } from 'lucide-react';
 import { OptionItem } from './OptionItem';
 import { Tag } from '../../../../../../types/newColumn.types';
+import { ColorName } from '../../../../../../utils/colorOptions';
 
 interface OptionsListProps {
     columnType: string;
@@ -11,10 +12,7 @@ interface OptionsListProps {
     handleAddOption: () => void;
     handleRemoveOption: (tagId: string) => void;
     handleEditOption: (tagId: string, newName: string) => void;
-    handleColorChange: (tagId: string, color: string) => void;
-    darkMode: boolean;
-    isColorMenuOpen?: Record<string, boolean>;
-    toggleColorMenu: (tagId: string) => void;
+    handleColorChange: (tagId: string, color: ColorName) => void;
 }
 
 export const OptionsList: React.FC<OptionsListProps> = ({
@@ -26,8 +24,6 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     handleRemoveOption,
     handleEditOption,
     handleColorChange,
-    darkMode,
-    toggleColorMenu,
 }) => {
     // Map column type to display label
     const getLabelText = () => {
@@ -92,7 +88,6 @@ export const OptionsList: React.FC<OptionsListProps> = ({
                         <OptionItem
                             key={tag.id}
                             tag={tag}
-                            darkMode={darkMode}
                             handleColorChange={handleColorChange}
                             handleRemoveOption={handleRemoveOption}
                             handleEditOption={handleEditOption}

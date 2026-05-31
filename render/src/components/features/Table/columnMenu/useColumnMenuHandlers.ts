@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Tag } from '../../../../types/newColumn.types';
 import { COLUMN_TYPES } from '../../../../constants/columnTypes';
+import { ColorName } from '../../../../utils/colorOptions';
 import {
     updateColumnFields,
     deleteColumn,
@@ -25,7 +26,7 @@ export const useColumnMenuHandlers = ({
     const [description, setDescription] = useState('');
     const [showTitle, setShowTitle] = useState(true);
     const [width, setWidth] = useState(0);
-    const [checkboxColor, setCheckboxColor] = useState('green');
+    const [checkboxColor, setCheckboxColor] = useState<ColorName>('green');
     const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
     const [isColorMenuOpen, setIsColorMenuOpen] = useState<
         Record<string, boolean>
@@ -107,7 +108,7 @@ export const useColumnMenuHandlers = ({
         await saveOptions(updatedTags);
     };
 
-    const handleColorChange = async (tagId: string, color: string) => {
+    const handleColorChange = async (tagId: string, color: ColorName) => {
         const updatedTags = tags.map((tag) =>
             tag.id === tagId ? { ...tag, color } : tag,
         );

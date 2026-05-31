@@ -39,7 +39,7 @@ if (newCol.success) {
 // Update column fields
 await updateColumnFields('column-id-123', {
   name: 'New Name',
-  'uniqueProps.checkboxColor': '#ff0000'
+  'uniqueProps.checkboxColor': 'red'
 });
 
 // Delete column

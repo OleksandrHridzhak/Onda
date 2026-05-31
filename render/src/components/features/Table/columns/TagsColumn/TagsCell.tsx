@@ -1,9 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-    getColorOptions,
-    getCheckBoxColorOptions,
-} from '../../../../../utils/colorOptions';
+import { COLOR_STYLES } from '../../../../../utils/colorOptions';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
 import { Tag } from '../../../../../types/newColumn.types';
 
@@ -38,42 +35,16 @@ export const TagsCell: React.FC<TagsCellProps> = ({
         .filter(Boolean)
         .join(', ');
 
-    const {
-        isOpen,
-        setIsOpen,
-        selectedValues,
-        setSelectedValues,
-        dropdownRef,
-    } = useDropdownMultiSelect(displayValue);
-
-    const colorOptions = getColorOptions({ darkMode });
-    const checkboxColors = getCheckBoxColorOptions({ darkMode });
-
-    // Map hex colors to color names
-    const hexToName: Record<string, string> = {};
-    Object.entries(checkboxColors).forEach(([name, cfg]) => {
-        if (cfg.hex) {
-            hexToName[cfg.hex.toLowerCase()] = name;
-        }
-    });
+    const { isOpen, setIsOpen, setSelectedValues, dropdownRef } =
+        useDropdownMultiSelect(displayValue);
 
     // Get Tag object by ID
     const getTagById = (tagId: string) => {
         return availableTags.find((tag) => tag.id === tagId);
     };
 
-    // Get color option for a tag (handles both hex and color names)
     const getColorForTag = (tag: Tag) => {
-        const colorValue = (tag.color || '').toLowerCase();
-        // Check if it's a hex color
-        const colorName = colorValue.startsWith('#')
-            ? hexToName[colorValue] || 'blue'
-            : colorValue || 'blue';
-
-        return (
-            colorOptions.find((opt) => opt.name === colorName) ||
-            colorOptions[1]
-        );
+        return COLOR_STYLES[tag.color];
     };
 
     const handleTagToggle = (tagId: string): void => {

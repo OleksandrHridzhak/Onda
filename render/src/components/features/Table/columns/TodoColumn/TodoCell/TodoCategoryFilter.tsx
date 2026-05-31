@@ -1,5 +1,5 @@
 import React from 'react';
-import { getColorOptions } from '../../../../../../utils/colorOptions';
+import { COLOR_STYLES } from '../../../../../../utils/colorOptions';
 import { Tag } from '../../../../../../types/newColumn.types';
 
 interface TodoCategoryFilterProps {
@@ -21,8 +21,6 @@ export const TodoCategoryFilter: React.FC<TodoCategoryFilterProps> = ({
     setSelectedFilterCategoryId,
     setNewCategoryId,
 }) => {
-    const colorOptions = getColorOptions({ darkMode });
-
     if (!availableCategories?.length) return null;
 
     return (
@@ -45,9 +43,7 @@ export const TodoCategoryFilter: React.FC<TodoCategoryFilterProps> = ({
                 All Todos
             </button>
             {availableCategories.map((category) => {
-                const colorOption = colorOptions.find(
-                    (c) => c.name === category.color,
-                );
+                const colorOption = COLOR_STYLES[category.color];
                 const categoryClasses =
                     selectedFilterCategoryId === category.id
                         ? `${colorOption?.bg} ${colorOption?.text}`

@@ -65,8 +65,8 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         width: 120,
         uniqueProps: {
             availableTags: [
-                { id: 't1', name: 'Work', color: '#EF4444' },
-                { id: 't2', name: 'Personal', color: '#10B981' },
+                { id: 't1', name: 'Work', color: 'red' },
+                { id: 't2', name: 'Personal', color: 'green' },
             ],
             days: createWeeklyValues([]),
         },
@@ -81,7 +81,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         width: 150,
         uniqueProps: {
             availableCategories: [
-                { id: 'c1', name: 'Urgent', color: '#F59E0B' },
+                { id: 'c1', name: 'Urgent', color: 'orange' },
             ],
             todos: [],
         },
@@ -96,8 +96,8 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         width: 50,
         uniqueProps: {
             availableOptions: [
-                { id: 'o1', name: 'Option 1', color: '#8B5CF6' },
-                { id: 'o2', name: 'Option 2', color: '#EC4899' },
+                { id: 'o1', name: 'Option 1', color: 'purple' },
+                { id: 'o2', name: 'Option 2', color: 'pink' },
             ],
             days: createWeeklyValues([]),
         },

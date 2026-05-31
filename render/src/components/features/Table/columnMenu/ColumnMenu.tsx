@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { icons } from '../../../../utils/icons';
@@ -124,14 +124,6 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                             handleRemoveOption={actions.handleRemoveOption}
                             handleEditOption={actions.handleEditOption}
                             handleColorChange={actions.handleColorChange}
-                            darkMode={darkMode}
-                            isColorMenuOpen={ui.isColorMenuOpen}
-                            toggleColorMenu={(tagId) =>
-                                ui.setIsColorMenuOpen({
-                                    ...ui.isColorMenuOpen,
-                                    [tagId]: !ui.isColorMenuOpen[tagId],
-                                })
-                            }
                         />
                     )}
 
@@ -139,8 +131,6 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                         <CheckboxColorPicker
                             checkboxColor={form.checkboxColor}
                             setCheckboxColor={actions.setCheckboxColor}
-                            darkMode={darkMode}
-                            isColorMenuOpen={ui.isColorMenuOpen.checkbox}
                             toggleColorMenu={() =>
                                 ui.setIsColorMenuOpen({
                                     ...ui.isColorMenuOpen,

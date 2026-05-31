@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getColorOptions } from '../../../../../utils/colorOptions';
+import { COLOR_STYLES } from '../../../../../utils/colorOptions';
 import { useTaskState } from './hooks/useTaskState';
 import { handleToggleTask } from './logic';
 import { Tag } from '../../../../../types/newColumn.types';
@@ -36,8 +36,6 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
         completedTasks,
         setCompletedTasks,
     } = useTaskState(availableTags, doneTasks);
-
-    const colorOptions = getColorOptions({ darkMode });
 
     // Get Tag object by ID
     const getTagById = (tagId: string) => {
@@ -121,10 +119,7 @@ export const TaskTableCell: React.FC<TaskTableCellProps> = ({
                             const tag = getTagById(taskId);
                             if (!tag) return null;
 
-                            const colorOption =
-                                colorOptions.find(
-                                    (opt) => opt.name === tag.color,
-                                ) || colorOptions[1];
+                            const colorOption = COLOR_STYLES[tag.color];
 
                             return (
                                 <div

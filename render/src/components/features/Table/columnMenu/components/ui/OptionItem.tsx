@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import { getColorOptions } from '../../../../../../utils/colorOptions';
+import {
+    COLOR_ORDER,
+    COLOR_STYLES,
+    ColorName,
+} from '../../../../../../utils/colorOptions';
 import { Tag } from '../../../../../../types/newColumn.types';
 
 interface OptionItemProps {
     tag: Tag;
-    darkMode: boolean;
-    handleColorChange: (tagId: string, color: string) => void;
+    handleColorChange: (tagId: string, color: ColorName) => void;
     handleRemoveOption: (tagId: string) => void;
     handleEditOption: (tagId: string, newName: string) => void;
 }
 
 export const OptionItem: React.FC<OptionItemProps> = ({
     tag,
-    darkMode,
     handleColorChange,
     handleRemoveOption,
     handleEditOption,
@@ -56,9 +58,8 @@ export const OptionItem: React.FC<OptionItemProps> = ({
         };
     }, [isContextMenuOpen]);
 
-    const colorOption = getColorOptions({ darkMode }).find(
-        (c) => c.name === tag.color,
-    );
+    const selectedColorName = tag.color;
+    const colorOption = COLOR_STYLES[selectedColorName];
 
     return (
         <div key={tag.id} className="relative">
@@ -95,18 +96,18 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                             className={`absolute left-0 top-full mt-1 bg-background border-border border rounded-lg shadow-lg p-2 z-10`}
                         >
                             <div className="flex items-center space-x-2 p-2 overflow-x-auto max-w-xs">
-                                {getColorOptions({ darkMode }).map((color) => (
+                                {COLOR_ORDER.map((colorName) => (
                                     <button
-                                        key={color.name}
+                                        key={colorName}
                                         onClick={() => {
                                             handleColorChange(
                                                 tag.id,
-                                                color.name,
+                                                colorName,
                                             );
                                             setIsContextMenuOpen(false);
                                         }}
-                                        className={`w-6 h-6 rounded-full ${color.bg} ${color.text || 'text-text'} border-2 ${tag.color === color.name ? 'ring-2 ring-primaryColor ring-offset-2' : 'border-transparent'} hover:scale-110 hover:shadow-md transition-all duration-200`}
-                                        aria-label={`Select ${color.name} color for ${tag.name}`}
+                                        className={`w-6 h-6 rounded-full ${COLOR_STYLES[colorName].bg} ${COLOR_STYLES[colorName].text} border-2 ${selectedColorName === colorName ? 'ring-2 ring-primaryColor ring-offset-2' : 'border-transparent'} hover:scale-110 hover:shadow-md transition-all duration-200`}
+                                        aria-label={`Select ${colorName} color for ${tag.name}`}
                                     />
                                 ))}
                             </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Edit2, Trash2, Check } from 'lucide-react';
-import { getColorOptions } from '../../../../../../utils/colorOptions';
+import { COLOR_STYLES } from '../../../../../../utils/colorOptions';
 import {
     handleToggleTodo,
     handleDeleteTodo,
@@ -46,8 +46,6 @@ export const TodoList: React.FC<TodoListProps> = ({
     setEditCategoryId,
     onChange,
 }) => {
-    const colorOptions = getColorOptions({ darkMode });
-
     // Helper function to get category name by ID
     const getCategoryById = (categoryId?: string) => {
         if (!categoryId) return null;
@@ -65,7 +63,7 @@ export const TodoList: React.FC<TodoListProps> = ({
             {filteredTodos.map((todo) => {
                 const category = getCategoryById(todo.categoryId);
                 const categoryColor = category
-                    ? colorOptions.find((c) => c.name === category.color)
+                    ? COLOR_STYLES[category.color]
                     : null;
 
                 return (
