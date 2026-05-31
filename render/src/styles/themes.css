@@ -1,5 +1,4 @@
 :root[data-theme-mode='light'][data-color-scheme='standard'] {
-    /* Main colors*/
     --background: #fafafa;
     --backgrund-hover: #eff6ff;
 
@@ -32,23 +31,32 @@
 
 :root[data-theme-mode='dark'][data-color-scheme='standard'] {
     --background: #111827;
+    --backgrund-hover: #1f2937;
+
+    --surface-muted: #1f2937;
+    --surface: #1f2937;
+
     --border: #374151;
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --danger: #ef4444;
-    --danger-hover: #bd2c2c;
-    --text: #d1d5db; /* Changed from light blue to light gray */
+
+    --text: #d1d5db;
     --text-accent: #60a5fa;
     --text-muted: #e5e7eb;
     --text-subtle: #d1d5db;
-    --sidebar-icon-active: #ffffff;
-    --sidebar-icon-inactive: #d1d5db;
-    --surface-muted: #1f2937;
-    --surface: #1f2937;
+
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+
+    --danger: #ef4444;
+    --danger-hover: #bd2c2c;
+
     --secondary: #374151;
     --secondary-hover: #4b5563;
     --secondary-text: #d1d5db;
+
     --scrollbar-track: rgba(55, 65, 81, 0.5);
     --scrollbar-thumb: rgba(156, 163, 175, 0.7);
     --scrollbar-thumb-hover: rgba(107, 114, 128, 0.9);
+
+    --sidebar-icon-active: #ffffff;
+    --sidebar-icon-inactive: #d1d5db;
 }

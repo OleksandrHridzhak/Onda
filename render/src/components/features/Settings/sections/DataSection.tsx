@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Download, Upload, Trash2 } from 'lucide-react';
 import SettingsTemplate from '../SettingsTemplate';
-import { BubbleBtn } from '../../../shared/BubbleBtn';
+import { Button } from '../../../shared/Button';
 import { exportData, importData } from '../../../../db/helpers/backup';
 import { clearAllData } from '../../../../db/helpers/settings';
 import { ConfirmModal } from '../../../shared/ConfirmModal';
@@ -106,19 +106,19 @@ export default function DataSection(): React.ReactElement {
                     Export Data / Import Data
                 </span>
                 <div className="flex flex-row gap-2">
-                    <BubbleBtn onClick={handleExportData}>
+                    <Button onClick={handleExportData}>
                         <Upload className="w-4 h-4 mr-3" />
                         Export All Data
-                    </BubbleBtn>
+                    </Button>
 
-                    <BubbleBtn
+                    <Button
                         onClick={() =>
                             document.getElementById('import-file')?.click()
                         }
                     >
                         <Download className="w-4 h-4 mr-3" />
                         Import Data
-                    </BubbleBtn>
+                    </Button>
 
                     <input
                         id="import-file"
@@ -140,13 +140,13 @@ export default function DataSection(): React.ReactElement {
             <div className="flex flex-col gap-2 mt-6">
                 <span className={`text-sm text-textMuted`}>Danger Zone</span>
                 <div className="flex flex-row gap-2">
-                    <BubbleBtn
+                    <Button
                         onClick={() => setShowClearModal(true)}
-                        variant="delete"
+                        variant="danger"
                     >
                         <Trash2 className="w-4 h-4 mr-3" />
                         Clear All Data
-                    </BubbleBtn>
+                    </Button>
                 </div>
             </div>
 

@@ -2,7 +2,6 @@ import React from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { IconSelector } from '../ui/IconSelector';
 import { TitleVisibilityToggle } from '../ui/TitleVisibilityToggle';
-import { TransparentBtn } from '../../../../../shared/TransparentBtn';
 import { Button } from '../../../../../shared/Button';
 import { Icon } from '../../../../../../utils/icons';
 

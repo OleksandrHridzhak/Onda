@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trash2 } from 'lucide-react';
 import { InputText } from '../../shared/InputText';
-import { BubbleBtn } from '../../shared/BubbleBtn';
+import { Button } from '../../shared/Button';
 
 interface Event {
     title: string;
@@ -113,12 +113,12 @@ export default function EventModal({
                                 </div>
                             </div>
                             <div className="flex justify-center gap-2 mb-4">
-                                <BubbleBtn onClick={() => adjustEventTimes(-5)}>
+                                <Button onClick={() => adjustEventTimes(-5)}>
                                     -5m
-                                </BubbleBtn>
-                                <BubbleBtn onClick={() => adjustEventTimes(5)}>
+                                </Button>
+                                <Button onClick={() => adjustEventTimes(5)}>
                                     +5m
-                                </BubbleBtn>
+                                </Button>
                             </div>
                             <div>
                                 <label
@@ -257,23 +257,23 @@ export default function EventModal({
                         </div>
                         <div className="mt-6 flex justify-end gap-3">
                             {editingEventId && (
-                                <BubbleBtn
+                                <Button
                                     onClick={() =>
                                         handleDeleteEvent(editingEventId)
                                     }
-                                    variant="delete"
+                                    variant="danger"
                                 >
                                     <Trash2 size={16} />
                                     Delete
-                                </BubbleBtn>
+                                </Button>
                             )}
-                            <BubbleBtn
-                                variant="clear"
+                            <Button
+                                variant="secondary"
                                 onClick={() => setShowEventModal(false)}
                             >
                                 Cancel
-                            </BubbleBtn>
-                            <BubbleBtn
+                            </Button>
+                            <Button
                                 onClick={handleSaveEvent}
                                 disabled={
                                     !validateTime(newEvent.startTime) ||
@@ -281,7 +281,7 @@ export default function EventModal({
                                 }
                             >
                                 {editingEventId ? 'Update' : 'Create'}
-                            </BubbleBtn>
+                            </Button>
                         </div>
                     </div>
                 </div>

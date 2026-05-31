@@ -1,18 +1,18 @@
 import React from 'react';
 import SettingsTemplate from '../SettingsTemplate';
-import { BubbleBtn } from '../../../shared/BubbleBtn';
+import { Button } from '../../../shared/Button';
 
 const onFullClose = async (): Promise<void> => {
-  await globalThis.electronAPI?.closeApp();
+    await globalThis.electronAPI?.closeApp();
 };
 export default function FullCloseSection(): React.ReactElement {
-  return (
-    <SettingsTemplate title="System settings">
-      <div className="mt-4">
-        <BubbleBtn variant="delete" onClick={onFullClose}>
-          Close Application
-        </BubbleBtn>
-      </div>
-    </SettingsTemplate>
-  );
+    return (
+        <SettingsTemplate title="System settings">
+            <div className="mt-4">
+                <Button variant="danger" onClick={onFullClose}>
+                    Close Application
+                </Button>
+            </div>
+        </SettingsTemplate>
+    );
 }

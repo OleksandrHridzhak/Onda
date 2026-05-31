@@ -1,5 +1,5 @@
 import React from 'react';
-import { BubbleBtn } from '../../../../../shared/BubbleBtn';
+import { Button } from '../../../../../shared/Button';
 
 interface ColumnActionsProps {
     handleDelete: () => void;
@@ -17,28 +17,24 @@ export const ColumnActions: React.FC<ColumnActionsProps> = ({
     return (
         <div className="flex justify-between gap-2 mt-6">
             <div className="flex gap-2">
-                <BubbleBtn
+                <Button
                     onClick={handleDelete}
                     disabled={isSaving}
-                    variant="delete"
+                    variant="danger"
                 >
                     Delete
-                </BubbleBtn>
-                <BubbleBtn
+                </Button>
+                <Button
                     onClick={handleClear}
                     disabled={isSaving}
-                    variant="clear"
+                    variant="secondary"
                 >
                     Clear column
-                </BubbleBtn>
+                </Button>
             </div>
-            <BubbleBtn
-                onClick={handleSave}
-                disabled={isSaving}
-                variant="standard"
-            >
+            <Button onClick={handleSave} disabled={isSaving}>
                 Save Changes
-            </BubbleBtn>
+            </Button>
         </div>
     );
 };

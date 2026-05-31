@@ -6,13 +6,12 @@ import {
     X,
     Wifi,
     WifiOff,
-    Zap,
     Eye,
     EyeOff,
 } from 'lucide-react';
 import { syncService } from '../../../../services/syncService';
 import SettingsTemplate from '../SettingsTemplate';
-import { BubbleBtn } from '../../../shared/BubbleBtn';
+import { Button } from '../../../shared/Button';
 import { InputText } from '../../../shared/InputText';
 import {
     DEFAULT_SYNC_SERVER_URL,
@@ -211,9 +210,7 @@ export default function SyncSection() {
                             </button>
                         </div>
                     </div>
-                    <BubbleBtn onClick={generateSecretKey} variant="standard">
-                        Generate
-                    </BubbleBtn>
+                    <Button onClick={generateSecretKey}>Generate</Button>
                 </div>
                 <p className="text-xs text-textSubtle">
                     Use the same key on all devices to sync data. Keep it
@@ -223,10 +220,9 @@ export default function SyncSection() {
 
             {/* Connection Test */}
             <div className="space-y-2">
-                <BubbleBtn
+                <Button
                     onClick={handleTestConnection}
-                    variant="standard"
-                    className="w-full justify-center"
+                    fullWidth
                     disabled={testResult?.status === 'testing'}
                 >
                     {testResult?.status === 'testing' ? (
@@ -240,7 +236,7 @@ export default function SyncSection() {
                             Test Connection
                         </>
                     )}
-                </BubbleBtn>
+                </Button>
                 {testResult && testResult.status !== 'testing' && (
                     <div
                         className={`p-3 rounded-lg flex items-center gap-3 ${
@@ -311,21 +307,20 @@ export default function SyncSection() {
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-2">
-                <BubbleBtn onClick={handleSave} variant="standard">
+                <Button onClick={handleSave}>
                     <Check size={18} />
                     Save Configuration
-                </BubbleBtn>
-                <BubbleBtn
+                </Button>
+                <Button
                     onClick={handleSync}
                     disabled={!syncConfig.enabled || isSyncing}
-                    variant="standard"
                 >
                     <RefreshCw
                         size={18}
                         className={isSyncing ? 'animate-spin' : ''}
                     />
                     {isSyncing ? 'Syncing...' : 'Sync Now'}
-                </BubbleBtn>
+                </Button>
             </div>
         </SettingsTemplate>
     );
