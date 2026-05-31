@@ -47,6 +47,8 @@ export const useColumnMenuHandlers = ({
         // Extract tags based on column type
         if (column.type === COLUMN_TYPES.TAGS) {
             setTags(column.uniqueProps.availableTags || []);
+        } else if (column.type === COLUMN_TYPES.RANDOM_TAGS) {
+            setTags(column.uniqueProps.availableTags || []);
         } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
             setTags(column.uniqueProps.availableOptions || []);
         } else if (column.type === COLUMN_TYPES.TODO) {
@@ -61,6 +63,8 @@ export const useColumnMenuHandlers = ({
     const saveOptions = async (updatedTags: Tag[]) => {
         const updates: Record<string, Tag[]> = {};
         if (column.type === COLUMN_TYPES.TAGS) {
+            updates['uniqueProps.availableTags'] = updatedTags;
+        } else if (column.type === COLUMN_TYPES.RANDOM_TAGS) {
             updates['uniqueProps.availableTags'] = updatedTags;
         } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
             updates['uniqueProps.availableOptions'] = updatedTags;
@@ -78,13 +82,18 @@ export const useColumnMenuHandlers = ({
             return;
         }
 
-        const newTag: Tag = {
+        const newTag: any = {
             id:
                 globalThis.crypto?.randomUUID?.() ||
                 `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
             name: newOption.trim(),
             color: 'blue',
         };
+
+        // Add default probability for RandomTagsColumn
+        if (column.type === COLUMN_TYPES.RANDOM_TAGS) {
+            newTag.probability = 50; // Default 50% probability
+        }
 
         const updatedTags = [...tags, newTag];
         setTags(updatedTags);
@@ -110,6 +119,17 @@ export const useColumnMenuHandlers = ({
     const handleColorChange = async (tagId: string, color: string) => {
         const updatedTags = tags.map((tag) =>
             tag.id === tagId ? { ...tag, color } : tag,
+        );
+        setTags(updatedTags);
+        await saveOptions(updatedTags);
+    };
+
+    const handleProbabilityChange = async (
+        tagId: string,
+        probability: number,
+    ) => {
+        const updatedTags = tags.map((tag) =>
+            tag.id === tagId ? { ...tag, probability } : tag,
         );
         setTags(updatedTags);
         await saveOptions(updatedTags);
@@ -219,6 +239,7 @@ export const useColumnMenuHandlers = ({
             handleRemoveOption,
             handleEditOption,
             handleColorChange,
+            handleProbabilityChange,
         },
         ui: {
             isIconSectionExpanded,

@@ -72,6 +72,23 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         },
     },
 
+    [COLUMN_TYPES.RANDOM_TAGS]: {
+        type: COLUMN_TYPES.RANDOM_TAGS,
+        name: 'Random Tags',
+        isNameVisible: true,
+        description: 'Automatically assign tags based on probability.',
+        emojiIconName: 'Sparkles',
+        width: 120,
+        uniqueProps: {
+            availableTags: [
+                { id: 'rt1', name: 'High', color: '#EF4444', probability: 30 },
+                { id: 'rt2', name: 'Medium', color: '#F59E0B', probability: 50 },
+                { id: 'rt3', name: 'Low', color: '#10B981', probability: 20 },
+            ],
+            days: createWeeklyValues([]),
+        },
+    },
+
     [COLUMN_TYPES.TODO]: {
         type: COLUMN_TYPES.TODO,
         name: 'TodoList',
