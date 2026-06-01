@@ -2,22 +2,14 @@ import React from 'react';
 import { Trash2 } from 'lucide-react';
 import { InputText } from '../../shared/InputText';
 import { Button } from '../../shared/Button';
-
-interface Event {
-    title: string;
-    startTime: string;
-    endTime: string;
-    color: string;
-    isRepeating: boolean;
-    repeatDays: number[];
-    repeatFrequency: string;
-}
+import { COLOR_ORDER, COLOR_STYLES } from '../../../utils/colorOptions';
+import type { NewEvent } from './hooks/useCalendar';
 
 interface EventModalProps {
     showEventModal: boolean;
     setShowEventModal: (show: boolean) => void;
-    newEvent: Event;
-    setNewEvent: (event: Event) => void;
+    newEvent: NewEvent;
+    setNewEvent: (event: NewEvent) => void;
     editingEventId: string | null;
     handleSaveEvent: () => void;
     handleDeleteEvent: (id: string) => void;
@@ -36,14 +28,6 @@ export default function EventModal({
     validateTime,
     adjustEventTimes,
 }: EventModalProps): React.ReactElement {
-    const colorMap: Record<string, string> = {
-        '#2563eb': 'Blue',
-        '#059669': 'Green',
-        '#7c3aed': 'Purple',
-        '#dc2626': 'Red',
-        '#d97706': 'Orange',
-    };
-
     return (
         <>
             {showEventModal && (
@@ -127,28 +111,24 @@ export default function EventModal({
                                     Color
                                 </label>
                                 <div className="flex gap-3">
-                                    {Object.entries(colorMap).map(
-                                        ([hex, name]) => (
-                                            <button
-                                                key={hex}
-                                                type="button"
-                                                className={`w-6 h-6 rounded-full cursor-pointer border-none p-0 ${
-                                                    newEvent.color === hex
-                                                        ? 'ring-2 ring-offset-2 ring-border'
-                                                        : ''
-                                                }`}
-                                                style={{ backgroundColor: hex }}
-                                                onClick={() =>
-                                                    setNewEvent({
-                                                        ...newEvent,
-                                                        color: hex,
-                                                    })
-                                                }
-                                                title={name}
-                                                aria-label={`Select ${name} color`}
-                                            />
-                                        ),
-                                    )}
+                                    {COLOR_ORDER.map((colorName) => (
+                                        <button
+                                            key={colorName}
+                                            type="button"
+                                            className={`w-6 h-6 rounded-full cursor-pointer border-none p-0 ${COLOR_STYLES[colorName].solid} ${
+                                                newEvent.color === colorName
+                                                    ? 'ring-2 ring-offset-2 ring-border'
+                                                    : ''
+                                            }`}
+                                            onClick={() =>
+                                                setNewEvent({
+                                                    ...newEvent,
+                                                    color: colorName,
+                                                })
+                                            }
+                                            aria-label="Select event color"
+                                        />
+                                    ))}
                                 </div>
                             </div>
                             <div>

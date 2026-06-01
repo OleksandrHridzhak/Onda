@@ -11,10 +11,10 @@ table {
     table-layout: fixed;
 }
 
-/* Enforce Poppins font styling across the nested table */
+/* Keep nested tables aligned with the active theme font */
 .checkbox-nested-table,
 .checkbox-nested-table * {
-    font-family: 'Poppins', sans-serif !important;
+    font-family: var(--font-family-base, 'Rubik'), sans-serif !important;
     font-weight: 450 !important;
 }
 

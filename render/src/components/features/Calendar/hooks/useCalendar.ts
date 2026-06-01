@@ -7,13 +7,17 @@ import {
     deleteCalendarEvent,
 } from '../../../../db/helpers/calendar';
 import { CalendarEntry } from '../../../../types/calendar.types';
+import {
+    DEFAULT_COLOR_NAME,
+    type ColorName,
+} from '../../../../utils/colorOptions';
 
 export interface NewEvent {
     title: string;
     date?: string;
     startTime: string;
     endTime: string;
-    color: string;
+    color: ColorName;
     isRepeating: boolean;
     repeatDays: number[];
     repeatFrequency: string;
@@ -24,7 +28,7 @@ const DEFAULT_NEW_EVENT: NewEvent = {
     title: '',
     startTime: '09:00',
     endTime: '10:00',
-    color: '#2563eb',
+    color: DEFAULT_COLOR_NAME,
     isRepeating: false,
     repeatDays: [],
     repeatFrequency: 'weekly',
@@ -47,7 +51,9 @@ export function useCalendar() {
     const [error, setError] = useState<unknown>(null);
     const [showEventModal, setShowEventModal] = useState<boolean>(false);
     const [editingEventId, setEditingEventId] = useState<string | null>(null);
-    const [newEvent, setNewEvent] = useState<NewEvent>({ ...DEFAULT_NEW_EVENT });
+    const [newEvent, setNewEvent] = useState<NewEvent>({
+        ...DEFAULT_NEW_EVENT,
+    });
 
     const createOrUpdateEvent = async (
         payload: NewEvent & { id?: string | number },
@@ -114,9 +120,7 @@ export function useCalendar() {
      * Shifts a time string by the given delta in minutes, wrapping around 24h.
      */
     const shiftTime = (time: string, delta: number): string => {
-        return dayjs(`1970-01-01 ${time}`)
-            .add(delta, 'minute')
-            .format('HH:mm');
+        return dayjs(`1970-01-01 ${time}`).add(delta, 'minute').format('HH:mm');
     };
 
     const adjustEventTimes = (delta: number): void => {

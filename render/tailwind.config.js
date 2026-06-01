@@ -31,7 +31,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
+        poppins: ['var(--font-family-base)', 'sans-serif'],
+        rubik: ['Rubik', 'sans-serif'],
+        merriweather: ['Merriweather', 'sans-serif'],
+        theme: ['var(--font-family-base)', 'sans-serif'],
       },
       colors: {
         primaryColor: 'var(--primary)',

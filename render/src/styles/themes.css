@@ -1,6 +1,7 @@
 :root[data-theme-mode='light'][data-color-scheme='standard'] {
+    --font-family-base: 'Poppins';
     --background: #fafafa;
-    --backgrund-hover: #eff6ff;
+    --backgrund-hover: #d1e1f6;
 
     --surface-muted: #f7f7f7;
     --surface: #ffffff;
@@ -80,6 +81,7 @@
 }
 
 :root[data-theme-mode='dark'][data-color-scheme='standard'] {
+    --font-family-base: 'Poppins';
     --background: #111827;
     --backgrund-hover: #1f2937;
 

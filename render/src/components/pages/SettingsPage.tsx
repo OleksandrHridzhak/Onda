@@ -66,7 +66,7 @@ export default function SettingsDashboard(): React.ReactElement {
                         <div
                             className={`hidden sm:flex p-2 sm:p-3 rounded-2xl bg-primaryColor items-center justify-center`}
                         >
-                            <Settings className="w-5 h-5 text-primaryColor" />
+                            <Settings className="w-5 h-5 text-background" />
                         </div>
                         <h1 className="text-lg sm:text-xl font-medium text-text leading-tight truncate">
                             Settings
@@ -90,7 +90,7 @@ export default function SettingsDashboard(): React.ReactElement {
                             aria-selected={activeSection === section.id}
                             className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap ${
                                 activeSection === section.id
-                                    ? 'bg-backgrundHover text-text'
+                                    ? 'bg-backgrundHover text-white'
                                     : 'text-textMuted'
                             }`}
                         >

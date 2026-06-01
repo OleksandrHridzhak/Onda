@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { CalendarEntry } from '../../../../types/calendar.types';
+import { COLOR_STYLES } from '../../../../utils/colorOptions';
 
 export function useCalendarLayout(events: CalendarEntry[] = []) {
     const [viewMode, setViewMode] = useState<'week' | 'day'>(() => {
@@ -158,7 +159,7 @@ export function useCalendarLayout(events: CalendarEntry[] = []) {
         return {
             top: `${top}px`,
             height: `${height}px`,
-            backgroundColor: event.color,
+            backgroundColor: `var(${COLOR_STYLES[event.color].cssVar})`,
         };
     };
 

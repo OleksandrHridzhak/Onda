@@ -1,7 +1,9 @@
+import type { ColorName } from '../utils/colorOptions';
+
 export interface CalendarEntry {
     id: string;
     title: string;
-    color: string;
+    color: ColorName;
     date: string;
     startTime: string;
     endTime: string;

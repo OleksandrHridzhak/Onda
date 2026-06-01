@@ -27,7 +27,7 @@ export const CheckboxColorPicker: React.FC<CheckboxColorPickerProps> = ({
                 <div
                     className={` mt-2 bg-background border-border text-text border rounded-lg p-2 z-10`}
                 >
-                    <div className="flex flex-wrap gap-2 max-h-32 ">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(1.5rem,1fr))] gap-2 max-h-32">
                         {COLOR_ORDER.map((colorName) => (
                             <button
                                 key={colorName}
@@ -35,7 +35,19 @@ export const CheckboxColorPicker: React.FC<CheckboxColorPickerProps> = ({
                                     setCheckboxColor(colorName);
                                     toggleColorMenu();
                                 }}
-                                className={`w-6 h-6 rounded-full ${COLOR_STYLES[colorName].bg} ${COLOR_STYLES[colorName].text} border ${selectedColorName === colorName ? 'ring-2 ring-offset-2 ring-primaryColor' : 'border-transparent'} hover:ring-1 hover:ring-border transition-all duration-200`}
+                                className={`
+                                w-full aspect-square rounded-lg
+                                ${COLOR_STYLES[colorName].bg}
+                                ${COLOR_STYLES[colorName].text}
+                                border
+                                ${
+                                    selectedColorName === colorName
+                                        ? 'ring-2 ring-offset-2 ring-primaryColor'
+                                        : 'border-transparent'
+                                }
+                                hover:ring-1 hover:ring-border
+                                transition-all duration-200
+                            `}
                                 aria-label={`Select ${colorName} color`}
                             />
                         ))}

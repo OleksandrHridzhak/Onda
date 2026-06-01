@@ -135,7 +135,7 @@ export default function CalendarHeader({
                     <div
                         className={`hidden sm:flex p-2 sm:p-3 rounded-2xl bg-primaryColor items-center justify-center`}
                     >
-                        <CalendarIcon size={22} className="text-primaryColor" />
+                        <CalendarIcon size={22} className="text-background" />
                     </div>
                     <div className="flex flex-col min-w-0">
                         <h2

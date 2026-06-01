@@ -47,7 +47,7 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
         <div className="relative mb-4" ref={ref}>
             <button
                 onClick={() => setIsIconSectionExpanded(!isIconSectionExpanded)}
-                className={`w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background text-text hover:bg-primaryColor focus:outline-none focus:ring-2 focus:ring-primaryColor transition-all duration-200`}
+                className={`w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background text-text hover:bg-backgrundHover focus:outline-none focus:ring-2 focus:ring-primaryColor transition-all duration-200`}
                 aria-expanded={isIconSectionExpanded}
                 aria-label="Select icon"
             >
@@ -73,7 +73,7 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
                             className={`flex items-center justify-center rounded-lg ${
                                 selectedIcon === icon.name
                                     ? 'bg-primaryColor text-text'
-                                    : 'text-text hover:bg-primaryColor'
+                                    : 'text-text hover:bg-backgrundHover'
                             } transition-colors duration-200`}
                             aria-label={`Select ${icon.name} icon`}
                             type="button"
