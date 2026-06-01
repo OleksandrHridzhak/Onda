@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import {
-    COLOR_ORDER,
-    COLOR_STYLES,
-    ColorName,
-} from '../../../../../../utils/colorOptions';
+import { COLOR_STYLES, ColorName } from '../../../../../../utils/colorOptions';
 import { Tag } from '../../../../../../types/newColumn.types';
+import { ColorPicker } from '../../../../../shared/ColorPicker';
 
 interface OptionItemProps {
     tag: Tag;
@@ -95,22 +92,16 @@ export const OptionItem: React.FC<OptionItemProps> = ({
                             ref={menuRef}
                             className={`absolute left-0 top-full mt-1 bg-background border-border border rounded-lg shadow-lg p-2 z-10`}
                         >
-                            <div className="flex items-center space-x-2 p-2 overflow-x-auto max-w-xs">
-                                {COLOR_ORDER.map((colorName) => (
-                                    <button
-                                        key={colorName}
-                                        onClick={() => {
-                                            handleColorChange(
-                                                tag.id,
-                                                colorName,
-                                            );
-                                            setIsContextMenuOpen(false);
-                                        }}
-                                        className={`w-6 h-6 rounded-full ${COLOR_STYLES[colorName].bg} ${COLOR_STYLES[colorName].text} border-2 ${selectedColorName === colorName ? 'ring-2 ring-primaryColor ring-offset-2' : 'border-transparent'} hover:scale-110 hover:shadow-md transition-all duration-200`}
-                                        aria-label={`Select ${colorName} color for ${tag.name}`}
-                                    />
-                                ))}
-                            </div>
+                            <ColorPicker
+                                value={selectedColorName}
+                                onChange={(color) =>
+                                    handleColorChange(tag.id, color)
+                                }
+                                onSelect={() => setIsContextMenuOpen(false)}
+                                layout="grid"
+                                shape="square"
+                                className="w-40"
+                            />
                             <div className="flex justify-between mt-2">
                                 <button
                                     onClick={() => {

@@ -28,9 +28,6 @@ export const useColumnMenuHandlers = ({
     const [width, setWidth] = useState(0);
     const [checkboxColor, setCheckboxColor] = useState<ColorName>('accent1');
     const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
-    const [isColorMenuOpen, setIsColorMenuOpen] = useState<
-        Record<string, boolean>
-    >({});
     const [isSaving, setIsSaving] = useState(false);
     const [tags, setTags] = useState<Tag[]>([]);
     const [newOption, setNewOption] = useState('');
@@ -224,8 +221,6 @@ export const useColumnMenuHandlers = ({
         ui: {
             isIconSectionExpanded,
             setIsIconSectionExpanded,
-            isColorMenuOpen,
-            setIsColorMenuOpen,
             isSaving,
         },
     };

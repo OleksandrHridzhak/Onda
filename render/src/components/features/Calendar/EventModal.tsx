@@ -2,7 +2,7 @@ import React from 'react';
 import { Trash2 } from 'lucide-react';
 import { InputText } from '../../shared/InputText';
 import { Button } from '../../shared/Button';
-import { COLOR_ORDER, COLOR_STYLES } from '../../../utils/colorOptions';
+import { ColorPicker } from '../../shared/ColorPicker';
 import type { NewEvent } from './hooks/useCalendar';
 
 interface EventModalProps {
@@ -105,31 +105,16 @@ export default function EventModal({
                                 </Button>
                             </div>
                             <div>
-                                <label
-                                    className={`block text-sm text-textMuted mb-1`}
-                                >
-                                    Color
-                                </label>
-                                <div className="flex gap-3">
-                                    {COLOR_ORDER.map((colorName) => (
-                                        <button
-                                            key={colorName}
-                                            type="button"
-                                            className={`w-6 h-6 rounded-full cursor-pointer border-none p-0 ${COLOR_STYLES[colorName].solid} ${
-                                                newEvent.color === colorName
-                                                    ? 'ring-2 ring-offset-2 ring-border'
-                                                    : ''
-                                            }`}
-                                            onClick={() =>
-                                                setNewEvent({
-                                                    ...newEvent,
-                                                    color: colorName,
-                                                })
-                                            }
-                                            aria-label="Select event color"
-                                        />
-                                    ))}
-                                </div>
+                                <ColorPicker
+                                    label="Color"
+                                    value={newEvent.color}
+                                    onChange={(color) =>
+                                        setNewEvent({
+                                            ...newEvent,
+                                            color,
+                                        })
+                                    }
+                                />
                             </div>
                             <div>
                                 <label

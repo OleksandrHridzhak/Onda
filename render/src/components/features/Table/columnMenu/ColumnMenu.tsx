@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { icons } from '../../../../utils/icons';
 import { OptionsList } from './components/ui/OptionList';
-import { CheckboxColorPicker } from './components/ui/CheckBoxColorPicker';
 import { ColumnMenuHeader } from './components/structure/ColumnMenuHeader';
 import { ColumnBasicSettings } from './components/structure/ColumnBasicSettings';
 import { ColumnActions } from './components/structure/ColumnActions';
+import { ColorPicker } from '../../../shared/ColorPicker';
 import { getColumnById } from '../../../../db/helpers/columns';
 import { getColumnsOrder } from '../../../../db/helpers/settings';
 import { useColumnMenuHandlers } from './useColumnMenuHandlers';
@@ -128,15 +128,13 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
                     )}
 
                     {column.type === COLUMN_TYPES.CHECKBOX && (
-                        <CheckboxColorPicker
-                            checkboxColor={form.checkboxColor}
-                            setCheckboxColor={actions.setCheckboxColor}
-                            toggleColorMenu={() =>
-                                ui.setIsColorMenuOpen({
-                                    ...ui.isColorMenuOpen,
-                                    checkbox: !ui.isColorMenuOpen.checkbox,
-                                })
-                            }
+                        <ColorPicker
+                            label="Checkbox Color"
+                            value={form.checkboxColor}
+                            onChange={actions.setCheckboxColor}
+                            layout="grid"
+                            shape="square"
+                            className="mb-4"
                         />
                     )}
 
