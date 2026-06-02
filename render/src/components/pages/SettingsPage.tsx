@@ -4,6 +4,7 @@ import { Settings, Download, X, Cloud } from 'lucide-react';
 import FullCloseSection from '../features/Settings/sections/FullCloseSection';
 import DataSection from '../features/Settings/sections/DataSection';
 import SyncSection from '../features/Settings/sections/SyncSection';
+import { Heading } from '../shared/Heading';
 
 interface RootState {
     newTheme: {
@@ -68,9 +69,9 @@ export default function SettingsDashboard(): React.ReactElement {
                         >
                             <Settings className="w-5 h-5 text-background" />
                         </div>
-                        <h1 className="text-lg sm:text-xl font-medium text-text leading-tight truncate">
+                        <Heading as="h1" variant="xl">
                             Settings
-                        </h1>
+                        </Heading>
                     </div>
                 </div>
             </div>

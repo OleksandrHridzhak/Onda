@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Heading } from '../../shared/Heading';
 import { createPortal } from 'react-dom';
 import {
     Calendar as CalendarIcon,
@@ -138,45 +139,9 @@ export default function CalendarHeader({
                         <CalendarIcon size={22} className="text-background" />
                     </div>
                     <div className="flex flex-col min-w-0">
-                        <h2
-                            className={`text-base sm:text-lg font-semibold tracking-tight text-text leading-tight truncate`}
-                        >
-                            {/* Compact on xs, full on sm+ */}
-                            {viewMode === 'day' ? (
-                                <>
-                                    <span className="block sm:hidden truncate">
-                                        {dayShort}
-                                    </span>
-                                    <span className="hidden sm:block">
-                                        {dayFull}
-                                    </span>
-                                </>
-                            ) : (
-                                <>
-                                    <span className="block sm:hidden truncate">
-                                        {weekShort}
-                                    </span>
-                                    <span className="hidden sm:block">
-                                        {weekFull}
-                                    </span>
-                                </>
-                            )}
-                        </h2>
-                        <p
-                            className={`text-sm text-textMuted mt-0.5 hidden sm:block`}
-                        >
-                            {viewMode === 'day'
-                                ? [
-                                      'Mon',
-                                      'Tue',
-                                      'Wed',
-                                      'Thu',
-                                      'Fri',
-                                      'Sat',
-                                      'Sun',
-                                  ][selectedDate.getDay()]
-                                : `Week ${getWeekNumber(currentWeekStart)}`}
-                        </p>
+                        <Heading as="h1" variant="xl">
+                            Calendar
+                        </Heading>
                     </div>
                 </div>
 
