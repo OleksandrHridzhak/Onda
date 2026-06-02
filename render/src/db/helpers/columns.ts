@@ -334,6 +334,10 @@ export async function clearColumn(columnId: string): Promise<DbResult<Column>> {
                     'uniqueProps.doneTasks': [],
                 };
                 break;
+            case COLUMN_TYPES.GROUP_DIVIDER:
+                // Group divider has no data to clear, just keep existing state
+                updates = {};
+                break;
         }
 
         await db.tableColumns.update(columnId, updates);
