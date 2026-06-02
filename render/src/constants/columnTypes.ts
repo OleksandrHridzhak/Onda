@@ -10,6 +10,7 @@ export const COLUMN_TYPES = {
     TODO: 'todoListColumn',
     MULTI_CHECKBOX: 'multiCheckBoxColumn',
     TASK_TABLE: 'taskTableColumn',
+    FORMULA: 'formulaColumn',
 } as const;
 
 /**
@@ -23,7 +24,8 @@ export type ColumnType =
     | 'tagsColumn'
     | 'todoListColumn'
     | 'multiCheckBoxColumn'
-    | 'taskTableColumn';
+    | 'taskTableColumn'
+    | 'formulaColumn';
 
 /**
  * Column types that have tag/option management capabilities

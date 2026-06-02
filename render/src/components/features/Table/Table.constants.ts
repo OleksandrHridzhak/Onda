@@ -10,6 +10,7 @@ import {
     TodoColumn,
     TaskTableColumn,
     FillerColumn,
+    FormulaColumn,
 } from './columns';
 
 export const componentsMap: Record<string, React.FC<any>> = {
@@ -21,6 +22,7 @@ export const componentsMap: Record<string, React.FC<any>> = {
     multiCheckBoxColumn: MultiCheckboxColumn,
     todoListColumn: TodoColumn,
     taskTableColumn: TaskTableColumn,
+    formulaColumn: FormulaColumn,
     fillerColumn: FillerColumn,
 };
 export const daysColumn = {
