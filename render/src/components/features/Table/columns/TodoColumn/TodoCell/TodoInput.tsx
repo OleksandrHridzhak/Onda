@@ -45,7 +45,7 @@ export const TodoInput: React.FC<TodoInputProps> = ({
                 onKeyUp={(e) => e.key === 'Enter' && onAddTodo()}
                 placeholder="Add new todo..."
                 inputSize="sm"
-                className="pr-10"
+                className="pr-10 bg-surface"
             />
             <Button
                 onClick={onAddTodo}
