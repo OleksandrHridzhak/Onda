@@ -158,14 +158,8 @@ export const useColumnMenuHandlers = ({
     };
 
     const handleDelete = async () => {
-        if (
-            globalThis.confirm(
-                `Are you sure you want to delete "${column.name || 'this column'}"? This action cannot be undone.`,
-            )
-        ) {
-            await deleteColumn(columnId);
-            onClose();
-        }
+        await deleteColumn(columnId);
+        onClose();
     };
 
     const handleClear = async () => {

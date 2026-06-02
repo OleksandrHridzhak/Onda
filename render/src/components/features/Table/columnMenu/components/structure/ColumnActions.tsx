@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button } from '../../../../../shared/Button';
+import { useState } from 'react';
+import { ConfirmModal } from '../../../../../shared/ConfirmModal';
 
 interface ColumnActionsProps {
     handleDelete: () => void;
@@ -14,16 +16,27 @@ export const ColumnActions: React.FC<ColumnActionsProps> = ({
     handleSave,
     isSaving,
 }) => {
+    const [showConfirm, setShowConfirm] = useState(false);
+
     return (
         <div className="flex justify-between gap-2 mt-6">
             <div className="flex gap-2">
                 <Button
-                    onClick={handleDelete}
+                    onClick={() => setShowConfirm(true)}
                     disabled={isSaving}
                     variant="danger"
                 >
                     Delete
                 </Button>
+                <ConfirmModal
+                    isOpen={showConfirm}
+                    onClose={() => setShowConfirm(false)}
+                    onConfirm={handleDelete}
+                    title="Confirm Deletion"
+                    message="Are you sure you want to delete this column? This action cannot be undone."
+                    confirmText="Delete"
+                    cancelText="Cancel"
+                />
                 <Button
                     onClick={handleClear}
                     disabled={isSaving}
