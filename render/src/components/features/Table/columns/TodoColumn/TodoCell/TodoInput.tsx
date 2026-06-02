@@ -3,6 +3,7 @@ import { Check } from 'lucide-react';
 import { handleAddTodo } from './logic';
 import { Todo } from '../../../../../../types/newColumn.types';
 import { Button } from '../../../../../shared/Button';
+import { Input } from '../../../../../shared/Input';
 
 interface TodoInputProps {
     newTodo: string;
@@ -37,13 +38,14 @@ export const TodoInput: React.FC<TodoInputProps> = ({
 
     return (
         <div className="flex items-center relative">
-            <input
+            <Input
                 type="text"
                 value={newTodo}
                 onChange={(e) => setNewTodo(e.target.value)}
                 onKeyUp={(e) => e.key === 'Enter' && onAddTodo()}
                 placeholder="Add new todo..."
-                className="w-full px-3 py-2 pr-10 text-sm rounded-md bg-surface text-text placeholder-textSubtle border border-border outline-none focus:border-primaryColor focus:ring-1 focus:ring-primaryColor"
+                inputSize="sm"
+                className="pr-10"
             />
             <Button
                 onClick={onAddTodo}

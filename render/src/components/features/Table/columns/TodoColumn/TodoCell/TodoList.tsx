@@ -8,6 +8,7 @@ import {
     handleSaveEdit,
 } from './logic';
 import { Todo, Tag } from '../../../../../../types/newColumn.types';
+import { TodoEditModal } from './TodoEditModal';
 
 interface TodoListProps {
     todos: Todo[];
@@ -52,90 +53,71 @@ export const TodoList: React.FC<TodoListProps> = ({
         return availableCategories.find((cat) => cat.id === categoryId);
     };
 
-    return (
-        <div
-            className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[310px] mt-0 ${
-                darkMode
-                    ? 'custom-scroll-thin-dark'
-                    : 'custom-scroll-thin-light'
-            }`}
-        >
-            {filteredTodos.map((todo) => {
-                const category = getCategoryById(todo.categoryId);
-                const categoryColor = category
-                    ? COLOR_STYLES[category.color]
-                    : null;
+    const handleCloseEditModal = () => {
+        setIsEditing(false);
+        setEditingId(null);
+        setEditText('');
+        setEditCategoryId('');
+    };
 
-                return (
-                    <div
-                        key={todo.id}
-                        className={`group flex items-center justify-between p-2 rounded-md bg-surfaceMuted ${
-                            filteredTodos.indexOf(todo) !==
-                            filteredTodos.length - 1
-                                ? 'mb-[2px]'
-                                : ''
-                        } relative`}
-                    >
-                        <div className="flex items-center flex-1 min-w-0 w-full">
-                            <button
-                                onClick={() =>
-                                    handleToggleTodo(
-                                        todo.id,
-                                        todos,
-                                        setTodos,
-                                        onChange,
-                                    )
-                                }
-                                className={`mr-2 p-1 rounded-full z-20 ${
-                                    todo.done
-                                        ? 'bg-primaryColor text-white'
-                                        : 'bg-secondary text-textSubtle'
-                                }`}
-                            >
-                                <Check size={14} />
-                            </button>
-                            {isEditing && editingId === todo.id ? (
-                                <div className="flex flex-col gap-2 flex-1">
-                                    <input
-                                        type="text"
-                                        value={editText}
-                                        onChange={(e) =>
-                                            setEditText(e.target.value)
-                                        }
-                                        onKeyPress={(e) =>
-                                            e.key === 'Enter' &&
-                                            handleSaveEdit(
-                                                editingId,
-                                                editText,
-                                                editCategoryId,
-                                                todos,
-                                                setTodos,
-                                                onChange,
-                                                setIsEditing,
-                                                setEditingId,
-                                                setEditText,
-                                                setEditCategoryId,
-                                            )
-                                        }
-                                        onBlur={() =>
-                                            handleSaveEdit(
-                                                editingId,
-                                                editText,
-                                                editCategoryId,
-                                                todos,
-                                                setTodos,
-                                                onChange,
-                                                setIsEditing,
-                                                setEditingId,
-                                                setEditText,
-                                                setEditCategoryId,
-                                            )
-                                        }
-                                        className="flex-1 px-2 py-1 text-sm rounded-md z-20 bg-[var(--surface)] text-[var(--text)] border border-[var(--border)] focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] outline-none focus:outline-none min-w-0"
-                                        autoFocus
-                                    />
-                                </div>
-                            ) : (
+    const handleSaveEditModal = () => {
+        handleSaveEdit(
+            editingId,
+            editText,
+            editCategoryId,
+            todos,
+            setTodos,
+            onChange,
+            setIsEditing,
+            setEditingId,
+            setEditText,
+            setEditCategoryId,
+        );
+    };
+
+    return (
+        <>
+            <div
+                className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[310px] mt-0 ${
+                    darkMode
+                        ? 'custom-scroll-thin-dark'
+                        : 'custom-scroll-thin-light'
+                }`}
+            >
+                {filteredTodos.map((todo) => {
+                    const category = getCategoryById(todo.categoryId);
+                    const categoryColor = category
+                        ? COLOR_STYLES[category.color]
+                        : null;
+
+                    return (
+                        <div
+                            key={todo.id}
+                            className={`group flex items-center justify-between rounded-lg border border-border bg-surface px-2 py-2 mt-1 ${
+                                filteredTodos.indexOf(todo) !==
+                                filteredTodos.length - 1
+                                    ? 'mb-[2px]'
+                                    : ''
+                            } relative`}
+                        >
+                            <div className="flex items-center flex-1 min-w-0 w-full">
+                                <button
+                                    onClick={() =>
+                                        handleToggleTodo(
+                                            todo.id,
+                                            todos,
+                                            setTodos,
+                                            onChange,
+                                        )
+                                    }
+                                    className={`mr-2 p-1 rounded-full z-20 ${
+                                        todo.done
+                                            ? 'bg-primaryColor text-white'
+                                            : 'bg-secondary text-textSubtle'
+                                    }`}
+                                >
+                                    <Check size={14} />
+                                </button>
                                 <div className="flex items-center flex-1 min-w-0 w-full gap-2">
                                     <div
                                         className={`
@@ -163,47 +145,58 @@ export const TodoList: React.FC<TodoListProps> = ({
                                         </span>
                                     )}
                                 </div>
+                            </div>
+                            {!isEditing && (
+                                <div className="absolute top-1/2 z-10 flex w-full -translate-y-1/2 justify-center space-x-1 opacity-0 transition-opacity group-hover:opacity-100">
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleEditTodo(
+                                                todo.id,
+                                                todos,
+                                                setIsEditing,
+                                                setEditingId,
+                                                setEditText,
+                                                setEditCategoryId,
+                                            );
+                                        }}
+                                        className="flex items-center justify-center rounded-md bg-surface p-2 text-textMuted hover:text-text"
+                                    >
+                                        <Edit2 size={14} />
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleDeleteTodo(
+                                                todo.id,
+                                                todos,
+                                                setTodos,
+                                                onChange,
+                                            );
+                                        }}
+                                        className="flex items-center justify-center rounded-md bg-surface p-2 text-danger hover:bg-danger hover:text-white"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
                             )}
                         </div>
-                        {!isEditing && (
-                            <div className="flex space-x-1 absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-full justify-center z-10">
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        handleEditTodo(
-                                            todo.id,
-                                            todos,
-                                            setIsEditing,
-                                            setEditingId,
-                                            setEditText,
-                                            setEditCategoryId,
-                                        );
-                                    }}
-                                    className={`p-2 rounded-md flex items-center justify-center ${'bg-surface text-textMuted hover:text-text'}`}
-                                >
-                                    <Edit2 size={14} />
-                                </button>
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        handleDeleteTodo(
-                                            todo.id,
-                                            todos,
-                                            setTodos,
-                                            onChange,
-                                        );
-                                    }}
-                                    className={`p-2  rounded-md flex items-center justify-center ${'bg-surface text-danger hover:bg-danger hover:text-white'}`}
-                                >
-                                    <Trash2 size={14} />
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                );
-            })}
-        </div>
+                    );
+                })}
+            </div>
+
+            <TodoEditModal
+                isOpen={isEditing && editingId !== null}
+                editText={editText}
+                editCategoryId={editCategoryId}
+                availableCategories={availableCategories}
+                setEditText={setEditText}
+                setEditCategoryId={setEditCategoryId}
+                onClose={handleCloseEditModal}
+                onSave={handleSaveEditModal}
+            />
+        </>
     );
 };

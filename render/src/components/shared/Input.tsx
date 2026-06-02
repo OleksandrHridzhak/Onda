@@ -9,7 +9,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className = '', inputSize = 'md', type = 'text', ...props }, ref) => {
         const baseClass =
-            'w-full border border-border bg-background text-text placeholder:text-textSubtle rounded-xl text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primaryColor disabled:opacity-60 disabled:cursor-not-allowed';
+            'w-full border border-border bg-background text-text placeholder:text-textSubtle rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primaryColor disabled:opacity-60 disabled:cursor-not-allowed';
         const sizeClasses: Record<InputSize, string> = {
             sm: 'h-10 px-3 py-2',
             md: 'h-[50px] px-4 py-2',

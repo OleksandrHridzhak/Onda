@@ -1,9 +1,11 @@
 import React from 'react';
 import { Trash2 } from 'lucide-react';
-import { ModalShell } from '../../shared/ModalShell';
-import { InputText } from '../../shared/InputText';
 import { Button } from '../../shared/Button';
 import { ColorPicker } from '../../shared/ColorPicker';
+import { Field } from '../../shared/Field';
+import { Input } from '../../shared/Input';
+import { ModalShell } from '../../shared/ModalShell';
+import { Select } from '../../shared/Select';
 import type { NewEvent } from './hooks/useCalendar';
 
 interface EventModalProps {
@@ -36,11 +38,9 @@ export default function EventModal({
             title={editingEventId ? 'Edit Event' : 'New Event'}
         >
             <div className="space-y-4">
-                <div>
-                    <label className={`block text-sm text-textMuted mb-1`}>
-                        Title
-                    </label>
-                    <InputText
+                <Field label="Title" htmlFor="event-title">
+                    <Input
+                        id="event-title"
                         value={newEvent.title}
                         onChange={(e) =>
                             setNewEvent({
@@ -50,63 +50,56 @@ export default function EventModal({
                         }
                         placeholder="Event title"
                     />
-                </div>
+                </Field>
+
                 <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className={`block text-sm text-textMuted mb-1`}>
-                            Start
-                        </label>
-                        <div className="flex items-center gap-2">
-                            <InputText
-                                value={newEvent.startTime}
-                                onChange={(e) =>
-                                    setNewEvent({
-                                        ...newEvent,
-                                        startTime: e.target.value,
-                                    })
-                                }
-                                placeholder="HH:mm"
-                            />
-                        </div>
-                    </div>
-                    <div>
-                        <label className={`block text-sm text-textMuted mb-1`}>
-                            End
-                        </label>
-                        <div className="flex items-center gap-2">
-                            <InputText
-                                value={newEvent.endTime}
-                                onChange={(e) =>
-                                    setNewEvent({
-                                        ...newEvent,
-                                        endTime: e.target.value,
-                                    })
-                                }
-                                placeholder="HH:mm"
-                            />
-                        </div>
-                    </div>
+                    <Field label="Start" htmlFor="event-start">
+                        <Input
+                            id="event-start"
+                            value={newEvent.startTime}
+                            onChange={(e) =>
+                                setNewEvent({
+                                    ...newEvent,
+                                    startTime: e.target.value,
+                                })
+                            }
+                            placeholder="HH:mm"
+                        />
+                    </Field>
+
+                    <Field label="End" htmlFor="event-end">
+                        <Input
+                            id="event-end"
+                            value={newEvent.endTime}
+                            onChange={(e) =>
+                                setNewEvent({
+                                    ...newEvent,
+                                    endTime: e.target.value,
+                                })
+                            }
+                            placeholder="HH:mm"
+                        />
+                    </Field>
                 </div>
-                <div className="flex justify-center gap-2 mb-4">
+
+                <div className="mb-4 flex justify-center gap-2">
                     <Button onClick={() => adjustEventTimes(-5)}>-5m</Button>
                     <Button onClick={() => adjustEventTimes(5)}>+5m</Button>
                 </div>
+
+                <ColorPicker
+                    label="Color"
+                    value={newEvent.color}
+                    onChange={(color) =>
+                        setNewEvent({
+                            ...newEvent,
+                            color,
+                        })
+                    }
+                />
+
                 <div>
-                    <ColorPicker
-                        label="Color"
-                        value={newEvent.color}
-                        onChange={(color) =>
-                            setNewEvent({
-                                ...newEvent,
-                                color,
-                            })
-                        }
-                    />
-                </div>
-                <div>
-                    <label
-                        className={`flex items-center gap-2 text-sm text-textMuted mb-1`}
-                    >
+                    <label className="mb-1 flex items-center gap-2 text-sm text-textMuted">
                         <input
                             type="checkbox"
                             checked={newEvent.isRepeating}
@@ -121,15 +114,11 @@ export default function EventModal({
                         />
                         Repeat Event
                     </label>
+
                     {newEvent.isRepeating && (
                         <div className="mt-2 space-y-2">
-                            <div>
-                                <label
-                                    className={`block text-sm text-textMuted mb-1`}
-                                >
-                                    Repeat on
-                                </label>
-                                <div className="flex gap-2 flex-wrap">
+                            <Field label="Repeat on">
+                                <div className="flex flex-wrap gap-2">
                                     {[
                                         'Mon',
                                         'Tue',
@@ -141,7 +130,7 @@ export default function EventModal({
                                     ].map((day, index) => (
                                         <label
                                             key={day}
-                                            className={`flex items-center gap-1 text-sm text-textMuted`}
+                                            className="flex items-center gap-1 text-sm text-textMuted"
                                         >
                                             <input
                                                 type="checkbox"
@@ -172,14 +161,14 @@ export default function EventModal({
                                         </label>
                                     ))}
                                 </div>
-                            </div>
-                            <div>
-                                <label
-                                    className={`block text-sm text-textMuted mb-1`}
-                                >
-                                    Frequency
-                                </label>
-                                <select
+                            </Field>
+
+                            <Field
+                                label="Frequency"
+                                htmlFor="event-repeat-frequency"
+                            >
+                                <Select
+                                    id="event-repeat-frequency"
                                     value={newEvent.repeatFrequency}
                                     onChange={(e) =>
                                         setNewEvent({
@@ -187,18 +176,19 @@ export default function EventModal({
                                             repeatFrequency: e.target.value,
                                         })
                                     }
-                                    className={`w-full border border-border bg-background text-text rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primaryColor`}
+                                    inputSize="sm"
                                 >
                                     <option value="weekly">Every Week</option>
                                     <option value="biweekly">
                                         Every Other Week
                                     </option>
-                                </select>
-                            </div>
+                                </Select>
+                            </Field>
                         </div>
                     )}
                 </div>
             </div>
+
             <div className="mt-6 flex justify-end gap-3">
                 {editingEventId && (
                     <Button
@@ -209,12 +199,14 @@ export default function EventModal({
                         Delete
                     </Button>
                 )}
+
                 <Button
                     variant="secondary"
                     onClick={() => setShowEventModal(false)}
                 >
                     Cancel
                 </Button>
+
                 <Button
                     onClick={handleSaveEvent}
                     disabled={
