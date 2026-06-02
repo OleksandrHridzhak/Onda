@@ -4,7 +4,7 @@ import { Settings, Download, X, Cloud } from 'lucide-react';
 import FullCloseSection from '../features/Settings/sections/FullCloseSection';
 import DataSection from '../features/Settings/sections/DataSection';
 import SyncSection from '../features/Settings/sections/SyncSection';
-import { Heading } from '../shared/Heading';
+import { PageHeader } from '../shared/PageHeader';
 
 interface RootState {
     newTheme: {
@@ -59,22 +59,7 @@ export default function SettingsDashboard(): React.ReactElement {
         <div
             className={`font-poppins flex flex-col h-full custom-scroll bg-background`}
         >
-            <div
-                className={`sticky top-0 z-20 bg-surface border-b border-border`}
-            >
-                <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
-                        <div
-                            className={`hidden sm:flex p-2 sm:p-3 rounded-2xl bg-primaryColor items-center justify-center`}
-                        >
-                            <Settings className="w-5 h-5 text-background" />
-                        </div>
-                        <Heading as="h1" variant="xl">
-                            Settings
-                        </Heading>
-                    </div>
-                </div>
-            </div>
+            <PageHeader title="Settings" icon={<Settings size={22} />} />
 
             {/* Mobile sections nav (tabs) - visible only on small screens */}
             <div className="md:hidden bg-surface border-b border-border">

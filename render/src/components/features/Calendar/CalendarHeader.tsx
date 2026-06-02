@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Heading } from '../../shared/Heading';
+import { PageHeader } from '../../shared/PageHeader';
 import { createPortal } from 'react-dom';
 import {
     Calendar as CalendarIcon,
@@ -129,135 +129,107 @@ export default function CalendarHeader({
     }, [viewMenuOpen]);
 
     return (
-        <div className={`sticky bg-surface top-0 z-20  border-b border-border`}>
-            <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-4 flex flex-row items-center justify-between gap-2 flex-nowrap">
-                {/* Left: Icon + Title */}
-                <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
-                    <div
-                        className={`hidden sm:flex p-2 sm:p-3 rounded-2xl bg-primaryColor items-center justify-center`}
-                    >
-                        <CalendarIcon size={22} className="text-background" />
-                    </div>
-                    <div className="flex flex-col min-w-0">
-                        <Heading as="h1" variant="xl">
-                            Calendar
-                        </Heading>
-                    </div>
-                </div>
+        <PageHeader title="Calendar" icon={<CalendarIcon size={22} />}>
+            <div
+                className={`flex items-center gap-1 p-0.5 bg-primaryColor rounded-xl`}
+            >
+                <button
+                    onClick={goToPrevious}
+                    className={`p-1.5 sm:p-2 text-primaryColor hover:text-text hover:bg-primaryHover rounded-lg transition-colors`}
+                    aria-label={
+                        viewMode === 'day' ? 'Previous day' : 'Previous week'
+                    }
+                >
+                    <ChevronLeft size={18} />
+                </button>
 
-                {/* Right: Navigation + View Controls */}
-                <div className="flex items-center gap-1 sm:gap-3 w-full sm:w-auto justify-end">
-                    {/* Navigation group */}
-                    <div
-                        className={`flex items-center gap-1 p-0.5 bg-primaryColor rounded-xl`}
-                    >
-                        <button
-                            onClick={goToPrevious}
-                            className={`p-1.5 sm:p-2 text-primaryColor hover:text-text hover:bg-primaryHover rounded-lg transition-colors`}
-                            aria-label={
-                                viewMode === 'day'
-                                    ? 'Previous day'
-                                    : 'Previous week'
-                            }
-                        >
-                            <ChevronLeft size={18} />
-                        </button>
+                {/* Today: text on md+, short date on xs/sm */}
+                <button
+                    onClick={goToCurrent}
+                    className={`px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm text-text bg-background hover:bg-primaryHover rounded-lg transition-colors flex items-center gap-2`}
+                    aria-label="Today"
+                >
+                    <span className="hidden md:inline">Today</span>
+                    <span className="inline md:hidden">
+                        <CalendarIcon size={14} className="text-primaryColor" />
+                    </span>
+                </button>
 
-                        {/* Today: text on md+, short date on xs/sm */}
-                        <button
-                            onClick={goToCurrent}
-                            className={`px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm text-text bg-background hover:bg-primaryHover rounded-lg transition-colors flex items-center gap-2`}
-                            aria-label="Today"
-                        >
-                            <span className="hidden md:inline">Today</span>
-                            <span className="inline md:hidden">
-                                <CalendarIcon
-                                    size={14}
-                                    className="text-primaryColor"
-                                />
-                            </span>
-                        </button>
-
-                        <button
-                            onClick={goToNext}
-                            className={`p-1.5 sm:p-2 text-primaryColor hover:text-text hover:bg-primaryHover rounded-lg transition-colors`}
-                            aria-label={
-                                viewMode === 'day' ? 'Next day' : 'Next week'
-                            }
-                        >
-                            <ChevronRight size={18} />
-                        </button>
-                    </div>
-
-                    {/* View toggles: segmented on md+, compact select on xs */}
-                    <div className="hidden md:flex items-center gap-2 bg-primaryColor p-1 rounded-xl">
-                        <button
-                            onClick={() => setViewMode('week')}
-                            className={`px-3 py-1 rounded-lg text-sm transition-colors ${viewMode === 'week' ? 'bg-primaryColor text-white' : 'text-textMuted hover:bg-[rgba(0,0,0,0.04)]'}`}
-                            aria-pressed={viewMode === 'week'}
-                        >
-                            Week
-                        </button>
-                        <button
-                            onClick={() => setViewMode('day')}
-                            className={`px-3 py-1 rounded-lg text-sm transition-colors ${viewMode === 'day' ? 'bg-primaryColor text-white' : 'text-textMuted hover:bg-[rgba(0,0,0,0.04)]'}`}
-                            aria-pressed={viewMode === 'day'}
-                        >
-                            Day
-                        </button>
-                    </div>
-
-                    <div className="md:hidden relative" ref={viewMenuRef}>
-                        <button
-                            ref={menuButtonRef}
-                            onClick={() => setViewMenuOpen((v) => !v)}
-                            className={`flex items-center gap-1 p-1.5 sm:p-2 text-xs rounded-lg bg-primaryColor border border-transparent focus:outline-none items-center justify-center`}
-                            aria-haspopup="true"
-                            aria-expanded={viewMenuOpen}
-                        >
-                            <span className="sr-only">View mode</span>
-                            <span className="text-textMuted">
-                                {viewMode === 'week' ? 'W' : 'D'}
-                            </span>
-                            <ChevronDown size={14} />
-                        </button>
-                        {viewMenuOpen &&
-                            menuPos &&
-                            createPortal(
-                                <div
-                                    ref={viewMenuRef}
-                                    className="w-28 bg-background border border-border rounded-lg shadow-md"
-                                    style={{
-                                        position: 'fixed',
-                                        top: menuPos.top,
-                                        left: menuPos.left,
-                                        zIndex: 99999,
-                                    }}
-                                >
-                                    <button
-                                        onClick={() => {
-                                            setViewMode('week');
-                                            setViewMenuOpen(false);
-                                        }}
-                                        className={`w-full text-left px-3 py-2 text-sm ${viewMode === 'week' ? 'bg-primaryColor text-white rounded-t-lg' : 'text-textMuted hover:bg-[rgba(0,0,0,0.03)]'}`}
-                                    >
-                                        Week
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setViewMode('day');
-                                            setViewMenuOpen(false);
-                                        }}
-                                        className={`w-full text-left px-3 py-2 text-sm ${viewMode === 'day' ? 'bg-primaryColor text-white rounded-b-lg' : 'text-textMuted hover:bg-[rgba(0,0,0,0.03)]'}`}
-                                    >
-                                        Day
-                                    </button>
-                                </div>,
-                                document.body,
-                            )}
-                    </div>
-                </div>
+                <button
+                    onClick={goToNext}
+                    className={`p-1.5 sm:p-2 text-primaryColor hover:text-text hover:bg-primaryHover rounded-lg transition-colors`}
+                    aria-label={viewMode === 'day' ? 'Next day' : 'Next week'}
+                >
+                    <ChevronRight size={18} />
+                </button>
             </div>
-        </div>
+
+            <div className="hidden md:flex items-center gap-2 bg-primaryColor p-1 rounded-xl">
+                <button
+                    onClick={() => setViewMode('week')}
+                    className={`px-3 py-1 rounded-lg text-sm transition-colors ${viewMode === 'week' ? 'bg-primaryColor text-white' : 'text-textMuted hover:bg-[rgba(0,0,0,0.04)]'}`}
+                    aria-pressed={viewMode === 'week'}
+                >
+                    Week
+                </button>
+                <button
+                    onClick={() => setViewMode('day')}
+                    className={`px-3 py-1 rounded-lg text-sm transition-colors ${viewMode === 'day' ? 'bg-primaryColor text-white' : 'text-textMuted hover:bg-[rgba(0,0,0,0.04)]'}`}
+                    aria-pressed={viewMode === 'day'}
+                >
+                    Day
+                </button>
+            </div>
+
+            <div className="md:hidden relative" ref={viewMenuRef}>
+                <button
+                    ref={menuButtonRef}
+                    onClick={() => setViewMenuOpen((v) => !v)}
+                    className={`flex items-center gap-1 p-1.5 sm:p-2 text-xs rounded-lg bg-primaryColor border border-transparent focus:outline-none items-center justify-center`}
+                    aria-haspopup="true"
+                    aria-expanded={viewMenuOpen}
+                >
+                    <span className="sr-only">View mode</span>
+                    <span className="text-textMuted">
+                        {viewMode === 'week' ? 'W' : 'D'}
+                    </span>
+                    <ChevronDown size={14} />
+                </button>
+                {viewMenuOpen &&
+                    menuPos &&
+                    createPortal(
+                        <div
+                            ref={viewMenuRef}
+                            className="w-28 bg-background border border-border rounded-lg shadow-md"
+                            style={{
+                                position: 'fixed',
+                                top: menuPos.top,
+                                left: menuPos.left,
+                                zIndex: 99999,
+                            }}
+                        >
+                            <button
+                                onClick={() => {
+                                    setViewMode('week');
+                                    setViewMenuOpen(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 text-sm ${viewMode === 'week' ? 'bg-primaryColor text-white rounded-t-lg' : 'text-textMuted hover:bg-[rgba(0,0,0,0.03)]'}`}
+                            >
+                                Week
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setViewMode('day');
+                                    setViewMenuOpen(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 text-sm ${viewMode === 'day' ? 'bg-primaryColor text-white rounded-b-lg' : 'text-textMuted hover:bg-[rgba(0,0,0,0.03)]'}`}
+                            >
+                                Day
+                            </button>
+                        </div>,
+                        document.body,
+                    )}
+            </div>
+        </PageHeader>
     );
 }
