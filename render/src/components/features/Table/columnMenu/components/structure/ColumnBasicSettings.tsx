@@ -3,6 +3,9 @@ import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { IconSelector } from '../ui/IconSelector';
 import { TitleVisibilityToggle } from '../ui/TitleVisibilityToggle';
 import { Button } from '../../../../../shared/Button';
+import { Field } from '../../../../../shared/Field';
+import { Input } from '../../../../../shared/Input';
+import { Textarea } from '../../../../../shared/Textarea';
 import { Icon } from '../../../../../../utils/icons';
 
 interface ColumnBasicSettingsProps {
@@ -65,11 +68,10 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
                     darkMode={darkMode}
                 />
                 <div className="w-full flex relative">
-                    <input
+                    <Input
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className={`w-full h-[50px] px-4 py-2 border border-border bg-background text-text rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200`}
                         placeholder="Column name"
                         aria-label="Column name"
                     />
@@ -82,33 +84,28 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
             </div>
 
             {/* Description Section */}
-            <textarea
+            <Textarea
                 value={description}
                 placeholder="Description"
                 onChange={(e) => setDescription(e.target.value)}
-                className={`w-full px-4 py-2 border border-border bg-background text-text rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200 resize-none`}
                 rows={3}
                 aria-label="Column description"
             />
 
             {/* Position Controls Section */}
-            <div className="mb-4">
-                <label
-                    className={`block text-sm font-medium text-textMuted mb-1`}
-                >
-                    Column Position and Width
-                </label>
+            <Field label="Column Position and Width" className="mb-4">
                 <div className="flex space-x-2">
                     <div className="w-full">
-                        <input
+                        <Input
                             type="number"
                             value={width}
                             onChange={handleWidthChange}
                             min="0"
                             max="1000"
-                            className={`w-full px-3 py-2.5 flex items-center text-sm border bg-transparent border-border text-text rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primaryColor`}
                             placeholder="Enter width in pixels"
                             aria-label="Column width"
+                            inputSize="sm"
+                            className="bg-transparent"
                         />
                     </div>
                     <Button
@@ -126,7 +123,7 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
                         RIGHT <ArrowRight size={18} />
                     </Button>
                 </div>
-            </div>
+            </Field>
         </>
     );
 };

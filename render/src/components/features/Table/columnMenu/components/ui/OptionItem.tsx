@@ -1,133 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
-import { COLOR_STYLES, ColorName } from '../../../../../../utils/colorOptions';
+import React from 'react';
+import { COLOR_STYLES } from '../../../../../../utils/colorOptions';
 import { Tag } from '../../../../../../types/newColumn.types';
-import { ColorPicker } from '../../../../../shared/ColorPicker';
 
 interface OptionItemProps {
     tag: Tag;
-    handleColorChange: (tagId: string, color: ColorName) => void;
-    handleRemoveOption: (tagId: string) => void;
-    handleEditOption: (tagId: string, newName: string) => void;
+    onClick: (tag: Tag) => void;
 }
 
-export const OptionItem: React.FC<OptionItemProps> = ({
-    tag,
-    handleColorChange,
-    handleRemoveOption,
-    handleEditOption,
-}) => {
-    const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
-    const [editingTagId, setEditingTagId] = useState<string | null>(null);
-    const [editValue, setEditValue] = useState('');
-    const menuRef = useRef<HTMLDivElement>(null);
-
-    const startEditing = (): void => {
-        setEditingTagId(tag.id);
-        setEditValue(tag.name);
-    };
-
-    const saveEdit = (): void => {
-        if (editValue.trim()) {
-            handleEditOption(tag.id, editValue.trim());
-        }
-        setEditingTagId(null);
-        setEditValue('');
-        setIsContextMenuOpen(false);
-    };
-
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (
-                menuRef.current &&
-                !menuRef.current.contains(e.target as Node)
-            ) {
-                setIsContextMenuOpen(false);
-            }
-        };
-
-        if (isContextMenuOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isContextMenuOpen]);
-
+export const OptionItem: React.FC<OptionItemProps> = ({ tag, onClick }) => {
     const selectedColorName = tag.color;
     const colorOption = COLOR_STYLES[selectedColorName];
 
     return (
-        <div key={tag.id} className="relative">
-            {editingTagId === tag.id ? (
-                <div className="flex items-center">
-                    <input
-                        type="text"
-                        value={editValue}
-                        onChange={(e) => setEditValue(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
-                        className={`px-2 py-1 rounded-full text-xs font-medium border border-border bg-background text-text focus:outline-none focus:ring-2 focus:ring-primaryColor`}
-                        aria-label={`Edit ${tag.name}`}
-                    />
-                    <button
-                        onClick={saveEdit}
-                        className={`ml-2 p-1 rounded-lg text-primaryColor hover:bg-primaryColor transition-colors duration-200`}
-                        aria-label={`Save edit for ${tag.name}`}
-                    >
-                        <Plus size={14} />
-                    </button>
-                </div>
-            ) : (
-                <>
-                    <button
-                        onClick={() => setIsContextMenuOpen(!isContextMenuOpen)}
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption?.bg} ${colorOption?.text || 'text-text'}`}
-                        aria-label={`Options for ${tag.name}`}
-                    >
-                        {tag.name}
-                    </button>
-                    {isContextMenuOpen && (
-                        <div
-                            ref={menuRef}
-                            className={`absolute left-0 top-full mt-1 bg-background border-border border rounded-lg shadow-lg p-2 z-10`}
-                        >
-                            <ColorPicker
-                                value={selectedColorName}
-                                onChange={(color) =>
-                                    handleColorChange(tag.id, color)
-                                }
-                                onSelect={() => setIsContextMenuOpen(false)}
-                                layout="grid"
-                                shape="square"
-                                className="w-40"
-                            />
-                            <div className="flex justify-between mt-2">
-                                <button
-                                    onClick={() => {
-                                        startEditing();
-                                        setIsContextMenuOpen(false);
-                                    }}
-                                    className={`p-1 rounded-lg text-primaryColor hover:bg-primaryColor transition-colors duration-200`}
-                                    aria-label={`Edit ${tag.name}`}
-                                >
-                                    <Edit2 size={14} />
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        handleRemoveOption(tag.id);
-                                        setIsContextMenuOpen(false);
-                                    }}
-                                    className={`p-1 rounded-lg text-red-500 hover:bg-primaryColor transition-colors duration-200`}
-                                    aria-label={`Remove ${tag.name}`}
-                                >
-                                    <Trash2 size={14} />
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </>
-            )}
-        </div>
+        <button
+            type="button"
+            onClick={() => onClick(tag)}
+            className={`px-2 py-1 rounded-full text-xs font-medium transition-opacity hover:opacity-80 ${colorOption?.bg} ${colorOption?.text || 'text-text'}`}
+            aria-label={`Edit ${tag.name}`}
+        >
+            {tag.name}
+        </button>
     );
 };

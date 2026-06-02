@@ -1,6 +1,9 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
+import { Field } from '../../../../../shared/Field';
+import { Input } from '../../../../../shared/Input';
 import { OptionItem } from './OptionItem';
+import { TagEditModal } from './TagEditModal';
 import { Tag } from '../../../../../../types/newColumn.types';
 import { ColorName } from '../../../../../../utils/colorOptions';
 
@@ -25,6 +28,8 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     handleEditOption,
     handleColorChange,
 }) => {
+    const [activeTag, setActiveTag] = React.useState<Tag | null>(null);
+
     // Map column type to display label
     const getLabelText = () => {
         switch (columnType) {
@@ -58,43 +63,51 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     };
 
     return (
-        <div className="mb-4">
-            <label className={`block text-sm font-medium text-textMuted mb-1`}>
-                {getLabelText()}
-            </label>
-            <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-2">
-                    <input
-                        type="text"
-                        value={newOption}
-                        onChange={(e) => setNewOption(e.target.value)}
-                        onKeyPress={(e) =>
-                            e.key === 'Enter' && handleAddOption()
-                        }
-                        placeholder={`Add new ${getPlaceholderType()}...`}
-                        className={`flex-1 px-4 py-2 h-12 border border-border bg-background text-text placeholder-textSubtle rounded-xl focus:outline-none focus:ring-2 focus:ring-primaryColor text-sm transition-all duration-200`}
-                        aria-label={`Add new ${getPlaceholderType()}`}
-                    />
-                    <button
-                        onClick={handleAddOption}
-                        className={`flex items-center justify-center w-12 h-12 rounded-xl bg-primaryColor hover:bg-primaryHover text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryColor`}
-                        aria-label="Add new option"
-                    >
-                        <Plus size={18} className="stroke-2" />
-                    </button>
-                </div>
-                <div className="flex flex-wrap gap-2.5">
-                    {tags.map((tag) => (
-                        <OptionItem
-                            key={tag.id}
-                            tag={tag}
-                            handleColorChange={handleColorChange}
-                            handleRemoveOption={handleRemoveOption}
-                            handleEditOption={handleEditOption}
+        <>
+            <Field label={getLabelText()} className="mb-4">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Input
+                            type="text"
+                            value={newOption}
+                            onChange={(e) => setNewOption(e.target.value)}
+                            onKeyPress={(e) =>
+                                e.key === 'Enter' && handleAddOption()
+                            }
+                            placeholder={`Add new ${getPlaceholderType()}...`}
+                            aria-label={`Add new ${getPlaceholderType()}`}
+                            className="flex-1 h-12"
                         />
-                    ))}
+                        <button
+                            onClick={handleAddOption}
+                            className={`flex items-center justify-center w-12 h-12 rounded-xl bg-primaryColor hover:bg-primaryHover text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryColor`}
+                            aria-label="Add new option"
+                        >
+                            <Plus size={18} className="stroke-2" />
+                        </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2.5">
+                        {tags.map((tag) => (
+                            <OptionItem
+                                key={tag.id}
+                                tag={tag}
+                                onClick={setActiveTag}
+                            />
+                        ))}
+                    </div>
                 </div>
-            </div>
-        </div>
+            </Field>
+
+            <TagEditModal
+                tag={activeTag}
+                isOpen={activeTag !== null}
+                onClose={() => setActiveTag(null)}
+                onSave={(tagId, newName, color) => {
+                    handleEditOption(tagId, newName);
+                    handleColorChange(tagId, color);
+                }}
+                onDelete={handleRemoveOption}
+            />
+        </>
     );
 };
