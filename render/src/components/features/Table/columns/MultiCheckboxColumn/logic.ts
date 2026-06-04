@@ -1,4 +1,5 @@
 import { Tag } from '../../../../../types/newColumn.types';
+import { ColumnEntrySnapshot } from '../../../../../types/columnEntries.types';
 
 /**
  * Get color for a tag.
@@ -19,6 +20,7 @@ export const handleOptionToggle = (
     selectedOptionIds: string[],
     onChange: (optionIds: string[]) => void,
     availableOptions: Tag[],
+    selectedSnapshots: ColumnEntrySnapshot[],
     setSelectedValues: React.Dispatch<React.SetStateAction<string[]>>,
 ): void => {
     const newIds = selectedOptionIds.includes(optionId)
@@ -29,7 +31,11 @@ export const handleOptionToggle = (
 
     // Update local state for display (array of names)
     const newNames = newIds
-        .map((id) => availableOptions.find((opt) => opt.id === id)?.name)
+        .map(
+            (id) =>
+                availableOptions.find((opt) => opt.id === id)?.name ||
+                selectedSnapshots.find((opt) => opt.id === id)?.name,
+        )
         .filter(Boolean) as string[];
 
     setSelectedValues(newNames);

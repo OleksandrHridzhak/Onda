@@ -3,11 +3,17 @@ import { ColumnHeader } from '../ColumnHeader';
 import { MultiCheckboxCell } from './MultiCheckBoxCell';
 import { DayColumnLayout } from '../DayColumnLayout';
 import { useReactiveColumn } from '../../hooks/useReactiveColumn';
-import { updateColumnFields } from '../../../../../db/helpers/columns';
 import { MultiCheckboxColumn as MultiCheckboxColumnType } from '../../../../../types/newColumn.types';
+import {
+    ColumnEntrySnapshot,
+    ColumnEntryValueMap,
+} from '../../../../../types/columnEntries.types';
+import { upsertDayEntry } from '../../../../../db/helpers/columnEntries';
 
 interface MultiCheckboxColumnProps {
     columnId: string;
+    weekDates: Date[];
+    weekEntriesByDate: ColumnEntryValueMap;
 }
 
 /**
@@ -17,6 +23,8 @@ interface MultiCheckboxColumnProps {
  */
 export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
     columnId,
+    weekDates,
+    weekEntriesByDate,
 }) => {
     const { column, isLoading, isError } =
         useReactiveColumn<MultiCheckboxColumnType>(
@@ -33,26 +41,50 @@ export const MultiCheckboxColumn: React.FC<MultiCheckboxColumnProps> = ({
         return null;
     }
 
-    const handleCellChange = (day: string, selectedIds: string[]) => {
-        updateColumnFields(columnId, {
-            [`uniqueProps.days.${day}`]: selectedIds,
+    const handleCellChange = (dateKey: string, selectedIds: string[]) => {
+        const selectedSnapshots: ColumnEntrySnapshot[] = selectedIds
+            .map((optionId) =>
+                column.uniqueProps.availableOptions.find(
+                    (option) => option.id === optionId,
+                ),
+            )
+            .filter((option): option is NonNullable<typeof option> =>
+                Boolean(option),
+            )
+            .map((option) => ({
+                id: option.id,
+                name: option.name,
+                color: option.color,
+            }));
+
+        upsertDayEntry({
+            columnId,
+            dayDate: dateKey,
+            valueType: 'optionIds',
+            value: selectedIds,
+            meta: { selectedSnapshots },
         });
     };
 
     return (
         <table className="checkbox-nested-table column-multicheckbox font-poppins">
             <ColumnHeader columnId={columnId} />
-            <DayColumnLayout>
-                {(day) => {
-                    const selectedIds =
-                        column.uniqueProps.days?.[day] || [];
+            <DayColumnLayout weekDates={weekDates}>
+                {(_day, dateKey) => {
+                    const entry = weekEntriesByDate[dateKey];
+                    const selectedIds = (entry?.value as string[]) || [];
 
                     return (
                         <MultiCheckboxCell
                             selectedOptionIds={selectedIds}
-                            onChange={(newIds) => handleCellChange(day, newIds)}
+                            onChange={(newIds) =>
+                                handleCellChange(dateKey, newIds)
+                            }
                             availableOptions={
                                 column.uniqueProps.availableOptions
+                            }
+                            selectedSnapshots={
+                                entry?.meta?.selectedSnapshots || []
                             }
                         />
                     );

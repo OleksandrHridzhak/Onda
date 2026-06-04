@@ -1,8 +1,9 @@
 import React from 'react';
-import { DAYS } from '../TableLogic';
+import { formatDateKey } from '../../../../utils/date';
 
 interface DayColumnLayoutProps {
-    children: (day: string) => React.ReactNode;
+    weekDates: Date[];
+    children: (day: string, dateKey: string) => React.ReactNode;
 }
 /**
  * Layout component for rendering rows for each day of the week.
@@ -12,17 +13,28 @@ interface DayColumnLayoutProps {
  *
  *  */
 export const DayColumnLayout: React.FC<DayColumnLayoutProps> = ({
+    weekDates,
     children,
 }) => {
     return (
         <tbody className="bg-surface">
-            {DAYS.map((day) => (
-                <tr key={day} className="border-b border-border last:border-0">
-                    <td className="px-2 py-3 text-sm text-text">
-                        {children(day)}
-                    </td>
-                </tr>
-            ))}
+            {weekDates.map((date) => {
+                const day = date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                });
+                const dateKey = formatDateKey(date);
+
+                return (
+                    <tr
+                        key={dateKey}
+                        className="border-b border-border last:border-0"
+                    >
+                        <td className="px-2 py-3 text-sm text-text">
+                            {children(day, dateKey)}
+                        </td>
+                    </tr>
+                );
+            })}
         </tbody>
     );
 };

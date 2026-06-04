@@ -2,11 +2,13 @@ import React from 'react';
 import { COLOR_STYLES } from '../../../../../utils/colorOptions';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
 import { Tag } from '../../../../../types/newColumn.types';
+import { ColumnEntrySnapshot } from '../../../../../types/columnEntries.types';
 
 interface TagsCellProps {
     selectedTagIds: string[];
     onChange: (tagIds: string[]) => void;
     availableTags: Tag[];
+    selectedSnapshots?: ColumnEntrySnapshot[];
 }
 
 /**
@@ -18,10 +20,19 @@ export const TagsCell: React.FC<TagsCellProps> = ({
     selectedTagIds,
     onChange,
     availableTags,
+    selectedSnapshots = [],
 }) => {
+    const getSnapshotById = (tagId: string) => {
+        return selectedSnapshots.find((tag) => tag.id === tagId);
+    };
+
     // Convert selected IDs to display value (comma-separated names)
     const displayValue = selectedTagIds
-        .map((id) => availableTags.find((tag) => tag.id === id)?.name)
+        .map(
+            (id) =>
+                availableTags.find((tag) => tag.id === id)?.name ||
+                getSnapshotById(id)?.name,
+        )
         .filter(Boolean)
         .join(', ');
 
@@ -30,7 +41,21 @@ export const TagsCell: React.FC<TagsCellProps> = ({
 
     // Get Tag object by ID
     const getTagById = (tagId: string) => {
-        return availableTags.find((tag) => tag.id === tagId);
+        const currentTag = availableTags.find((tag) => tag.id === tagId);
+        if (currentTag) {
+            return currentTag;
+        }
+
+        const snapshot = getSnapshotById(tagId);
+        if (!snapshot) {
+            return null;
+        }
+
+        return {
+            id: snapshot.id,
+            name: snapshot.name,
+            color: snapshot.color,
+        };
     };
 
     const getColorForTag = (tag: Tag) => {
@@ -46,7 +71,11 @@ export const TagsCell: React.FC<TagsCellProps> = ({
 
         // Update local state for display
         const newDisplayValue = newTagIds
-            .map((id) => availableTags.find((tag) => tag.id === id)?.name)
+            .map(
+                (id) =>
+                    availableTags.find((tag) => tag.id === id)?.name ||
+                    getSnapshotById(id)?.name,
+            )
             .filter(Boolean)
             .join(', ');
         setSelectedValues(

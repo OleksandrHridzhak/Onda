@@ -12,11 +12,20 @@ import Table from './components/pages/TablePage';
 import MenuWin from './components/layout/MenuWin';
 import Calendar from './components/pages/CalendarPage';
 import Settings from './components/pages/SettingsPage';
+import Statistics from './components/pages/StatisticsPage';
+import StatisticsColumnDetailsPage from './components/pages/StatisticsColumnDetailsPage';
 import { syncService } from './services/syncService';
 
 import { db } from './db/index';
 
-const routes = ['/', '/calendar', '/settings'];
+const routes = ['/', '/calendar', '/statistics', '/settings'];
+
+const getRouteKey = (pathname: string): string => {
+    if (pathname.startsWith('/statistics')) return '/statistics';
+    if (pathname.startsWith('/calendar')) return '/calendar';
+    if (pathname.startsWith('/settings')) return '/settings';
+    return '/';
+};
 
 function MainContent() {
     const location = useLocation();
@@ -49,6 +58,11 @@ function MainContent() {
             <Routes>
                 <Route path="/" element={<Table />} />
                 <Route path="/calendar" element={<Calendar />} />
+                <Route path="/statistics" element={<Statistics />} />
+                <Route
+                    path="/statistics/:columnId"
+                    element={<StatisticsColumnDetailsPage />}
+                />
                 <Route path="/settings" element={<Settings />} />
             </Routes>
         </div>
@@ -65,7 +79,7 @@ function App() {
             if (isProcessing.current) return;
             isProcessing.current = true;
 
-            const currentIndex = routes.indexOf(location.pathname);
+            const currentIndex = routes.indexOf(getRouteKey(location.pathname));
             const nextIndex = (currentIndex + 1) % routes.length;
             navigate(routes[nextIndex]);
 

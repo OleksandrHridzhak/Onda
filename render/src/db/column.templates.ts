@@ -1,18 +1,5 @@
-import { WeeklyValues, Column } from '../types/newColumn.types';
+import { Column } from '../types/newColumn.types';
 import { COLUMN_TYPES } from '../constants/columnTypes';
-/**
- * Utility to generate empty initial values for each day of the week.
- * Ensures consistent data structure across the database.
- */
-const createWeeklyValues = <T>(defaultValue: T): WeeklyValues<T> => ({
-    Monday: defaultValue,
-    Tuesday: defaultValue,
-    Wednesday: defaultValue,
-    Thursday: defaultValue,
-    Friday: defaultValue,
-    Saturday: defaultValue,
-    Sunday: defaultValue,
-});
 
 /**
  * Global dictionary of column templates.
@@ -27,7 +14,6 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         emojiIconName: 'Star',
         width: 50,
         uniqueProps: {
-            days: createWeeklyValues(false),
             checkboxColor: 'accent1',
         },
     },
@@ -39,9 +25,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         description: 'Store text strings for each day of the week.',
         emojiIconName: 'Star',
         width: 130,
-        uniqueProps: {
-            days: createWeeklyValues(''),
-        },
+        uniqueProps: {},
     },
 
     [COLUMN_TYPES.NUMBERBOX]: {
@@ -51,9 +35,7 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
         description: 'Log numeric values for each weekday.',
         emojiIconName: 'Star',
         width: 60,
-        uniqueProps: {
-            days: createWeeklyValues(null),
-        },
+        uniqueProps: {},
     },
 
     [COLUMN_TYPES.TAGS]: {
@@ -68,7 +50,6 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
                 { id: 't1', name: 'Work', color: 'accent6' },
                 { id: 't2', name: 'Personal', color: 'accent1' },
             ],
-            days: createWeeklyValues([]),
         },
     },
 
@@ -99,7 +80,6 @@ export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
                 { id: 'o1', name: 'Option 1', color: 'accent3' },
                 { id: 'o2', name: 'Option 2', color: 'accent7' },
             ],
-            days: createWeeklyValues([]),
         },
     },
 

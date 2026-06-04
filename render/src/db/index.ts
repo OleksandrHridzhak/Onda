@@ -2,6 +2,7 @@ import Dexie, { type Table } from 'dexie';
 import { CalendarEntry } from '../types/calendar.types';
 import { Setting } from '../types/settings.types';
 import { Column } from '../types/newColumn.types';
+import { ColumnEntry } from '../types/columnEntries.types';
 import { DEFAULT_SETTINGS } from './constants';
 
 /**  Main database class
@@ -14,16 +15,19 @@ export class OndaDB extends Dexie {
     settings!: Table<Setting, string>;
     tableColumns!: Table<Column, string>;
     calendar!: Table<CalendarEntry, string>;
+    columnEntries!: Table<ColumnEntry, string>;
 
     constructor() {
         super('ondaDexieDB');
         /**
          * Define tables and their primary key(id) and indexes(date)
          */
-        this.version(2).stores({
+        this.version(3).stores({
             settings: 'id',
             tableColumns: 'id',
             calendar: 'id, date',
+            columnEntries:
+                'id, columnId, dateKey, dayDate, weekStart, scope, [columnId+dateKey]',
         });
 
         /**

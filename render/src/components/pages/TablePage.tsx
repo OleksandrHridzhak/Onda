@@ -9,6 +9,7 @@ import { usePullToRefresh } from '../../hooks/usePullToRefresh';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getAllColumns } from '../../db/helpers/columns';
 import { getSettings } from '../../db/helpers/settings';
+import { TableWeekProvider } from '../features/Table/context/TableWeekContext';
 
 const TableScreen: React.FC = () => {
     const tableLogic = useTableLogic();
@@ -95,13 +96,16 @@ const TableScreen: React.FC = () => {
                     transition: pullDistance === 0 ? 'transform 0.3s' : 'none',
                 }}
             >
-                {!isMobile && (
-                    <div>
-                        <PlannerHeader />
-                    </div>
+                {isMobile ? (
+                    <MobileTodayView />
+                ) : (
+                    <TableWeekProvider>
+                        <div>
+                            <PlannerHeader />
+                        </div>
+                        <Table />
+                    </TableWeekProvider>
                 )}
-
-                {isMobile ? <MobileTodayView /> : <Table />}
             </div>
         </div>
     );

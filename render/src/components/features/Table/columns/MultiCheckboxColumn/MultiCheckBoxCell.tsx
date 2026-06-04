@@ -3,11 +3,13 @@ import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
 import { useCircleCanvas } from './useCircleCanvas';
 import { getColorForTag, handleOptionToggle } from './logic';
 import { Tag } from '../../../../../types/newColumn.types';
+import { ColumnEntrySnapshot } from '../../../../../types/columnEntries.types';
 
 interface MultiCheckboxCellProps {
     selectedOptionIds: string[];
     onChange: (optionIds: string[]) => void;
     availableOptions: Tag[];
+    selectedSnapshots?: ColumnEntrySnapshot[];
 }
 
 /**
@@ -19,10 +21,19 @@ export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
     selectedOptionIds,
     onChange,
     availableOptions,
+    selectedSnapshots = [],
 }) => {
+    const getSnapshotById = (optionId: string) => {
+        return selectedSnapshots.find((option) => option.id === optionId);
+    };
+
     // Convert selected IDs to display value for useDropdownMultiSelect
     const displayValue = selectedOptionIds
-        .map((id) => availableOptions.find((opt) => opt.id === id)?.name)
+        .map(
+            (id) =>
+                availableOptions.find((opt) => opt.id === id)?.name ||
+                getSnapshotById(id)?.name,
+        )
         .filter(Boolean)
         .join(', ');
 
@@ -87,6 +98,7 @@ export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
                                         selectedOptionIds,
                                         onChange,
                                         availableOptions,
+                                        selectedSnapshots,
                                         setSelectedValues,
                                     )
                                 }
@@ -98,6 +110,7 @@ export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
                                             selectedOptionIds,
                                             onChange,
                                             availableOptions,
+                                            selectedSnapshots,
                                             setSelectedValues,
                                         );
                                     }

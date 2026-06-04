@@ -3,6 +3,7 @@ import PomodoroWidget from './widgets/PomodoroWidget';
 import TimelineWidget from './widgets/TimelineWidget';
 import { SymbolBlock } from './widgets/SymbolBlock';
 import { TimeWidget } from './widgets/TimeWidget';
+import WeekSwitcherWidget from './widgets/WeekSwitcherWidget';
 
 interface PlannerHeaderProps {
     darkTheme?: boolean;
@@ -12,12 +13,13 @@ interface PlannerHeaderProps {
 
 const PlannerHeader: React.FC<PlannerHeaderProps> = ({
     darkTheme = false,
-    layout = ['TimelineWidget', 'PomodoroWidget', 'SymbolBlock'],
+    layout = ['TimelineWidget', 'WeekSwitcherWidget', 'SymbolBlock'],
 }) => {
     const widgetComponents: Record<
         string,
         React.ComponentType<{ darkTheme?: boolean }>
     > = {
+        WeekSwitcherWidget,
         PomodoroWidget,
         TimelineWidget,
         SymbolBlock,
@@ -34,9 +36,9 @@ const PlannerHeader: React.FC<PlannerHeaderProps> = ({
     return (
         <div className={`bg-background p-4 relative`}>
             {layout?.length > 0 ? (
-                <div className="flex flex-wrap justify-between items-center  px-2 md:pt-10 md:pb-9">
+                <div className="flex flex-wrap justify-between items-center px-4 md:pt-10 md:pb-9">
                     <TimeWidget />
-                    <div className="hidden md:flex flex-wrap items-center">
+                    <div className="hidden md:ml-4 md:flex flex-1 flex-wrap items-center justify-end ">
                         {renderWidgets(layout)}
                     </div>
                 </div>

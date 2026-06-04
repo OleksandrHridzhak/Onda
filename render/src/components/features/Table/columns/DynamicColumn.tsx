@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../../../db';
 import { componentsMap } from '../Table.constants';
 import TableItemWrapper from './TableItemWrapper';
+import { ColumnEntryValueMap } from '../../../../types/columnEntries.types';
 
 /**
  * DynamicColumn component that subscribes only to its own column data.
@@ -13,7 +14,11 @@ import TableItemWrapper from './TableItemWrapper';
  *
  * @param columnId - Unique identifier of the column to render
  */
-const DynamicColumn: React.FC<{ columnId: string }> = ({ columnId }) => {
+const DynamicColumn: React.FC<{
+    columnId: string;
+    weekDates: Date[];
+    weekEntriesByDate: ColumnEntryValueMap;
+}> = ({ columnId, weekDates, weekEntriesByDate }) => {
     // Each column subscribes ONLY to its own record
     const data = useLiveQuery(() => db.tableColumns.get(columnId));
 
@@ -24,7 +29,11 @@ const DynamicColumn: React.FC<{ columnId: string }> = ({ columnId }) => {
 
     return (
         <TableItemWrapper column={data} className="border-r border-border">
-            <Component columnId={columnId} />
+            <Component
+                columnId={columnId}
+                weekDates={weekDates}
+                weekEntriesByDate={weekEntriesByDate}
+            />
         </TableItemWrapper>
     );
 };

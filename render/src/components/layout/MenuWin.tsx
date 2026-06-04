@@ -17,13 +17,11 @@ const MenuWin: React.FC<MenuWinProps> = ({ currentPage = '/' }) => {
     );
 
     const getContainerClass = (): string => {
-        if (themeMode !== 'dark') return '';
-
-        if (currentPage === '/settings' || currentPage === '/calendar') {
-            return ' bg-surface';
+        if (currentPage === '/') {
+            return 'bg-background';
         }
 
-        return ' bg-background';
+        return 'bg-surface';
     };
 
     const getButtonClass = (): string => {
@@ -36,7 +34,7 @@ const MenuWin: React.FC<MenuWinProps> = ({ currentPage = '/' }) => {
 
     return (
         <div
-            className={`w-full flex items-center justify-end gap-1 drag ${getContainerClass()}`}
+            className={`drag flex w-full items-center justify-end gap-1 px-2 py-1 ${getContainerClass()}`}
         >
             <button
                 onClick={() => globalThis.electronAPI?.minimizeWindow()}

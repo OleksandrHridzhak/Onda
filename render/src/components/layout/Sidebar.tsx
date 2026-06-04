@@ -14,7 +14,7 @@ interface RootState {
     };
 }
 
-type ActivePage = 'home' | 'calendar' | 'settings';
+type ActivePage = 'home' | 'calendar' | 'statistics' | 'settings';
 
 const Sidebar: React.FC = () => {
     const dispatch = useDispatch();
@@ -27,6 +27,7 @@ const Sidebar: React.FC = () => {
 
     const deriveActive = (path: string): ActivePage => {
         if (path.startsWith('/calendar')) return 'calendar';
+        if (path.startsWith('/statistics')) return 'statistics';
         if (path.startsWith('/settings')) return 'settings';
         return 'home';
     };
@@ -45,6 +46,8 @@ const Sidebar: React.FC = () => {
     const toggleTheme = (): void => {
         dispatch(toggleThemeMode());
     };
+
+    const isAddDisabled = active === 'settings' || active === 'statistics';
 
     return (
         <div
@@ -107,14 +110,14 @@ const Sidebar: React.FC = () => {
                         role="button"
                         tabIndex={0}
                         className={`transition-all duration-300 ease-in-out transform p-2.5 rounded-full flex items-center justify-center focus:outline-none focus:ring-2  ${
-                            active === 'settings'
+                            isAddDisabled
                                 ? 'opacity-50 cursor-not-allowed bg-primaryColor hover:scale-100 hover:bg-gray'
                                 : showColumnSelector
                                   ? 'bg-primaryColor text-white scale-100 ring-1 ring-primaryColor/30'
                                   : 'bg-primaryColor text-white hover:scale-105 shadow-md'
                         }`}
                         onClick={() => {
-                            if (active === 'settings') return;
+                            if (isAddDisabled) return;
                             if (active === 'calendar') {
                                 globalThis.dispatchEvent(
                                     new CustomEvent('open-calendar-new-event'),
@@ -125,7 +128,7 @@ const Sidebar: React.FC = () => {
                             }
                         }}
                         onKeyDown={(e) => {
-                            if (active === 'settings') return;
+                            if (isAddDisabled) return;
                             if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault();
                                 if (active === 'calendar') {
@@ -142,10 +145,10 @@ const Sidebar: React.FC = () => {
                         }}
                         aria-label="Open add column selector"
                         aria-pressed={showColumnSelector}
-                        aria-disabled={active === 'settings'}
+                        aria-disabled={isAddDisabled}
                         title={
-                            active === 'settings'
-                                ? 'Disabled in Settings'
+                            isAddDisabled
+                                ? 'Disabled on this page'
                                 : 'Add column'
                         }
                     >

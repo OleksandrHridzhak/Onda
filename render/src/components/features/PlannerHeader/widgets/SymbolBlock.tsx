@@ -5,7 +5,7 @@ export const SymbolBlock: React.FC = ({}) => {
     return (
         <div
             className={`
-      relative w-12 h-12 ml-2 flex items-center justify-center
+      relative w-12 h-12  flex items-center justify-center
       rounded-lg  z-10
       bg-surface
       text-primaryColor

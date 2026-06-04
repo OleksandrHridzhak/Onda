@@ -10,14 +10,15 @@ import {
     Table,
 } from 'lucide-react';
 import { COLUMN_TYPES } from '../../constants/columnTypes';
+import { COLOR_STYLES, type ColorName } from '../../utils/colorOptions';
+import { PageHeader } from '../shared/PageHeader';
 
 interface ColumnType {
     id: string;
     label: string;
     description?: string;
     icon: React.ReactElement;
-    bgColor: string;
-    hoverColor: string;
+    accent: ColorName;
 }
 
 interface ColumnCreatingPageProps {
@@ -37,100 +38,51 @@ const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
             label: 'Todo List',
             description:
                 'Checklist-style column for tasks with categories and quick add.',
-            icon: (
-                <ListTodo
-                    className={`w-5 h-5 ${darkMode ? 'text-red-200' : 'text-red-600'}`}
-                />
-            ),
-            bgColor: darkMode ? 'bg-red-800 bg-opacity-40' : 'bg-red-200',
-            hoverColor: darkMode
-                ? 'hover:bg-red-700 hover:bg-opacity-50'
-                : 'hover:bg-red-300',
+            icon: <ListTodo className="w-5 h-5" />,
+            accent: 'accent6',
         },
         {
             id: COLUMN_TYPES.CHECKBOX,
             label: 'Checkbox',
             description: 'Simple on/off checkbox for marking items done.',
-            icon: (
-                <CheckSquare
-                    className={`w-5 h-5 ${darkMode ? 'text-blue-200' : 'text-blue-600'}`}
-                />
-            ),
-            bgColor: darkMode ? 'bg-blue-800 bg-opacity-40' : 'bg-blue-200',
-            hoverColor: darkMode
-                ? 'hover:bg-blue-700 hover:bg-opacity-50'
-                : 'hover:bg-blue-300',
+            icon: <CheckSquare className="w-5 h-5" />,
+            accent: 'accent2',
         },
         {
             id: COLUMN_TYPES.NUMBERBOX,
             label: 'Number',
             description: 'Numeric input for counts, scores or measurements.',
-            icon: (
-                <Hash
-                    className={`w-5 h-5 ${darkMode ? 'text-green-200' : 'text-green-600'}`}
-                />
-            ),
-            bgColor: darkMode ? 'bg-green-800 bg-opacity-40' : 'bg-green-200',
-            hoverColor: darkMode
-                ? 'hover:bg-green-700 hover:bg-opacity-50'
-                : 'hover:bg-green-300',
+            icon: <Hash className="w-5 h-5" />,
+            accent: 'accent1',
         },
         {
             id: COLUMN_TYPES.TAGS,
             label: 'Tags',
             description: 'Tag-based multi-select for categorizing items.',
-            icon: (
-                <Tag
-                    className={`w-5 h-5 ${darkMode ? 'text-purple-200' : 'text-purple-600'}`}
-                />
-            ),
-            bgColor: darkMode ? 'bg-purple-800 bg-opacity-40' : 'bg-purple-200',
-            hoverColor: darkMode
-                ? 'hover:bg-purple-700 hover:bg-opacity-50'
-                : 'hover:bg-purple-300',
+            icon: <Tag className="w-5 h-5" />,
+            accent: 'accent3',
         },
 
         {
             id: COLUMN_TYPES.TEXTBOX,
             label: 'Notes',
             description: 'Free-form text field for notes and descriptions.',
-            icon: (
-                <Type
-                    className={`w-5 h-5 ${darkMode ? 'text-amber-200' : 'text-amber-600'}`}
-                />
-            ),
-            bgColor: darkMode ? 'bg-amber-800 bg-opacity-40' : 'bg-amber-200',
-            hoverColor: darkMode
-                ? 'hover:bg-amber-700 hover:bg-opacity-50'
-                : 'hover:bg-amber-300',
+            icon: <Type className="w-5 h-5" />,
+            accent: 'accent4',
         },
         {
             id: COLUMN_TYPES.MULTI_CHECKBOX,
             label: 'Multi Checkbox',
             description: 'Multiple checkbox options for subtasks or choices.',
-            icon: (
-                <Circle
-                    className={`w-5 h-5 ${darkMode ? 'text-teal-200' : 'text-teal-600'}`}
-                />
-            ),
-            bgColor: darkMode ? 'bg-teal-800 bg-opacity-40' : 'bg-teal-200',
-            hoverColor: darkMode
-                ? 'hover:bg-teal-700 hover:bg-opacity-50'
-                : 'hover:bg-teal-300',
+            icon: <Circle className="w-5 h-5" />,
+            accent: 'accent8',
         },
         {
             id: COLUMN_TYPES.TASK_TABLE,
             label: 'Task Table',
             description: 'Nested task table for managing tasks inside a row.',
-            icon: (
-                <Table
-                    className={`w-5 h-5 ${darkMode ? 'text-gray-200' : 'text-gray-600'}`}
-                />
-            ),
-            bgColor: darkMode ? 'bg-gray-800 bg-opacity-36' : 'bg-gray-200',
-            hoverColor: darkMode
-                ? 'hover:bg-gray-700 hover:bg-opacity-50'
-                : 'hover:bg-gray-300',
+            icon: <Table className="w-5 h-5" />,
+            accent: 'accent9',
         },
     ];
 
@@ -148,56 +100,49 @@ const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
             tabIndex={-1}
         >
             {/* Panel occupies full viewport except left sidebar on md+ */}
-            <div
-                className={`relative w-full h-full  ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-100'} z-50 border md:border-l-0 animate-fade-in`}
-            >
-                <div
-                    className={`p-4 border-b ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-100 bg-white'} flex justify-between items-center sticky top-0 z-10`}
+            <div className="relative z-50 flex h-full w-full flex-col border border-border bg-background md:border-l-0 animate-fade-in">
+                <PageHeader
+                    title="Select Column Type"
+                    icon={<Table size={22} />}
+                    className="z-10"
                 >
-                    <h3
-                        className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}
-                    >
-                        Select Column Type
-                    </h3>
                     <button
                         onClick={onCancel}
-                        className={`p-2 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+                        className="rounded-full p-2 text-textMuted transition-colors hover:bg-backgrundHover hover:text-text"
                         aria-label="Close"
                     >
-                        <X
-                            className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
-                        />
+                        <X className="h-5 w-5" />
                     </button>
-                </div>
+                </PageHeader>
 
                 <div
-                    className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 h-[calc(100%-64px)] overflow-auto ${darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'} md:hide-scrollbar`}
+                    className={`grid flex-1 min-h-0 grid-cols-1 gap-4 overflow-auto p-6 md:grid-cols-2 lg:grid-cols-3 ${darkMode ? 'custom-scroll-y-dark' : 'custom-scroll-y-light'} md:hide-scrollbar`}
                 >
-                    {columnTypes.map((type) => (
-                        <button
-                            key={type.id}
-                            onClick={() => onSelect(type.id)}
-                            className={`w-full h-full flex flex-col items-start justify-start gap-4 p-6 transition-all duration-200 ${type.bgColor} ${type.hoverColor} rounded-lg`}
-                        >
-                            <div
-                                className={`p-3 rounded-lg ${darkMode ? type.bgColor : type.bgColor.replace('200', '100')}`}
+                    {columnTypes.map((type) => {
+                        const accentStyles = COLOR_STYLES[type.accent];
+
+                        return (
+                            <button
+                                key={type.id}
+                                onClick={() => onSelect(type.id)}
+                                className="relative flex h-full w-full flex-col items-start justify-start gap-4 overflow-hidden rounded-lg border border-border bg-surface p-6 text-left transition-all duration-200 hover:border-primaryColor/30 hover:bg-surfaceMuted hover:shadow-sm"
                             >
-                                {type.icon}
-                            </div>
-                            <div className="text-left">
                                 <div
-                                    className={`font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}
+                                    className={`rounded-lg p-3 ${accentStyles.bg} ${accentStyles.text}`}
                                 >
-                                    {type.label}
+                                    {type.icon}
                                 </div>
-                                <div
-                                    className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
-                                >
-                                    {type.description}
+                                <div className="text-left">
+                                    <div className="font-semibold text-text">
+                                        {type.label}
+                                    </div>
+                                    <div className="mt-1 text-sm text-textMuted">
+                                        {type.description}
+                                    </div>
                                 </div>
-                            </div>
-                        </button>
-                    ))}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
         </div>

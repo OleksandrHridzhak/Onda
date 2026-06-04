@@ -1,18 +1,25 @@
 import React from 'react';
 import { ColumnHeader } from '../ColumnHeader';
 import { TextboxCell } from './TextboxCell';
-import { updateColumnFields } from '../../../../../db/helpers/columns';
 import { TextboxColumn as TextboxColumnType } from '../../../../../types/newColumn.types';
+import { ColumnEntryValueMap } from '../../../../../types/columnEntries.types';
 import { useReactiveColumn } from '../../hooks/useReactiveColumn';
 import { DayColumnLayout } from '../DayColumnLayout';
+import { upsertDayEntry } from '../../../../../db/helpers/columnEntries';
 
 // TODO : Don't repeat in each column, create a HOC for this pattern
 interface TextboxColumnProps {
     columnId: string;
+    weekDates: Date[];
+    weekEntriesByDate: ColumnEntryValueMap;
 }
 
-export const TextboxColumn: React.FC<TextboxColumnProps> = ({ columnId }) => {
-    const { column, isLoading, isError } = useReactiveColumn<TextboxColumnType>(
+export const TextboxColumn: React.FC<TextboxColumnProps> = ({
+    columnId,
+    weekDates,
+    weekEntriesByDate,
+}) => {
+    const { isLoading } = useReactiveColumn<TextboxColumnType>(
         columnId,
         'textboxColumn',
     );
@@ -22,20 +29,27 @@ export const TextboxColumn: React.FC<TextboxColumnProps> = ({ columnId }) => {
         return <div></div>;
     }
 
-    const handleCellChange = (day: string, newValue: string) => {
-        updateColumnFields(columnId, {
-            [`uniqueProps.days.${day}`]: newValue,
+    const handleCellChange = (dateKey: string, newValue: string) => {
+        upsertDayEntry({
+            columnId,
+            dayDate: dateKey,
+            valueType: 'text',
+            value: newValue,
         });
     };
 
     return (
         <table className="checkbox-nested-table column-text font-poppins">
             <ColumnHeader columnId={columnId} />
-            <DayColumnLayout>
-                {(day) => (
+            <DayColumnLayout weekDates={weekDates}>
+                {(_day, dateKey) => (
                     <TextboxCell
-                        value={column?.uniqueProps?.days?.[day] || ''}
-                        onChange={(newValue) => handleCellChange(day, newValue)}
+                        value={
+                            (weekEntriesByDate[dateKey]?.value as string) || ''
+                        }
+                        onChange={(newValue) =>
+                            handleCellChange(dateKey, newValue)
+                        }
                     />
                 )}
             </DayColumnLayout>

@@ -42,7 +42,6 @@ export interface BaseColumn {
 export interface CheckboxColumn extends BaseColumn {
     type: 'checkboxColumn';
     uniqueProps: {
-        days: WeeklyValues<boolean>;
         checkboxColor: ColorName;
     };
 }
@@ -53,9 +52,7 @@ export interface CheckboxColumn extends BaseColumn {
  */
 export interface TextboxColumn extends BaseColumn {
     type: 'textboxColumn';
-    uniqueProps: {
-        days: WeeklyValues<string>;
-    };
+    uniqueProps: Record<string, never>;
 }
 
 /**
@@ -64,9 +61,7 @@ export interface TextboxColumn extends BaseColumn {
  */
 export interface NumberBoxColumn extends BaseColumn {
     type: 'numberboxColumn';
-    uniqueProps: {
-        days: WeeklyValues<number>;
-    };
+    uniqueProps: Record<string, never>;
 }
 
 /**
@@ -92,7 +87,6 @@ export interface TagsColumn extends BaseColumn {
     type: 'tagsColumn';
     uniqueProps: {
         availableTags: Tag[];
-        days: WeeklyValues<string[]>;
     };
 }
 
@@ -127,7 +121,6 @@ export interface MultiCheckboxColumn extends BaseColumn {
     type: 'multiCheckBoxColumn';
     uniqueProps: {
         availableOptions: Tag[];
-        days: WeeklyValues<string[]>;
     };
 }
 /**

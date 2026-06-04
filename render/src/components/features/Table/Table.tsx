@@ -5,12 +5,26 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import TableItemWrapper from './columns/TableItemWrapper';
 import { getAllColumns } from '../../../db/helpers/columns';
 import { getSettings } from '../../../db/helpers/settings';
+import { getEntriesForWeek } from '../../../db/helpers/columnEntries';
+import { ColumnEntryValueMap } from '../../../types/columnEntries.types';
+import { getWeekDates, getWeekStartKey } from '../../../utils/date';
 import './Table.css';
 import { useRowHeightSync } from './hooks/useRowHeightSync';
 import DynamicColumn from './columns/DynamicColumn';
 import { TableLoadingOverlay } from './components/TableLoadingOverlay';
+import { useTableWeek } from './context/TableWeekContext';
 
 const Table: React.FC = () => {
+    const { currentWeekStart } = useTableWeek();
+    const currentWeekStartKey = React.useMemo(
+        () => getWeekStartKey(currentWeekStart),
+        [currentWeekStart],
+    );
+    const weekDates = React.useMemo(
+        () => getWeekDates(currentWeekStart),
+        [currentWeekStart],
+    );
+
     /**
      * Fetch the ordered list of column IDs from the settings.
      * This determines the visual sequence of columns in the table.
@@ -30,11 +44,31 @@ const Table: React.FC = () => {
         return res.success ? res.data : [];
     });
 
+    const weekEntries = useLiveQuery(async () => {
+        const res = await getEntriesForWeek(currentWeekStartKey);
+        return res.success ? res.data : [];
+    }, [currentWeekStartKey]);
+
+    const weekEntriesByBlock = React.useMemo(() => {
+        return (weekEntries || []).reduce<Record<string, ColumnEntryValueMap>>(
+            (acc, entry) => {
+                acc[entry.columnId] ??= {};
+                acc[entry.columnId][entry.dateKey] = entry;
+                return acc;
+            },
+            {},
+        );
+    }, [weekEntries]);
+
     // Synchronize row heights across all nested tables
-    const { isLoading } = useRowHeightSync([columnsData]);
+    const { isLoading } = useRowHeightSync([columnsData, weekEntries]);
 
     // To avoid rendering issues, ensure required data is loaded
-    if (columnOrder === undefined || columnsData === undefined) {
+    if (
+        columnOrder === undefined ||
+        columnsData === undefined ||
+        weekEntries === undefined
+    ) {
         return null; // Add a loading skeleton here if needed
     }
 
@@ -52,39 +86,48 @@ const Table: React.FC = () => {
      * </MainTable>
      */
     return (
-        <div className="overflow-x-auto font-poppins border border-border rounded-xl m-2 custom-scroll relative">
-            <div className="overflow-x-auto custom-scroll">
-                <table className="w-full">
-                    <thead>
-                        <tr className="border-border bg-surfaceMuted text-textMuted border-b">
-                            {/* Static: Days of the week column */}
-                            <TableItemWrapper
-                                key="days-column"
-                                column={daysColumn}
-                                className="border-r border-border"
-                            >
-                                <componentsMap.days />
-                            </TableItemWrapper>
+        <div className="font-poppins m-2">
+            <div className="overflow-x-auto custom-scroll relative rounded-xl border border-border">
+                <div className="overflow-x-auto custom-scroll">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="border-border bg-surfaceMuted text-textMuted border-b">
+                                {/* Static: Days of the week column */}
+                                <TableItemWrapper
+                                    key="days-column"
+                                    column={daysColumn}
+                                    className="border-r border-border"
+                                >
+                                    <componentsMap.days weekDates={weekDates} />
+                                </TableItemWrapper>
 
-                            {/* Dynamic: User-defined optional columns */}
-                            {columnOrder.map((id) => (
-                                <DynamicColumn key={id} columnId={id} />
-                            ))}
+                                {/* Dynamic: User-defined optional columns */}
+                                {columnOrder.map((id) => (
+                                    <DynamicColumn
+                                        key={id}
+                                        columnId={id}
+                                        weekDates={weekDates}
+                                        weekEntriesByDate={
+                                            weekEntriesByBlock[id] || {}
+                                        }
+                                    />
+                                ))}
 
-                            {/* Utility: Filler column to occupy remaining space */}
-                            <TableItemWrapper
-                                key="filler"
-                                column={fillerColumn}
-                            >
-                                <componentsMap.fillerColumn />
-                            </TableItemWrapper>
-                        </tr>
-                    </thead>
-                </table>
+                                {/* Utility: Filler column to occupy remaining space */}
+                                <TableItemWrapper
+                                    key="filler"
+                                    column={fillerColumn}
+                                >
+                                    <componentsMap.fillerColumn />
+                                </TableItemWrapper>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                {/* Loading overlay */}
+                <TableLoadingOverlay isVisible={isLoading} />
             </div>
-
-            {/* Loading overlay */}
-            <TableLoadingOverlay isVisible={isLoading} />
         </div>
     );
 };

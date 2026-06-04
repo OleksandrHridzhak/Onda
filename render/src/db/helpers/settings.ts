@@ -129,7 +129,7 @@ export async function clearAllData(): Promise<
     try {
         return await db.transaction(
             'rw',
-            [db.tableColumns, db.calendar, db.settings],
+            [db.tableColumns, db.calendar, db.settings, db.columnEntries],
             async () => {
                 // 1. Count items before deletion for logging
                 const columnsCount = await db.tableColumns.count();
@@ -141,7 +141,10 @@ export async function clearAllData(): Promise<
                 // 3. Clear all calendar events
                 await db.calendar.clear();
 
-                // 4. Reset settings to default
+                // 4. Clear all column entries
+                await db.columnEntries.clear();
+
+                // 5. Reset settings to default
                 await db.settings.clear();
                 await db.settings.add(DEFAULT_SETTINGS);
 

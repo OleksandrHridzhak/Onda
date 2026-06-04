@@ -1,5 +1,5 @@
 import { db } from '../index';
-import { Column, createEmptyWeeklyValues } from '../../types/newColumn.types';
+import { Column } from '../../types/newColumn.types';
 import { COLUMN_TYPES } from '../../constants/columnTypes';
 import { COLUMN_TEMPLATES } from '../column.templates';
 import { ColumnType } from '../../constants/columnTypes';
@@ -195,21 +195,29 @@ export async function deleteColumn(
     columnId: string,
 ): Promise<DbResult<{ columnId: string }>> {
     try {
-        await db.transaction('rw', [db.tableColumns, db.settings], async () => {
-            // 1. Delete the column record
-            await db.tableColumns.delete(columnId);
+        await db.transaction(
+            'rw',
+            [db.tableColumns, db.settings, db.columnEntries],
+            async () => {
+                // 1. Delete the column record
+                await db.tableColumns.delete(columnId);
+                await db.columnEntries
+                    .where('columnId')
+                    .equals(columnId)
+                    .delete();
 
-            // 2. Remove the ID from the global order array
-            const settings = await db.settings.get('global');
-            if (settings) {
-                const newOrder = settings.layout.columnsOrder.filter(
-                    (id) => id !== columnId,
-                );
-                await db.settings.update('global', {
-                    layout: { columnsOrder: newOrder },
-                });
-            }
-        });
+                // 2. Remove the ID from the global order array
+                const settings = await db.settings.get('global');
+                if (settings) {
+                    const newOrder = settings.layout.columnsOrder.filter(
+                        (id) => id !== columnId,
+                    );
+                    await db.settings.update('global', {
+                        layout: { columnsOrder: newOrder },
+                    });
+                }
+            },
+        );
 
         console.log('Column and order reference deleted:', columnId);
         return { success: true, data: { columnId } };
@@ -304,25 +312,29 @@ export async function clearColumn(columnId: string): Promise<DbResult<Column>> {
 
         switch (column.type) {
             case COLUMN_TYPES.CHECKBOX:
-                updates = {
-                    'uniqueProps.days': createEmptyWeeklyValues(false),
-                };
+                await db.columnEntries
+                    .where('columnId')
+                    .equals(columnId)
+                    .delete();
                 break;
             case COLUMN_TYPES.TEXTBOX:
-                updates = {
-                    'uniqueProps.days': createEmptyWeeklyValues(''),
-                };
+                await db.columnEntries
+                    .where('columnId')
+                    .equals(columnId)
+                    .delete();
                 break;
             case COLUMN_TYPES.NUMBERBOX:
-                updates = {
-                    'uniqueProps.days': createEmptyWeeklyValues(0),
-                };
+                await db.columnEntries
+                    .where('columnId')
+                    .equals(columnId)
+                    .delete();
                 break;
             case COLUMN_TYPES.TAGS:
             case COLUMN_TYPES.MULTI_CHECKBOX:
-                updates = {
-                    'uniqueProps.days': createEmptyWeeklyValues<string[]>([]),
-                };
+                await db.columnEntries
+                    .where('columnId')
+                    .equals(columnId)
+                    .delete();
                 break;
             case COLUMN_TYPES.TODO:
                 updates = {
@@ -336,7 +348,9 @@ export async function clearColumn(columnId: string): Promise<DbResult<Column>> {
                 break;
         }
 
-        await db.tableColumns.update(columnId, updates);
+        if (Object.keys(updates).length > 0) {
+            await db.tableColumns.update(columnId, updates);
+        }
         const updatedColumn = await db.tableColumns.get(columnId);
 
         console.log(`[Onda DB] Column ${columnId} data cleared`);
