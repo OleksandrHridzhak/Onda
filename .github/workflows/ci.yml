@@ -30,17 +30,13 @@ jobs:
         with:
           node-version: 20
 
-      # React frontend
-      - name: Build React frontend
-        working-directory: ./render
+      - name: Install frontend dependencies
+        working-directory: ./src/render
+        run: npm ci
+
+      - name: Build Windows app
         env:
           CI: false
-        run: |
-          npm ci
-          npm run build
-
-      # Electron backend → .exe
-      - name: Build Electron backend (Windows .exe)
         run: |
           npm ci
           npm run dist
@@ -49,158 +45,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: ./render/build/
+          path: ./src/render/build/
 
-      # Upload Windows .exe artifact
       - name: Upload Windows Electron artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-electron-build
           path: dist\*.exe
-
-      # Analyze the built .exe
-      - name: Extract EXE, list files and total size
-        shell: powershell
-        run: |
-          mkdir extracted
-
-          $exeFile = Get-ChildItem -Path dist -Filter '*.exe' | Select-Object -First 1
-
-          if (-not $exeFile) {
-              Write-Error "No .exe found in dist folder!"
-              exit 1
-          }
-
-          & "C:\Program Files\7-Zip\7z.exe" x $exeFile.FullName -oextracted -y
-
-          Write-Output "=== Files ==="
-          Get-ChildItem extracted -Recurse | ForEach-Object { "$($_.FullName) $($_.Length) bytes" }
-
-          $total = (Get-ChildItem extracted -Recurse | Measure-Object Length -Sum).Sum
-          Write-Output "=== Total size: $($total) bytes ==="
-
-      - name: Measure Electron + React bundle size
-        shell: powershell
-        run: |
-          $appArchive = 'extracted\$PLUGINSDIR\app-64.7z'
-
-          if (-not (Test-Path $appArchive)) {
-              Write-Error "app-64.7z not found!"
-              exit 1
-          }
-
-          $compressedSize = (Get-Item $appArchive).Length
-          Write-Output "Compressed bundle size: $([math]::Round($compressedSize / 1MB, 2)) MB"
-
-          mkdir extracted\app
-          & "C:\Program Files\7-Zip\7z.exe" x $appArchive -oextracted\app -y
-
-          $unpackedSize = (Get-ChildItem extracted\app -Recurse | Measure-Object Length -Sum).Sum
-          Write-Output "Unpacked bundle size: $([math]::Round($unpackedSize / 1MB, 2)) MB"
-      - name: List all files in unpacked bundle (MB)
-        shell: powershell
-        run: |
-          Get-ChildItem extracted\app -Recurse | ForEach-Object { "$($_.FullName) - $([math]::Round($_.Length/1MB, 2)) MB" }
-
-  build-ios:
-    runs-on: macos-latest
-    if: contains(github.event.head_commit.message, '[build-ios]')
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      # Build React frontend first
-      - name: Build React frontend
-        working-directory: ./render
-        env:
-          CI: false
-        run: |
-          npm ci
-          npm run build
-
-      # Setup Capacitor iOS
-      - name: Install mobile dependencies
-        working-directory: ./mobile
-        run: npm ci
-
-      # Add iOS platform and sync
-      - name: Add iOS platform
-        working-directory: ./mobile
-        run: |
-          if [ ! -d "ios" ]; then
-            npx cap add ios
-          fi
-
-      - name: Sync iOS
-        working-directory: ./mobile
-        run: npx cap sync ios
-
-      # Install CocoaPods dependencies
-      - name: Install CocoaPods
-        working-directory: ./mobile/ios/App
-        run: pod install
-
-      # Build iOS app (unsigned for simulator)
-      - name: Build iOS app for simulator
-        working-directory: ./mobile/ios/App
-        run: |
-          xcodebuild -workspace App.xcworkspace \
-            -scheme App \
-            -configuration Release \
-            -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO \
-            build
-
-      # Archive for device (unsigned .app)
-      - name: Archive iOS app
-        working-directory: ./mobile/ios/App
-        run: |
-          xcodebuild -workspace App.xcworkspace \
-            -scheme App \
-            -configuration Release \
-            -sdk iphoneos \
-            -destination 'generic/platform=iOS' \
-            -archivePath build/App.xcarchive \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            archive
-
-      # Upload iOS build artifacts
-      - name: Upload iOS simulator build
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-simulator-build
-          path: ./mobile/ios/App/build/Build/Products/Release-iphonesimulator/App.app
-
-      - name: Upload iOS archive
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-archive
-          path: ./mobile/ios/App/build/App.xcarchive
-
-      # Create unsigned IPA file for direct installation
-      - name: Create unsigned IPA
-        working-directory: ./mobile/ios/App
-        run: |
-          APP_PATH="build/App.xcarchive/Products/Applications/App.app"
-          if [ ! -d "$APP_PATH" ]; then
-            echo "Error: App.app not found at $APP_PATH"
-            exit 1
-          fi
-          mkdir -p Payload
-          cp -r "$APP_PATH" Payload/
-          zip -qr App-unsigned.ipa Payload
-          rm -rf Payload
-
-      - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-ipa
-          path: ./mobile/ios/App/App-unsigned.ipa
-

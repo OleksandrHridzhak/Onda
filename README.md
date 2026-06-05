@@ -6,12 +6,22 @@ Desktop weekly planning app built with Electron, React, TypeScript, and Dexie.
 
 ```text
 Onda
-|- api        # Electron IPC handlers
-|- assets     # Desktop app assets
-|- docs       # Notes and design docs
-|- render     # React frontend
-|- main.js    # Electron entry point
-|- preload.js # Electron preload script
+|- src/
+|  |- electron/
+|     |- main/     # Electron main process
+|     |- preload/  # Secure preload bridge
+|     |- ipc/      # IPC handlers
+|  |- shared/
+|     |- assets/   # Shared app assets
+|  |- render/
+|     |- src/
+|        |- app/      # App shell, layout, store, types, utils, constants
+|        |- db/       # Dexie database layer
+|        |- features/ # Feature modules
+|        |- pages/    # Route pages
+|        |- shared/   # Shared UI components
+|        |- styles/   # Global styles and themes
+|- docs/           # Notes and design docs
 ```
 
 ## Getting Started
@@ -25,7 +35,7 @@ npm install
 Install frontend dependencies:
 
 ```bash
-cd render
+cd src/render
 npm install
 cd ..
 ```

@@ -1,15 +1,16 @@
 {
     "name": "onda-app-dev",
     "version": "2.2.0",
-    "main": "main.bundle.js",
+    "main": "src/electron/build/main.bundle.js",
     "scripts": {
-        "start": "concurrently \"npm:watch:webpack\" \"npm:start:react\" \"npm:start:electron\"",
-        "start:react": "cd render && npm start",
+        "start": "concurrently \"npm:watch:electron\" \"npm:start:render\" \"npm:start:electron\"",
+        "start:render": "npm --prefix src/render start",
         "start:electron": "nodemon electron .",
-        "build:react": "cd render && npm run build",
-        "build:webpack": "webpack --config webpack.config.js",
-        "watch:webpack": "webpack --config webpack.config.js --mode=development --watch",
-        "dist": "npm run build:react && npm run build:webpack && electron-builder",
+        "build": "npm run build:render && npm run build:electron",
+        "build:render": "npm --prefix src/render run build",
+        "build:electron": "webpack --config src/electron/webpack.config.js",
+        "watch:electron": "webpack --config src/electron/webpack.config.js --mode=development --watch",
+        "dist": "npm run build && electron-builder",
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
         "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
         "prepare": "husky"
@@ -59,22 +60,20 @@
         ],
         "publish": null,
         "directories": {
-            "buildResources": "assets",
+            "buildResources": "src/shared/assets",
             "output": "dist"
         },
         "win": {
             "target": "nsis",
-            "icon": "assets/logo256.ico",
+            "icon": "src/shared/assets/logo256.ico",
             "compression": "maximum"
         },
         "files": [
-            "render/build/",
-            "tray_icon.png",
+            "src/render/build/",
             "package.json",
-            "main.bundle.js",
-            "preload.bundle.js",
+            "src/electron/build/**",
             "userData/**",
-            "assets/**",
+            "src/shared/assets/**",
             "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
             "!**/*.{md,txt,log}",
             "!**/node_modules/electron-devtools-installer/**",
@@ -83,7 +82,7 @@
         ]
     },
     "lint-staged": {
-        "render/src/**/*.{js,jsx,ts,tsx}": [
+        "src/render/src/**/*.{js,jsx,ts,tsx}": [
             "prettier --write"
         ],
         "**/*.{json,css,md}": [
