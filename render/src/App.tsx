@@ -14,7 +14,6 @@ import Calendar from './components/pages/CalendarPage';
 import Settings from './components/pages/SettingsPage';
 import Statistics from './components/pages/StatisticsPage';
 import StatisticsColumnDetailsPage from './components/pages/StatisticsColumnDetailsPage';
-import { syncService } from './services/syncService';
 
 import { db } from './db/index';
 
@@ -42,9 +41,6 @@ function MainContent() {
         if (savedColor) {
             document.documentElement.dataset.colorScheme = savedColor;
         }
-
-        // Initialize sync service on app startup
-        syncService.initialize().catch(console.error);
     }, []);
 
     const isElectron =

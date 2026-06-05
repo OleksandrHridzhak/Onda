@@ -8,7 +8,7 @@ import { DEFAULT_SETTINGS } from '../constants';
  * @returns DbResult with settings object
  * @example
  * // Success:
- * { success: true, data: { id: 'global', columnsOrder: [...], darkMode: false, sync: {...} } }
+ * { success: true, data: { id: 'global', layout: { columnsOrder: [...] } } }
  *
  * // Not found:
  * { success: false, error: 'Settings not found' }
@@ -37,8 +37,8 @@ export async function getSettings(): Promise<DbResult<Setting>> {
  * // Success:
  * { success: true, data: { updatedCount: 1 } }
  *
- * // Update sync settings:
- * await updateSettings({ sync: { enabled: true, serverUrl: 'https://...' } })
+ * // Update layout settings:
+ * await updateSettings({ layout: { columnsOrder: ['col-1', 'col-2'] } })
  *
  * // Error:
  * { success: false, error: 'Update failed' }

@@ -9,9 +9,4 @@ export const DEFAULT_SETTINGS: Setting = {
     layout: {
         columnsOrder: [],
     },
-    sync: {
-        serverUrl: 'https://onda-39t4.onrender.com',
-        secretKey: '',
-        enabled: false,
-    },
 };

@@ -27,7 +27,6 @@ code {
 @tailwind utilities;
 @import './themes.css';
 
-/* Hide scrollbar for mobile week selector */
 @layer utilities {
     .scrollbar-hide {
         -ms-overflow-style: none;
