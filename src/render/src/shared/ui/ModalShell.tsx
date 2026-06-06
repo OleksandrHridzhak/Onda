@@ -9,6 +9,7 @@ interface ModalShellProps {
     children: React.ReactNode;
     title: React.ReactNode;
     className?: string;
+    size?: 'default' | 'large';
 }
 
 export function ModalShell({
@@ -17,8 +18,21 @@ export function ModalShell({
     children,
     title,
     className = 'cursor-default',
+    size = 'default',
 }: ModalShellProps) {
-    if (!isOpen) return null;
+    React.useEffect(() => {
+        if (!isOpen) return;
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                onClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onClose]);
 
     const handleBackdropMouseDown = () => {
         onClose();
@@ -28,12 +42,12 @@ export function ModalShell({
         e.stopPropagation();
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === 'Escape') {
-            e.preventDefault();
-            onClose();
-        }
-    };
+    if (!isOpen) return null;
+
+    const panelSizeClass =
+        size === 'large'
+            ? 'h-[80vh] w-[80vw] max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)]'
+            : 'w-full max-w-md mx-4';
 
     return createPortal(
         <div
@@ -42,14 +56,17 @@ export function ModalShell({
             tabIndex={-1}
             className={`fixed inset-0 z-[9999] flex items-center justify-center ${className}`.trim()}
             onMouseDown={handleBackdropMouseDown}
-            onKeyDown={handleKeyDown}
         >
             <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" />
             <div
-                className="relative z-10 w-full max-w-md mx-4"
+                className={`relative z-10 ${panelSizeClass}`}
                 onMouseDown={handlePanelMouseDown}
             >
-                <div className="rounded-2xl bg-background border-border border shadow-md p-4 text-text">
+                <div
+                    className={`flex rounded-2xl bg-background border-border border shadow-md p-4 text-text ${
+                        size === 'large' ? 'h-full flex-col' : 'flex-col'
+                    }`}
+                >
                     <div className="flex items-center justify-between mb-4">
                         <Heading as="h1" variant="lg" className="font-semibold">
                             {title}
@@ -62,7 +79,15 @@ export function ModalShell({
                             <X size={20} />
                         </button>
                     </div>
-                    <div>{children}</div>
+                    <div
+                        className={
+                            size === 'large'
+                                ? 'min-h-0 flex-1 overflow-y-auto'
+                                : ''
+                        }
+                    >
+                        {children}
+                    </div>
                 </div>
             </div>
         </div>,
