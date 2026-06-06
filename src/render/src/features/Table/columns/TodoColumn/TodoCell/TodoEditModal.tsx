@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button } from 'shared/Button';
-import { Field } from 'shared/Field';
-import { Input } from 'shared/Input';
-import { ModalShell } from 'shared/ModalShell';
-import { Select } from 'shared/Select';
+import { Button } from 'shared/ui/Button';
+import { Field } from 'shared/ui/Field';
+import { Input } from 'shared/ui/Input';
+import { ModalShell } from 'shared/ui/ModalShell';
+import { Select } from 'shared/ui/Select';
 import { Tag } from 'app/types/newColumn.types';
 
 interface TodoEditModalProps {

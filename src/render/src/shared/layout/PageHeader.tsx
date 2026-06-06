@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading } from 'shared/Heading';
+import { Heading } from 'shared/ui/Heading';
 
 interface PageHeaderProps {
     title: string;

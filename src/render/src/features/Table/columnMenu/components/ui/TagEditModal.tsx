@@ -1,9 +1,9 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { Button } from 'shared/Button';
-import { ColorPicker } from 'shared/ColorPicker';
-import { Field } from 'shared/Field';
-import { Input } from 'shared/Input';
-import { ModalShell } from 'shared/ModalShell';
+import { Button } from 'shared/ui/Button';
+import { ColorPicker } from 'shared/ui/ColorPicker';
+import { Field } from 'shared/ui/Field';
+import { Input } from 'shared/ui/Input';
+import { ModalShell } from 'shared/ui/ModalShell';
 import { Tag } from 'app/types/newColumn.types';
 import { ColorName } from 'app/utils/colorOptions';
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import SettingsTemplate from 'features/Settings/SettingsTemplate';
-import { Button } from 'shared/Button';
+import { Button } from 'shared/ui/Button';
 import { clearAllData } from 'db/helpers/settings';
-import { ConfirmModal } from 'shared/ConfirmModal';
+import { ConfirmModal } from 'shared/ui/ConfirmModal';
 
 export default function DataSection(): React.ReactElement {
     const [status, setStatus] = useState('');

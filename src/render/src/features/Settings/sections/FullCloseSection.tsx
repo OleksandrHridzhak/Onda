@@ -1,6 +1,6 @@
 import React from 'react';
 import SettingsTemplate from 'features/Settings/SettingsTemplate';
-import { Button } from 'shared/Button';
+import { Button } from 'shared/ui/Button';
 
 const onFullClose = async (): Promise<void> => {
     await globalThis.electronAPI?.closeApp();

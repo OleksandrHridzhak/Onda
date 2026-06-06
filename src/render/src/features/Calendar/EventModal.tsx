@@ -1,11 +1,11 @@
 import React from 'react';
 import { Trash2 } from 'lucide-react';
-import { Button } from 'shared/Button';
-import { ColorPicker } from 'shared/ColorPicker';
-import { Field } from 'shared/Field';
-import { Input } from 'shared/Input';
-import { ModalShell } from 'shared/ModalShell';
-import { Select } from 'shared/Select';
+import { Button } from 'shared/ui/Button';
+import { ColorPicker } from 'shared/ui/ColorPicker';
+import { Field } from 'shared/ui/Field';
+import { Input } from 'shared/ui/Input';
+import { ModalShell } from 'shared/ui/ModalShell';
+import { Select } from 'shared/ui/Select';
 import type { NewEvent } from 'features/Calendar/hooks/useCalendar';
 
 interface EventModalProps {

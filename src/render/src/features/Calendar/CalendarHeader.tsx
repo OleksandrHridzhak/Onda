@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { PageHeader } from 'shared/PageHeader';
+import { PageHeader } from 'shared/layout/PageHeader';
 import { createPortal } from 'react-dom';
 import {
     Calendar as CalendarIcon,

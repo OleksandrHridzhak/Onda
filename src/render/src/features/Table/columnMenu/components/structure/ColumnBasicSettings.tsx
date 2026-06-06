@@ -2,10 +2,10 @@ import React from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { IconSelector } from 'features/Table/columnMenu/components/ui/IconSelector';
 import { TitleVisibilityToggle } from 'features/Table/columnMenu/components/ui/TitleVisibilityToggle';
-import { Button } from 'shared/Button';
-import { Field } from 'shared/Field';
-import { Input } from 'shared/Input';
-import { Textarea } from 'shared/Textarea';
+import { Button } from 'shared/ui/Button';
+import { Field } from 'shared/ui/Field';
+import { Input } from 'shared/ui/Input';
+import { Textarea } from 'shared/ui/Textarea';
 import { Icon } from 'app/utils/icons';
 
 interface ColumnBasicSettingsProps {

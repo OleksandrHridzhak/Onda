@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from 'shared/Button';
+import { Button } from 'shared/ui/Button';
 import { useState } from 'react';
-import { ConfirmModal } from 'shared/ConfirmModal';
+import { ConfirmModal } from 'shared/ui/ConfirmModal';
 
 interface ColumnActionsProps {
     handleDelete: () => void;

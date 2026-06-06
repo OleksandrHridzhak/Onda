@@ -1,6 +1,6 @@
 import React from 'react';
-import { ModalShell } from 'shared/ModalShell';
-import { Button } from 'shared/Button';
+import { ModalShell } from 'shared/ui/ModalShell';
+import { Button } from 'shared/ui/Button';
 
 interface ConfirmModalProps {
     isOpen: boolean;

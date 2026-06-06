@@ -1,3 +1,5 @@
+@import './themes.css';
+
 body {
     margin: 0;
     font-family:
@@ -25,7 +27,6 @@ code {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import './themes.css';
 
 @layer utilities {
     .scrollbar-hide {

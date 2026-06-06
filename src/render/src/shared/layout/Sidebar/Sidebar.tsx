@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleThemeMode } from 'app/store/slices/newThemeSlice';
 import ColumnCreatingPage from 'pages/ColumnCreatingPage';
-import { sideBarItems } from 'app/layout/constants';
+import { sideBarItems } from 'shared/layout/Sidebar/constants';
 import { createColumn } from 'db/helpers/columns';
 import { ColumnType } from 'app/constants/columnTypes';
 

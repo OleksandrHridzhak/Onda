@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from 'shared/Button';
+import { Button } from 'shared/ui/Button';
 import { getWeekDates } from 'app/utils/date';
 import { useTableWeek } from 'features/Table/context/TableWeekContext';
 

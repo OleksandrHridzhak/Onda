@@ -1,7 +1,7 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
-import { Field } from 'shared/Field';
-import { Input } from 'shared/Input';
+import { Field } from 'shared/ui/Field';
+import { Input } from 'shared/ui/Input';
 import { OptionItem } from 'features/Table/columnMenu/components/ui/OptionItem';
 import { TagEditModal } from 'features/Table/columnMenu/components/ui/TagEditModal';
 import { Tag } from 'app/types/newColumn.types';

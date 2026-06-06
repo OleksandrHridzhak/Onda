@@ -1,7 +1,7 @@
 import React from 'react';
 import { Origami } from 'lucide-react';
 
-export const SymbolBlock: React.FC = ({}) => {
+export const SymbolBlock: React.FC = () => {
     return (
         <div
             className={`

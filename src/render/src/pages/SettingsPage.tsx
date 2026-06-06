@@ -4,7 +4,7 @@ import { Settings, Download, X, Palette } from 'lucide-react';
 import FullCloseSection from 'features/Settings/sections/FullCloseSection';
 import DataSection from 'features/Settings/sections/DataSection';
 import ThemeSection from 'features/Settings/sections/ThemeSection';
-import { PageHeader } from 'shared/PageHeader';
+import { PageHeader } from 'shared/layout/PageHeader';
 
 interface RootState {
     newTheme: {

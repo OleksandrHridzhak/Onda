@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SettingsTemplate from 'features/Settings/SettingsTemplate';
-import { Field } from 'shared/Field';
-import { Select } from 'shared/Select';
+import { Field } from 'shared/ui/Field';
+import { Select } from 'shared/ui/Select';
 import { setColorScheme } from 'app/store/slices/newThemeSlice';
 
 interface RootState {

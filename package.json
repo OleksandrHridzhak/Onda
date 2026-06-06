@@ -5,7 +5,7 @@
     "scripts": {
         "start": "concurrently \"npm:watch:electron\" \"npm:start:render\" \"npm:start:electron\"",
         "start:render": "npm --prefix src/render start",
-        "start:electron": "wait-on http://localhost:3000 && nodemon electron .",
+        "start:electron": "wait-on http://localhost:3000 && nodemon",
         "build": "npm run build:render && npm run build:electron",
         "build:render": "npm --prefix src/render run build",
         "build:electron": "webpack --config src/electron/webpack.config.js",

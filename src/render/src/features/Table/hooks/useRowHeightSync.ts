@@ -11,7 +11,6 @@ export const useRowHeightSync = (dependencies: any[]) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        let outerRafId: number;
         let innerRafId: number;
         let resizeTimeoutId: number;
         let mutationTimeoutId: number;
@@ -89,7 +88,7 @@ export const useRowHeightSync = (dependencies: any[]) => {
         // Defer sync until after DOM has been painted
         // Use double requestAnimationFrame to ensure all async-loaded columns
         // have rendered before measuring (after Dexie async data loading)
-        outerRafId = requestAnimationFrame(() => {
+        const outerRafId = requestAnimationFrame(() => {
             innerRafId = requestAnimationFrame(() => {
                 syncRowHeights();
             });

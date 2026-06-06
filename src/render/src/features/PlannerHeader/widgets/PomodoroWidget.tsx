@@ -45,7 +45,7 @@ const PomodoroWidget: React.FC = () => {
     const alarmAudio = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
-        const src = `${process.env.PUBLIC_URL}/alert.mp3`;
+        const src = `${import.meta.env.BASE_URL}alert.mp3`;
         alarmAudio.current = new Audio(src);
         alarmAudio.current.loop = true;
     }, []);

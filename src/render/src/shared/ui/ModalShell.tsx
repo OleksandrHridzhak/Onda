@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
-import { Heading } from 'shared/Heading';
+import { Heading } from 'shared/ui/Heading';
 
 interface ModalShellProps {
     isOpen: boolean;
