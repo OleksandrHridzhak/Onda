@@ -5,7 +5,7 @@
     "scripts": {
         "start": "concurrently \"npm:watch:electron\" \"npm:start:render\" \"npm:start:electron\"",
         "start:render": "npm --prefix src/render start",
-        "start:electron": "nodemon electron .",
+        "start:electron": "wait-on http://localhost:3000 && nodemon electron .",
         "build": "npm run build:render && npm run build:electron",
         "build:render": "npm --prefix src/render run build",
         "build:electron": "webpack --config src/electron/webpack.config.js",
@@ -47,6 +47,7 @@
         "playwright": "^1.55.1",
         "prettier": "^3.6.2",
         "typescript-eslint": "^8.46.4",
+        "wait-on": "^8.0.3",
         "webpack": "^5.102.1",
         "webpack-cli": "^6.0.1"
     },

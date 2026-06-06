@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Settings, Download, X } from 'lucide-react';
+import { Settings, Download, X, Palette } from 'lucide-react';
 import FullCloseSection from 'features/Settings/sections/FullCloseSection';
 import DataSection from 'features/Settings/sections/DataSection';
+import ThemeSection from 'features/Settings/sections/ThemeSection';
 import { PageHeader } from 'shared/PageHeader';
 
 interface RootState {
     newTheme: {
+        colorScheme: string;
         themeMode: string;
     };
 }
@@ -31,6 +33,12 @@ export default function SettingsDashboard(): React.ReactElement {
     }, [activeSection]);
 
     const sections: Section[] = [
+        {
+            id: 'appearance',
+            name: 'Appearance',
+            icon: <Palette className="w-4 h-4" />,
+            component: <ThemeSection />,
+        },
         {
             id: 'data',
             name: 'Data',
