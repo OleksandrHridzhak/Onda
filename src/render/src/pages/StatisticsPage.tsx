@@ -3,15 +3,19 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { BarChart3 } from 'lucide-react';
 import { COLUMN_TYPES } from 'app/constants/columnTypes';
 import type { ColumnEntry } from 'app/types/columnEntries.types';
-import type { CheckboxColumn } from 'app/types/newColumn.types';
+import type {
+    CheckboxColumn,
+    NumberBoxColumn,
+} from 'app/types/newColumn.types';
 import { formatDateKey } from 'app/utils/date';
 import { getEntriesForDateRange } from 'db/helpers/columnEntries';
 import { getAllColumns } from 'db/helpers/columns';
 import { CheckboxCard } from 'features/Statistic/CheckboxCard';
+import { NumberboxCard } from 'features/Statistic/NumberboxCard';
 import { PageHeader } from 'shared/layout/PageHeader';
 
-interface CheckboxStatistics {
-    column: CheckboxColumn;
+interface ColumnStatistics {
+    column: CheckboxColumn | NumberBoxColumn;
     entries: ColumnEntry[];
 }
 
@@ -30,10 +34,10 @@ function getRecentDays(): Date[] {
 
 export default function StatisticsPage(): React.ReactElement {
     const dates = useMemo(() => getRecentDays(), []);
-    const startDate = formatDateKey(dates[dates.length - 1]);
+    const startDate = '0000-01-01';
     const endDate = formatDateKey(dates[0]);
 
-    const statistics = useLiveQuery<CheckboxStatistics[]>(async () => {
+    const statistics = useLiveQuery<ColumnStatistics[]>(async () => {
         const [columnsResult, entriesResult] = await Promise.all([
             getAllColumns(),
             getEntriesForDateRange(startDate, endDate),
@@ -43,9 +47,10 @@ export default function StatisticsPage(): React.ReactElement {
             return [];
         }
 
-        const checkboxColumns = columnsResult.data.filter(
-            (column): column is CheckboxColumn =>
-                column.type === COLUMN_TYPES.CHECKBOX,
+        const statisticColumns = columnsResult.data.filter(
+            (column): column is CheckboxColumn | NumberBoxColumn =>
+                column.type === COLUMN_TYPES.CHECKBOX ||
+                column.type === COLUMN_TYPES.NUMBERBOX,
         );
         const entriesByColumn = new Map<string, ColumnEntry[]>();
 
@@ -55,7 +60,7 @@ export default function StatisticsPage(): React.ReactElement {
             entriesByColumn.set(entry.columnId, columnEntries);
         });
 
-        return checkboxColumns.map((column) => ({
+        return statisticColumns.map((column) => ({
             column,
             entries: entriesByColumn.get(column.id) ?? [],
         }));
@@ -65,16 +70,25 @@ export default function StatisticsPage(): React.ReactElement {
         <div className="flex h-full flex-col bg-background font-poppins">
             <PageHeader title="Statistics" icon={<BarChart3 size={22} />} />
 
-            <div className="flex-1 overflow-y-auto p-4 md:p-6">
-                <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-                    {statistics?.map(({ column, entries }) => (
-                        <CheckboxCard
-                            key={column.id}
-                            column={column}
-                            entries={entries}
-                            dates={dates}
-                        />
-                    ))}
+            <div className="p-6">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    {statistics?.map(({ column, entries }) =>
+                        column.type === COLUMN_TYPES.CHECKBOX ? (
+                            <CheckboxCard
+                                key={column.id}
+                                column={column}
+                                entries={entries}
+                                dates={dates}
+                            />
+                        ) : (
+                            <NumberboxCard
+                                key={column.id}
+                                column={column}
+                                entries={entries}
+                                dates={dates}
+                            />
+                        ),
+                    )}
                 </div>
             </div>
         </div>

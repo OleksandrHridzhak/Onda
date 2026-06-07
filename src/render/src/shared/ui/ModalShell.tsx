@@ -82,7 +82,7 @@ export function ModalShell({
                     <div
                         className={
                             size === 'large'
-                                ? 'min-h-0 flex-1 overflow-y-auto'
+                                ? 'custom-scroll min-h-0 flex-1 overflow-y-auto'
                                 : ''
                         }
                     >

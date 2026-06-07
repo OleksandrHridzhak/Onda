@@ -13,6 +13,10 @@ interface RootState {
 
 const colorSchemes = [
     { value: 'standard', label: 'Standard' },
+    { value: 'standard-v2', label: 'Standard v2' },
+    { value: 'paper', label: 'Paper' },
+    { value: 'sage', label: 'Sage' },
+    { value: 'mist', label: 'Mist' },
     { value: 'ocean', label: 'Ocean' },
     { value: 'sunset', label: 'Sunset' },
     { value: 'forest', label: 'Forest' },

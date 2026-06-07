@@ -1,11 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import type { CheckboxColumn } from 'app/types/newColumn.types';
 import type { ColumnEntry } from 'app/types/columnEntries.types';
 import { COLOR_STYLES } from 'app/utils/colorOptions';
 import { formatDateKey } from 'app/utils/date';
-import { Card } from 'shared/ui/Card';
-import { Heading } from 'shared/ui/Heading';
-import { ModalShell } from 'shared/ui/ModalShell';
+import { StatisticPreviewCard } from 'features/Statistic/components/StatisticPreviewCard';
+import { StatisticModalLayout } from 'features/Statistic/components/StatisticModalLayout';
+import {
+    StatisticProgressWidget,
+    StatisticVisualizationCard,
+    StatisticWidgetGrid,
+} from 'features/Statistic/components/StatisticWidgets';
+import {
+    getCalendarDates,
+    getCheckboxStreaks,
+    getCompletionMetrics,
+} from 'features/Statistic/checkboxStatistics';
 
 interface CheckboxCardProps {
     column: CheckboxColumn;
@@ -23,69 +32,42 @@ const dateLabelFormatter = new Intl.DateTimeFormat('en-US', {
 const isCheckedValue = (value: unknown): boolean =>
     value === true || value === 'true' || value === 1;
 
+const CALENDAR_DAYS = 357;
+
 export function CheckboxCard({
     column,
     entries,
     dates,
 }: CheckboxCardProps): React.ReactElement {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [visibleDaysCount, setVisibleDaysCount] = useState(28);
-    const gridRef = useRef<HTMLDivElement>(null);
     const checkedDateKeys = new Set(
         entries
             .filter((entry) => isCheckedValue(entry.value))
             .map((entry) => entry.dateKey),
     );
     const color = COLOR_STYLES[column.uniqueProps.checkboxColor];
-    const visibleDates = dates
-        .slice(0, visibleDaysCount)
-        .reverse()
-        .reduce<Date[]>((orderedDates, _, index, sourceDates) => {
-            if (index % 4 === 0) {
-                orderedDates.push(...sourceDates.slice(index, index + 4));
-            }
-
-            return orderedDates;
-        }, []);
-
-    useEffect(() => {
-        const grid = gridRef.current;
-        if (!grid) return;
-
-        const updateVisibleDays = () => {
-            const columnWidth = 16;
-            const gap = 7;
-            const columnCount = Math.max(
-                7,
-                Math.floor((grid.clientWidth + gap) / (columnWidth + gap)),
-            );
-
-            setVisibleDaysCount(Math.min(dates.length, columnCount * 4));
-        };
-
-        const observer = new ResizeObserver(updateVisibleDays);
-        observer.observe(grid);
-        updateVisibleDays();
-
-        return () => observer.disconnect();
-    }, [dates.length]);
+    const visibleDates = dates.slice(0, 48).reverse();
+    const today = dates[0];
+    const {
+        current: currentStreak,
+        longest: longestStreak,
+        sortedDates,
+    } = getCheckboxStreaks(checkedDateKeys, today);
+    const completionMetrics = getCompletionMetrics(
+        column,
+        checkedDateKeys,
+        today,
+        sortedDates,
+    );
+    const calendarDates = getCalendarDates(today, CALENDAR_DAYS);
 
     return (
         <>
-            <Card
-                as="button"
+            <StatisticPreviewCard
+                column={column}
                 onClick={() => setIsModalOpen(true)}
-                ariaLabel={`Open statistics for ${column.name}`}
-                className="w-full p-5 text-left transition-all duration-200 hover:border-primaryColor/30 hover:bg-surfaceMuted hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-primaryColor"
             >
-                <Heading as="h2" variant="base">
-                    {column.name}
-                </Heading>
-
-                <div
-                    ref={gridRef}
-                    className="mt-4 grid grid-flow-col grid-rows-4 auto-cols-[1rem] justify-start gap-2 overflow-hidden"
-                >
+                <div className="grid grid-flow-col grid-rows-4 grid-cols-12 justify-start gap-2 overflow-hidden">
                     {visibleDates.map((date) => {
                         const dateKey = formatDateKey(date);
                         const isChecked = checkedDateKeys.has(dateKey);
@@ -98,7 +80,7 @@ export function CheckboxCard({
                                 key={dateKey}
                                 role="img"
                                 aria-label={`${dateLabelFormatter.format(date)}: ${stateLabel}`}
-                                className={`h-5 w-5 rounded border transition-colors ${
+                                className={`h-6 w-5 rounded border transition-colors ${
                                     isChecked
                                         ? `${color.solid} border-transparent`
                                         : 'border-border bg-surfaceMuted'
@@ -107,16 +89,72 @@ export function CheckboxCard({
                         );
                     })}
                 </div>
-            </Card>
+            </StatisticPreviewCard>
 
-            <ModalShell
+            <StatisticModalLayout
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={column.name}
-                size="large"
+                column={column}
+                metrics={[
+                    {
+                        label: 'Current streak',
+                        value: `${currentStreak} days`,
+                    },
+                    {
+                        label: 'Longest streak',
+                        value: `${longestStreak} days`,
+                    },
+                ]}
             >
-                <div />
-            </ModalShell>
+                <StatisticWidgetGrid>
+                    {completionMetrics.map((metric) => (
+                        <StatisticProgressWidget
+                            key={metric.label}
+                            label={metric.label}
+                            percentage={metric.percentage}
+                            detail={`${metric.checked}/${metric.total} completed`}
+                        />
+                    ))}
+                </StatisticWidgetGrid>
+
+                <StatisticVisualizationCard>
+                    <div className="custom-scroll w-full overflow-x-auto">
+                        <div className="mx-auto grid w-max grid-flow-col grid-rows-[repeat(7,0.75rem)] auto-cols-[0.75rem] gap-1">
+                            {calendarDates.map((date, index) => {
+                                if (!date) {
+                                    return (
+                                        <span
+                                            key={`future-${index}`}
+                                            aria-hidden="true"
+                                            className="h-3 w-3"
+                                        />
+                                    );
+                                }
+
+                                const dateKey = formatDateKey(date);
+                                const isChecked = checkedDateKeys.has(dateKey);
+                                const stateLabel = isChecked
+                                    ? 'checked'
+                                    : 'not checked';
+
+                                return (
+                                    <span
+                                        key={dateKey}
+                                        role="img"
+                                        aria-label={`${dateLabelFormatter.format(date)}: ${stateLabel}`}
+                                        title={dateLabelFormatter.format(date)}
+                                        className={`h-3 w-3 rounded-[3px] border ${
+                                            isChecked
+                                                ? `${color.solid} border-transparent`
+                                                : 'border-border bg-surfaceMuted'
+                                        }`}
+                                    />
+                                );
+                            })}
+                        </div>
+                    </div>
+                </StatisticVisualizationCard>
+            </StatisticModalLayout>
         </>
     );
 }

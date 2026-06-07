@@ -98,9 +98,10 @@ export const icons: Icon[] = [
 export const getIconComponent = (
     iconName: string,
     size: number = 16,
+    className?: string,
 ): React.ReactElement | null => {
     const icon = icons.find((i) => i.name === iconName);
     if (!icon) return null;
     const IconComponent = icon.component;
-    return React.createElement(IconComponent, { size });
+    return React.createElement(IconComponent, { size, className });
 };
