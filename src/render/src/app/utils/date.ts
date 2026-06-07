@@ -38,3 +38,17 @@ export const getWeekDates = (startDate: Date): Date[] => {
 export const getWeekStartKey = (date: Date): string => {
     return formatDateKey(getMonday(date));
 };
+
+export const getWeekNumber = (date: Date): number => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    normalizedDate.setDate(
+        normalizedDate.getDate() + 3 - ((normalizedDate.getDay() + 6) % 7),
+    );
+
+    const firstWeek = new Date(normalizedDate.getFullYear(), 0, 4);
+
+    return Math.round(
+        ((normalizedDate.getTime() - firstWeek.getTime()) / 86400000 + 1) / 7,
+    );
+};

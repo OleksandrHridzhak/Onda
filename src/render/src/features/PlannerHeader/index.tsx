@@ -3,7 +3,6 @@ import PomodoroWidget from 'features/PlannerHeader/widgets/PomodoroWidget';
 import TimelineWidget from 'features/PlannerHeader/widgets/TimelineWidget';
 import { SymbolBlock } from 'features/PlannerHeader/widgets/SymbolBlock';
 import { TimeWidget } from 'features/PlannerHeader/widgets/TimeWidget';
-import WeekSwitcherWidget from 'features/PlannerHeader/widgets/WeekSwitcherWidget';
 
 interface PlannerHeaderProps {
     darkTheme?: boolean;
@@ -13,13 +12,12 @@ interface PlannerHeaderProps {
 
 const PlannerHeader: React.FC<PlannerHeaderProps> = ({
     darkTheme = false,
-    layout = ['TimelineWidget', 'WeekSwitcherWidget', 'SymbolBlock'],
+    layout = ['TimelineWidget', 'SymbolBlock'],
 }) => {
     const widgetComponents: Record<
         string,
         React.ComponentType<{ darkTheme?: boolean }>
     > = {
-        WeekSwitcherWidget,
         PomodoroWidget,
         TimelineWidget,
         SymbolBlock,

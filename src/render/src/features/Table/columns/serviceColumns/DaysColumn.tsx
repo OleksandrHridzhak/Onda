@@ -1,5 +1,8 @@
 import React from 'react';
-import { formatDateKey } from 'app/utils/date';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { formatDateKey, getMonday, getWeekNumber } from 'app/utils/date';
+import { useTableWeek } from 'features/Table/context/TableWeekContext';
+import { Button } from 'shared/ui/Button';
 
 interface DaysColumnProps {
     weekDates: Date[];
@@ -11,14 +14,50 @@ interface DaysColumnProps {
  */
 export const DaysColumn: React.FC<DaysColumnProps> = ({ weekDates }) => {
     const todayKey = formatDateKey(new Date());
+    const {
+        currentWeekStart,
+        canGoToNextWeek,
+        goToPreviousWeek,
+        goToNextWeek,
+        goToCurrentWeek,
+    } = useTableWeek();
+    const weekNumber = getWeekNumber(currentWeekStart);
+    const isCurrentWeek =
+        formatDateKey(currentWeekStart) ===
+        formatDateKey(getMonday(new Date()));
 
     return (
         <table className="checkbox-nested-table column-days font-poppins">
             <thead className="bg-surfaceMuted">
                 <tr>
                     <th className="border-b border-border">
-                        <div className="px-4 py-3 text-sm font-medium">
-                            {'Days'}
+                        <div className="justify-center gap-1 px-1 text-sm font-medium">
+                            <Button
+                                onClick={goToPreviousWeek}
+                                variant="ghost"
+                                className="!min-w-0 !gap-0 !rounded-lg !px-1 !py-1"
+                            >
+                                <ChevronLeft size={14} />
+                            </Button>
+                            <button
+                                type="button"
+                                onClick={goToCurrentWeek}
+                                className={`rounded-lg px-2 py-1 text-xs font-medium transition-colors ${
+                                    isCurrentWeek
+                                        ? 'border border-muted bg-primaryColor/10 text-text'
+                                        : 'text-text hover:bg-backgrundHover'
+                                }`}
+                            >
+                                Week {weekNumber}
+                            </button>
+                            <Button
+                                onClick={goToNextWeek}
+                                disabled={!canGoToNextWeek}
+                                variant="ghost"
+                                className="!min-w-0 !gap-0 !rounded-lg !px-1 !py-1"
+                            >
+                                <ChevronRight size={14} />
+                            </Button>
                         </div>
                     </th>
                 </tr>
