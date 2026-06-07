@@ -42,9 +42,9 @@ export const DaysColumn: React.FC<DaysColumnProps> = ({ weekDates }) => {
                             <button
                                 type="button"
                                 onClick={goToCurrentWeek}
-                                className={`rounded-lg px-2 py-1 text-xs font-medium transition-colors ${
+                                className={`rounded-lg px-2 py-1 text-xs font-medium ${
                                     isCurrentWeek
-                                        ? 'border border-muted bg-primaryColor/10 text-text'
+                                        ? 'border border-border bg-primaryColor/10 text-text'
                                         : 'text-text hover:bg-backgrundHover'
                                 }`}
                             >
