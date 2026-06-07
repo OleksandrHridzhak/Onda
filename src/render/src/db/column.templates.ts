@@ -5,7 +5,10 @@ import { COLUMN_TYPES } from 'app/constants/columnTypes';
  * Global dictionary of column templates.
  * 'name' matches the type, but formatted for display (words ending in -Box are joined).
  */
-export const COLUMN_TEMPLATES: Record<Column['type'], Omit<Column, 'id'>> = {
+export const COLUMN_TEMPLATES: Record<
+    Column['type'],
+    Omit<Column, 'id' | 'lifecycle'>
+> = {
     [COLUMN_TYPES.CHECKBOX]: {
         type: COLUMN_TYPES.CHECKBOX,
         name: 'CheckBox',

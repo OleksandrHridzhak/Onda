@@ -1,9 +1,9 @@
 import { db } from 'db/index';
 import { Column } from 'app/types/newColumn.types';
-import { COLUMN_TYPES } from 'app/constants/columnTypes';
 import { COLUMN_TEMPLATES } from 'db/column.templates';
 import { ColumnType } from 'app/constants/columnTypes';
 import { DbResult } from 'db/types';
+import { isColumnArchived } from 'app/utils/columnLifecycle';
 
 /**
  * Fetch all columns from the database
@@ -77,6 +77,7 @@ export async function getColumnById(
  */
 export async function createColumn(
     type: ColumnType,
+    createdAt: Date = new Date(),
 ): Promise<DbResult<Column>> {
     const id = crypto.randomUUID();
 
@@ -100,6 +101,10 @@ export async function createColumn(
                 const newColumn: Column = {
                     ...template,
                     id,
+                    lifecycle: {
+                        createdAt: createdAt.toISOString(),
+                        archivedAt: null,
+                    },
                 } as Column;
 
                 // 4. Persist the new column record to IndexedDB
@@ -181,9 +186,9 @@ export async function updateColumnFields(
 }
 
 /**
- * Completely delete a column and remove its ID from the global order
- * @param columnId - The unique ID of the column to delete
- * @returns DbResult with the deleted column's id
+ * Archive a column while preserving its configuration, order, and entries.
+ * @param columnId - The unique ID of the column to archive
+ * @returns DbResult with the archived column's id
  * @example
  * // Success:
  * { success: true, data: { columnId: '550e8400-e29b-41d4-a716-446655440000' } }
@@ -191,38 +196,72 @@ export async function updateColumnFields(
  * // Error:
  * { success: false, error: 'Column not found or deletion failed' }
  */
-export async function deleteColumn(
+export async function archiveColumn(
+    columnId: string,
+    archivedAt: Date = new Date(),
+): Promise<DbResult<{ columnId: string }>> {
+    try {
+        const updatedCount = await db.tableColumns.update(columnId, {
+            'lifecycle.archivedAt': archivedAt.toISOString(),
+        });
+
+        if (updatedCount === 0) {
+            return {
+                success: false,
+                error: `No column found with ID: ${columnId}`,
+            };
+        }
+
+        console.log('Column archived:', columnId);
+        return { success: true, data: { columnId } };
+    } catch (error) {
+        console.error('Error during column archiving:', error);
+        return { success: false, error: (error as Error).message };
+    }
+}
+
+/**
+ * Permanently delete a column, all its entries, and its order reference.
+ */
+export async function permanentlyDeleteColumn(
     columnId: string,
 ): Promise<DbResult<{ columnId: string }>> {
     try {
-        await db.transaction(
+        return await db.transaction(
             'rw',
-            [db.tableColumns, db.settings, db.columnEntries],
+            [db.tableColumns, db.columnEntries, db.settings],
             async () => {
-                // 1. Delete the column record
-                await db.tableColumns.delete(columnId);
+                const column = await db.tableColumns.get(columnId);
+                if (!column) {
+                    return {
+                        success: false,
+                        error: `No column found with ID: ${columnId}`,
+                    };
+                }
+
                 await db.columnEntries
                     .where('columnId')
                     .equals(columnId)
                     .delete();
+                await db.tableColumns.delete(columnId);
 
-                // 2. Remove the ID from the global order array
                 const settings = await db.settings.get('global');
                 if (settings) {
-                    const newOrder = settings.layout.columnsOrder.filter(
-                        (id) => id !== columnId,
-                    );
                     await db.settings.update('global', {
-                        layout: { columnsOrder: newOrder },
+                        layout: {
+                            columnsOrder: settings.layout.columnsOrder.filter(
+                                (id) => id !== columnId,
+                            ),
+                        },
                     });
                 }
+
+                console.log('Column permanently deleted:', columnId);
+                return { success: true, data: { columnId } };
             },
         );
-
-        console.log('Column and order reference deleted:', columnId);
-        return { success: true, data: { columnId } };
     } catch (error) {
-        console.error('Error during column deletion:', error);
+        console.error('Error during permanent column deletion:', error);
         return { success: false, error: (error as Error).message };
     }
 }
@@ -250,7 +289,11 @@ export async function moveColumn(
         }
 
         const currentOrder = settings.layout.columnsOrder;
-        const currentIndex = currentOrder.indexOf(columnId);
+        const columns = await db.tableColumns.bulkGet(currentOrder);
+        const activeOrder = currentOrder.filter(
+            (_, index) => columns[index] && !isColumnArchived(columns[index]!),
+        );
+        const currentIndex = activeOrder.indexOf(columnId);
 
         if (currentIndex === -1) {
             return { success: false, error: 'Column not found in order' };
@@ -263,18 +306,20 @@ export async function moveColumn(
             return { success: false, error: 'Cannot move column further left' };
         }
 
-        if (newIndex >= currentOrder.length) {
+        if (newIndex >= activeOrder.length) {
             return {
                 success: false,
                 error: 'Cannot move column further right',
             };
         }
 
-        // Swap positions
+        const otherColumnId = activeOrder[newIndex];
+        const currentOrderIndex = currentOrder.indexOf(columnId);
+        const otherOrderIndex = currentOrder.indexOf(otherColumnId);
         const newOrder = [...currentOrder];
-        [newOrder[currentIndex], newOrder[newIndex]] = [
-            newOrder[newIndex],
-            newOrder[currentIndex],
+        [newOrder[currentOrderIndex], newOrder[otherOrderIndex]] = [
+            newOrder[otherOrderIndex],
+            newOrder[currentOrderIndex],
         ];
 
         await db.settings.update('global', {
@@ -285,78 +330,6 @@ export async function moveColumn(
         return { success: true, data: { columnsOrder: newOrder } };
     } catch (error) {
         console.error('Error moving column:', error);
-        return { success: false, error: (error as Error).message };
-    }
-}
-
-/**
- * Clear all data in a column (reset to default values based on type)
- * @param columnId - The unique ID of the column to clear
- * @returns DbResult with the updated column
- * @example
- * // Success:
- * { success: true, data: { id: '123', name: 'Tasks', type: 'todoListColumn', ... } }
- *
- * // Error:
- * { success: false, error: 'Column not found' }
- */
-export async function clearColumn(columnId: string): Promise<DbResult<Column>> {
-    try {
-        const column = await db.tableColumns.get(columnId);
-        if (!column) {
-            return { success: false, error: 'Column not found' };
-        }
-
-        // Clear data based on column type
-        let updates: Record<string, any> = {};
-
-        switch (column.type) {
-            case COLUMN_TYPES.CHECKBOX:
-                await db.columnEntries
-                    .where('columnId')
-                    .equals(columnId)
-                    .delete();
-                break;
-            case COLUMN_TYPES.TEXTBOX:
-                await db.columnEntries
-                    .where('columnId')
-                    .equals(columnId)
-                    .delete();
-                break;
-            case COLUMN_TYPES.NUMBERBOX:
-                await db.columnEntries
-                    .where('columnId')
-                    .equals(columnId)
-                    .delete();
-                break;
-            case COLUMN_TYPES.TAGS:
-            case COLUMN_TYPES.MULTI_CHECKBOX:
-                await db.columnEntries
-                    .where('columnId')
-                    .equals(columnId)
-                    .delete();
-                break;
-            case COLUMN_TYPES.TODO:
-                updates = {
-                    'uniqueProps.todos': [],
-                };
-                break;
-            case COLUMN_TYPES.TASK_TABLE:
-                updates = {
-                    'uniqueProps.doneTasks': [],
-                };
-                break;
-        }
-
-        if (Object.keys(updates).length > 0) {
-            await db.tableColumns.update(columnId, updates);
-        }
-        const updatedColumn = await db.tableColumns.get(columnId);
-
-        console.log(`[Onda DB] Column ${columnId} data cleared`);
-        return { success: true, data: updatedColumn! };
-    } catch (error) {
-        console.error('Error clearing column:', error);
         return { success: false, error: (error as Error).message };
     }
 }

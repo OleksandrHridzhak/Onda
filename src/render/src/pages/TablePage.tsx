@@ -5,7 +5,6 @@ import Table from 'features/Table/Table';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getAllColumns } from 'db/helpers/columns';
 import { getSettings } from 'db/helpers/settings';
-import { TableWeekProvider } from 'features/Table/context/TableWeekContext';
 
 const TableScreen: React.FC = () => {
     const tableLogic = useTableLogic();
@@ -39,12 +38,10 @@ const TableScreen: React.FC = () => {
 
     return (
         <div className="font-poppins relative w-full max-w-6xl mx-auto bg-background overflow-y-auto">
-            <TableWeekProvider>
-                <div>
-                    <PlannerHeader />
-                </div>
-                <Table />
-            </TableWeekProvider>
+            <div>
+                <PlannerHeader />
+            </div>
+            <Table />
         </div>
     );
 };

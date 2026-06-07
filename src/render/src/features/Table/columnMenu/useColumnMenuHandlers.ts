@@ -4,10 +4,11 @@ import { COLUMN_TYPES } from 'app/constants/columnTypes';
 import { ColorName } from 'app/utils/colorOptions';
 import {
     updateColumnFields,
-    deleteColumn,
-    clearColumn,
+    archiveColumn,
+    permanentlyDeleteColumn,
     moveColumn,
 } from 'db/helpers/columns';
+import { useTableWeek } from 'features/Table/context/TableWeekContext';
 
 interface UseColumnMenuHandlersProps {
     columnId: string;
@@ -20,6 +21,7 @@ export const useColumnMenuHandlers = ({
     column,
     onClose,
 }: UseColumnMenuHandlersProps) => {
+    const { currentWeekStart } = useTableWeek();
     // All state management in one place
     const [name, setName] = useState('');
     const [selectedIcon, setSelectedIcon] = useState('');
@@ -157,13 +159,14 @@ export const useColumnMenuHandlers = ({
         }
     };
 
-    const handleDelete = async () => {
-        await deleteColumn(columnId);
+    const handleArchive = async () => {
+        await archiveColumn(columnId, currentWeekStart);
         onClose();
     };
 
-    const handleClear = async () => {
-        await clearColumn(columnId);
+    const handlePermanentDelete = async () => {
+        await permanentlyDeleteColumn(columnId);
+        onClose();
     };
 
     const handleMoveLeft = async () => {
@@ -202,8 +205,8 @@ export const useColumnMenuHandlers = ({
             setTags,
             setNewOption,
             handleSave,
-            handleDelete,
-            handleClear,
+            handleArchive,
+            handlePermanentDelete,
             handleMoveLeft,
             handleMoveRight,
             handleWidthChange,

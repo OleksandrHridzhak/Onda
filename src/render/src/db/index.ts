@@ -30,6 +30,28 @@ export class OndaDB extends Dexie {
                 'id, columnId, dateKey, dayDate, weekStart, scope, [columnId+dateKey]',
         });
 
+        this.version(4)
+            .stores({
+                settings: 'id',
+                tableColumns: 'id',
+                calendar: 'id, date',
+                columnEntries:
+                    'id, columnId, dateKey, dayDate, weekStart, scope, [columnId+dateKey]',
+            })
+            .upgrade(async (transaction) => {
+                await transaction
+                    .table<Column>('tableColumns')
+                    .toCollection()
+                    .modify((column) => {
+                        if (!column.lifecycle) {
+                            column.lifecycle = {
+                                createdAt: null,
+                                archivedAt: null,
+                            };
+                        }
+                    });
+            });
+
         /**
          * Populate DB(only when calls constructor) with default settings on first creation to avoid
          * problems with settings and it`s id "global"

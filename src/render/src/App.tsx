@@ -13,7 +13,7 @@ import MenuWin from 'shared/layout/MenuWin';
 import Calendar from 'pages/CalendarPage';
 import Settings from 'pages/SettingsPage';
 import Statistics from 'pages/StatisticsPage';
-import StatisticsColumnDetailsPage from 'pages/StatisticsColumnDetailsPage';
+import { TableWeekProvider } from 'features/Table/context/TableWeekContext';
 
 import { db } from 'db/index';
 
@@ -55,10 +55,6 @@ function MainContent() {
                 <Route path="/" element={<Table />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/statistics" element={<Statistics />} />
-                <Route
-                    path="/statistics/:columnId"
-                    element={<StatisticsColumnDetailsPage />}
-                />
                 <Route path="/settings" element={<Settings />} />
             </Routes>
         </div>
@@ -111,7 +107,9 @@ function App() {
 export default function WrappedApp() {
     return (
         <Router>
-            <App />
+            <TableWeekProvider>
+                <App />
+            </TableWeekProvider>
         </Router>
     );
 }

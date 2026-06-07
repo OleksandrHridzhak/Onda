@@ -33,6 +33,10 @@ export interface BaseColumn {
     description: string;
     emojiIconName: string;
     width: number;
+    lifecycle: {
+        createdAt: string | null;
+        archivedAt: string | null;
+    };
 }
 
 /**

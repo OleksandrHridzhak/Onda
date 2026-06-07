@@ -7,6 +7,7 @@ import ColumnCreatingPage from 'pages/ColumnCreatingPage';
 import { sideBarItems } from 'shared/layout/Sidebar/constants';
 import { createColumn } from 'db/helpers/columns';
 import { ColumnType } from 'app/constants/columnTypes';
+import { useTableWeek } from 'features/Table/context/TableWeekContext';
 
 interface RootState {
     newTheme: {
@@ -19,6 +20,7 @@ type ActivePage = 'home' | 'calendar' | 'statistics' | 'settings';
 const Sidebar: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
+    const { currentWeekStart } = useTableWeek();
 
     const themeMode = useSelector(
         (state: RootState) => state.newTheme.themeMode,
@@ -162,7 +164,7 @@ const Sidebar: React.FC = () => {
                         <div className="absolute left-12 z-50">
                             <ColumnCreatingPage
                                 onSelect={(type: ColumnType) => {
-                                    createColumn(type);
+                                    createColumn(type, currentWeekStart);
                                     setShowColumnSelector(false);
                                 }}
                                 onCancel={() => setShowColumnSelector(false)}

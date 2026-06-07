@@ -43,7 +43,7 @@ export const DaysColumn: React.FC<DaysColumnProps> = ({ weekDates }) => {
                                 <div className="flex items-center justify-between gap-2">
                                     <span>{day}</span>
                                     {isToday && (
-                                        <span className="inline-block h-2 w-2 rounded-full bg-blue-500" />
+                                        <span className="inline-block h-2 w-2 rounded-full bg-primaryColor" />
                                     )}
                                 </div>
                             </td>

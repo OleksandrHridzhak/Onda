@@ -10,6 +10,8 @@ import { getColumnById } from 'db/helpers/columns';
 import { getColumnsOrder } from 'db/helpers/settings';
 import { useColumnMenuHandlers } from 'features/Table/columnMenu/useColumnMenuHandlers';
 import { COLUMN_TYPES, hasOptionsSupport } from 'app/constants/columnTypes';
+import { db } from 'db';
+import { isColumnArchived } from 'app/utils/columnLifecycle';
 
 interface ColumnMenuProps {
     columnId: string;
@@ -28,12 +30,14 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     }, [columnId]);
 
     // Fetch column order to determine if can move
-    const columnsOrder = useLiveQuery(async () => {
+    const activeColumnsOrder = useLiveQuery(async () => {
         const result = await getColumnsOrder();
-        if (result.success) {
-            return result.data;
-        }
-        return [];
+        if (!result.success || !result.data) return [];
+
+        const columns = await db.tableColumns.bulkGet(result.data);
+        return result.data.filter(
+            (_, index) => columns[index] && !isColumnArchived(columns[index]!),
+        );
     }, []);
 
     // All state and handlers from custom hook
@@ -46,13 +50,13 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
     const darkMode =
         document.documentElement.getAttribute('data-theme-mode') === 'dark';
 
-    if (!column || !columnsOrder) {
+    if (!column || !activeColumnsOrder) {
         return null;
     }
 
-    const currentIndex = columnsOrder.indexOf(columnId);
+    const currentIndex = activeColumnsOrder.indexOf(columnId);
     const canMoveLeft = currentIndex > 0;
-    const canMoveRight = currentIndex < columnsOrder.length - 1;
+    const canMoveRight = currentIndex < activeColumnsOrder.length - 1;
 
     // Determine column type for options list
     const hasOptions = hasOptionsSupport(column.type);
@@ -107,8 +111,8 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({ columnId, onClose }) => {
             )}
 
             <ColumnActions
-                handleDelete={actions.handleDelete}
-                handleClear={actions.handleClear}
+                handleArchive={actions.handleArchive}
+                handlePermanentDelete={actions.handlePermanentDelete}
                 handleSave={actions.handleSave}
                 isSaving={ui.isSaving}
             />

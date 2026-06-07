@@ -13,6 +13,7 @@ import { useRowHeightSync } from 'features/Table/hooks/useRowHeightSync';
 import DynamicColumn from 'features/Table/columns/DynamicColumn';
 import { TableLoadingOverlay } from 'features/Table/components/TableLoadingOverlay';
 import { useTableWeek } from 'features/Table/context/TableWeekContext';
+import { isColumnVisibleForWeek } from 'app/utils/columnLifecycle';
 
 const Table: React.FC = () => {
     const { currentWeekStart } = useTableWeek();
@@ -60,6 +61,21 @@ const Table: React.FC = () => {
         );
     }, [weekEntries]);
 
+    const visibleColumnOrder = React.useMemo(() => {
+        if (!columnOrder || !columnsData) return [];
+
+        const columnsById = new Map(
+            columnsData.map((column) => [column.id, column]),
+        );
+
+        return columnOrder.filter((id) => {
+            const column = columnsById.get(id);
+            return (
+                column && isColumnVisibleForWeek(column, currentWeekStartKey)
+            );
+        });
+    }, [columnOrder, columnsData, currentWeekStartKey]);
+
     // Synchronize row heights across all nested tables
     const { isLoading } = useRowHeightSync([columnsData, weekEntries]);
 
@@ -102,7 +118,7 @@ const Table: React.FC = () => {
                                 </TableItemWrapper>
 
                                 {/* Dynamic: User-defined optional columns */}
-                                {columnOrder.map((id) => (
+                                {visibleColumnOrder.map((id) => (
                                     <DynamicColumn
                                         key={id}
                                         columnId={id}
