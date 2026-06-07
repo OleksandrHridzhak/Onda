@@ -9,9 +9,6 @@
 # testing
 /coverage
 
-# production
-/build
-
 # misc
 .DS_Store
 .env.local
@@ -29,10 +26,7 @@ yarn-error.log*
 .env.production
 .env.development
 .env.localhistory
+!src/render/.env
 
-#Bundler files
-main.bundle.js
-preload.bundle.js
-
-# Sync server data
-/sync-server/node_modules/
+# production / bundler output
+/src/electron/build
