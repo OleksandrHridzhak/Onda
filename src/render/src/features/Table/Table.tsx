@@ -12,6 +12,7 @@ import 'features/Table/Table.css';
 import { useRowHeightSync } from 'features/Table/hooks/useRowHeightSync';
 import DynamicColumn from 'features/Table/columns/DynamicColumn';
 import { TableLoadingOverlay } from 'features/Table/components/TableLoadingOverlay';
+import { TableEmptyState } from 'features/Table/components/TableEmptyState';
 import { useTableWeek } from 'features/Table/context/TableWeekContext';
 import { isColumnVisibleForWeek } from 'app/utils/columnLifecycle';
 
@@ -134,7 +135,11 @@ const Table: React.FC = () => {
                                     key="filler"
                                     column={fillerColumn}
                                 >
-                                    <componentsMap.fillerColumn />
+                                    <componentsMap.fillerColumn
+                                        hideRowBorders={
+                                            visibleColumnOrder.length === 0
+                                        }
+                                    />
                                 </TableItemWrapper>
                             </tr>
                         </thead>
@@ -143,6 +148,9 @@ const Table: React.FC = () => {
 
                 {/* Loading overlay */}
                 <TableLoadingOverlay isVisible={isLoading} />
+                <TableEmptyState
+                    isVisible={!isLoading && visibleColumnOrder.length === 0}
+                />
             </div>
         </div>
     );
