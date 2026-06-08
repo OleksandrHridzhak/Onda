@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
-import { init } from '../ipc/windowHandlers';
+import { windowHandlers } from '../ipc/windowHandlers';
 import { createTray } from './tray';
 import { focusWindow } from './window';
 import dotenv from 'dotenv';
@@ -54,7 +54,7 @@ if (!gotTheLock) {
             getMainWindow: () => mainWindow,
             onQuit: () => app.quit(),
         });
-        init.init(ipcMain, window);
+        windowHandlers.register(ipcMain, window);
     });
 
     app.on('activate', () => {

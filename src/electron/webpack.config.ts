@@ -1,10 +1,16 @@
 import path from 'node:path';
 import type { Configuration } from 'webpack';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const electronDirectory = path.resolve(process.cwd(), 'src/electron');
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const commonConfig: Configuration = {
-    mode: 'production',
+    mode: isDevelopment ? 'development' : 'production',
+    devtool: isDevelopment ? 'inline-source-map' : false,
     output: {
         path: path.resolve(electronDirectory, 'build'),
     },

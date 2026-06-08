@@ -1,8 +1,8 @@
 import { app, Notification, type BrowserWindow, type IpcMain } from 'electron';
 import type { ElectronNotificationOptions } from '../../shared/types/electron';
 
-const ipcWindowsHandlers = {
-    init(ipcMain: IpcMain, mainWindow: BrowserWindow): void {
+const windowHandlers = {
+    register(ipcMain: IpcMain, mainWindow: BrowserWindow): void {
         // Window close handler
         ipcMain.handle('window-close', () => {
             mainWindow.hide();
@@ -36,4 +36,4 @@ const ipcWindowsHandlers = {
     },
 };
 
-export { ipcWindowsHandlers as init };
+export { windowHandlers };
