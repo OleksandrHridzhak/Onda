@@ -9,7 +9,7 @@ interface ModalShellProps {
     children: React.ReactNode;
     title: React.ReactNode;
     className?: string;
-    size?: 'default' | 'large';
+    size?: 'default' | 'fit' | 'large';
 }
 
 export function ModalShell({
@@ -47,7 +47,9 @@ export function ModalShell({
     const panelSizeClass =
         size === 'large'
             ? 'h-[80vh] w-[80vw] max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)]'
-            : 'w-full max-w-md mx-4';
+            : size === 'fit'
+              ? 'h-[80vh] w-fit max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)] mx-4'
+              : 'w-full max-w-md mx-4';
 
     return createPortal(
         <div
@@ -64,7 +66,11 @@ export function ModalShell({
             >
                 <div
                     className={`flex rounded-2xl bg-background border-border border shadow-md p-4 text-text ${
-                        size === 'large' ? 'h-full flex-col' : 'flex-col'
+                        size === 'large'
+                            ? 'h-full flex-col'
+                            : size === 'fit'
+                              ? 'h-full flex-col'
+                              : 'flex-col'
                     }`}
                 >
                     <div className="flex items-center justify-between mb-4">
@@ -81,7 +87,7 @@ export function ModalShell({
                     </div>
                     <div
                         className={
-                            size === 'large'
+                            size === 'large' || size === 'fit'
                                 ? 'custom-scroll min-h-0 flex-1 overflow-y-auto'
                                 : ''
                         }

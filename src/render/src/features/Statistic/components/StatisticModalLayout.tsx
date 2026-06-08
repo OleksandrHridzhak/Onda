@@ -25,13 +25,8 @@ export const StatisticModalLayout: React.FC<StatisticModalLayoutProps> = ({
     metrics,
     children,
 }) => (
-    <ModalShell
-        isOpen={isOpen}
-        onClose={onClose}
-        title="Statistics"
-        size="large"
-    >
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 p-4">
+    <ModalShell isOpen={isOpen} onClose={onClose} title="Statistics" size="fit">
+        <div className="mx-auto flex w-max min-w-[56rem] max-w-[calc(100vw-4rem)] flex-col gap-4 p-4">
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
                 <Card className="flex min-h-48 items-center gap-5 p-6">
                     <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border border-border bg-surfaceMuted text-primaryColor">
