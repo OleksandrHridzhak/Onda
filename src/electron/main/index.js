@@ -17,7 +17,6 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: join(__dirname, 'preload.bundle.js'),
-      webSecurity: false,
     },
   });
 

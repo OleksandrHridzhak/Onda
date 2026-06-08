@@ -21,10 +21,6 @@ const ipcWindowsHandlers = {
       }
     });
 
-    // Tab navigation handlers
-    ipcMain.on('next-tab', () => {
-      mainWindow.webContents.send('next-tab');
-    });
     // Notification handler
     ipcMain.handle('show-notification', (event, { title, body }) => {
       new Notification({ title, body }).show();

@@ -1,0 +1,1 @@
+- webpack config has production mode now
