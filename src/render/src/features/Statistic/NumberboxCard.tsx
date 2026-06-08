@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import type { ColumnEntry } from 'app/types/columnEntries.types';
-import type { NumberBoxColumn } from 'app/types/newColumn.types';
-import { formatDateKey, getMonday } from 'app/utils/date';
+import type { ColumnEntry } from 'shared/types/columnEntries.types';
+import type { NumberBoxColumn } from 'shared/types/newColumn.types';
+import { formatDateKey, getMonday } from 'shared/utils/date';
 import { StatisticPreviewCard } from 'features/Statistic/components/StatisticPreviewCard';
 import { StatisticModalLayout } from 'features/Statistic/components/StatisticModalLayout';
 import {

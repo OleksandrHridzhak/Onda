@@ -3,8 +3,8 @@ import type {
     ColumnEntry,
     ColumnEntryMeta,
     ColumnEntryValueType,
-} from 'app/types/columnEntries.types';
-import { getWeekStartKey, parseDateKey } from 'app/utils/date';
+} from 'shared/types/columnEntries.types';
+import { getWeekStartKey, parseDateKey } from 'shared/utils/date';
 import type { DbResult } from 'db/types';
 
 interface UpsertDayEntryParams {

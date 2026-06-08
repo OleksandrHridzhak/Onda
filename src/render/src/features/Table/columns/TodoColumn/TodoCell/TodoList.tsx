@@ -1,13 +1,13 @@
 import React from 'react';
 import { Edit2, Trash2, Check } from 'lucide-react';
-import { COLOR_STYLES } from 'app/utils/colorOptions';
+import { COLOR_STYLES } from 'shared/utils/colorOptions';
 import {
     handleToggleTodo,
     handleDeleteTodo,
     handleEditTodo,
     handleSaveEdit,
 } from 'features/Table/columns/TodoColumn/TodoCell/logic';
-import { Todo, Tag } from 'app/types/newColumn.types';
+import { Todo, Tag } from 'shared/types/newColumn.types';
 import { TodoEditModal } from 'features/Table/columns/TodoColumn/TodoCell/TodoEditModal';
 
 interface TodoListProps {

@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from 'db';
 import { componentsMap } from 'features/Table/Table.constants';
 import TableItemWrapper from 'features/Table/columns/TableItemWrapper';
-import { ColumnEntryValueMap } from 'app/types/columnEntries.types';
+import { ColumnEntryValueMap } from 'shared/types/columnEntries.types';
 
 /**
  * DynamicColumn component that subscribes only to its own column data.

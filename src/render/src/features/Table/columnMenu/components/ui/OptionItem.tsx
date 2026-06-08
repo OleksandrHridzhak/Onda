@@ -1,6 +1,6 @@
 import React from 'react';
-import { COLOR_STYLES } from 'app/utils/colorOptions';
-import { Tag } from 'app/types/newColumn.types';
+import { COLOR_STYLES } from 'shared/utils/colorOptions';
+import { Tag } from 'shared/types/newColumn.types';
 
 interface OptionItemProps {
     tag: Tag;

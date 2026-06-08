@@ -3,7 +3,7 @@ import { ColumnHeader } from 'features/Table/columns/ColumnHeader';
 import { TaskTableCell } from 'features/Table/columns/TaskTableColumn/TaskTableCell';
 import { DAYS } from 'features/Table/TableLogic';
 import { updateColumnFields } from 'db/helpers/columns';
-import { TaskTableColumn as TaskTableColumnType } from 'app/types/newColumn.types';
+import { TaskTableColumn as TaskTableColumnType } from 'shared/types/newColumn.types';
 import { useReactiveColumn } from 'features/Table/hooks/useReactiveColumn';
 
 interface TaskTableColumnProps {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { COLOR_STYLES } from 'app/utils/colorOptions';
+import { COLOR_STYLES } from 'shared/utils/colorOptions';
 import { useTaskState } from 'features/Table/columns/TaskTableColumn/hooks/useTaskState';
 import { handleToggleTask } from 'features/Table/columns/TaskTableColumn/logic';
-import { Tag } from 'app/types/newColumn.types';
+import { Tag } from 'shared/types/newColumn.types';
 
 interface RootState {
     newTheme: {

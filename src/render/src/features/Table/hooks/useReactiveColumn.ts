@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getColumnById } from 'db/helpers/columns';
-import { Column } from 'app/types/newColumn.types';
+import { Column } from 'shared/types/newColumn.types';
 
 /**
  * useReactiveColumn

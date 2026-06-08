@@ -3,7 +3,7 @@ import {
     COLOR_ORDER,
     COLOR_STYLES,
     type ColorName,
-} from 'app/utils/colorOptions';
+} from 'shared/utils/colorOptions';
 
 interface ColorPickerProps {
     value: ColorName;

@@ -4,7 +4,7 @@ import CalendarHeader from 'features/Calendar/CalendarHeader';
 import CalendarTimeline from 'features/Calendar/CalendarTimeline';
 import { useCalendar, NewEvent } from 'features/Calendar/hooks/useCalendar';
 import { useCalendarLayout } from 'features/Calendar/hooks/useCalendarLayout';
-import { CalendarEntry } from 'app/types/calendar.types';
+import { CalendarEntry } from 'shared/types/calendar.types';
 
 export default function Calendar(): React.ReactElement {
     // Calendar state & logic moved into hooks: `useCalendar` and `useCalendarLayout`.

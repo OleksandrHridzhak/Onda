@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Tag } from 'app/types/newColumn.types';
+import { Tag } from 'shared/types/newColumn.types';
 
 interface TaskState {
     incompleteTasks: string[];

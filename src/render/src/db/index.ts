@@ -1,8 +1,8 @@
 import Dexie, { type Table } from 'dexie';
-import { CalendarEntry } from 'app/types/calendar.types';
-import { Setting } from 'app/types/settings.types';
-import { Column } from 'app/types/newColumn.types';
-import { ColumnEntry } from 'app/types/columnEntries.types';
+import { CalendarEntry } from 'shared/types/calendar.types';
+import { Setting } from 'shared/types/settings.types';
+import { Column } from 'shared/types/newColumn.types';
+import { ColumnEntry } from 'shared/types/columnEntries.types';
 import { DEFAULT_SETTINGS } from 'db/constants';
 
 /**  Main database class

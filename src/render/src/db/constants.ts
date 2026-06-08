@@ -1,4 +1,4 @@
-import { Setting } from 'app/types/settings.types';
+import { Setting } from 'shared/types/settings.types';
 
 /**
  * Default settings that are used when initializing the database

@@ -1,5 +1,5 @@
-import type { CheckboxColumn } from 'app/types/newColumn.types';
-import { formatDateKey, getMonday } from 'app/utils/date';
+import type { CheckboxColumn } from 'shared/types/newColumn.types';
+import { formatDateKey, getMonday } from 'shared/utils/date';
 
 export interface CompletionMetric {
     label: string;

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ColumnMenu from 'features/Table/columnMenu/ColumnMenu';
-import { getIconComponent } from 'app/utils/icons';
+import { getIconComponent } from 'shared/utils/icons';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Column } from 'app/types/newColumn.types';
+import { Column } from 'shared/types/newColumn.types';
 import { getColumnById } from 'db/helpers/columns';
 
 interface ColumnHeaderProps {

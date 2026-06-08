@@ -6,7 +6,7 @@ import { Button } from 'shared/ui/Button';
 import { Field } from 'shared/ui/Field';
 import { Input } from 'shared/ui/Input';
 import { Textarea } from 'shared/ui/Textarea';
-import { Icon } from 'app/utils/icons';
+import { Icon } from 'shared/utils/icons';
 
 interface ColumnBasicSettingsProps {
     // Name input props

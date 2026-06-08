@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import type { CheckboxColumn } from 'app/types/newColumn.types';
-import type { ColumnEntry } from 'app/types/columnEntries.types';
-import { COLOR_STYLES } from 'app/utils/colorOptions';
-import { formatDateKey } from 'app/utils/date';
+import type { CheckboxColumn } from 'shared/types/newColumn.types';
+import type { ColumnEntry } from 'shared/types/columnEntries.types';
+import { COLOR_STYLES } from 'shared/utils/colorOptions';
+import { formatDateKey } from 'shared/utils/date';
 import { StatisticPreviewCard } from 'features/Statistic/components/StatisticPreviewCard';
 import { StatisticModalLayout } from 'features/Statistic/components/StatisticModalLayout';
 import {

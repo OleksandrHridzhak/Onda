@@ -1,5 +1,5 @@
-import type { Column } from 'app/types/newColumn.types';
-import { getWeekStartKey } from 'app/utils/date';
+import type { Column } from 'shared/types/newColumn.types';
+import { getWeekStartKey } from 'shared/utils/date';
 
 export const isColumnArchived = (column: Column): boolean =>
     Boolean(column.lifecycle?.archivedAt);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { CalendarEntry } from 'app/types/calendar.types';
-import { COLOR_STYLES } from 'app/utils/colorOptions';
+import { CalendarEntry } from 'shared/types/calendar.types';
+import { COLOR_STYLES } from 'shared/utils/colorOptions';
 
 export function useCalendarLayout(events: CalendarEntry[] = []) {
     const [viewMode, setViewMode] = useState<'week' | 'day'>(() => {

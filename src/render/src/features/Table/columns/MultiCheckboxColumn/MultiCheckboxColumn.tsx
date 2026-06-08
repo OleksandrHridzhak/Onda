@@ -3,11 +3,11 @@ import { ColumnHeader } from 'features/Table/columns/ColumnHeader';
 import { MultiCheckboxCell } from 'features/Table/columns/MultiCheckboxColumn/MultiCheckBoxCell';
 import { DayColumnLayout } from 'features/Table/columns/DayColumnLayout';
 import { useReactiveColumn } from 'features/Table/hooks/useReactiveColumn';
-import { MultiCheckboxColumn as MultiCheckboxColumnType } from 'app/types/newColumn.types';
+import { MultiCheckboxColumn as MultiCheckboxColumnType } from 'shared/types/newColumn.types';
 import {
     ColumnEntrySnapshot,
     ColumnEntryValueMap,
-} from 'app/types/columnEntries.types';
+} from 'shared/types/columnEntries.types';
 import { upsertDayEntry } from 'db/helpers/columnEntries';
 
 interface MultiCheckboxColumnProps {

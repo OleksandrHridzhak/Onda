@@ -1,8 +1,8 @@
 import React from 'react';
 import { ColumnHeader } from 'features/Table/columns/ColumnHeader';
 import { TextboxCell } from 'features/Table/columns/TextboxColumn/TextboxCell';
-import { TextboxColumn as TextboxColumnType } from 'app/types/newColumn.types';
-import { ColumnEntryValueMap } from 'app/types/columnEntries.types';
+import { TextboxColumn as TextboxColumnType } from 'shared/types/newColumn.types';
+import { ColumnEntryValueMap } from 'shared/types/columnEntries.types';
 import { useReactiveColumn } from 'features/Table/hooks/useReactiveColumn';
 import { DayColumnLayout } from 'features/Table/columns/DayColumnLayout';
 import { upsertDayEntry } from 'db/helpers/columnEntries';

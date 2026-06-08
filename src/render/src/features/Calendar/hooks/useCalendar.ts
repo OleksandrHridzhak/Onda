@@ -6,8 +6,8 @@ import {
     saveCalendarEvent,
     deleteCalendarEvent,
 } from 'db/helpers/calendar';
-import { CalendarEntry } from 'app/types/calendar.types';
-import { DEFAULT_COLOR_NAME, type ColorName } from 'app/utils/colorOptions';
+import { CalendarEntry } from 'shared/types/calendar.types';
+import { DEFAULT_COLOR_NAME, type ColorName } from 'shared/utils/colorOptions';
 
 export interface NewEvent {
     title: string;

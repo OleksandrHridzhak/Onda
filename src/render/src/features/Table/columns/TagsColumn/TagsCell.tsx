@@ -1,8 +1,8 @@
 import React from 'react';
-import { COLOR_STYLES } from 'app/utils/colorOptions';
+import { COLOR_STYLES } from 'shared/utils/colorOptions';
 import { useDropdownMultiSelect } from 'features/Table/columns/hooks/useDropdownMultiSelect';
-import { Tag } from 'app/types/newColumn.types';
-import { ColumnEntrySnapshot } from 'app/types/columnEntries.types';
+import { Tag } from 'shared/types/newColumn.types';
+import { ColumnEntrySnapshot } from 'shared/types/columnEntries.types';
 
 interface TagsCellProps {
     selectedTagIds: string[];

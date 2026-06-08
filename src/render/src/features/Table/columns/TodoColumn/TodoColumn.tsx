@@ -6,7 +6,7 @@ import { updateColumnFields } from 'db/helpers/columns';
 import {
     TodoListColumn as TodoListColumnType,
     Todo,
-} from 'app/types/newColumn.types';
+} from 'shared/types/newColumn.types';
 import { useReactiveColumn } from 'features/Table/hooks/useReactiveColumn';
 
 interface TodoColumnProps {

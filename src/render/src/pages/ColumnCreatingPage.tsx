@@ -9,8 +9,8 @@ import {
     Circle,
     Table,
 } from 'lucide-react';
-import { COLUMN_TYPES } from 'app/constants/columnTypes';
-import { COLOR_STYLES, type ColorName } from 'app/utils/colorOptions';
+import { COLUMN_TYPES } from 'shared/constants/columnTypes';
+import { COLOR_STYLES, type ColorName } from 'shared/utils/colorOptions';
 import { PageHeader } from 'shared/layout/PageHeader';
 
 interface ColumnType {

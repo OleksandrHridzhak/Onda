@@ -1,5 +1,5 @@
-import { Tag } from 'app/types/newColumn.types';
-import { ColumnEntrySnapshot } from 'app/types/columnEntries.types';
+import { Tag } from 'shared/types/newColumn.types';
+import { ColumnEntrySnapshot } from 'shared/types/columnEntries.types';
 
 /**
  * Get color for a tag.

@@ -1,5 +1,5 @@
-import { Column } from 'app/types/newColumn.types';
-import { COLUMN_TYPES } from 'app/constants/columnTypes';
+import { Column } from 'shared/types/newColumn.types';
+import { COLUMN_TYPES } from 'shared/constants/columnTypes';
 
 /**
  * Global dictionary of column templates.

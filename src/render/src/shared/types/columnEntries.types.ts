@@ -1,4 +1,4 @@
-import type { ColorName } from 'app/utils/colorOptions';
+import type { ColorName } from 'shared/utils/colorOptions';
 
 export type ColumnEntryValueType =
     | 'boolean'

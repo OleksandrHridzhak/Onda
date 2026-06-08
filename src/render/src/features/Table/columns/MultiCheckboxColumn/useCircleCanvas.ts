@@ -1,7 +1,7 @@
 import { useEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { COLOR_STYLES, ColorName } from 'app/utils/colorOptions';
-import { Tag } from 'app/types/newColumn.types';
+import { COLOR_STYLES, ColorName } from 'shared/utils/colorOptions';
+import { Tag } from 'shared/types/newColumn.types';
 import { getColorForTag } from 'features/Table/columns/MultiCheckboxColumn/logic';
 
 interface RootState {

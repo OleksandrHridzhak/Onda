@@ -1,6 +1,6 @@
 import React from 'react';
-import type { BaseColumn } from 'app/types/newColumn.types';
-import { getIconComponent } from 'app/utils/icons';
+import type { BaseColumn } from 'shared/types/newColumn.types';
+import { getIconComponent } from 'shared/utils/icons';
 import { Card } from 'shared/ui/Card';
 import { Heading } from 'shared/ui/Heading';
 

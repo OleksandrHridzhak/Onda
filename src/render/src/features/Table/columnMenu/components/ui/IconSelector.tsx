@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-import { icons as allIcons, getIconComponent, Icon } from 'app/utils/icons';
+import { icons as allIcons, getIconComponent, Icon } from 'shared/utils/icons';
 
 interface IconSelectorProps {
     selectedIcon: string;

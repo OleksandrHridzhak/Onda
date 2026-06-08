@@ -1,5 +1,5 @@
 import { db } from 'db/index';
-import { CalendarEntry } from 'app/types/calendar.types';
+import { CalendarEntry } from 'shared/types/calendar.types';
 import { DbResult } from 'db/types';
 
 /**

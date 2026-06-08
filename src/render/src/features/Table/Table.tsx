@@ -6,15 +6,15 @@ import TableItemWrapper from 'features/Table/columns/TableItemWrapper';
 import { getAllColumns } from 'db/helpers/columns';
 import { getSettings } from 'db/helpers/settings';
 import { getEntriesForWeek } from 'db/helpers/columnEntries';
-import { ColumnEntryValueMap } from 'app/types/columnEntries.types';
-import { getWeekDates, getWeekStartKey } from 'app/utils/date';
+import { ColumnEntryValueMap } from 'shared/types/columnEntries.types';
+import { getWeekDates, getWeekStartKey } from 'shared/utils/date';
 import 'features/Table/Table.css';
 import { useRowHeightSync } from 'features/Table/hooks/useRowHeightSync';
 import DynamicColumn from 'features/Table/columns/DynamicColumn';
 import { TableLoadingOverlay } from 'features/Table/components/TableLoadingOverlay';
 import { TableEmptyState } from 'features/Table/components/TableEmptyState';
 import { useTableWeek } from 'features/Table/context/TableWeekContext';
-import { isColumnVisibleForWeek } from 'app/utils/columnLifecycle';
+import { isColumnVisibleForWeek } from 'shared/utils/columnLifecycle';
 
 const Table: React.FC = () => {
     const { currentWeekStart } = useTableWeek();

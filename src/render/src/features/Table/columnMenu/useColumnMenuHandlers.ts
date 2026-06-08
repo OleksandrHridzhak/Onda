@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Tag } from 'app/types/newColumn.types';
-import { COLUMN_TYPES } from 'app/constants/columnTypes';
-import { ColorName } from 'app/utils/colorOptions';
+import { Tag } from 'shared/types/newColumn.types';
+import { COLUMN_TYPES } from 'shared/constants/columnTypes';
+import { ColorName } from 'shared/utils/colorOptions';
 import {
     updateColumnFields,
     archiveColumn,

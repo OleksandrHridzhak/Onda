@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Calendar, Clock } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getAllCalendarEvents } from 'db/helpers/calendar';
-import { CalendarEntry } from 'app/types/calendar.types';
+import { CalendarEntry } from 'shared/types/calendar.types';
 
 const TimelineWidget: React.FC = () => {
     const getCurrentTimeString = (): string => {

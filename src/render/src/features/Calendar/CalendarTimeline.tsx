@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { CalendarEntry } from 'app/types/calendar.types';
+import { CalendarEntry } from 'shared/types/calendar.types';
 
 interface RootState {
     newTheme: {

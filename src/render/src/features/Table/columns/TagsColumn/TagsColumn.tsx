@@ -3,11 +3,11 @@ import { ColumnHeader } from 'features/Table/columns/ColumnHeader';
 import { TagsCell } from 'features/Table/columns/TagsColumn/TagsCell';
 import { DayColumnLayout } from 'features/Table/columns/DayColumnLayout';
 import { useReactiveColumn } from 'features/Table/hooks/useReactiveColumn';
-import { TagsColumn as TagsColumnType } from 'app/types/newColumn.types';
+import { TagsColumn as TagsColumnType } from 'shared/types/newColumn.types';
 import {
     ColumnEntrySnapshot,
     ColumnEntryValueMap,
-} from 'app/types/columnEntries.types';
+} from 'shared/types/columnEntries.types';
 import { upsertDayEntry } from 'db/helpers/columnEntries';
 
 interface TagsColumnProps {

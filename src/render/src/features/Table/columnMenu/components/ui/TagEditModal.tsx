@@ -4,8 +4,8 @@ import { ColorPicker } from 'shared/ui/ColorPicker';
 import { Field } from 'shared/ui/Field';
 import { Input } from 'shared/ui/Input';
 import { ModalShell } from 'shared/ui/ModalShell';
-import { Tag } from 'app/types/newColumn.types';
-import { ColorName } from 'app/utils/colorOptions';
+import { Tag } from 'shared/types/newColumn.types';
+import { ColorName } from 'shared/utils/colorOptions';
 
 interface TagEditModalProps {
     tag: Tag | null;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Check } from 'lucide-react';
-import { COLOR_STYLES, ColorName } from 'app/utils/colorOptions';
+import { COLOR_STYLES, ColorName } from 'shared/utils/colorOptions';
 
 interface CheckboxCellProps {
     checked: boolean;

@@ -1,5 +1,5 @@
 import { db } from 'db/index';
-import { Setting } from 'app/types/settings.types';
+import { Setting } from 'shared/types/settings.types';
 import { DbResult } from 'db/types';
 import { DEFAULT_SETTINGS } from 'db/constants';
 

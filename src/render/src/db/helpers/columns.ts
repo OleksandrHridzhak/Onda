@@ -1,9 +1,9 @@
 import { db } from 'db/index';
-import { Column } from 'app/types/newColumn.types';
+import { Column } from 'shared/types/newColumn.types';
 import { COLUMN_TEMPLATES } from 'db/column.templates';
-import { ColumnType } from 'app/constants/columnTypes';
+import { ColumnType } from 'shared/constants/columnTypes';
 import { DbResult } from 'db/types';
-import { isColumnArchived } from 'app/utils/columnLifecycle';
+import { isColumnArchived } from 'shared/utils/columnLifecycle';
 
 /**
  * Fetch all columns from the database

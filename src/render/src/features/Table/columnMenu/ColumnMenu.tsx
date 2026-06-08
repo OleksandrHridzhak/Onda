@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { icons } from 'app/utils/icons';
+import { icons } from 'shared/utils/icons';
 import { OptionsList } from 'features/Table/columnMenu/components/ui/OptionList';
 import { ColumnBasicSettings } from 'features/Table/columnMenu/components/structure/ColumnBasicSettings';
 import { ColumnActions } from 'features/Table/columnMenu/components/structure/ColumnActions';
@@ -9,9 +9,9 @@ import { ModalShell } from 'shared/ui/ModalShell';
 import { getColumnById } from 'db/helpers/columns';
 import { getColumnsOrder } from 'db/helpers/settings';
 import { useColumnMenuHandlers } from 'features/Table/columnMenu/useColumnMenuHandlers';
-import { COLUMN_TYPES, hasOptionsSupport } from 'app/constants/columnTypes';
+import { COLUMN_TYPES, hasOptionsSupport } from 'shared/constants/columnTypes';
 import { db } from 'db';
-import { isColumnArchived } from 'app/utils/columnLifecycle';
+import { isColumnArchived } from 'shared/utils/columnLifecycle';
 
 interface ColumnMenuProps {
     columnId: string;

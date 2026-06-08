@@ -1,4 +1,4 @@
-import { Todo } from 'app/types/newColumn.types';
+import { Todo } from 'shared/types/newColumn.types';
 
 /**
  * Sort todos by completion status (incomplete first, completed last)

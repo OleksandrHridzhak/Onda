@@ -4,8 +4,8 @@ import { Field } from 'shared/ui/Field';
 import { Input } from 'shared/ui/Input';
 import { OptionItem } from 'features/Table/columnMenu/components/ui/OptionItem';
 import { TagEditModal } from 'features/Table/columnMenu/components/ui/TagEditModal';
-import { Tag } from 'app/types/newColumn.types';
-import { ColorName } from 'app/utils/colorOptions';
+import { Tag } from 'shared/types/newColumn.types';
+import { ColorName } from 'shared/utils/colorOptions';
 
 interface OptionsListProps {
     columnType: string;

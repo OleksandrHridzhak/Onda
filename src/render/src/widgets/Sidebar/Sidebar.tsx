@@ -4,9 +4,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleThemeMode } from 'app/store/slices/newThemeSlice';
 import ColumnCreatingPage from 'pages/ColumnCreatingPage';
-import { sideBarItems } from 'shared/layout/Sidebar/constants';
+import { sideBarItems } from 'widgets/Sidebar/constants';
 import { createColumn } from 'db/helpers/columns';
-import { ColumnType } from 'app/constants/columnTypes';
+import { ColumnType } from 'shared/constants/columnTypes';
 import { useTableWeek } from 'features/Table/context/TableWeekContext';
 
 interface RootState {

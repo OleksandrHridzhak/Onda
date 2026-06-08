@@ -1,5 +1,5 @@
 import React from 'react';
-import { getMonday } from 'app/utils/date';
+import { getMonday } from 'shared/utils/date';
 
 interface TableWeekContextValue {
     currentWeekStart: Date;

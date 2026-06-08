@@ -1,4 +1,4 @@
-import { Tag } from 'app/types/newColumn.types';
+import { Tag } from 'shared/types/newColumn.types';
 
 /**
  * Toggle task completion status

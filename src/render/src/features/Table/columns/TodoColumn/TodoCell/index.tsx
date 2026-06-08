@@ -5,7 +5,7 @@ import { filterTodos } from 'features/Table/columns/TodoColumn/TodoCell/logic';
 import { TodoInput } from 'features/Table/columns/TodoColumn/TodoCell/TodoInput';
 import { TodoCategoryFilter } from 'features/Table/columns/TodoColumn/TodoCell/TodoCategoryFilter';
 import { TodoList } from 'features/Table/columns/TodoColumn/TodoCell/TodoList';
-import { Todo, Tag } from 'app/types/newColumn.types';
+import { Todo, Tag } from 'shared/types/newColumn.types';
 
 interface RootState {
     newTheme: {

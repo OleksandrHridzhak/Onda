@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDateKey } from 'app/utils/date';
+import { formatDateKey } from 'shared/utils/date';
 
 interface DayColumnLayoutProps {
     weekDates: Date[];
