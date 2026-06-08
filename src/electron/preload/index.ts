@@ -1,17 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-
-interface NotificationOptions {
-    title: string;
-    body: string;
-}
-
-export interface ElectronAPI {
-    closeApp: () => Promise<void>;
-    minimizeWindow: () => Promise<void>;
-    maximizeWindow: () => Promise<void>;
-    closeWindow: () => Promise<void>;
-    showNotification: (options: NotificationOptions) => Promise<void>;
-}
+import type { ElectronAPI } from '../../shared/types/electron';
 
 const electronAPI: ElectronAPI = {
     closeApp: () => ipcRenderer.invoke('close-app'),

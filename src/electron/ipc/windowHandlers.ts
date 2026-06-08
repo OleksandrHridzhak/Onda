@@ -1,9 +1,5 @@
 import { app, Notification, type BrowserWindow, type IpcMain } from 'electron';
-
-interface NotificationOptions {
-    title: string;
-    body: string;
-}
+import type { ElectronNotificationOptions } from '../../shared/types/electron';
 
 const ipcWindowsHandlers = {
     init(ipcMain: IpcMain, mainWindow: BrowserWindow): void {
@@ -29,7 +25,7 @@ const ipcWindowsHandlers = {
         // Notification handler
         ipcMain.handle(
             'show-notification',
-            (_event, { title, body }: NotificationOptions) => {
+            (_event, { title, body }: ElectronNotificationOptions) => {
                 new Notification({ title, body }).show();
             },
         );

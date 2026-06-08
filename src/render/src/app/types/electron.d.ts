@@ -1,13 +1,4 @@
-interface ElectronAPI {
-    minimizeWindow: () => Promise<void>;
-    maximizeWindow: () => Promise<void>;
-    closeWindow: () => Promise<void>;
-    closeApp: () => Promise<void>;
-    showNotification: (options: {
-        title: string;
-        body: string;
-    }) => Promise<void>;
-}
+import type { ElectronAPI } from '../../../../shared/types/electron';
 
 declare global {
     interface Window {
