@@ -1,10 +1,12 @@
 interface ElectronAPI {
-    minimizeWindow: () => void;
-    maximizeWindow: () => void;
-    closeWindow: () => void;
+    minimizeWindow: () => Promise<void>;
+    maximizeWindow: () => Promise<void>;
+    closeWindow: () => Promise<void>;
     closeApp: () => Promise<void>;
-    showNotification: (options: { title: string; body: string }) => void;
-    // Додай інші методи які використовуються в проекті
+    showNotification: (options: {
+        title: string;
+        body: string;
+    }) => Promise<void>;
 }
 
 declare global {
