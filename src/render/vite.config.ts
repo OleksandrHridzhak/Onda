@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 app: path.resolve(__dirname, 'src/app'),
-                db: path.resolve(__dirname, 'src/db'),
+                entities: path.resolve(__dirname, 'src/entities'),
                 features: path.resolve(__dirname, 'src/features'),
                 pages: path.resolve(__dirname, 'src/pages'),
                 shared: path.resolve(__dirname, 'src/shared'),

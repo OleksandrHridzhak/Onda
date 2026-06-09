@@ -1,0 +1,181 @@
+import { useState } from 'react';
+import { Sun, Moon, Plus } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectThemeMode, toggleThemeMode } from 'features/ChangeTheme';
+import { CreateColumn } from 'features/CreateColumn';
+import { sideBarItems } from '../model/constants';
+import { createColumn } from 'features/CreateColumn';
+import { ColumnType } from 'entities/Column';
+import { useTableWeek } from 'features/ChangeTableWeek';
+
+type ActivePage = 'home' | 'calendar' | 'statistics' | 'settings';
+
+const Sidebar: React.FC = () => {
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { currentWeekStart } = useTableWeek();
+
+    const themeMode = useSelector(selectThemeMode);
+    const [showColumnSelector, setShowColumnSelector] = useState(false);
+
+    const deriveActive = (path: string): ActivePage => {
+        if (path.startsWith('/calendar')) return 'calendar';
+        if (path.startsWith('/statistics')) return 'statistics';
+        if (path.startsWith('/settings')) return 'settings';
+        return 'home';
+    };
+
+    const active = deriveActive(location.pathname);
+
+    const toggleTheme = (): void => {
+        dispatch(toggleThemeMode());
+    };
+
+    const isAddDisabled = active === 'settings' || active === 'statistics';
+
+    return (
+        <div
+            className={`
+  fixed bottom-0 w-full h-auto bg-background border-t border-border 
+  flex flex-row items-center justify-center p-2 z-50
+  md:relative md:w-20 md:h-screen md:flex-col md:items-center 
+  md:justify-between md:p-4 md:border-r md:border-t-0
+`}
+        >
+            <div>
+                <p
+                    className={`
+            hidden md:block font-poppins font-medium text-md mt-6 text-primaryColor
+          `}
+                >
+                    ONDA
+                </p>
+                <ul
+                    className={`
+            flex flex-row gap-6 justify-around items-center w-full mt-0
+            md:flex-col md:gap-10 md:justify-center md:items-center md:mt-36 md:w-auto
+          `}
+                >
+                    {sideBarItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive =
+                            !showColumnSelector && active === item.name;
+                        return (
+                            <Link
+                                key={item.name}
+                                to={item.path}
+                                onClick={() => setShowColumnSelector(false)}
+                            >
+                                <li
+                                    className={`transition-all duration-300 ease-in-out transform p-2 rounded-xl ${
+                                        isActive
+                                            ? 'bg-primaryColor scale-110 hover:scale-120 shadow-md text-linkActiveText'
+                                            : 'hover:scale-105 hover:bg-backgrundHover'
+                                    }`}
+                                >
+                                    <Icon
+                                        className={`w-6 h-6 transition-colors duration-300 ${
+                                            isActive
+                                                ? 'text-sidebarIconActive'
+                                                : 'text-sidebarIconInactive'
+                                        } `}
+                                        strokeWidth={1.5}
+                                    />
+                                </li>
+                            </Link>
+                        );
+                    })}
+
+                    {/* Add new table column button + type selector */}
+                    <li
+                        role="button"
+                        tabIndex={0}
+                        className={`transition-all duration-300 ease-in-out transform p-2.5 rounded-full flex items-center justify-center focus:outline-none focus:ring-2  ${
+                            isAddDisabled
+                                ? 'opacity-50 cursor-not-allowed bg-primaryColor hover:scale-100 hover:bg-gray'
+                                : showColumnSelector
+                                  ? 'bg-primaryColor text-white scale-100 ring-1 ring-primaryColor/30'
+                                  : 'bg-primaryColor text-white hover:scale-105 shadow-md'
+                        }`}
+                        onClick={() => {
+                            if (isAddDisabled) return;
+                            if (active === 'calendar') {
+                                navigate('/calendar?createEvent=1');
+                                setShowColumnSelector(false);
+                            } else {
+                                setShowColumnSelector(true);
+                            }
+                        }}
+                        onKeyDown={(e) => {
+                            if (isAddDisabled) return;
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                if (active === 'calendar') {
+                                    navigate('/calendar?createEvent=1');
+                                    setShowColumnSelector(false);
+                                } else {
+                                    setShowColumnSelector(true);
+                                }
+                            }
+                        }}
+                        aria-label="Open add column selector"
+                        aria-pressed={showColumnSelector}
+                        aria-disabled={isAddDisabled}
+                        title={
+                            isAddDisabled
+                                ? 'Disabled on this page'
+                                : 'Add column'
+                        }
+                    >
+                        <Plus
+                            className={`w-6 h-6 md:w-7 text-white md:h-7`}
+                            strokeWidth={1.5}
+                        />
+                    </li>
+
+                    {showColumnSelector && (
+                        <div className="absolute left-12 z-50">
+                            <CreateColumn
+                                onSelect={(type: ColumnType) => {
+                                    createColumn(type, currentWeekStart);
+                                    setShowColumnSelector(false);
+                                }}
+                                onCancel={() => setShowColumnSelector(false)}
+                                darkMode={themeMode === 'dark'}
+                            />
+                        </div>
+                    )}
+                    <li
+                        role="button"
+                        tabIndex={0}
+                        className={`p-2 rounded-xl transition-all duration-300 cursor-pointer`}
+                        onClick={toggleTheme}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                toggleTheme();
+                            }
+                        }}
+                        aria-label="Toggle theme"
+                    >
+                        {themeMode === 'dark' ? (
+                            <Moon
+                                className={`w-6 h-6 text-primaryColor transition-all duration-300 transform rotate-0 hover:rotate-[360deg]`}
+                                strokeWidth={1.5}
+                            />
+                        ) : (
+                            <Sun
+                                className={`w-6 h-6 text-primaryColor transition-all duration-300 transform rotate-0 hover:rotate-180`}
+                                strokeWidth={1.5}
+                            />
+                        )}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    );
+};
+
+export default Sidebar;

@@ -1,0 +1,51 @@
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import SettingsSection from 'shared/ui/SettingsSection';
+import { Field } from 'shared/ui/Field';
+import { Select } from 'shared/ui/Select';
+import { selectColorScheme } from '../model/selectors';
+import { setColorScheme } from '../model/themeSlice';
+
+const colorSchemes = [
+    { value: 'standard', label: 'Standard' },
+    { value: 'standard-v2', label: 'Standard v2' },
+    { value: 'paper', label: 'Paper' },
+    { value: 'sage', label: 'Sage' },
+    { value: 'mist', label: 'Mist' },
+    { value: 'ocean', label: 'Ocean' },
+    { value: 'sunset', label: 'Sunset' },
+    { value: 'forest', label: 'Forest' },
+    { value: 'lavender', label: 'Lavender' },
+    { value: 'nord', label: 'Nord' },
+    { value: 'coffee', label: 'Coffee' },
+];
+
+export default function ThemeSection(): React.ReactElement {
+    const dispatch = useDispatch();
+    const colorScheme = useSelector(selectColorScheme);
+
+    return (
+        <SettingsSection title="Appearance">
+            <Field
+                label="Color palette"
+                htmlFor="settings-color-scheme"
+                hint="Applies to light and dark modes."
+            >
+                <Select
+                    id="settings-color-scheme"
+                    value={colorScheme}
+                    onChange={(event) =>
+                        dispatch(setColorScheme(event.target.value))
+                    }
+                    inputSize="sm"
+                >
+                    {colorSchemes.map((scheme) => (
+                        <option key={scheme.value} value={scheme.value}>
+                            {scheme.label}
+                        </option>
+                    ))}
+                </Select>
+            </Field>
+        </SettingsSection>
+    );
+}
