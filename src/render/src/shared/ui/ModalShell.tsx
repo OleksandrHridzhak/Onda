@@ -2,7 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Heading } from 'shared/ui/Heading';
-
+import { Button } from 'shared/ui/Button';
 interface ModalShellProps {
     isOpen: boolean;
     onClose: () => void;
@@ -77,13 +77,13 @@ export function ModalShell({
                         <Heading as="h1" variant="lg" className="font-semibold">
                             {title}
                         </Heading>
-                        <button
+                        <Button
                             onClick={onClose}
-                            aria-label="Close modal"
-                            className="p-1 rounded-full text-textMuted hover:bg-backgrundHover transition-colors duration-200"
+                            variant="ghost"
+                            aria-label="Close"
                         >
-                            <X size={20} />
-                        </button>
+                            <X className="h-5 w-5" />
+                        </Button>
                     </div>
                     <div
                         className={

@@ -42,6 +42,11 @@ import {
     Wallet,
     Circle,
     ListTodo,
+    CheckSquare,
+    Hash,
+    Tag,
+    Type,
+    Table,
     LucideIcon,
 } from 'lucide-react';
 
@@ -93,6 +98,11 @@ export const icons: Icon[] = [
     { name: 'Wallet', component: Wallet },
     { name: 'Circle', component: Circle },
     { name: 'ListTodo', component: ListTodo },
+    { name: 'CheckSquare', component: CheckSquare },
+    { name: 'Hash', component: Hash },
+    { name: 'Tag', component: Tag },
+    { name: 'Type', component: Type },
+    { name: 'Table', component: Table },
 ];
 
 export const getIconComponent = (

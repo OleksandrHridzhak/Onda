@@ -1,23 +1,17 @@
 import React from 'react';
-import {
-    CheckSquare,
-    Hash,
-    Tag,
-    Type,
-    X,
-    ListTodo,
-    Circle,
-    Table,
-} from 'lucide-react';
-import { COLUMN_TYPES } from 'entities/Column';
+import { X, Table } from 'lucide-react';
+import { getIconComponent } from 'shared/lib/icons';
+import { COLUMN_DEFINITIONS } from 'entities/Column';
 import { COLOR_STYLES, type ColorName } from 'shared/lib/color';
 import { PageHeader } from 'shared/ui/PageHeader';
+import { Button } from 'shared/ui/Button';
+import { Text } from 'shared/ui/Text';
 
-interface ColumnType {
+interface ColumnCreationOption {
     id: string;
     label: string;
     description?: string;
-    icon: React.ReactElement;
+    icon: React.ReactNode;
     accent: ColorName;
 }
 
@@ -32,59 +26,15 @@ const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
     onCancel,
     darkMode,
 }) => {
-    const columnTypes: ColumnType[] = [
-        {
-            id: COLUMN_TYPES.TODO,
-            label: 'Todo List',
-            description:
-                'Checklist-style column for tasks with categories and quick add.',
-            icon: <ListTodo className="w-5 h-5" />,
-            accent: 'accent6',
-        },
-        {
-            id: COLUMN_TYPES.CHECKBOX,
-            label: 'Checkbox',
-            description: 'Simple on/off checkbox for marking items done.',
-            icon: <CheckSquare className="w-5 h-5" />,
-            accent: 'accent2',
-        },
-        {
-            id: COLUMN_TYPES.NUMBERBOX,
-            label: 'Number',
-            description: 'Numeric input for counts, scores or measurements.',
-            icon: <Hash className="w-5 h-5" />,
-            accent: 'accent1',
-        },
-        {
-            id: COLUMN_TYPES.TAGS,
-            label: 'Tags',
-            description: 'Tag-based multi-select for categorizing items.',
-            icon: <Tag className="w-5 h-5" />,
-            accent: 'accent3',
-        },
-
-        {
-            id: COLUMN_TYPES.TEXTBOX,
-            label: 'Notes',
-            description: 'Free-form text field for notes and descriptions.',
-            icon: <Type className="w-5 h-5" />,
-            accent: 'accent4',
-        },
-        {
-            id: COLUMN_TYPES.MULTI_CHECKBOX,
-            label: 'Multi Checkbox',
-            description: 'Multiple checkbox options for subtasks or choices.',
-            icon: <Circle className="w-5 h-5" />,
-            accent: 'accent8',
-        },
-        {
-            id: COLUMN_TYPES.TASK_TABLE,
-            label: 'Task Table',
-            description: 'Nested task table for managing tasks inside a row.',
-            icon: <Table className="w-5 h-5" />,
-            accent: 'accent9',
-        },
-    ];
+    const columnTypes: ColumnCreationOption[] = Object.values(
+        COLUMN_DEFINITIONS,
+    ).map((def) => ({
+        id: def.template.type,
+        label: def.creation.label,
+        description: def.creation.description,
+        icon: getIconComponent(def.creation.iconName, 20),
+        accent: def.creation.accent,
+    }));
 
     return (
         <div
@@ -106,13 +56,13 @@ const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
                     icon={<Table size={22} />}
                     className="z-10"
                 >
-                    <button
+                    <Button
                         onClick={onCancel}
-                        className="rounded-full p-2 text-textMuted transition-colors hover:bg-backgrundHover hover:text-text"
+                        variant="ghost"
                         aria-label="Close"
                     >
                         <X className="h-5 w-5" />
-                    </button>
+                    </Button>
                 </PageHeader>
 
                 <div
@@ -136,9 +86,13 @@ const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
                                     <div className="font-semibold text-text">
                                         {type.label}
                                     </div>
-                                    <div className="mt-1 text-sm text-textMuted">
+                                    <Text
+                                        as="div"
+                                        tone="muted"
+                                        className="mt-1"
+                                    >
                                         {type.description}
-                                    </div>
+                                    </Text>
                                 </div>
                             </button>
                         );
@@ -148,18 +102,5 @@ const ColumnCreatingPage: React.FC<ColumnCreatingPageProps> = ({
         </div>
     );
 };
-
-const styles = `
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1;  }
-  }
-`;
-
-if (typeof document !== 'undefined') {
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = styles;
-    document.head.appendChild(styleElement);
-}
 
 export default ColumnCreatingPage;

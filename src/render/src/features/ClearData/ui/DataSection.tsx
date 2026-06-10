@@ -4,6 +4,7 @@ import SettingsSection from 'shared/ui/SettingsSection';
 import { Button } from 'shared/ui/Button';
 import { clearAllData } from '../api/clearAllData';
 import { ConfirmModal } from 'shared/ui/ConfirmModal';
+import { Text } from 'shared/ui/Text';
 
 export default function DataSection(): React.ReactElement {
     const [status, setStatus] = useState('');
@@ -33,7 +34,9 @@ export default function DataSection(): React.ReactElement {
     return (
         <SettingsSection title="Data Management">
             <div className="flex flex-col gap-2">
-                <span className="text-sm text-textMuted">Danger Zone</span>
+                <Text as="span" tone="muted">
+                    Danger Zone
+                </Text>
                 <div className="flex flex-row gap-2">
                     <Button
                         onClick={() => setShowClearModal(true)}
@@ -44,7 +47,9 @@ export default function DataSection(): React.ReactElement {
                     </Button>
                 </div>
                 {status && (
-                    <span className="text-sm text-red-500">{status}</span>
+                    <Text as="span" tone="danger">
+                        {status}
+                    </Text>
                 )}
             </div>
 

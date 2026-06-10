@@ -1,22 +1,6 @@
 import type { ColorName } from 'shared/lib/color';
 
 /**
- * WeeklyValues<T>
- * Generic mapping of weekday names to a value of type `T`.
- * Used for storing per-day data (e.g. booleans, strings, numbers, arrays).
- * Example: { Monday: true, Tuesday: false, ... }
- */
-export type WeeklyValues<T> = {
-    Monday: T;
-    Tuesday: T;
-    Wednesday: T;
-    Thursday: T;
-    Friday: T;
-    Saturday: T;
-    Sunday: T;
-};
-
-/**
  * BaseColumn
  * Common metadata shared by all column types.
  * - `id`: unique identifier
@@ -156,18 +140,3 @@ export type Column =
     | TodoListColumn
     | MultiCheckboxColumn
     | TaskTableColumn;
-
-/**
- * Helper function to create empty WeeklyValues for a given type
- */
-export function createEmptyWeeklyValues<T>(defaultValue: T): WeeklyValues<T> {
-    return {
-        Monday: defaultValue,
-        Tuesday: defaultValue,
-        Wednesday: defaultValue,
-        Thursday: defaultValue,
-        Friday: defaultValue,
-        Saturday: defaultValue,
-        Sunday: defaultValue,
-    };
-}

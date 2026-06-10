@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { CalendarEntry } from 'entities/CalendarEvent';
 import { selectThemeMode } from 'features/ChangeTheme';
+import { Text } from 'shared/ui/Text';
 
 interface CalendarTimelineProps {
     viewMode: string;
@@ -74,16 +75,19 @@ export default function CalendarTimeline({
                         >
                             <div className="h-16" />
                             {hours.map((hour) => (
-                                <div
+                                <Text
+                                    as="div"
+                                    variant="caption"
+                                    tone="muted"
                                     key={hour}
-                                    className={`flex items-center justify-end pr-2 sm:pr-3 text-xs sm:text-sm text-textMuted`}
+                                    className="flex items-center justify-end pr-2 sm:pr-3 sm:text-sm"
                                     style={{
                                         height: `${slotHeight}px`,
                                         lineHeight: `${slotHeight}px`,
                                     }}
                                 >
                                     {formatTime(hour)}
-                                </div>
+                                </Text>
                             ))}
                         </div>
 
@@ -96,11 +100,9 @@ export default function CalendarTimeline({
                                     <div
                                         className={`sticky top-0 bg-background z-40 py-3 text-center border-b border-border`}
                                     >
-                                        <div
-                                            className={`text-xs text-textMuted`}
-                                        >
+                                        <Text variant="caption" tone="muted">
                                             {dayNames[day.getDay()]}
-                                        </div>
+                                        </Text>
                                         <div
                                             className={`mt-1 text-sm font-medium ${
                                                 day.toDateString() ===

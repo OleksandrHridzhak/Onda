@@ -1,6 +1,7 @@
 import React from 'react';
 import { ModalShell } from 'shared/ui/ModalShell';
 import { Button } from 'shared/ui/Button';
+import { Text } from 'shared/ui/Text';
 
 interface ConfirmModalProps {
     isOpen: boolean;
@@ -31,7 +32,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     return (
         <ModalShell isOpen={isOpen} onClose={onClose} title={title}>
             <div className="p-3">
-                <p className="text-textMuted">{message}</p>
+                <Text tone="muted">{message}</Text>
             </div>
 
             <div className="flex justify-end gap-3">

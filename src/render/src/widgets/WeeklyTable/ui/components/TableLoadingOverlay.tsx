@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'shared/ui/Text';
 
 interface TableLoadingOverlayProps {
     isVisible: boolean;
@@ -32,9 +33,9 @@ export const TableLoadingOverlay: React.FC<TableLoadingOverlayProps> = ({
                 </div>
 
                 {/* Loading text */}
-                <p className="text-sm font-medium text-textMuted animate-pulse">
+                <Text tone="muted" className="font-medium animate-pulse">
                     Syncing data...
-                </p>
+                </Text>
             </div>
         </div>
     );

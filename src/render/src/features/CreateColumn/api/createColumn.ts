@@ -1,8 +1,5 @@
-import {
-    COLUMN_TEMPLATES,
-    type Column,
-    type ColumnType,
-} from 'entities/Column';
+import { COLUMN_DEFINITIONS, type Column } from 'entities/Column';
+import type { ColumnType } from 'entities/Column';
 import type { Setting } from 'entities/Settings';
 import { getTable, runTransaction, type DbResult } from 'shared/api/db';
 
@@ -13,14 +10,18 @@ export async function createColumn(
     type: ColumnType,
     createdAt: Date = new Date(),
 ): Promise<DbResult<Column>> {
-    const template = COLUMN_TEMPLATES[type];
+    const definition = Object.values(COLUMN_DEFINITIONS).find(
+        ({ template }) => template.type === type,
+    );
 
-    if (!template) {
+    if (!definition) {
         return {
             success: false,
-            error: `Template for type "${type}" not found.`,
+            error: `Definition for type "${type}" not found.`,
         };
     }
+
+    const template = definition.template;
 
     try {
         return await runTransaction(['tableColumns', 'settings'], async () => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from './Text';
 
 interface FieldProps {
     label?: React.ReactNode;
@@ -36,9 +37,13 @@ export const Field: React.FC<FieldProps> = ({
             {children}
 
             {error ? (
-                <p className="text-xs text-danger">{error}</p>
+                <Text variant="caption" tone="danger">
+                    {error}
+                </Text>
             ) : hint ? (
-                <p className="text-xs text-textSubtle">{hint}</p>
+                <Text variant="caption" tone="subtle">
+                    {hint}
+                </Text>
             ) : null}
         </div>
     );

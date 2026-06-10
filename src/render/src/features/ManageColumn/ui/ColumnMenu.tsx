@@ -9,7 +9,8 @@ import { ModalShell } from 'shared/ui/ModalShell';
 import { getColumnById, getColumnsByIds } from 'entities/Column';
 import { getColumnsOrder } from 'entities/Settings';
 import { useColumnMenuHandlers } from '../model/useColumnMenuHandlers';
-import { COLUMN_TYPES, hasOptionsSupport } from 'entities/Column';
+import { COLUMN_TYPES } from 'entities/Column';
+import { hasOptionsSupport } from 'entities/Column';
 import { isColumnArchived } from 'entities/Column';
 
 interface ColumnMenuProps {

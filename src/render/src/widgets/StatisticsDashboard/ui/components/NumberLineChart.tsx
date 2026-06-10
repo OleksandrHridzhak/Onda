@@ -8,6 +8,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
+import { Text } from 'shared/ui/Text';
 
 export interface ChartPoint {
     dateKey: string;
@@ -40,12 +41,14 @@ export const NumberLineChart: React.FC<NumberLineChartProps> = ({
 }) => {
     if (points.length === 0) {
         return (
-            <div
-                className="flex items-center justify-center text-sm text-textMuted"
+            <Text
+                as="div"
+                tone="muted"
+                className="flex items-center justify-center"
                 style={{ height }}
             >
                 No numeric data yet
-            </div>
+            </Text>
         );
     }
 

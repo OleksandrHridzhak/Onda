@@ -4,6 +4,7 @@ import { getIconComponent } from 'shared/lib/icons';
 import { Card } from 'shared/ui/Card';
 import { Heading } from 'shared/ui/Heading';
 import { ModalShell } from 'shared/ui/ModalShell';
+import { Text } from 'shared/ui/Text';
 
 export interface StatisticMetric {
     label: string;
@@ -66,7 +67,7 @@ const StatisticMetricCard: React.FC<{ metric: StatisticMetric }> = ({
     metric,
 }) => (
     <Card className="flex items-center justify-between px-5 py-4">
-        <p className="text-sm text-textMuted">{metric.label}</p>
+        <Text tone="muted">{metric.label}</Text>
         <p className="text-2xl font-semibold text-text">{metric.value}</p>
     </Card>
 );

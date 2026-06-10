@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'shared/ui/Card';
 import { Heading } from 'shared/ui/Heading';
+import { Text } from 'shared/ui/Text';
 
 export const StatisticWidgetGrid: React.FC<{
     children: React.ReactNode;
@@ -20,7 +21,9 @@ export const StatisticValueWidget: React.FC<{
         <Heading as="h3" variant="s">
             {label}
         </Heading>
-        <p className="text-xs text-textMuted">{detail}</p>
+        <Text variant="caption" tone="muted">
+            {detail}
+        </Text>
     </Card>
 );
 
@@ -69,7 +72,9 @@ export const StatisticProgressWidget: React.FC<{
                 <Heading as="h3" variant="s">
                     {label}
                 </Heading>
-                <p className="mt-1 text-xs text-textMuted">{detail}</p>
+                <Text variant="caption" tone="muted" className="mt-1">
+                    {detail}
+                </Text>
             </div>
         </Card>
     );

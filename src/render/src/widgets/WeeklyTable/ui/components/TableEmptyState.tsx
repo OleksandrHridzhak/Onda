@@ -1,6 +1,7 @@
 import React from 'react';
 import { Columns3 } from 'lucide-react';
 import { Heading } from 'shared/ui/Heading';
+import { Text } from 'shared/ui/Text';
 
 interface TableEmptyStateProps {
     isVisible: boolean;
@@ -21,10 +22,10 @@ export const TableEmptyState: React.FC<TableEmptyStateProps> = ({
                     <Heading as="h2" variant="base">
                         No columns for this week
                     </Heading>
-                    <p className="mt-1 text-sm text-textMuted">
+                    <Text tone="muted" className="mt-1">
                         Use the + button in the sidebar to add your first
                         column.
-                    </p>
+                    </Text>
                 </div>
             </div>
         </div>

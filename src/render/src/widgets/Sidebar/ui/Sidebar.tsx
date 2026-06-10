@@ -6,7 +6,7 @@ import { selectThemeMode, toggleThemeMode } from 'features/ChangeTheme';
 import { CreateColumn } from 'features/CreateColumn';
 import { sideBarItems } from '../model/constants';
 import { createColumn } from 'features/CreateColumn';
-import { ColumnType } from 'entities/Column';
+import type { ColumnType } from 'entities/Column';
 import { useTableWeek } from 'features/ChangeTableWeek';
 
 type ActivePage = 'home' | 'calendar' | 'statistics' | 'settings';
