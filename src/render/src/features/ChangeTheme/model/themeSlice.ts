@@ -2,6 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 let themeSwitchTimeoutId: number | null = null;
 
+export const normalizeColorScheme = (colorScheme: string | null): string =>
+    colorScheme || 'standard';
+
+export const getInitialFontFamily = (): string =>
+    localStorage.getItem('fontFamily') || 'poppins';
+
 const applyThemeSwitchTransition = () => {
     const root = document.documentElement;
 
@@ -19,11 +25,13 @@ const applyThemeSwitchTransition = () => {
 
 export interface ThemeState {
     colorScheme: string;
+    fontFamily: string;
     themeMode: 'light' | 'dark';
 }
 
 export const initialState: ThemeState = {
-    colorScheme: localStorage.getItem('colorScheme') || 'standard',
+    colorScheme: normalizeColorScheme(localStorage.getItem('colorScheme')),
+    fontFamily: getInitialFontFamily(),
     themeMode:
         (localStorage.getItem('themeMode') as 'light' | 'dark') || 'light',
 };
@@ -44,9 +52,15 @@ const newThemeSlice = createSlice({
             localStorage.setItem('colorScheme', action.payload);
             document.documentElement.dataset.colorScheme = action.payload;
         },
+        setFontFamily: (state, action: PayloadAction<string>) => {
+            state.fontFamily = action.payload;
+            localStorage.setItem('fontFamily', action.payload);
+            document.documentElement.dataset.fontFamily = action.payload;
+        },
     },
 });
 
-export const { toggleThemeMode, setColorScheme } = newThemeSlice.actions;
+export const { toggleThemeMode, setColorScheme, setFontFamily } =
+    newThemeSlice.actions;
 
 export default newThemeSlice.reducer;

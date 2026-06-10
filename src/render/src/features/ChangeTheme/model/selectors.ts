@@ -14,3 +14,7 @@ export const selectThemeMode = (
 export const selectColorScheme = (
     state: ThemeRootState,
 ): ThemeState['colorScheme'] => state.newTheme.colorScheme;
+
+export const selectFontFamily = (
+    state: ThemeRootState,
+): ThemeState['fontFamily'] => state.newTheme.fontFamily;

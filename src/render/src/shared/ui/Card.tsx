@@ -6,6 +6,7 @@ interface CardProps {
     className?: string;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     ariaLabel?: string;
+    ariaPressed?: boolean;
 }
 
 export function Card({
@@ -14,6 +15,7 @@ export function Card({
     className = '',
     onClick,
     ariaLabel,
+    ariaPressed,
 }: CardProps): React.ReactElement {
     const classes =
         `rounded-xl border border-border bg-surface ${className}`.trim();
@@ -25,6 +27,7 @@ export function Card({
                 className={classes}
                 onClick={onClick}
                 aria-label={ariaLabel}
+                aria-pressed={ariaPressed}
             >
                 {children}
             </button>
