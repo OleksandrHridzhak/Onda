@@ -2,14 +2,14 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Heading } from 'shared/ui/Heading';
-
+import { Button } from 'shared/ui/Button';
 interface ModalShellProps {
     isOpen: boolean;
     onClose: () => void;
     children: React.ReactNode;
     title: React.ReactNode;
     className?: string;
-    size?: 'default' | 'large';
+    size?: 'default' | 'fit' | 'large';
 }
 
 export function ModalShell({
@@ -47,7 +47,9 @@ export function ModalShell({
     const panelSizeClass =
         size === 'large'
             ? 'h-[80vh] w-[80vw] max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)]'
-            : 'w-full max-w-md mx-4';
+            : size === 'fit'
+              ? 'h-[80vh] w-fit max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)] mx-4'
+              : 'w-full max-w-md mx-4';
 
     return createPortal(
         <div
@@ -64,24 +66,28 @@ export function ModalShell({
             >
                 <div
                     className={`flex rounded-2xl bg-background border-border border shadow-md p-4 text-text ${
-                        size === 'large' ? 'h-full flex-col' : 'flex-col'
+                        size === 'large'
+                            ? 'h-full flex-col'
+                            : size === 'fit'
+                              ? 'h-full flex-col'
+                              : 'flex-col'
                     }`}
                 >
                     <div className="flex items-center justify-between mb-4">
                         <Heading as="h1" variant="lg" className="font-semibold">
                             {title}
                         </Heading>
-                        <button
+                        <Button
                             onClick={onClose}
-                            aria-label="Close modal"
-                            className="p-1 rounded-full text-textMuted hover:bg-backgrundHover transition-colors duration-200"
+                            variant="ghost"
+                            aria-label="Close"
                         >
-                            <X size={20} />
-                        </button>
+                            <X className="h-5 w-5" />
+                        </Button>
                     </div>
                     <div
                         className={
-                            size === 'large'
+                            size === 'large' || size === 'fit'
                                 ? 'custom-scroll min-h-0 flex-1 overflow-y-auto'
                                 : ''
                         }

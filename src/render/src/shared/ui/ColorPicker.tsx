@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-    COLOR_ORDER,
-    COLOR_STYLES,
-    type ColorName,
-} from 'app/utils/colorOptions';
+import { COLOR_ORDER, COLOR_STYLES, type ColorName } from 'shared/lib/color';
 
 interface ColorPickerProps {
     value: ColorName;
