@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 let mainWindow: BrowserWindow | null = null;
-const iconPath = join(__dirname, '../../shared/assets/logo256.ico');
+const iconPath = join(__dirname, '../../../packages/shared/assets/logo256.ico');
 
 // Create the main application window
 function createWindow(): BrowserWindow {

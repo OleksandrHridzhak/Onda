@@ -11,7 +11,7 @@ export default [
     js.configs.recommended,
     ...tseslint.configs.recommended,
     {
-        files: ['src/render/src/shared/**/*.{ts,tsx}'],
+        files: ['apps/render/src/shared/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-imports': [
                 'error',
@@ -28,7 +28,7 @@ export default [
         },
     },
     {
-        files: ['src/render/src/entities/**/*.{ts,tsx}'],
+        files: ['apps/render/src/entities/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-imports': [
                 'error',
@@ -39,7 +39,7 @@ export default [
         },
     },
     {
-        files: ['src/render/src/features/**/*.{ts,tsx}'],
+        files: ['apps/render/src/features/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-imports': [
                 'error',
@@ -50,7 +50,7 @@ export default [
         },
     },
     {
-        files: ['src/render/src/widgets/**/*.{ts,tsx}'],
+        files: ['apps/render/src/widgets/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-imports': [
                 'error',
@@ -61,7 +61,7 @@ export default [
         },
     },
     {
-        files: ['src/render/src/pages/**/*.{ts,tsx}'],
+        files: ['apps/render/src/pages/**/*.{ts,tsx}'],
         rules: {
             'no-restricted-imports': [
                 'error',

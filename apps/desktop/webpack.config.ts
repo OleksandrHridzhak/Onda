@@ -2,17 +2,16 @@ import path from 'node:path';
 import type { Configuration } from 'webpack';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-const electronDirectory = path.resolve(process.cwd(), 'src/electron');
-
+const desktopDirectory = __dirname;
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 const commonConfig: Configuration = {
     mode: isDevelopment ? 'development' : 'production',
     devtool: isDevelopment ? 'inline-source-map' : false,
     output: {
-        path: path.resolve(electronDirectory, 'build'),
+        path: path.resolve(desktopDirectory, 'build'),
     },
     node: {
         __dirname: false,
@@ -31,13 +30,16 @@ const commonConfig: Configuration = {
     },
     resolve: {
         extensions: ['.ts', '.js'],
+        alias: {
+            '@onda/shared': path.resolve(__dirname, '../../packages/shared'),
+        },
     },
 };
 
 const mainConfig: Configuration = {
     ...commonConfig,
     target: 'electron-main',
-    entry: path.resolve(electronDirectory, 'main/index.ts'),
+    entry: path.resolve(desktopDirectory, 'main/index.ts'),
     output: {
         ...commonConfig.output,
         filename: 'main.bundle.js',
@@ -47,7 +49,7 @@ const mainConfig: Configuration = {
 const preloadConfig: Configuration = {
     ...commonConfig,
     target: 'electron-preload',
-    entry: path.resolve(electronDirectory, 'preload/index.ts'),
+    entry: path.resolve(desktopDirectory, 'preload/index.ts'),
     output: {
         ...commonConfig.output,
         filename: 'preload.bundle.js',

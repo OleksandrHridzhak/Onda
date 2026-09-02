@@ -1,5 +1,8 @@
 {
-    "watch": ["*.ts", "*.js", "main.bundle.js", "preload.bundle.js", "*.tsx"],
-    "ignore": ["*.json"],
-    "exec": "electron ."
+    "watch": [
+        "apps/desktop/build/main.bundle.js",
+        "apps/desktop/build/preload.bundle.js"
+    ],
+    "ignore": ["*.json", "node_modules"],
+    "exec": "electron apps/desktop"
 }

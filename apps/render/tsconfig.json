@@ -8,6 +8,10 @@
         "checkJs": false,
         "moduleResolution": "bundler",
         "baseUrl": "src",
+        "paths": {
+            "@onda/shared": ["../../packages/shared/index.ts"],
+            "@onda/shared/*": ["../../packages/shared/*"]
+        },
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,

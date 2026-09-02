@@ -1,8 +1,9 @@
 {
-    "name": "sys3",
+    "name": "@onda/render",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@onda/shared": "*",
         "@reduxjs/toolkit": "^2.7.0",
         "dayjs": "^1.11.19",
         "dexie": "^4.2.1",

@@ -5,7 +5,7 @@ import path from 'node:path';
 export default defineConfig(({ mode }) => {
     const repositoryRoot = path.resolve(__dirname, '../..');
     const env = loadEnv(mode, repositoryRoot, '');
-    const devServerUrl = new URL(env.DEV_SERVER_URL);
+    const devServerUrl = new URL(env.DEV_SERVER_URL || 'http://localhost:3000');
 
     return {
         base: './',
@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
                 pages: path.resolve(__dirname, 'src/pages'),
                 shared: path.resolve(__dirname, 'src/shared'),
                 widgets: path.resolve(__dirname, 'src/widgets'),
+                '@onda/shared': path.resolve(__dirname, '../../packages/shared'),
             },
         },
         server: {

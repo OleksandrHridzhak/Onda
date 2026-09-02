@@ -1,5 +1,5 @@
 import { app, Notification, type BrowserWindow, type IpcMain } from 'electron';
-import type { ElectronNotificationOptions } from '../../shared/types/electron';
+import type { ElectronNotificationOptions } from '@onda/shared';
 
 const windowHandlers = {
     register(ipcMain: IpcMain, mainWindow: BrowserWindow): void {

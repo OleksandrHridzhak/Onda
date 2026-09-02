@@ -1,4 +1,4 @@
-import type { ElectronAPI } from '../../../../shared/types/electron';
+import type { ElectronAPI } from '@onda/shared';
 
 declare global {
     interface Window {

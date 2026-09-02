@@ -1,20 +1,23 @@
 {
-    "name": "onda-app-dev",
+    "name": "onda",
     "version": "2.2.0",
-    "main": "src/electron/build/main.bundle.js",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
     "scripts": {
-        "start": "concurrently \"npm:watch:electron\" \"npm:start:render\" \"npm:start:electron\"",
-        "start:render": "npm --prefix src/render start",
+        "start": "concurrently \"npm run watch --workspace=@onda/desktop\" \"npm run dev --workspace=@onda/render\" \"npm run start:electron\"",
+        "start:render": "npm run dev --workspace=@onda/render",
         "start:electron": "wait-on http://localhost:3000 && nodemon",
-        "build": "npm run build:render && npm run build:electron",
-        "build:render": "npm --prefix src/render run build",
-        "build:electron": "webpack --config src/electron/webpack.config.ts",
-        "typecheck:electron": "tsc --project src/electron/tsconfig.json --noEmit",
-        "watch:electron": "webpack --config src/electron/webpack.config.ts --mode=development --watch",
-        "dist": "npm run build && electron-builder",
+        "build": "npm run build --workspace=@onda/render && npm run build --workspace=@onda/desktop",
+        "build:render": "npm run build --workspace=@onda/render",
+        "build:electron": "npm run build --workspace=@onda/desktop",
+        "typecheck:electron": "npm run typecheck --workspace=@onda/desktop",
+        "watch:electron": "npm run watch --workspace=@onda/desktop",
+        "dist": "npm run build && npm run dist --workspace=@onda/desktop",
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
         "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-        "check:fsd": "node scripts/check-fsd-imports.mjs",
         "prepare": "husky"
     },
     "keywords": [
@@ -33,71 +36,30 @@
         "@commitlint/cli": "^20.1.0",
         "@commitlint/config-conventional": "^20.0.0",
         "@eslint/js": "^9.39.1",
-        "@types/node": "^24.13.1",
         "@typescript-eslint/eslint-plugin": "^8.46.4",
         "@typescript-eslint/parser": "^8.46.4",
         "concurrently": "^9.2.1",
         "dotenv": "^17.2.3",
         "electron": "^35.1.4",
-        "electron-builder": "^26.0.12",
-        "electron-packager": "^17.1.2",
         "eslint": "^9.39.1",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.0.1",
         "globals": "^16.5.0",
         "husky": "^9.1.7",
         "lint-staged": "^16.2.6",
+        "nodemon": "^3.1.9",
         "playwright": "^1.55.1",
         "prettier": "^3.6.2",
-        "ts-loader": "^9.6.0",
-        "ts-node": "^10.9.2",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.46.4",
-        "wait-on": "^8.0.3",
-        "webpack": "^5.102.1",
-        "webpack-cli": "^6.0.1"
-    },
-    "build": {
-        "asar": false,
-        "appId": "com.onda.onda.dev",
-        "productName": "Onda 2.2 Dev",
-        "electronLanguages": [
-            "en-US",
-            "uk"
-        ],
-        "publish": null,
-        "directories": {
-            "buildResources": "src/shared/assets",
-            "output": "dist"
-        },
-        "win": {
-            "target": "nsis",
-            "icon": "src/shared/assets/logo256.ico",
-            "compression": "maximum"
-        },
-        "files": [
-            "src/render/build/",
-            "package.json",
-            "src/electron/build/**",
-            "userData/**",
-            "src/shared/assets/**",
-            "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
-            "!**/*.{md,txt,log}",
-            "!**/node_modules/electron-devtools-installer/**",
-            "!**/node_modules/electron-debug/**",
-            "!.env"
-        ]
+        "wait-on": "^8.0.3"
     },
     "lint-staged": {
-        "src/render/src/**/*.{js,jsx,ts,tsx}": [
+        "apps/render/src/**/*.{js,jsx,ts,tsx}": [
             "prettier --write"
         ],
         "**/*.{json,css,md}": [
             "prettier --write"
         ]
-    },
-    "dependencies": {
-        "dexie": "^4.2.1",
-        "dexie-react-hooks": "^4.2.0"
     }
 }

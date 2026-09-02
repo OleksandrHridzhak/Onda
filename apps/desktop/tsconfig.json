@@ -9,12 +9,17 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
-        "noEmit": false
+        "noEmit": false,
+        "baseUrl": ".",
+        "paths": {
+            "@onda/shared": ["../../packages/shared/index.ts"],
+            "@onda/shared/*": ["../../packages/shared/*"]
+        }
     },
     "include": [
         "main/**/*.ts",
         "preload/**/*.ts",
         "ipc/**/*.ts",
-        "../shared/types/**/*.ts"
+        "../../packages/shared/types/**/*.ts"
     ]
 }

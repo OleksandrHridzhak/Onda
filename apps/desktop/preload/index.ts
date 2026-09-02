@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { ElectronAPI } from '../../shared/types/electron';
+import type { ElectronAPI } from '@onda/shared';
 
 const electronAPI: ElectronAPI = {
     closeApp: () => ipcRenderer.invoke('close-app'),
