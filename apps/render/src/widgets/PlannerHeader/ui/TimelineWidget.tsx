@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Calendar, Clock } from 'lucide-react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { getAllCalendarEvents } from 'entities/CalendarEvent';
-import { CalendarEntry } from 'entities/CalendarEvent';
+import { useCalendarEvents } from 'shared/api/db';
+import type { CalendarEntry } from '@onda/shared';
 
 const TimelineWidget: React.FC = () => {
     const getCurrentTimeString = (): string => {
@@ -12,14 +11,7 @@ const TimelineWidget: React.FC = () => {
         return `${hours}:${minutes}`;
     };
 
-    // Use liveQuery for reactive calendar data from Dexie DB
-    const allEvents = useLiveQuery(async () => {
-        const result = await getAllCalendarEvents();
-        if (result.success && result.data) {
-            return result.data;
-        }
-        return [];
-    }, []);
+    const allEvents = useCalendarEvents();
 
     const [hoveredEvent, setHoveredEvent] = useState<CalendarEntry | null>(
         null,

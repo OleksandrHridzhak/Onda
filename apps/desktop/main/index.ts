@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { windowHandlers } from '../ipc/windowHandlers';
+import { dbHandlers } from '../ipc/dbHandlers';
+import { initDatabase } from '../services/database';
 import { createTray } from './tray';
 import { focusWindow } from './window';
 import dotenv from 'dotenv';
@@ -47,7 +49,12 @@ if (!gotTheLock) {
         focusWindow(mainWindow);
     });
 
-    void app.whenReady().then(() => {
+    void app.whenReady().then(async () => {
+        try {
+            await initDatabase();
+        } catch (err) {
+            console.error('[Desktop Database] Failed to initialize database:', err);
+        }
         const window = createWindow();
         createTray({
             iconPath: iconPath,
@@ -55,6 +62,7 @@ if (!gotTheLock) {
             onQuit: () => app.quit(),
         });
         windowHandlers.register(ipcMain, window);
+        dbHandlers.register(ipcMain, window);
     });
 
     app.on('activate', () => {

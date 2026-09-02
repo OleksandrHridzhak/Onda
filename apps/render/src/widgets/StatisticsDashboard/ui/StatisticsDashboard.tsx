@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useDbQuery } from 'shared/api/db';
 import { BarChart3 } from 'lucide-react';
 import { COLUMN_TYPES } from 'entities/Column';
 import type { ColumnEntry } from 'entities/ColumnEntry';
@@ -34,34 +34,43 @@ export default function StatisticsPage(): React.ReactElement {
     const startDate = '0000-01-01';
     const endDate = formatDateKey(dates[0]);
 
-    const statistics = useLiveQuery<ColumnStatistics[]>(async () => {
-        const [columnsResult, entriesResult] = await Promise.all([
-            getAllColumns(),
-            getEntriesForDateRange(startDate, endDate),
-        ]);
+    const statistics = useDbQuery<ColumnStatistics[]>(
+        async () => {
+            const [columnsResult, entriesResult] = await Promise.all([
+                getAllColumns(),
+                getEntriesForDateRange(startDate, endDate),
+            ]);
 
-        if (!columnsResult.success || !entriesResult.success) {
-            return [];
-        }
+            if (
+                !columnsResult.success ||
+                !entriesResult.success ||
+                !columnsResult.data ||
+                !entriesResult.data
+            ) {
+                return [];
+            }
 
-        const statisticColumns = columnsResult.data.filter(
-            (column): column is CheckboxColumn | NumberBoxColumn =>
-                column.type === COLUMN_TYPES.CHECKBOX ||
-                column.type === COLUMN_TYPES.NUMBERBOX,
-        );
-        const entriesByColumn = new Map<string, ColumnEntry[]>();
+            const statisticColumns = columnsResult.data.filter(
+                (column): column is CheckboxColumn | NumberBoxColumn =>
+                    column.type === COLUMN_TYPES.CHECKBOX ||
+                    column.type === COLUMN_TYPES.NUMBERBOX,
+            );
+            const entriesByColumn = new Map<string, ColumnEntry[]>();
 
-        entriesResult.data.forEach((entry) => {
-            const columnEntries = entriesByColumn.get(entry.columnId) ?? [];
-            columnEntries.push(entry);
-            entriesByColumn.set(entry.columnId, columnEntries);
-        });
+            entriesResult.data.forEach((entry) => {
+                const columnEntries = entriesByColumn.get(entry.columnId) ?? [];
+                columnEntries.push(entry);
+                entriesByColumn.set(entry.columnId, columnEntries);
+            });
 
-        return statisticColumns.map((column) => ({
-            column,
-            entries: entriesByColumn.get(column.id) ?? [],
-        }));
-    }, [startDate, endDate]);
+            return statisticColumns.map((column) => ({
+                column,
+                entries: entriesByColumn.get(column.id) ?? [],
+            }));
+        },
+        ['columns', 'entries'],
+        `${startDate}_${endDate}`,
+    );
 
     return (
         <div className="flex h-full flex-col bg-background font-poppins">

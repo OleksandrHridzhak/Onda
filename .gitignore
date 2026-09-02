@@ -31,3 +31,10 @@ yarn-error.log*
 # production / bundler output
 **/build
 dist/
+
+# SQLite databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+onda.db

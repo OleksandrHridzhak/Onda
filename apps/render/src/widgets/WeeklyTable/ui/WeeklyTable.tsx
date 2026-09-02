@@ -1,11 +1,9 @@
 import React from 'react';
 import { daysColumn, fillerColumn } from '../model/constants';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useDbQuery, useColumns, useWeekEntries } from 'shared/api/db';
 import TableItemWrapper from './TableItemWrapper';
-import { getAllColumns } from 'entities/Column';
 import { getSettings } from 'entities/Settings';
-import { getEntriesForWeek } from 'entities/ColumnEntry';
-import { ColumnEntryValueMap } from 'entities/ColumnEntry';
+import type { ColumnEntryValueMap } from '@onda/shared';
 import { getWeekDates, getWeekStartKey } from 'shared/lib/date';
 import './WeeklyTable.css';
 import { useRowHeightSync } from '../lib/useRowHeightSync';
@@ -28,29 +26,13 @@ const Table: React.FC = () => {
         [currentWeekStart],
     );
 
-    /**
-     * Fetch the ordered list of column IDs from the settings.
-     * This determines the visual sequence of columns in the table.
-     */
-    const columnOrder = useLiveQuery(async () => {
+    const columnOrder = useDbQuery(async () => {
         const res = await getSettings();
         return res?.data?.layout?.columnsOrder ?? [];
-    });
+    }, ['settings']);
 
-    /**
-     * Fetch all column data objects from the database.
-     * Required as a dependency for useRowHeightSync to recalculate
-     * row heights when column content or configuration changes.
-     */
-    const columnsData = useLiveQuery(async () => {
-        const res = await getAllColumns();
-        return res.success ? res.data : [];
-    });
-
-    const weekEntries = useLiveQuery(async () => {
-        const res = await getEntriesForWeek(currentWeekStartKey);
-        return res.success ? res.data : [];
-    }, [currentWeekStartKey]);
+    const columnsData = useColumns();
+    const weekEntries = useWeekEntries(currentWeekStartKey);
 
     const weekEntriesByBlock = React.useMemo(() => {
         return (weekEntries || []).reduce<Record<string, ColumnEntryValueMap>>(

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useDbQuery } from 'shared/api/db';
 import { icons } from 'shared/lib/icons';
 import { OptionsList } from './components/OptionList';
 import { ColumnBasicSettings } from './components/ColumnBasicSettings';
@@ -24,18 +24,19 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
     archivedAt,
     onClose,
 }) => {
-    // Fetch column data from Dexie using liveQuery
-    const column = useLiveQuery(async () => {
-        const result = await getColumnById(columnId);
-        if (result.success) {
-            return result.data;
-        }
-        console.error('Failed to fetch column:', result.error);
-        return null;
-    }, [columnId]);
+    const column = useDbQuery(
+        async () => {
+            const result = await getColumnById(columnId);
+            if (result.success && result.data) {
+                return result.data;
+            }
+            return null;
+        },
+        ['columns'],
+        columnId,
+    );
 
-    // Fetch column order to determine if can move
-    const activeColumnsOrder = useLiveQuery(async () => {
+    const activeColumnsOrder = useDbQuery(async () => {
         const result = await getColumnsOrder();
         if (!result.success || !result.data) return [];
 
@@ -43,7 +44,7 @@ const ColumnMenu: React.FC<ColumnMenuProps> = ({
         return result.data.filter(
             (_, index) => columns[index] && !isColumnArchived(columns[index]!),
         );
-    }, []);
+    }, ['columns', 'settings']);
 
     // All state and handlers from custom hook
     const { form, actions, ui } = useColumnMenuHandlers({

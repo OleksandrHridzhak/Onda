@@ -1,35 +1,19 @@
-import { getTable, type DbResult } from 'shared/api/db';
-import type { Column } from '../model/types';
-
-const columnsTable = getTable<Column>('tableColumns');
+import { api } from 'shared/api/client';
+import type { Column, DbResult } from '@onda/shared';
 
 export async function getAllColumns(): Promise<DbResult<Column[]>> {
-    try {
-        return { success: true, data: await columnsTable.toArray() };
-    } catch (error) {
-        return { success: false, error: (error as Error).message };
-    }
+    return api.columns.getAll();
 }
 
 export async function getColumnById(
     columnId: string,
 ): Promise<DbResult<Column>> {
-    try {
-        const data = await columnsTable.get(columnId);
-
-        return data
-            ? { success: true, data }
-            : {
-                  success: false,
-                  error: `Column with ID ${columnId} not found`,
-              };
-    } catch (error) {
-        return { success: false, error: (error as Error).message };
-    }
+    return api.columns.getById(columnId);
 }
 
-export function getColumnsByIds(
+export async function getColumnsByIds(
     columnIds: string[],
 ): Promise<(Column | undefined)[]> {
-    return columnsTable.bulkGet(columnIds);
+    const res = await api.columns.getByIds(columnIds);
+    return res.success && res.data ? res.data : columnIds.map(() => undefined);
 }

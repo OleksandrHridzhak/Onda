@@ -1,5 +1,1 @@
-export type DbResult<T = any> = {
-    success: boolean;
-    data?: T;
-    error?: string;
-};
+export type { DbResult } from '@onda/shared';

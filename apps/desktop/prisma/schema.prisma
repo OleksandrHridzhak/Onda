@@ -1,0 +1,59 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Setting {
+  id     String @id @default("global")
+  layout String @default("{\"columnsOrder\":[]}")
+}
+
+model Column {
+  id            String        @id
+  name          String
+  isNameVisible Boolean       @default(true)
+  description   String        @default("")
+  emojiIconName String        @default("sparkles")
+  width         Float         @default(200)
+  type          String
+  uniqueProps   String        @default("{}")
+  createdAt     DateTime?     @default(now())
+  archivedAt    DateTime?
+  order         Int           @default(0)
+  entries       ColumnEntry[]
+}
+
+model ColumnEntry {
+  id        String   @id
+  columnId  String
+  column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  scope     String   @default("day")
+  dateKey   String
+  dayDate   String
+  weekStart String
+  valueType String
+  value     String   @default("null")
+  meta      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([columnId, dateKey])
+  @@index([columnId, dateKey])
+  @@index([weekStart])
+}
+
+model CalendarEvent {
+  id              String   @id
+  title           String
+  color           String
+  date            String
+  startTime       String
+  endTime         String
+  isRepeating     Boolean? @default(false)
+  repeatDays      String?
+  repeatFrequency String?
+}

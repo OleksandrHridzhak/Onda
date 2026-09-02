@@ -1,4 +1,3 @@
-import { db } from 'shared/api/db';
 import { ensureDefaultSettings } from 'entities/Settings';
 import {
     getInitialFontFamily,
@@ -6,7 +5,6 @@ import {
 } from 'features/ChangeTheme';
 
 export async function initializeApp(): Promise<void> {
-    await db.open();
     await ensureDefaultSettings();
 
     const savedTheme = localStorage.getItem('themeMode');

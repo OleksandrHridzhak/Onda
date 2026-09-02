@@ -1,12 +1,8 @@
 import { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useCalendarEvents } from 'shared/api/db';
 import dayjs from 'dayjs';
-import {
-    getAllCalendarEvents,
-    saveCalendarEvent,
-    deleteCalendarEvent,
-} from 'entities/CalendarEvent';
-import { CalendarEntry } from 'entities/CalendarEvent';
+import { saveCalendarEvent, deleteCalendarEvent } from 'entities/CalendarEvent';
+import type { CalendarEntry } from '@onda/shared';
 import { DEFAULT_COLOR_NAME, type ColorName } from 'shared/lib/color';
 
 export interface NewEvent {
@@ -32,16 +28,7 @@ const DEFAULT_NEW_EVENT: NewEvent = {
 };
 
 export function useCalendar() {
-    // Use liveQuery to reactively fetch all calendar events from Dexie DB
-    const liveEvents = useLiveQuery(async () => {
-        const result = await getAllCalendarEvents();
-        if (result.success && result.data) {
-            return result.data;
-        }
-        return [];
-    }, []);
-
-    // Events are now reactive - no need for manual state management
+    const liveEvents = useCalendarEvents();
     const events: CalendarEntry[] = liveEvents ?? [];
     const isLoading = liveEvents === undefined;
 
