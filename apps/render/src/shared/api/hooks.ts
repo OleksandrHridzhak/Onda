@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api } from './client';
 import type {
     DbChangeEvent,
@@ -14,6 +14,8 @@ export function useDbQuery<T>(
     depsKey = '',
 ): T | undefined {
     const [data, setData] = useState<T | undefined>(undefined);
+    const queryFnRef = useRef(queryFn);
+    queryFnRef.current = queryFn;
     const tablesKey = tables.join(',');
 
     useEffect(() => {
@@ -21,7 +23,7 @@ export function useDbQuery<T>(
 
         const runQuery = async () => {
             try {
-                const result = await queryFn();
+                const result = await queryFnRef.current();
                 if (isCurrent) {
                     setData(result);
                 }

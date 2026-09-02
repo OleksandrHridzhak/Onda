@@ -10,67 +10,7 @@ export default [
     },
     js.configs.recommended,
     ...tseslint.configs.recommended,
-    {
-        files: ['apps/render/src/shared/**/*.{ts,tsx}'],
-        rules: {
-            'no-restricted-imports': [
-                'error',
-                {
-                    patterns: [
-                        'app/*',
-                        'pages/*',
-                        'widgets/*',
-                        'features/*',
-                        'entities/*',
-                    ],
-                },
-            ],
-        },
-    },
-    {
-        files: ['apps/render/src/entities/**/*.{ts,tsx}'],
-        rules: {
-            'no-restricted-imports': [
-                'error',
-                {
-                    patterns: ['app/*', 'pages/*', 'widgets/*', 'features/*'],
-                },
-            ],
-        },
-    },
-    {
-        files: ['apps/render/src/features/**/*.{ts,tsx}'],
-        rules: {
-            'no-restricted-imports': [
-                'error',
-                {
-                    patterns: ['app/*', 'pages/*', 'widgets/*'],
-                },
-            ],
-        },
-    },
-    {
-        files: ['apps/render/src/widgets/**/*.{ts,tsx}'],
-        rules: {
-            'no-restricted-imports': [
-                'error',
-                {
-                    patterns: ['app/*', 'pages/*'],
-                },
-            ],
-        },
-    },
-    {
-        files: ['apps/render/src/pages/**/*.{ts,tsx}'],
-        rules: {
-            'no-restricted-imports': [
-                'error',
-                {
-                    patterns: ['app/*'],
-                },
-            ],
-        },
-    },
+
     {
         files: ['**/*.{js,jsx,mjs,cjs}'],
         languageOptions: {

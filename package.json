@@ -16,6 +16,7 @@
         "typecheck:electron": "npm run typecheck --workspace=@onda/desktop",
         "watch:electron": "npm run watch --workspace=@onda/desktop",
         "dist": "npm run build && npm run dist --workspace=@onda/desktop",
+        "db:push": "prisma db push --schema=apps/desktop/prisma/schema.prisma",
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
         "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
         "prepare": "husky"

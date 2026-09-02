@@ -104,7 +104,24 @@ function createMemoryFallbackApi(): IPlannerApi {
     };
 }
 
-export const api: IPlannerApi =
-    typeof window !== 'undefined' && window.electronAPI?.db
-        ? window.electronAPI.db
-        : createMemoryFallbackApi();
+let memoryFallbackApi: IPlannerApi | null = null;
+function getTargetApi(): IPlannerApi {
+    if (typeof window !== 'undefined' && window.electronAPI?.db) {
+        return window.electronAPI.db;
+    }
+    if (!memoryFallbackApi) {
+        memoryFallbackApi = createMemoryFallbackApi();
+    }
+    return memoryFallbackApi;
+}
+
+export const api: IPlannerApi = new Proxy({} as IPlannerApi, {
+    get(_target, prop: keyof IPlannerApi) {
+        const target = getTargetApi();
+        const value = target[prop];
+        if (typeof value === 'function') {
+            return value.bind(target);
+        }
+        return value;
+    },
+});

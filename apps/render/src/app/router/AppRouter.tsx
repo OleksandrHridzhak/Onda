@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
-import { CalendarPage } from 'pages/CalendarPage';
-import { SettingsPage } from 'pages/SettingsPage';
-import { StatisticsPage } from 'pages/StatisticsPage';
-import { TablePage } from 'pages/TablePage';
+import { CalendarPage } from 'app/routes/CalendarPage';
+import { SettingsPage } from 'app/routes/SettingsPage';
+import { StatisticsPage } from 'app/routes/StatisticsPage';
+import { TablePage } from 'app/routes/TablePage';
 
 export function AppRouter(): React.ReactElement {
     return (

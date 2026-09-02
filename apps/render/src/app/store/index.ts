@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { pomodoroReducer } from 'features/Pomodoro';
-import { themeReducer } from 'features/ChangeTheme';
+import pomodoroReducer from 'features/pomodoro/stores/pomodoroSlice';
+import themeReducer from 'features/settings/stores/themeSlice';
 
 export const store = configureStore({
     reducer: {
@@ -8,5 +8,8 @@ export const store = configureStore({
         newTheme: themeReducer,
     },
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

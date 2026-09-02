@@ -1,8 +1,8 @@
-import { ensureDefaultSettings } from 'entities/Settings';
+import { ensureDefaultSettings } from 'features/settings/api/settings';
 import {
     getInitialFontFamily,
     normalizeColorScheme,
-} from 'features/ChangeTheme';
+} from 'features/settings/stores/themeSlice';
 
 export async function initializeApp(): Promise<void> {
     await ensureDefaultSettings();

@@ -19,7 +19,8 @@
     "include": [
         "main/**/*.ts",
         "preload/**/*.ts",
-        "ipc/**/*.ts",
+        "core/**/*.ts",
+        "features/**/*.ts",
         "../../packages/shared/types/**/*.ts"
     ]
 }

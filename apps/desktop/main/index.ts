@@ -1,8 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
-import { windowHandlers } from '../ipc/windowHandlers';
-import { dbHandlers } from '../ipc/dbHandlers';
-import { initDatabase } from '../services/database';
+import { initDatabase } from '../core/database';
+import { registerAllHandlers } from '../features';
 import { createTray } from './tray';
 import { focusWindow } from './window';
 import dotenv from 'dotenv';
@@ -61,8 +60,7 @@ if (!gotTheLock) {
             getMainWindow: () => mainWindow,
             onQuit: () => app.quit(),
         });
-        windowHandlers.register(ipcMain, window);
-        dbHandlers.register(ipcMain, window);
+        registerAllHandlers(ipcMain, window);
     });
 
     app.on('activate', () => {
