@@ -10,8 +10,10 @@ export interface PomodoroState {
     lastUpdateTime: number | null; // Timestamp of the last update
 }
 
+export const DEFAULT_POMODORO_SECONDS = 25 * 60;
+
 const initialState: PomodoroState = {
-    time: 1500, // 25 minutes in seconds
+    time: DEFAULT_POMODORO_SECONDS,
     isRunning: false,
     isEnded: false,
     isPaused: false,
@@ -44,7 +46,7 @@ const pomodoroSlice = createSlice({
         setNotifyEnabled: (state, action) => {
             state.notifyEnabled = action.payload;
         },
-        resetTimer: (state) => {
+        resetTimer: () => {
             return initialState;
         },
         updateTime: (state) => {

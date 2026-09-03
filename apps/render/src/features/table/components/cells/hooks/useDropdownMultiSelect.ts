@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { useClickOutside } from 'shared/hooks/useClickOutside';
 
 interface DropdownMultiSelectState {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     selectedValues: string[];
     setSelectedValues: React.Dispatch<React.SetStateAction<string[]>>;
-    dropdownRef: React.RefObject<HTMLDivElement>;
+    dropdownRef: React.RefObject<HTMLDivElement | null>;
 }
 
 /**
@@ -20,23 +21,10 @@ export const useDropdownMultiSelect = (
             ? value.split(', ').filter((v) => v.trim() !== '')
             : [],
     );
-    const dropdownRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent): void => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target as Node)
-            ) {
-                setIsOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    const dropdownRef = useClickOutside<HTMLDivElement>(
+        () => setIsOpen(false),
+        isOpen,
+    );
 
     return {
         isOpen,

@@ -1,5 +1,5 @@
 import type { CheckboxColumn } from 'features/columns/types/types';
-import { formatDateKey, getMonday } from 'shared/lib/date';
+import { formatDateKey, getMonday, MS_PER_DAY } from 'shared/lib/date';
 
 export interface CompletionMetric {
     label: string;
@@ -47,8 +47,9 @@ export const getCheckboxStreaks = (
         const date = new Date(`${dateKey}T00:00:00`);
         const isConsecutive =
             previousDate !== null &&
-            Math.round((date.getTime() - previousDate.getTime()) / 86400000) ===
-                1;
+            Math.round(
+                (date.getTime() - previousDate.getTime()) / MS_PER_DAY,
+            ) === 1;
         running = isConsecutive ? running + 1 : 1;
         longest = Math.max(longest, running);
         previousDate = date;
@@ -116,7 +117,7 @@ export const getCalendarDates = (
     calendarEnd.setDate(today.getDate() + (7 - ((today.getDay() + 6) % 7) - 1));
     const calendarDaysCount =
         Math.round(
-            (calendarEnd.getTime() - calendarStart.getTime()) / 86400000,
+            (calendarEnd.getTime() - calendarStart.getTime()) / MS_PER_DAY,
         ) + 1;
 
     return Array.from({ length: calendarDaysCount }, (_, index) => {

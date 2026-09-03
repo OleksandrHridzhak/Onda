@@ -1,9 +1,0 @@
-import { api } from 'shared/api/client';
-import type { DbResult } from '@onda/shared';
-
-export async function updateColumnContent(
-    columnId: string,
-    changes: Record<string, unknown>,
-): Promise<DbResult<{ updatedCount: number }>> {
-    return api.columns.updateFields(columnId, changes);
-}

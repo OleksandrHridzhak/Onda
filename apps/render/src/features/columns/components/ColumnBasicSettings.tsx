@@ -31,8 +31,6 @@ interface ColumnBasicSettingsProps {
     canMoveRight: boolean;
     handleMoveLeft: () => void;
     handleMoveRight: () => void;
-
-    darkMode: boolean;
 }
 
 export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
@@ -53,7 +51,6 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
     canMoveRight,
     handleMoveLeft,
     handleMoveRight,
-    darkMode,
 }) => {
     return (
         <>
@@ -65,7 +62,6 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
                     isIconSectionExpanded={isIconSectionExpanded}
                     setIsIconSectionExpanded={setIsIconSectionExpanded}
                     icons={icons}
-                    darkMode={darkMode}
                 />
                 <div className="w-full flex relative">
                     <Input
@@ -78,7 +74,6 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
                     <TitleVisibilityToggle
                         showTitle={showTitle}
                         setShowTitle={setShowTitle}
-                        darkMode={darkMode}
                     />
                 </div>
             </div>

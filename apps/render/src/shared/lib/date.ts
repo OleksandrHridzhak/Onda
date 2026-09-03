@@ -39,6 +39,8 @@ export const getWeekStartKey = (date: Date): string => {
     return formatDateKey(getMonday(date));
 };
 
+export const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
 export const getWeekNumber = (date: Date): number => {
     const normalizedDate = new Date(date);
     normalizedDate.setHours(0, 0, 0, 0);
@@ -49,6 +51,6 @@ export const getWeekNumber = (date: Date): number => {
     const firstWeek = new Date(normalizedDate.getFullYear(), 0, 4);
 
     return Math.round(
-        ((normalizedDate.getTime() - firstWeek.getTime()) / 86400000 + 1) / 7,
+        ((normalizedDate.getTime() - firstWeek.getTime()) / MS_PER_DAY + 1) / 7,
     );
 };

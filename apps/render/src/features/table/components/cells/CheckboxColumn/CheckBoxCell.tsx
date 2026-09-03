@@ -15,7 +15,8 @@ export function CheckboxEntryEditor({
     entry,
 }: EntryEditorProps<CheckboxColumn>): React.ReactElement {
     const checked = (entry?.value as boolean) || false;
-    const color: ColorName = column.uniqueProps.checkboxColor || 'accent1';
+    const color: ColorName =
+        (column.uniqueProps.checkboxColor as ColorName) || 'accent1';
     const colorClasses = COLOR_STYLES[color] || COLOR_STYLES.accent1;
     const handleChange = (newValue: boolean): void => {
         void upsertDayEntry({

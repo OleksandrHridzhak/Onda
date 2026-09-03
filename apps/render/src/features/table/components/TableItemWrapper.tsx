@@ -2,7 +2,7 @@ import React from 'react';
 import { getWidthStyle } from 'features/columns/utils/tableLayout';
 
 type Props = {
-    column: any;
+    column: { id?: string; width?: number };
     className?: string;
     children?: React.ReactNode;
 };

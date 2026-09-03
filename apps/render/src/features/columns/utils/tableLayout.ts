@@ -11,7 +11,10 @@ export const DAYS = [
 ];
 
 export const getWidthStyle = (column: {
-    width: number;
+    width?: number;
 }): React.CSSProperties => {
+    if (column.width === undefined) {
+        return {};
+    }
     return { width: `${column.width}px`, minWidth: `${column.width}px` };
 };

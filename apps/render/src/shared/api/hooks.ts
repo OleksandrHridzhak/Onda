@@ -15,7 +15,11 @@ export function useDbQuery<T>(
 ): T | undefined {
     const [data, setData] = useState<T | undefined>(undefined);
     const queryFnRef = useRef(queryFn);
-    queryFnRef.current = queryFn;
+
+    useEffect(() => {
+        queryFnRef.current = queryFn;
+    });
+
     const tablesKey = tables.join(',');
 
     useEffect(() => {
@@ -51,7 +55,6 @@ export function useDbQuery<T>(
             isCurrent = false;
             unsubscribe();
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [depsKey, tablesKey]);
 
     return data;

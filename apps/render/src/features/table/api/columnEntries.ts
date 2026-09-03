@@ -14,19 +14,6 @@ interface UpsertDayEntryParams {
     meta?: ColumnEntryMeta;
 }
 
-export async function getDayEntry(
-    columnId: string,
-    dayDate: string,
-): Promise<DbResult<ColumnEntry | null>> {
-    return api.entries.getDayEntry(columnId, dayDate);
-}
-
-export async function getEntriesForWeek(
-    weekStart: string,
-): Promise<DbResult<ColumnEntry[]>> {
-    return api.entries.getEntriesForWeek(weekStart);
-}
-
 export async function getEntriesForDateRange(
     startDate: string,
     endDate: string,
@@ -48,16 +35,4 @@ export async function upsertDayEntry({
         value,
         meta,
     });
-}
-
-export async function deleteEntriesForColumn(
-    columnId: string,
-): Promise<DbResult<{ deletedCount: number }>> {
-    return api.entries.deleteEntriesForColumn(columnId);
-}
-
-export async function clearEntriesForColumn(
-    columnId: string,
-): Promise<DbResult<{ deletedCount: number }>> {
-    return deleteEntriesForColumn(columnId);
 }

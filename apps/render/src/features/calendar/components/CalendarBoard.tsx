@@ -22,13 +22,10 @@ export function CalendarBoard(): React.ReactElement {
         setViewMode,
         selectedDate,
         weekDays,
-        currentWeekStart,
-        getWeekNumber,
         goToPrevious,
         goToCurrent,
         goToNext,
         formatTime,
-        timeToMinutes,
         getEventsForDay,
         getEventStyle,
         getCurrentTimePosition,
@@ -148,10 +145,6 @@ export function CalendarBoard(): React.ReactElement {
             <CalendarHeader
                 viewMode={viewMode}
                 setViewMode={setViewModeWrapper}
-                selectedDate={selectedDate}
-                weekDays={weekDays}
-                currentWeekStart={currentWeekStart}
-                getWeekNumber={getWeekNumber}
                 goToPrevious={goToPrevious}
                 goToCurrent={goToCurrent}
                 goToNext={goToNext}
@@ -167,7 +160,6 @@ export function CalendarBoard(): React.ReactElement {
                 dayNames={dayNames}
                 gridRef={gridRef}
                 formatTime={formatTime}
-                timeToMinutes={timeToMinutes}
                 getEventsForDay={getEventsForDay}
                 getEventStyle={getEventStyle}
                 getCurrentTimePosition={getCurrentTimePosition}

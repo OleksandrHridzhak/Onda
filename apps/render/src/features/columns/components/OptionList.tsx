@@ -5,6 +5,7 @@ import { Input } from 'shared/ui/Input';
 import { OptionItem } from './OptionItem';
 import { TagEditModal } from './TagEditModal';
 import { Tag } from 'features/columns/types/types';
+import { COLUMN_TYPES } from 'features/columns/types/definitions';
 import { ColorName } from 'shared/lib/color';
 
 interface OptionsListProps {
@@ -33,13 +34,13 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     // Map column type to display label
     const getLabelText = () => {
         switch (columnType) {
-            case 'tagsColumn':
+            case COLUMN_TYPES.TAGS:
                 return 'Tags';
-            case 'todoListColumn':
+            case COLUMN_TYPES.TODO:
                 return 'Categories';
-            case 'multiCheckBoxColumn':
+            case COLUMN_TYPES.MULTI_CHECKBOX:
                 return 'Checkboxes';
-            case 'taskTableColumn':
+            case COLUMN_TYPES.TASK_TABLE:
                 return 'Tasks';
             default:
                 return 'Options';
@@ -49,13 +50,13 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     // Map column type for placeholder text
     const getPlaceholderType = () => {
         switch (columnType) {
-            case 'tagsColumn':
+            case COLUMN_TYPES.TAGS:
                 return 'tag';
-            case 'todoListColumn':
+            case COLUMN_TYPES.TODO:
                 return 'category';
-            case 'multiCheckBoxColumn':
+            case COLUMN_TYPES.MULTI_CHECKBOX:
                 return 'checkbox';
-            case 'taskTableColumn':
+            case COLUMN_TYPES.TASK_TABLE:
                 return 'task';
             default:
                 return 'option';

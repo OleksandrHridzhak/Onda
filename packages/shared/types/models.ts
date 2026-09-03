@@ -1,18 +1,3 @@
-export const COLOR_ORDER = [
-    'accent1',
-    'accent2',
-    'accent3',
-    'accent4',
-    'accent5',
-    'accent6',
-    'accent7',
-    'accent8',
-    'accent9',
-    'accent10',
-] as const;
-
-export type ColorName = (typeof COLOR_ORDER)[number];
-
 export interface DbResult<T> {
     success: boolean;
     data?: T;
@@ -22,7 +7,7 @@ export interface DbResult<T> {
 export interface Tag {
     id: string;
     name: string;
-    color: ColorName;
+    color: string;
 }
 
 export interface Todo {
@@ -48,7 +33,7 @@ export interface BaseColumn {
 export interface CheckboxColumn extends BaseColumn {
     type: 'checkboxColumn';
     uniqueProps: {
-        checkboxColor: ColorName;
+        checkboxColor: string;
     };
 }
 
@@ -113,7 +98,7 @@ export type ColumnEntryValueType =
 export interface ColumnEntrySnapshot {
     id: string;
     name: string;
-    color: ColorName;
+    color: string;
 }
 
 export interface ColumnEntryMeta {
@@ -134,12 +119,10 @@ export interface ColumnEntry {
     updatedAt: string;
 }
 
-export type ColumnEntryValueMap = Record<string, ColumnEntry>;
-
 export interface CalendarEntry {
     id: string;
     title: string;
-    color: ColorName;
+    color: string;
     date: string;
     startTime: string;
     endTime: string;

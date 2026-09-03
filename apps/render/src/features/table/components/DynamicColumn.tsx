@@ -2,6 +2,7 @@ import React from 'react';
 import TableItemWrapper from './TableItemWrapper';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import type { Column } from 'features/columns/types/types';
+import { COLUMN_TYPES } from 'features/columns/types/definitions';
 import { CheckboxColumn } from './columns/CheckboxColumn';
 import { MultiCheckboxColumn } from './columns/MultiCheckboxColumn';
 import { NumberboxColumn } from './columns/NumberboxColumn';
@@ -29,25 +30,25 @@ const DynamicColumn: React.FC<{
     let content: React.ReactNode;
 
     switch (column.type) {
-        case 'checkboxColumn':
+        case COLUMN_TYPES.CHECKBOX:
             content = <CheckboxColumn column={column} {...commonProps} />;
             break;
-        case 'numberboxColumn':
+        case COLUMN_TYPES.NUMBERBOX:
             content = <NumberboxColumn column={column} {...commonProps} />;
             break;
-        case 'tagsColumn':
+        case COLUMN_TYPES.TAGS:
             content = <TagsColumn column={column} {...commonProps} />;
             break;
-        case 'textboxColumn':
+        case COLUMN_TYPES.TEXTBOX:
             content = <TextboxColumn column={column} {...commonProps} />;
             break;
-        case 'multiCheckBoxColumn':
+        case COLUMN_TYPES.MULTI_CHECKBOX:
             content = <MultiCheckboxColumn column={column} {...commonProps} />;
             break;
-        case 'todoListColumn':
+        case COLUMN_TYPES.TODO:
             content = <TodoColumn column={column} archivedAt={archivedAt} />;
             break;
-        case 'taskTableColumn':
+        case COLUMN_TYPES.TASK_TABLE:
             content = (
                 <TaskTableColumn column={column} archivedAt={archivedAt} />
             );

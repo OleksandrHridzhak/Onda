@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Tag } from 'features/columns/types/types';
+import { Tag, Column } from 'features/columns/types/types';
 import { COLUMN_TYPES } from 'features/columns/types/definitions';
 import { ColorName } from 'shared/lib/color';
 import { updateColumnFields } from '../api/updateColumnFields';
@@ -11,7 +11,7 @@ import {
 
 interface UseColumnMenuHandlersProps {
     columnId: string;
-    column: any;
+    column: Column | null | undefined;
     archivedAt: Date;
     onClose: () => void;
 }
@@ -54,7 +54,9 @@ export const useColumnMenuHandlers = ({
         } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
             setTags(column.uniqueProps.availableTags || []);
         } else if (column.type === COLUMN_TYPES.CHECKBOX) {
-            setCheckboxColor(column.uniqueProps.checkboxColor || 'accent1');
+            setCheckboxColor(
+                (column.uniqueProps.checkboxColor as ColorName) || 'accent1',
+            );
         }
     }, [column]);
 

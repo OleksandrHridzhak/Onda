@@ -56,9 +56,6 @@ export const ColumnMenu: React.FC<ColumnMenuProps> = ({
         onClose,
     });
 
-    const darkMode =
-        document.documentElement.getAttribute('data-theme-mode') === 'dark';
-
     if (!column || !activeColumnsOrder) {
         return null;
     }
@@ -92,7 +89,6 @@ export const ColumnMenu: React.FC<ColumnMenuProps> = ({
                 canMoveRight={canMoveRight}
                 handleMoveLeft={actions.handleMoveLeft}
                 handleMoveRight={actions.handleMoveRight}
-                darkMode={darkMode}
             />
 
             {hasOptions && (

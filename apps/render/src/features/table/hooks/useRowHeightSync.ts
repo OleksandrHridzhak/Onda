@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
  * @param dependencies - Array of dependencies to trigger resync (e.g., columnsData, columnOrder)
  * @returns { isLoading } - Loading state while syncing
  */
-export const useRowHeightSync = (dependencies: any[]) => {
+export const useRowHeightSync = (dependencies: React.DependencyList = []) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -128,6 +128,7 @@ export const useRowHeightSync = (dependencies: any[]) => {
             observer.disconnect();
             mutationObserver.disconnect();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, dependencies);
 
     return { isLoading };

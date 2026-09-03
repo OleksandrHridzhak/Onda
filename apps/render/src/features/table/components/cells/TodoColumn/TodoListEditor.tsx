@@ -1,5 +1,5 @@
 import type { Todo, TodoListColumn } from 'features/columns/types/types';
-import { updateColumnContent } from 'features/table/api/updateColumnContent';
+import { updateColumnFields } from 'features/columns/api/updateColumnFields';
 import { TodoCell } from './TodoCell';
 
 interface TodoListEditorProps {
@@ -10,7 +10,7 @@ export function TodoListEditor({
     column,
 }: TodoListEditorProps): React.ReactElement {
     const handleChange = (todos: Todo[]): void => {
-        void updateColumnContent(column.id, {
+        void updateColumnFields(column.id, {
             'uniqueProps.todos': todos,
         });
     };

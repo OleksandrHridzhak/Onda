@@ -1,30 +1,15 @@
-import type { ColorName } from 'shared/lib/color';
+import type {
+    ColumnEntry,
+    ColumnEntryMeta,
+    ColumnEntrySnapshot,
+    ColumnEntryValueType,
+} from '@onda/shared';
 
-export type ColumnEntryValueType =
-    'boolean' | 'text' | 'number' | 'tagIds' | 'optionIds';
-
-export interface ColumnEntrySnapshot {
-    id: string;
-    name: string;
-    color: ColorName;
-}
-
-export interface ColumnEntryMeta {
-    selectedSnapshots?: ColumnEntrySnapshot[];
-}
-
-export interface ColumnEntry {
-    id: string;
-    columnId: string;
-    scope: 'day';
-    dateKey: string;
-    dayDate: string;
-    weekStart: string;
-    valueType: ColumnEntryValueType;
-    value: unknown;
-    meta?: ColumnEntryMeta;
-    createdAt: string;
-    updatedAt: string;
-}
+export type {
+    ColumnEntry,
+    ColumnEntryMeta,
+    ColumnEntrySnapshot,
+    ColumnEntryValueType,
+};
 
 export type ColumnEntryValueMap = Record<string, ColumnEntry>;

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { CalendarEntry } from 'features/calendar/types/types';
 import { selectThemeMode } from 'features/settings/stores/themeSelectors';
 import { Text } from 'shared/ui/Text';
+import { calculateEventDurationMinutes } from '../utils/time';
 
 interface CalendarTimelineProps {
     viewMode: string;
@@ -14,7 +15,6 @@ interface CalendarTimelineProps {
     dayNames: string[];
     gridRef: React.RefObject<HTMLDivElement>;
     formatTime: (hour: number) => string;
-    timeToMinutes: (time: string) => number;
     getEventsForDay: (day: Date) => CalendarEntry[];
     getEventStyle: (event: CalendarEntry) => React.CSSProperties;
     getCurrentTimePosition: () => number;
@@ -32,7 +32,6 @@ export default function CalendarTimeline({
     dayNames,
     gridRef,
     formatTime,
-    timeToMinutes,
     getEventsForDay,
     getEventStyle,
     getCurrentTimePosition,
@@ -152,17 +151,11 @@ export default function CalendarTimeline({
                                             />
                                         ))}
                                         {getEventsForDay(day).map((event) => {
-                                            const startMinutes = timeToMinutes(
-                                                event.startTime,
-                                            );
-                                            let endMinutes = timeToMinutes(
-                                                event.endTime,
-                                            );
-                                            if (endMinutes <= startMinutes) {
-                                                endMinutes += 24 * 60;
-                                            }
                                             const duration =
-                                                endMinutes - startMinutes;
+                                                calculateEventDurationMinutes(
+                                                    event.startTime,
+                                                    event.endTime,
+                                                );
                                             const isShortEvent = duration <= 30;
                                             return (
                                                 <div

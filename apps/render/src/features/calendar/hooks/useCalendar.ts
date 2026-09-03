@@ -136,6 +136,7 @@ export function useCalendar() {
     const startEditing = (event: CalendarEntry): void => {
         setNewEvent({
             ...event,
+            color: (event.color as ColorName) || DEFAULT_COLOR_NAME,
             isRepeating: event.isRepeating ?? false,
             repeatDays: event.repeatDays || [],
             repeatFrequency: event.repeatFrequency || 'weekly',

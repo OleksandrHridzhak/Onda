@@ -95,3 +95,10 @@ export const COLOR_STYLES: Record<ColorName, ColorOption> = {
         cssVar: '--color-accent10-solid',
     },
 };
+
+export const getColorStyle = (color?: string): ColorOption => {
+    if (color && color in COLOR_STYLES) {
+        return COLOR_STYLES[color as ColorName];
+    }
+    return COLOR_STYLES[DEFAULT_COLOR_NAME];
+};

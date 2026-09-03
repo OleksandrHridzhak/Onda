@@ -31,7 +31,7 @@ export const TagEditModal: React.FC<TagEditModalProps> = ({
         }
 
         setName(tag.name);
-        setColor(tag.color);
+        setColor((tag.color as ColorName) || 'accent2');
     }, [tag]);
 
     if (!tag) {

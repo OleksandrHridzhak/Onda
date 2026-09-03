@@ -11,10 +11,6 @@ import {
 interface CalendarHeaderProps {
     viewMode: string;
     setViewMode: (mode: string) => void;
-    selectedDate: Date;
-    weekDays: Date[];
-    currentWeekStart: Date;
-    getWeekNumber: (date: Date) => number;
     goToPrevious: () => void;
     goToCurrent: () => void;
     goToNext: () => void;
@@ -23,49 +19,10 @@ interface CalendarHeaderProps {
 export default function CalendarHeader({
     viewMode,
     setViewMode,
-    selectedDate,
-    weekDays,
-    currentWeekStart,
-    getWeekNumber,
     goToPrevious,
     goToCurrent,
     goToNext,
 }: CalendarHeaderProps): React.ReactElement {
-    // Helpers for responsive date formatting
-    const formatDayFull = (date: Date) =>
-        date.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-        });
-    const formatDayShort = (date: Date) =>
-        date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-    const formatWeekRangeFull = (days: Date[]) => {
-        if (!days || days.length === 0) return '';
-        const start = days[0];
-        const end = days[days.length - 1];
-        if (
-            start.getMonth() === end.getMonth() &&
-            start.getFullYear() === end.getFullYear()
-        ) {
-            return `${start.toLocaleDateString('en-US', { month: 'long' })} ${start.getDate()} - ${end.getDate()}, ${end.getFullYear()}`;
-        }
-        return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
-    };
-
-    const formatWeekRangeShort = (days: Date[]) => {
-        if (!days || days.length === 0) return '';
-        const start = days[0];
-        const end = days[days.length - 1];
-        return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-    };
-
-    const dayFull = formatDayFull(selectedDate);
-    const dayShort = formatDayShort(selectedDate);
-    const weekFull = formatWeekRangeFull(weekDays);
-    const weekShort = formatWeekRangeShort(weekDays);
-
     const [viewMenuOpen, setViewMenuOpen] = useState(false);
     const viewMenuRef = useRef<HTMLDivElement | null>(null);
     const menuButtonRef = useRef<HTMLButtonElement | null>(null);

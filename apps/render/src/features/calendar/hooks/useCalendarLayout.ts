@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { CalendarEntry } from 'features/calendar/types/types';
-import { COLOR_STYLES } from 'shared/lib/color';
+import { getColorStyle } from 'shared/lib/color';
+import { getMonday, getWeekDates, getWeekNumber } from 'shared/lib/date';
+import {
+    timeToMinutes,
+    calculateEventDurationMinutes,
+    formatHour,
+} from '../utils/time';
+
+const HOURS = Array.from({ length: 24 }, (_, i) => i);
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export function useCalendarLayout(events: CalendarEntry[] = []) {
     const [viewMode, setViewMode] = useState<'week' | 'day'>(() => {
@@ -12,41 +21,22 @@ export function useCalendarLayout(events: CalendarEntry[] = []) {
         localStorage.setItem('calendarViewMode', viewMode);
     }, [viewMode]);
 
-    function getMonday(date: Date): Date {
-        const d = new Date(date);
-        const day = d.getDay();
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-        return new Date(d.setDate(diff));
-    }
-
-    function getWeekDays(startDate: Date): Date[] {
-        const days: Date[] = [];
-        const date = new Date(startDate);
-        for (let i = 0; i < 7; i++) {
-            days.push(new Date(date));
-            date.setDate(date.getDate() + 1);
-        }
-        return days;
-    }
-
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
         getMonday(new Date()),
     );
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [weekDays, setWeekDays] = useState<Date[]>(
-        getWeekDays(getMonday(new Date())),
+        getWeekDates(getMonday(new Date())),
     );
 
     useEffect(() => {
-        setWeekDays(getWeekDays(currentWeekStart));
+        setWeekDays(getWeekDates(currentWeekStart));
     }, [currentWeekStart]);
 
-    const hours = Array.from({ length: 24 }, (_, i) => i);
     const [slotHeight, setSlotHeight] = useState<number>(() => {
         if (typeof window === 'undefined') return 80;
         return window.innerWidth < 640 ? 60 : 80;
     });
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const gridRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -65,20 +55,7 @@ export function useCalendarLayout(events: CalendarEntry[] = []) {
         return () => clearInterval(interval);
     }, []);
 
-    const formatTime = (hour: number): string =>
-        `${hour.toString().padStart(2, '0')}:00`;
-    const timeToMinutes = (time: string): number => {
-        const [hours, minutes] = time.split(':').map(Number);
-        return hours * 60 + minutes;
-    };
-
-    const getWeekNumber = (date: Date): number => {
-        const d = new Date(date);
-        d.setHours(0, 0, 0, 0);
-        d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
-        const week1 = new Date(d.getFullYear(), 0, 4);
-        return Math.round(((d.getTime() - week1.getTime()) / 86400000 + 1) / 7);
-    };
+    const formatTime = formatHour;
 
     const goToPrevious = (): void => {
         if (viewMode === 'week') {
@@ -149,17 +126,16 @@ export function useCalendarLayout(events: CalendarEntry[] = []) {
 
     const getEventStyle = (event: CalendarEntry): React.CSSProperties => {
         const startMinutes = timeToMinutes(event.startTime);
-        let endMinutes = timeToMinutes(event.endTime);
-        if (endMinutes <= startMinutes) {
-            endMinutes += 24 * 60;
-        }
-        const duration = endMinutes - startMinutes;
+        const duration = calculateEventDurationMinutes(
+            event.startTime,
+            event.endTime,
+        );
         const top = (startMinutes / 60) * slotHeight;
         const height = (duration / 60) * slotHeight - 4;
         return {
             top: `${top}px`,
             height: `${height}px`,
-            backgroundColor: `var(${COLOR_STYLES[event.color].cssVar})`,
+            backgroundColor: `var(${getColorStyle(event.color).cssVar})`,
         };
     };
 
@@ -175,9 +151,9 @@ export function useCalendarLayout(events: CalendarEntry[] = []) {
         setSelectedDate,
         currentWeekStart,
         weekDays,
-        hours,
+        hours: HOURS,
         slotHeight,
-        dayNames,
+        dayNames: DAY_NAMES,
         gridRef,
         currentTime,
         formatTime,

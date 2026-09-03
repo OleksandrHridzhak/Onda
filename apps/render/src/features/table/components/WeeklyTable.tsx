@@ -3,7 +3,7 @@ import { daysColumn, fillerColumn } from '../constants';
 import { useDbQuery, useColumns, useWeekEntries } from 'shared/api/db';
 import TableItemWrapper from './TableItemWrapper';
 import { getSettings } from 'features/settings/api/settings';
-import type { ColumnEntryValueMap } from '@onda/shared';
+import type { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import { getWeekDates, getWeekStartKey } from 'shared/lib/date';
 import './WeeklyTable.css';
 import { useRowHeightSync } from '../hooks/useRowHeightSync';

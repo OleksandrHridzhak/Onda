@@ -4,7 +4,6 @@ import { Eye, EyeOff } from 'lucide-react';
 interface TitleVisibilityToggleProps {
     showTitle: boolean;
     setShowTitle: (show: boolean) => void;
-    darkMode?: boolean;
 }
 
 export const TitleVisibilityToggle: React.FC<TitleVisibilityToggleProps> = ({

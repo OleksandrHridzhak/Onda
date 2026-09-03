@@ -4,7 +4,7 @@ import { Todo } from 'features/columns/types/types';
  * Sort todos by completion status (incomplete first, completed last)
  */
 export const sortTodos = (todos: Todo[]): Todo[] => {
-    return todos.sort((a, b) => {
+    return [...todos].sort((a, b) => {
         if (a.done === b.done) return 0;
         return a.done ? 1 : -1;
     });

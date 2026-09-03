@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-
+import React from 'react';
+import { useClickOutside } from 'shared/hooks/useClickOutside';
 import { icons as allIcons, getIconComponent, Icon } from 'shared/lib/icons';
 
 interface IconSelectorProps {
@@ -8,7 +8,6 @@ interface IconSelectorProps {
     isIconSectionExpanded: boolean;
     setIsIconSectionExpanded: (expanded: boolean) => void;
     icons?: Icon[];
-    darkMode?: boolean;
 }
 
 export const IconSelector: React.FC<IconSelectorProps> = ({
@@ -18,21 +17,10 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
     setIsIconSectionExpanded,
     icons = allIcons,
 }) => {
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) {
-                setIsIconSectionExpanded(false);
-            }
-        };
-        if (isIconSectionExpanded) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isIconSectionExpanded, setIsIconSectionExpanded]);
+    const ref = useClickOutside<HTMLDivElement>(
+        () => setIsIconSectionExpanded(false),
+        isIconSectionExpanded,
+    );
 
     const iconSizePx = 50;
     const gapPx = 4;

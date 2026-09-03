@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLOR_STYLES } from 'shared/lib/color';
+import { getColorStyle } from 'shared/lib/color';
 import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
 import { Tag } from 'features/columns/types/types';
 import { ColumnEntrySnapshot } from 'features/table/types/entryTypes';
@@ -59,7 +59,7 @@ export const TagsCell: React.FC<TagsCellProps> = ({
     };
 
     const getColorForTag = (tag: Tag) => {
-        return COLOR_STYLES[tag.color];
+        return getColorStyle(tag.color);
     };
 
     const handleTagToggle = (tagId: string): void => {
