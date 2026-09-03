@@ -42,8 +42,6 @@ export interface ICalendarApi {
     getByDate(date: string): Promise<DbResult<CalendarEntry[]>>;
     getById(id: string): Promise<DbResult<CalendarEntry>>;
     getInRange(startDate: string, endDate: string): Promise<DbResult<CalendarEntry[]>>;
-    create(event: Omit<CalendarEntry, 'id'>): Promise<DbResult<CalendarEntry>>;
-    update(id: string, updates: Partial<Omit<CalendarEntry, 'id'>>): Promise<DbResult<{ updatedCount: number }>>;
     save(event: CalendarEntry | Omit<CalendarEntry, 'id'>): Promise<DbResult<CalendarEntry>>;
     delete(id: string): Promise<DbResult<{ eventId: string }>>;
 }

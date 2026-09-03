@@ -27,8 +27,6 @@ const dbApi: IPlannerApi = {
         getByDate: (date) => ipcRenderer.invoke('db:calendar:getByDate', date),
         getById: (id) => ipcRenderer.invoke('db:calendar:getById', id),
         getInRange: (startDate, endDate) => ipcRenderer.invoke('db:calendar:getInRange', startDate, endDate),
-        create: (event) => ipcRenderer.invoke('db:calendar:create', event),
-        update: (id, updates) => ipcRenderer.invoke('db:calendar:update', id, updates),
         save: (event) => ipcRenderer.invoke('db:calendar:save', event),
         delete: (id) => ipcRenderer.invoke('db:calendar:delete', id),
     },

@@ -1,4 +1,4 @@
-import { prisma } from '../../../core/database';
+import { prisma } from '../../../core/lib/database';
 import type { DbResult } from '@onda/shared';
 
 export async function deleteEntriesForColumn(columnId: string): Promise<DbResult<{ deletedCount: number }>> {

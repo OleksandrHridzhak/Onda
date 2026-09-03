@@ -17,7 +17,7 @@ const commonConfig: Configuration = {
         __dirname: false,
         __filename: false,
     },
-    
+
     // Converts TypeScript to JavaScript for webpack to bundle
     module: {
         rules: [

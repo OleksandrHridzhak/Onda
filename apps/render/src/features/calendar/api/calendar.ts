@@ -19,19 +19,6 @@ export async function getCalendarEventById(
     return api.calendar.getById(eventId);
 }
 
-export async function createCalendarEvent(
-    eventData: Omit<CalendarEntry, 'id'>,
-): Promise<DbResult<CalendarEntry>> {
-    return api.calendar.create(eventData);
-}
-
-export async function updateCalendarEvent(
-    eventId: string,
-    updates: Partial<Omit<CalendarEntry, 'id'>>,
-): Promise<DbResult<{ updatedCount: number }>> {
-    return api.calendar.update(eventId, updates);
-}
-
 export async function saveCalendarEvent(
     eventData: CalendarEntry | Omit<CalendarEntry, 'id'>,
 ): Promise<DbResult<CalendarEntry>> {

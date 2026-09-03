@@ -3,7 +3,7 @@ import type { UpsertDayEntryInput } from '@onda/shared';
 import { getDayEntry, getEntriesForWeek, getEntriesForDateRange } from './services/get-entries';
 import { upsertDayEntry } from './services/upsert-entry';
 import { deleteEntriesForColumn } from './services/delete-entries';
-import { notifyDbChanged } from '../../core/events';
+import { notifyDbChanged } from '../../core/lib/events';
 
 export const entriesController = {
     async getDayEntry(_e: IpcMainInvokeEvent, columnId: string, dayDate: string) {

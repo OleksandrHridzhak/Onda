@@ -1,7 +1,8 @@
-import { app, Notification, type BrowserWindow, type IpcMainInvokeEvent } from 'electron';
+import { app, BrowserWindow, Notification, type IpcMainInvokeEvent } from 'electron';
 import type { ElectronNotificationOptions } from '@onda/shared';
 import { clearAllData } from './services/clear-all-data';
-import { notifyDbChanged } from '../../core/events';
+import { notifyDbChanged } from '../../core/lib/events';
+import { getMainWindow } from '../../main/window';
 
 export const systemController = {
     async clearAllData() {
@@ -10,26 +11,24 @@ export const systemController = {
         return res;
     },
 
-    closeWindow(mainWindow: BrowserWindow) {
-        return () => {
-            mainWindow.hide();
-        };
+    closeWindow(e: IpcMainInvokeEvent) {
+        const window = BrowserWindow.fromWebContents(e.sender) || getMainWindow();
+        window?.hide();
     },
 
-    minimizeWindow(mainWindow: BrowserWindow) {
-        return () => {
-            mainWindow.minimize();
-        };
+    minimizeWindow(e: IpcMainInvokeEvent) {
+        const window = BrowserWindow.fromWebContents(e.sender) || getMainWindow();
+        window?.minimize();
     },
 
-    maximizeWindow(mainWindow: BrowserWindow) {
-        return () => {
-            if (mainWindow.isMaximized()) {
-                mainWindow.restore();
-            } else {
-                mainWindow.maximize();
-            }
-        };
+    maximizeWindow(e: IpcMainInvokeEvent) {
+        const window = BrowserWindow.fromWebContents(e.sender) || getMainWindow();
+        if (!window) return;
+        if (window.isMaximized()) {
+            window.restore();
+        } else {
+            window.maximize();
+        }
     },
 
     showNotification(_e: IpcMainInvokeEvent, { title, body }: ElectronNotificationOptions) {

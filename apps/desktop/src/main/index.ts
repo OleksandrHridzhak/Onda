@@ -1,73 +1,43 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
-import { join } from 'path';
-import { initDatabase } from '../core/database';
+import { app, ipcMain } from 'electron';
+import { initDatabase } from '../core/lib/database';
 import { registerAllHandlers } from '../features';
 import { createTray } from './tray';
-import { focusWindow } from './window';
+import {
+    createWindow,
+    focusMainWindow,
+    getMainWindow,
+} from './window';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-let mainWindow: BrowserWindow | null = null;
-const iconPath = join(__dirname, '../../../packages/shared/assets/logo256.ico');
-
-// Create the main application window
-function createWindow(): BrowserWindow {
-    mainWindow = new BrowserWindow({
-        width: 1920,
-        height: 1080,
-        icon: iconPath,
-        frame: false,
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            preload: join(__dirname, 'preload.bundle.js'),
-        },
-    });
-
-    mainWindow.maximize();
-
-    if (process.env.NODE_ENV === 'development') {
-        void mainWindow.loadURL(process.env.DEV_SERVER_URL!);
-    } else {
-        void mainWindow.loadFile(
-            join(__dirname, '../../render/build/index.html'),
-        );
+async function main(): Promise<void> {
+    // Close second instances
+    const isFirstInstance = app.requestSingleInstanceLock();
+    if (!isFirstInstance) {
+        app.quit();
+        return;
     }
 
-    return mainWindow;
-}
-
-// Ensure only a single instance of the application is running
-const gotTheLock = app.requestSingleInstanceLock();
-
-if (!gotTheLock) {
-    app.quit();
-} else {
+    // Focus primary instance
     app.on('second-instance', () => {
-        focusWindow(mainWindow);
+        focusMainWindow();
     });
 
-    void app.whenReady().then(async () => {
-        try {
-            await initDatabase();
-        } catch (err) {
-            console.error('[Desktop Database] Failed to initialize database:', err);
-        }
-        const window = createWindow();
-        createTray({
-            iconPath: iconPath,
-            getMainWindow: () => mainWindow,
-            onQuit: () => app.quit(),
-        });
-        registerAllHandlers(ipcMain, window);
-    });
+    await app.whenReady();
+    await initDatabase();
+
+    createWindow();
+    createTray();
+    registerAllHandlers(ipcMain);
 
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
+        if (!getMainWindow()) {
             createWindow();
         } else {
-            focusWindow(mainWindow);
+            focusMainWindow();
         }
     });
 }
+
+main();

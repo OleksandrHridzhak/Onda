@@ -2,7 +2,7 @@ import type { IpcMainInvokeEvent } from 'electron';
 import type { Setting } from '@onda/shared';
 import { getSettings, getColumnsOrder } from './services/get-settings';
 import { updateSettings, updateColumnsOrder } from './services/update-settings';
-import { notifyDbChanged } from '../../core/events';
+import { notifyDbChanged } from '../../core/lib/events';
 
 export const settingsController = {
     async get() {

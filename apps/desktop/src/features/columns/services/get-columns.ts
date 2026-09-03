@@ -1,4 +1,4 @@
-import { prisma } from '../../../core/database';
+import { prisma } from '../../../core/lib/database';
 import type { Column, DbResult } from '@onda/shared';
 
 function serializeColumn(col: any): Column {

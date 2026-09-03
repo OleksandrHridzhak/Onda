@@ -71,11 +71,6 @@ function createMemoryFallbackApi(): IPlannerApi {
                 error: `Event ${id} not found`,
             }),
             getInRange: async () => ({ success: true, data: [] }),
-            create: async (event) => ({
-                success: true,
-                data: { ...event, id: 'temp-id' },
-            }),
-            update: async () => ({ success: true, data: { updatedCount: 1 } }),
             save: async (event) => ({
                 success: true,
                 data: { id: 'temp-id', ...event },

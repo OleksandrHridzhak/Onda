@@ -1,5 +1,5 @@
 import type { DbResult } from '@onda/shared';
-import { getPrismaClient } from './database';
+import { getPrismaClient } from '../lib/database';
 import type { PrismaClient } from '@prisma/client';
 
 export async function safeDbCall<T>(

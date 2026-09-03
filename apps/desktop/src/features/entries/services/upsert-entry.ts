@@ -1,4 +1,4 @@
-import { prisma } from '../../../core/database';
+import { prisma } from '../../../core/lib/database';
 import type { ColumnEntry, DbResult, UpsertDayEntryInput } from '@onda/shared';
 import { serializeEntry } from './get-entries';
 

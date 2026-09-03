@@ -5,7 +5,7 @@ import { createColumn } from './services/create-column';
 import { updateColumnFields, updateColumnUniqueProps, archiveColumn } from './services/update-column';
 import { deleteColumn } from './services/delete-column';
 import { reorderColumns, moveColumn } from './services/reorder-columns';
-import { notifyDbChanged } from '../../core/events';
+import { notifyDbChanged } from '../../core/lib/events';
 
 export const columnsController = {
     async getAllColumns() {

@@ -1,11 +1,5 @@
 # Rules
 
-## Shared components rule
-
-- Before creating any new UI component, always check whether a suitable component already exists in shared/ components folder.
-
-
-## Architecture
-
-- We use Bulletproof React architecture only
-- Don't repeat yourself
+- **Frontend (`apps/render`)**: See [apps/render/AGENTS.MD](apps/render/AGENTS.MD)
+- **Desktop Backend (`apps/desktop`)**: See [apps/desktop/AGENTS.MD](apps/desktop/AGENTS.MD)
+- Don't repeat yourself (DRY)

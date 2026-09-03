@@ -1,44 +1,27 @@
-import { Menu, Tray, nativeImage, type BrowserWindow } from 'electron';
-import { focusWindow } from './window';
-
-interface CreateTrayOptions {
-    iconPath: string;
-    getMainWindow: () => BrowserWindow | null;
-    onQuit: () => void;
-}
+import { app, Menu, Tray, nativeImage } from 'electron';
+import { focusMainWindow, toggleMainWindow } from './window';
+import { APP_NAME, APP_ICON_ICO_PATH } from '../core/constants';
 
 let tray: Tray | null = null;
 
-export function createTray({
-    iconPath,
-    getMainWindow,
-    onQuit,
-}: CreateTrayOptions): void {
-    tray = new Tray(nativeImage.createFromPath(iconPath));
+export function createTray(): void {
+    tray = new Tray(nativeImage.createFromPath(APP_ICON_ICO_PATH));
 
-    tray.setToolTip('ONDA');
-    tray.setContextMenu(
-        Menu.buildFromTemplate([
-            {
-                label: 'Open ONDA',
-                click: () => focusWindow(getMainWindow()),
-            },
-            {
-                label: 'Quit',
-                click: onQuit,
-            },
-        ]),
-    );
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: `Open ${APP_NAME}`,
+            click: () => focusMainWindow(),
+        },
+        {
+            label: 'Quit',
+            click: () => app.quit(),
+        },
+    ]);
+
+    tray.setToolTip(APP_NAME);
+    tray.setContextMenu(contextMenu);
 
     tray.on('click', () => {
-        const mainWindow = getMainWindow();
-
-        if (!mainWindow) return;
-
-        if (mainWindow.isVisible()) {
-            mainWindow.hide();
-        } else {
-            focusWindow(mainWindow);
-        }
+        toggleMainWindow();
     });
 }

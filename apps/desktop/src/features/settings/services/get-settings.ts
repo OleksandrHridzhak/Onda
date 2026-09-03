@@ -1,4 +1,4 @@
-import { prisma } from '../../../core/database';
+import { prisma } from '../../../core/lib/database';
 import type { Setting, DbResult } from '@onda/shared';
 
 export async function getSettings(): Promise<DbResult<Setting>> {
