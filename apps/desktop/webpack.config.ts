@@ -39,7 +39,7 @@ const commonConfig: Configuration = {
 const mainConfig: Configuration = {
     ...commonConfig,
     target: 'electron-main',
-    entry: path.resolve(desktopDirectory, 'main/index.ts'),
+    entry: path.resolve(desktopDirectory, 'src/main/index.ts'),
     output: {
         ...commonConfig.output,
         filename: 'main.bundle.js',
@@ -49,7 +49,7 @@ const mainConfig: Configuration = {
 const preloadConfig: Configuration = {
     ...commonConfig,
     target: 'electron-preload',
-    entry: path.resolve(desktopDirectory, 'preload/index.ts'),
+    entry: path.resolve(desktopDirectory, 'src/preload/index.ts'),
     output: {
         ...commonConfig.output,
         filename: 'preload.bundle.js',

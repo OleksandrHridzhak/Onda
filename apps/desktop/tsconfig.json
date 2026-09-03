@@ -16,11 +16,5 @@
             "@onda/shared/*": ["../../packages/shared/*"]
         }
     },
-    "include": [
-        "main/**/*.ts",
-        "preload/**/*.ts",
-        "core/**/*.ts",
-        "features/**/*.ts",
-        "../../packages/shared/types/**/*.ts"
-    ]
+    "include": ["src/**/*.ts", "../../packages/shared/types/**/*.ts"]
 }

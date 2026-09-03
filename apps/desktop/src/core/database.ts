@@ -37,6 +37,14 @@ export function getPrismaClient(): PrismaClient {
     return prismaInstance;
 }
 
+export const prisma = new Proxy({} as PrismaClient, {
+    get(_target, prop) {
+        const client = getPrismaClient();
+        const value = (client as any)[prop];
+        return typeof value === 'function' ? value.bind(client) : value;
+    },
+});
+
 export async function initDatabase(): Promise<void> {
     const prisma = getPrismaClient();
 
