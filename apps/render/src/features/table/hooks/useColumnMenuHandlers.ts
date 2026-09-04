@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Tag, Column } from 'features/columns/types/types';
-import { COLUMN_TYPES } from 'features/columns/types/definitions';
-import { ColorName } from 'shared/lib/color';
+import type { Tag, Column } from '../types/columnTypes';
+import { COLUMN_TYPES } from '../types/columnDefinitions';
+import type { ColorName } from 'shared/lib/color';
 import { updateColumnFields } from '../api/updateColumnFields';
 import {
     archiveColumn,
@@ -62,13 +62,13 @@ export const useColumnMenuHandlers = ({
 
     const saveOptions = async (updatedTags: Tag[]) => {
         const updates: Record<string, Tag[]> = {};
-        if (column.type === COLUMN_TYPES.TAGS) {
+        if (column?.type === COLUMN_TYPES.TAGS) {
             updates['uniqueProps.availableTags'] = updatedTags;
-        } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
+        } else if (column?.type === COLUMN_TYPES.MULTI_CHECKBOX) {
             updates['uniqueProps.availableOptions'] = updatedTags;
-        } else if (column.type === COLUMN_TYPES.TODO) {
+        } else if (column?.type === COLUMN_TYPES.TODO) {
             updates['uniqueProps.availableCategories'] = updatedTags;
-        } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
+        } else if (column?.type === COLUMN_TYPES.TASK_TABLE) {
             updates['uniqueProps.availableTags'] = updatedTags;
         }
 
@@ -122,27 +122,28 @@ export const useColumnMenuHandlers = ({
         try {
             const updates: Record<string, string | number | boolean> = {};
 
-            if (name !== column.name) {
+            if (column && name !== column.name) {
                 updates.name = name;
             }
 
-            if (selectedIcon !== column.emojiIconName) {
+            if (column && selectedIcon !== column.emojiIconName) {
                 updates.emojiIconName = selectedIcon;
             }
 
-            if (description !== column.description) {
+            if (column && description !== column.description) {
                 updates.description = description;
             }
 
-            if (showTitle !== column.isNameVisible) {
+            if (column && showTitle !== column.isNameVisible) {
                 updates.isNameVisible = showTitle;
             }
 
-            if (width !== column.width) {
+            if (column && width !== column.width) {
                 updates.width = width;
             }
 
             if (
+                column &&
                 column.type === COLUMN_TYPES.CHECKBOX &&
                 checkboxColor !== column.uniqueProps.checkboxColor
             ) {

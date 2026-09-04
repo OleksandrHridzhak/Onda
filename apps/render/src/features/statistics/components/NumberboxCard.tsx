@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { ColumnEntry } from 'features/table/types/entryTypes';
-import type { NumberBoxColumn } from 'features/columns/types/types';
+import type { NumberBoxColumn } from 'features/table/types/columnTypes';
 import { formatDateKey, getMonday } from 'shared/lib/date';
 import { StatisticPreviewCard } from './components/StatisticPreviewCard';
 import { StatisticModalLayout } from './components/StatisticModalLayout';

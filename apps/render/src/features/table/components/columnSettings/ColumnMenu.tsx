@@ -6,14 +6,11 @@ import { ColumnBasicSettings } from './ColumnBasicSettings';
 import { ColumnActions } from './ColumnActions';
 import { ColorPicker } from 'shared/ui/ColorPicker';
 import { ModalShell } from 'shared/ui/ModalShell';
-import { getColumnById, getColumnsByIds } from 'features/columns/api/columns';
+import { getColumnById, getColumnsByIds } from '../../api/columns';
 import { getColumnsOrder } from 'features/settings/api/settings';
-import { useColumnMenuHandlers } from '../hooks/useColumnMenuHandlers';
-import {
-    COLUMN_TYPES,
-    hasOptionsSupport,
-} from 'features/columns/types/definitions';
-import { isColumnArchived } from 'features/columns/utils/lifecycle';
+import { useColumnMenuHandlers } from '../../hooks/useColumnMenuHandlers';
+import { COLUMN_TYPES, hasOptionsSupport } from '../../types/columnDefinitions';
+import { isColumnArchived } from '../../utils/lifecycle';
 
 interface ColumnMenuProps {
     columnId: string;

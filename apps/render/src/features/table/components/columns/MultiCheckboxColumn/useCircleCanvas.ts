@@ -1,6 +1,6 @@
 import { useEffect, useRef, useMemo } from 'react';
 import { COLOR_STYLES, ColorName } from 'shared/lib/color';
-import { Tag } from 'features/columns/types/types';
+import type { Tag } from '../../../types/columnTypes';
 import { getColorForTag } from './logic';
 import { useDocumentThemeMode } from 'shared/lib/theme';
 

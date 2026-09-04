@@ -7,7 +7,7 @@ import type {
     MultiCheckboxColumn,
     TaskTableColumn,
     Column,
-} from './types';
+} from './columnTypes';
 import type { ColorName } from 'shared/lib/color';
 
 type ColumnDefinition<TColumn extends Column> = {

@@ -1,4 +1,4 @@
-import type { MultiCheckboxColumn } from 'features/columns/types/types';
+import type { MultiCheckboxColumn } from '../../../types/columnTypes';
 import { upsertDayEntry } from 'features/table/api/columnEntries';
 import type { ColumnEntrySnapshot } from 'features/table/types/entryTypes';
 import { MultiCheckboxCell } from './MultiCheckBoxCell';

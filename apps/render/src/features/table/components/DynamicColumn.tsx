@@ -1,8 +1,8 @@
 import React from 'react';
 import { ColumnWrapper } from './columns/shared/ColumnWrapper';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
-import type { Column } from 'features/columns/types/types';
-import { COLUMN_TYPES } from 'features/columns/types/definitions';
+import type { Column } from '../types/columnTypes';
+import { COLUMN_TYPES } from '../types/columnDefinitions';
 import { CheckboxColumn } from './columns/CheckboxColumn/CheckboxColumn';
 import { MultiCheckboxColumn } from './columns/MultiCheckboxColumn/MultiCheckboxColumn';
 import { NumberboxColumn } from './columns/NumberboxColumn/NumberboxColumn';

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'shared/ui/Button';
-import { useState } from 'react';
 import { ConfirmModal } from 'shared/ui/ConfirmModal';
 
 interface ColumnActionsProps {

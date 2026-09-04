@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { Column } from 'features/columns/types/types';
-import { ColumnMenu } from 'features/columns/components/ColumnMenu';
+import type { Column } from '../../../types/columnTypes';
+import { ColumnMenu } from '../../columnSettings/ColumnMenu';
 import { getIconComponent } from 'shared/lib/icons';
 
 interface ColumnHeaderProps {

@@ -1,10 +1,11 @@
 import React from 'react';
 import { X, Table } from 'lucide-react';
 import { getIconComponent } from 'shared/lib/icons';
-import { COLUMN_DEFINITIONS } from 'features/columns/types/definitions';
+import { COLUMN_DEFINITIONS } from '../../types/columnDefinitions';
 import { COLOR_STYLES, type ColorName } from 'shared/lib/color';
 import { PageHeader } from 'shared/ui/PageHeader';
 import { Button } from 'shared/ui/Button';
+import { Card } from 'shared/ui/Card';
 import { Text } from 'shared/ui/Text';
 
 interface ColumnCreationOption {
@@ -59,6 +60,7 @@ export const CreateColumn: React.FC<ColumnCreatingPageProps> = ({
                     <Button
                         onClick={onCancel}
                         variant="ghost"
+                        size="icon"
                         aria-label="Close"
                     >
                         <X className="h-5 w-5" />
@@ -72,10 +74,11 @@ export const CreateColumn: React.FC<ColumnCreatingPageProps> = ({
                         const accentStyles = COLOR_STYLES[type.accent];
 
                         return (
-                            <button
+                            <Card
+                                as="button"
                                 key={type.id}
                                 onClick={() => onSelect(type.id)}
-                                className="relative flex h-full w-full flex-col items-start justify-start gap-4 overflow-hidden rounded-lg border border-border bg-surface p-6 text-left transition-all duration-200 hover:border-primaryColor/30 hover:bg-surfaceMuted hover:shadow-sm"
+                                className="relative flex h-full w-full flex-col items-start justify-start gap-4 overflow-hidden p-6 text-left transition-all duration-200 hover:border-primaryColor/30 hover:bg-surfaceMuted hover:shadow-sm"
                             >
                                 <div
                                     className={`rounded-lg p-3 ${accentStyles.bg} ${accentStyles.text}`}
@@ -94,7 +97,7 @@ export const CreateColumn: React.FC<ColumnCreatingPageProps> = ({
                                         {type.description}
                                     </Text>
                                 </div>
-                            </button>
+                            </Card>
                         );
                     })}
                 </div>

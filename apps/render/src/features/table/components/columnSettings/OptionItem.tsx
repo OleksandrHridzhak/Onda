@@ -1,6 +1,7 @@
 import React from 'react';
 import { COLOR_STYLES } from 'shared/lib/color';
-import { Tag } from 'features/columns/types/types';
+import type { Tag } from '../../types/columnTypes';
+import { Badge } from 'shared/ui/Badge';
 
 interface OptionItemProps {
     tag: Tag;
@@ -12,13 +13,14 @@ export const OptionItem: React.FC<OptionItemProps> = ({ tag, onClick }) => {
     const colorOption = COLOR_STYLES[selectedColorName];
 
     return (
-        <button
-            type="button"
+        <Badge
+            as="button"
+            size="md"
             onClick={() => onClick(tag)}
-            className={`px-2 py-1 rounded-full text-xs font-medium transition-opacity hover:opacity-80 ${colorOption?.bg} ${colorOption?.text || 'text-text'}`}
+            colorClasses={colorOption}
             aria-label={`Edit ${tag.name}`}
         >
             {tag.name}
-        </button>
+        </Badge>
     );
 };

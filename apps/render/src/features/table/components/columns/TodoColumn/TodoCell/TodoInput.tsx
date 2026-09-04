@@ -1,7 +1,7 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import { handleAddTodo } from './logic';
-import { Todo } from 'features/columns/types/types';
+import type { Todo } from '../../../../types/columnTypes';
 import { Button } from 'shared/ui/Button';
 import { Input } from 'shared/ui/Input';
 

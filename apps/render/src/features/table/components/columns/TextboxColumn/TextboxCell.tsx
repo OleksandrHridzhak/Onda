@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNotesEdit } from './useTextboxEdit';
-import type { TextboxColumn } from 'features/columns/types/types';
+import type { TextboxColumn } from '../../../types/columnTypes';
 import { upsertDayEntry } from 'features/table/api/columnEntries';
 import type { EntryEditorProps } from 'features/table/types/updateTypes';
 

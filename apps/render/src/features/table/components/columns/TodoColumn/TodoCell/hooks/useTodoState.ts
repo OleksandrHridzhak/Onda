@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Todo } from 'features/columns/types/types';
+import type { Todo } from '../../../../../types/columnTypes';
 
 interface TodoState {
     todos: Todo[];

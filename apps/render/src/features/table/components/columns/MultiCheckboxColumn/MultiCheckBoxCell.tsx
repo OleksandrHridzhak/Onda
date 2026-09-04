@@ -2,7 +2,7 @@ import React from 'react';
 import { useDropdownMultiSelect } from '../shared/hooks/useDropdownMultiSelect';
 import { useCircleCanvas } from './useCircleCanvas';
 import { getColorForTag, handleOptionToggle } from './logic';
-import { Tag } from 'features/columns/types/types';
+import type { Tag } from '../../../types/columnTypes';
 import { ColumnEntrySnapshot } from 'features/table/types/entryTypes';
 
 interface MultiCheckboxCellProps {

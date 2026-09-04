@@ -1,5 +1,5 @@
-import type { Todo, TodoListColumn } from 'features/columns/types/types';
-import { updateColumnFields } from 'features/columns/api/updateColumnFields';
+import type { Todo, TodoListColumn } from '../../../types/columnTypes';
+import { updateColumnFields } from '../../../api/updateColumnFields';
 import { TodoCell } from './TodoCell';
 
 interface TodoListEditorProps {

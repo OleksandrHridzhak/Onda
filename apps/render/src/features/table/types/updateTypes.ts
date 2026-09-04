@@ -1,4 +1,4 @@
-import type { Column } from 'features/columns/types/types';
+import type { Column } from './columnTypes';
 import type { ColumnEntry } from 'features/table/types/entryTypes';
 
 export interface EntryEditorProps<TColumn extends Column> {

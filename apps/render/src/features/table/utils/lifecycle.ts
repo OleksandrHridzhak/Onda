@@ -1,4 +1,4 @@
-import type { Column } from '../types/types';
+import type { Column } from '../types/columnTypes';
 import { getWeekStartKey } from 'shared/lib/date';
 
 export const isColumnArchived = (column: Column): boolean =>

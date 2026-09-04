@@ -3,7 +3,7 @@ import { useDocumentThemeMode } from 'shared/lib/theme';
 import { COLOR_STYLES } from 'shared/lib/color';
 import { useTaskState } from './hooks/useTaskState';
 import { handleToggleTask } from './logic';
-import { Tag } from 'features/columns/types/types';
+import type { Tag } from '../../../types/columnTypes';
 
 interface TaskTableCellProps {
     availableTags: Tag[];

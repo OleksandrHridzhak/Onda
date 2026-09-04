@@ -5,7 +5,7 @@
 - **Strict Architecture**: We strictly follow the **Bulletproof React** architecture pattern.
 - **Directory Roles**:
   - `src/app/`: Application-wide orchestration, routing, layouts, providers, and global store. No feature logic belongs here.
-  - `src/features/<feature-name>/`: Domain-driven feature modules (e.g. `calendar`, `columns`, `settings`, `statistics`, `table`). Each feature encapsulates its own components, hooks, slices, and types.
+  - `src/features/<feature-name>/`: Domain-driven feature modules (e.g. `calendar`, `settings`, `statistics`, `table`). Each feature encapsulates its own components, hooks, slices, and types.
   - `src/shared/`: Cross-cutting, domain-agnostic building blocks (`ui`, `api`, `lib`, `types`).
 
 ## Dependency & Isolation Rules

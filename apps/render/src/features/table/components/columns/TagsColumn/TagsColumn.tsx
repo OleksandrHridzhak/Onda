@@ -1,4 +1,4 @@
-import type { TagsColumn as TagsColumnType } from 'features/columns/types/types';
+import type { TagsColumn as TagsColumnType } from '../../../types/columnTypes';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import { TagsEntryEditor } from './TagsEntryEditor';
 import { ColumnHeader } from '../shared/ColumnHeader';

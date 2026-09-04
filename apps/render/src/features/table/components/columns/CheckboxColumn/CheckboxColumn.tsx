@@ -1,4 +1,4 @@
-import type { CheckboxColumn as CheckboxColumnType } from 'features/columns/types/types';
+import type { CheckboxColumn as CheckboxColumnType } from '../../../types/columnTypes';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import { CheckboxEntryEditor } from './CheckBoxCell';
 import { ColumnHeader } from '../shared/ColumnHeader';

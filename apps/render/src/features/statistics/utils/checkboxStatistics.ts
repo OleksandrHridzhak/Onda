@@ -1,4 +1,4 @@
-import type { CheckboxColumn } from 'features/columns/types/types';
+import type { CheckboxColumn } from 'features/table/types/columnTypes';
 import { formatDateKey, getMonday, MS_PER_DAY } from 'shared/lib/date';
 
 export interface CompletionMetric {

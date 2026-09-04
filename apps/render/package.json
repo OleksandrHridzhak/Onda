@@ -17,7 +17,8 @@
         "react-dom": "^19.1.0",
         "react-redux": "^9.2.0",
         "react-router-dom": "^7.5.0",
-        "recharts": "^3.8.1"
+        "recharts": "^3.8.1",
+        "zustand": "^5.0.15"
     },
     "scripts": {
         "start": "vite",

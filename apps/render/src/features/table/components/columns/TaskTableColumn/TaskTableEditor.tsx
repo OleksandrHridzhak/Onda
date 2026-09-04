@@ -1,5 +1,5 @@
-import type { Tag, TaskTableColumn } from 'features/columns/types/types';
-import { updateColumnFields } from 'features/columns/api/updateColumnFields';
+import type { Tag, TaskTableColumn } from '../../../types/columnTypes';
+import { updateColumnFields } from '../../../api/updateColumnFields';
 import { TaskTableCell } from './TaskTableCell';
 
 interface TaskTableEditorProps {

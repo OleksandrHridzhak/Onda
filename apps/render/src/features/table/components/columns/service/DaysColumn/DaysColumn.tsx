@@ -42,7 +42,8 @@ export const DaysColumn: React.FC<DaysColumnProps> = ({ weekDates }) => {
                                 <Button
                                     onClick={goToPreviousWeek}
                                     variant="ghost"
-                                    className="!min-w-0 !gap-0 !rounded-lg !px-1 !py-1"
+                                    size="icon"
+                                    aria-label="Previous week"
                                 >
                                     <ChevronLeft size={14} />
                                 </Button>
@@ -61,7 +62,8 @@ export const DaysColumn: React.FC<DaysColumnProps> = ({ weekDates }) => {
                                     onClick={goToNextWeek}
                                     disabled={!canGoToNextWeek}
                                     variant="ghost"
-                                    className="!min-w-0 !gap-0 !rounded-lg !px-1 !py-1"
+                                    size="icon"
+                                    aria-label="Next week"
                                 >
                                     <ChevronRight size={14} />
                                 </Button>

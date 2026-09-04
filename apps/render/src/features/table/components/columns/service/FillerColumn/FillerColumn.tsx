@@ -1,5 +1,5 @@
 import React from 'react';
-import { DAYS } from 'features/columns/utils/tableLayout';
+import { DAYS } from '../../../../utils/tableLayout';
 import { ColumnWrapper } from '../../shared/ColumnWrapper';
 
 /**

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import { COLOR_STYLES, ColorName } from 'shared/lib/color';
-import type { CheckboxColumn } from 'features/columns/types/types';
+import type { CheckboxColumn } from '../../../types/columnTypes';
 import { upsertDayEntry } from 'features/table/api/columnEntries';
 import type { EntryEditorProps } from 'features/table/types/updateTypes';
 

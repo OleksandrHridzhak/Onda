@@ -1,4 +1,4 @@
-import type { TagsColumn } from 'features/columns/types/types';
+import type { TagsColumn } from '../../../types/columnTypes';
 import { upsertDayEntry } from 'features/table/api/columnEntries';
 import type { ColumnEntrySnapshot } from 'features/table/types/entryTypes';
 import { TagsCell } from './TagsCell';

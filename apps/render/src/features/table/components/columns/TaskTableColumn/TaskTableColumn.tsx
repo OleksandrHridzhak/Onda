@@ -1,5 +1,5 @@
-import { DAYS } from 'features/columns/utils/tableLayout';
-import type { TaskTableColumn as TaskTableColumnType } from 'features/columns/types/types';
+import { DAYS } from '../../../utils/tableLayout';
+import type { TaskTableColumn as TaskTableColumnType } from '../../../types/columnTypes';
 import { TaskTableEditor } from './TaskTableEditor';
 import { ColumnHeader } from '../shared/ColumnHeader';
 

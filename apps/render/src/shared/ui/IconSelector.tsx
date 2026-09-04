@@ -2,7 +2,7 @@ import React from 'react';
 import { useClickOutside } from 'shared/hooks/useClickOutside';
 import { icons as allIcons, getIconComponent, Icon } from 'shared/lib/icons';
 
-interface IconSelectorProps {
+export interface IconSelectorProps {
     selectedIcon: string;
     setSelectedIcon: (icon: string) => void;
     isIconSectionExpanded: boolean;
@@ -30,8 +30,9 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
     return (
         <div className="relative mb-4" ref={ref}>
             <button
+                type="button"
                 onClick={() => setIsIconSectionExpanded(!isIconSectionExpanded)}
-                className={`w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background text-text hover:bg-backgrundHover focus:outline-none focus:ring-2 focus:ring-primaryColor transition-all duration-200`}
+                className="w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background text-text hover:bg-backgrundHover focus:outline-none focus:ring-2 focus:ring-primaryColor transition-all duration-200"
                 aria-expanded={isIconSectionExpanded}
                 aria-label="Select icon"
             >
@@ -44,7 +45,7 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
 
             {isIconSectionExpanded && (
                 <div
-                    className={`absolute top-full w-96 left-0 mt-1 z-50 overflow-y-auto border rounded-lg shadow-lg bg-background border-border flex flex-wrap gap-1`}
+                    className="absolute top-full w-96 left-0 mt-1 z-50 overflow-y-auto border rounded-lg shadow-lg bg-background border-border flex flex-wrap gap-1"
                     style={{ maxWidth: containerMaxWidth }}
                 >
                     {icons.map((icon) => (
@@ -74,3 +75,5 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
         </div>
     );
 };
+
+export default IconSelector;

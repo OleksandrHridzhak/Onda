@@ -2,11 +2,12 @@ import React from 'react';
 import { Plus } from 'lucide-react';
 import { Field } from 'shared/ui/Field';
 import { Input } from 'shared/ui/Input';
+import { Button } from 'shared/ui/Button';
 import { OptionItem } from './OptionItem';
 import { TagEditModal } from './TagEditModal';
-import { Tag } from 'features/columns/types/types';
-import { COLUMN_TYPES } from 'features/columns/types/definitions';
-import { ColorName } from 'shared/lib/color';
+import type { Tag } from '../../types/columnTypes';
+import { COLUMN_TYPES } from '../../types/columnDefinitions';
+import type { ColorName } from 'shared/lib/color';
 
 interface OptionsListProps {
     columnType: string;
@@ -72,20 +73,23 @@ export const OptionsList: React.FC<OptionsListProps> = ({
                             type="text"
                             value={newOption}
                             onChange={(e) => setNewOption(e.target.value)}
-                            onKeyPress={(e) =>
-                                e.key === 'Enter' && handleAddOption()
-                            }
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleAddOption();
+                                }
+                            }}
                             placeholder={`Add new ${getPlaceholderType()}...`}
                             aria-label={`Add new ${getPlaceholderType()}`}
                             className="flex-1 h-12"
                         />
-                        <button
+                        <Button
                             onClick={handleAddOption}
-                            className={`flex items-center justify-center w-12 h-12 rounded-xl bg-primaryColor hover:bg-primaryHover text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryColor`}
+                            size="icon"
+                            className="w-12 h-12 rounded-xl"
                             aria-label="Add new option"
                         >
                             <Plus size={18} className="stroke-2" />
-                        </button>
+                        </Button>
                     </div>
                     <div className="flex flex-wrap gap-2.5">
                         {tags.map((tag) => (

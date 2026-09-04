@@ -1,4 +1,4 @@
-import type { MultiCheckboxColumn as MultiCheckboxColumnType } from 'features/columns/types/types';
+import type { MultiCheckboxColumn as MultiCheckboxColumnType } from '../../../types/columnTypes';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import { MultiCheckboxEntryEditor } from './MultiCheckboxEntryEditor';
 import { ColumnHeader } from '../shared/ColumnHeader';

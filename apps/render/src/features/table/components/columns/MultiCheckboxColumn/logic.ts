@@ -1,4 +1,4 @@
-import { Tag } from 'features/columns/types/types';
+import type { Tag } from '../../../types/columnTypes';
 import { ColumnEntrySnapshot } from 'features/table/types/entryTypes';
 
 /**

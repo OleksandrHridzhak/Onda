@@ -1,7 +1,6 @@
-import { COLUMN_DEFINITIONS } from 'features/columns/types/definitions';
-import type { ColumnType, Column } from '@onda/shared';
+import { COLUMN_DEFINITIONS } from '../types/columnDefinitions';
+import type { ColumnType, Column, DbResult } from '@onda/shared';
 import { api } from 'shared/api/client';
-import type { DbResult } from '@onda/shared';
 
 export async function createColumn(
     type: ColumnType,

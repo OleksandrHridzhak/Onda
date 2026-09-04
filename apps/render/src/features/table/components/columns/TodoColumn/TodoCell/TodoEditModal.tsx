@@ -4,7 +4,7 @@ import { Field } from 'shared/ui/Field';
 import { Input } from 'shared/ui/Input';
 import { ModalShell } from 'shared/ui/ModalShell';
 import { Select } from 'shared/ui/Select';
-import { Tag } from 'features/columns/types/types';
+import type { Tag } from '../../../../types/columnTypes';
 
 interface TodoEditModalProps {
     isOpen: boolean;

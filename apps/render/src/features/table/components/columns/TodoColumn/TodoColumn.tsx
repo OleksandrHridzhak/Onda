@@ -1,5 +1,5 @@
-import { DAYS } from 'features/columns/utils/tableLayout';
-import type { TodoListColumn as TodoListColumnType } from 'features/columns/types/types';
+import { DAYS } from '../../../utils/tableLayout';
+import type { TodoListColumn as TodoListColumnType } from '../../../types/columnTypes';
 import { TodoListEditor } from './TodoListEditor';
 import { ColumnHeader } from '../shared/ColumnHeader';
 

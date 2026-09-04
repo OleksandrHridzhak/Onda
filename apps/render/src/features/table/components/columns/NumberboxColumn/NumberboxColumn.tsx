@@ -1,4 +1,4 @@
-import type { NumberBoxColumn } from 'features/columns/types/types';
+import type { NumberBoxColumn } from '../../../types/columnTypes';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import { NumberEntryEditor } from './NumberboxCell';
 import { ColumnHeader } from '../shared/ColumnHeader';

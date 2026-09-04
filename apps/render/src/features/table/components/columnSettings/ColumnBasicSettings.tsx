@@ -1,12 +1,12 @@
 import React from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import { IconSelector } from './IconSelector';
+import { IconSelector } from 'shared/ui/IconSelector';
 import { TitleVisibilityToggle } from './TitleVisibilityToggle';
 import { Button } from 'shared/ui/Button';
 import { Field } from 'shared/ui/Field';
 import { Input } from 'shared/ui/Input';
 import { Textarea } from 'shared/ui/Textarea';
-import { Icon } from 'shared/lib/icons';
+import type { Icon } from 'shared/lib/icons';
 
 interface ColumnBasicSettingsProps {
     // Name input props

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { NumberBoxColumn } from 'features/columns/types/types';
+import type { NumberBoxColumn } from '../../../types/columnTypes';
 import { upsertDayEntry } from 'features/table/api/columnEntries';
 import type { EntryEditorProps } from 'features/table/types/updateTypes';
 

@@ -7,8 +7,9 @@ import {
     handleEditTodo,
     handleSaveEdit,
 } from './logic';
-import { Todo, Tag } from 'features/columns/types/types';
+import type { Todo, Tag } from '../../../../types/columnTypes';
 import { TodoEditModal } from './TodoEditModal';
+import { Badge } from 'shared/ui/Badge';
 
 interface TodoListProps {
     todos: Todo[];
@@ -138,11 +139,12 @@ export const TodoList: React.FC<TodoListProps> = ({
                                         {todo.text}
                                     </div>
                                     {category && categoryColor && (
-                                        <span
-                                            className={`px-2 py-1 rounded-full text-xs font-medium ${categoryColor.bg} ${categoryColor.text}`}
+                                        <Badge
+                                            size="md"
+                                            colorClasses={categoryColor}
                                         >
                                             {category.name}
-                                        </span>
+                                        </Badge>
                                     )}
                                 </div>
                             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { CheckboxColumn } from 'features/columns/types/types';
+import type { CheckboxColumn } from 'features/table/types/columnTypes';
 import type { ColumnEntry } from 'features/table/types/entryTypes';
 import { COLOR_STYLES } from 'shared/lib/color';
 import { formatDateKey } from 'shared/lib/date';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { COLOR_STYLES } from 'shared/lib/color';
-import { Tag } from 'features/columns/types/types';
+import type { Tag } from '../../../../types/columnTypes';
 
 interface TodoCategoryFilterProps {
     availableCategories: Tag[];

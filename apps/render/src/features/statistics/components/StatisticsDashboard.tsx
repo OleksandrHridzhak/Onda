@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import { useDbQuery } from 'shared/api/db';
 import { BarChart3 } from 'lucide-react';
-import { COLUMN_TYPES } from 'features/columns/types/definitions';
+import { COLUMN_TYPES } from 'features/table/types/columnDefinitions';
 import type { ColumnEntry } from 'features/table/types/entryTypes';
 import type {
     CheckboxColumn,
     NumberBoxColumn,
-} from 'features/columns/types/types';
+} from 'features/table/types/columnTypes';
 import { formatDateKey } from 'shared/lib/date';
 import { getEntriesForDateRange } from 'features/table/api/columnEntries';
-import { getAllColumns } from 'features/columns/api/columns';
+import { getAllColumns } from 'features/table/api/columns';
 import { CheckboxCard } from './CheckboxCard';
 import { NumberboxCard } from './NumberboxCard';
 import { PageHeader } from 'shared/ui/PageHeader';

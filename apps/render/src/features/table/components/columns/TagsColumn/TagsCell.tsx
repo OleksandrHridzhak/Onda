@@ -1,8 +1,9 @@
 import React from 'react';
 import { getColorStyle } from 'shared/lib/color';
 import { useDropdownMultiSelect } from '../shared/hooks/useDropdownMultiSelect';
-import { Tag } from 'features/columns/types/types';
+import type { Tag } from '../../../types/columnTypes';
 import { ColumnEntrySnapshot } from 'features/table/types/entryTypes';
+import { Badge } from 'shared/ui/Badge';
 
 interface TagsCellProps {
     selectedTagIds: string[];
@@ -101,12 +102,13 @@ export const TagsCell: React.FC<TagsCellProps> = ({
                             const colorOption = getColorForTag(tag);
 
                             return (
-                                <span
+                                <Badge
                                     key={tagId}
-                                    className={`px-2 py-1 rounded-full text-xs font-medium ${colorOption.bg} ${colorOption.text}`}
+                                    size="md"
+                                    colorClasses={colorOption}
                                 >
                                     {tag.name}
-                                </span>
+                                </Badge>
                             );
                         })}
                     </div>

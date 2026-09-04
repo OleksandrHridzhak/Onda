@@ -1,5 +1,5 @@
 import React from 'react';
-import { getWidthStyle } from 'features/columns/utils/tableLayout';
+import { getWidthStyle } from '../../../utils/tableLayout';
 
 interface ColumnWrapperProps {
     column?: { id?: string; width?: number };

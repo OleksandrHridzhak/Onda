@@ -4,10 +4,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeMode } from 'features/settings/stores/themeSelectors';
 import { toggleThemeMode } from 'features/settings/stores/themeSlice';
-import { CreateColumn } from 'features/columns/components/CreateColumn';
+import { CreateColumn } from 'features/table/components/columnSettings/CreateColumn';
 import { sideBarItems } from './constants';
-import { createColumn } from 'features/columns/api/createColumn';
-import type { ColumnType } from 'features/columns/types/types';
+import { createColumn } from 'features/table/api/createColumn';
+import type { ColumnType } from 'features/table/types/columnTypes';
 import { useTableWeek } from 'features/table/context/TableWeekContext';
 
 type ActivePage = 'home' | 'calendar' | 'statistics' | 'settings';

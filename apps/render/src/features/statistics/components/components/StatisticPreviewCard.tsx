@@ -1,5 +1,5 @@
 import React from 'react';
-import type { BaseColumn } from 'features/columns/types/types';
+import type { BaseColumn } from 'features/table/types/columnTypes';
 import { getIconComponent } from 'shared/lib/icons';
 import { Card } from 'shared/ui/Card';
 import { Heading } from 'shared/ui/Heading';
