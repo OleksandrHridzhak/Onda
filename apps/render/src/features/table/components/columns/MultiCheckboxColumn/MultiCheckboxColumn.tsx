@@ -14,7 +14,6 @@ interface MultiCheckboxColumnProps {
 /**
  * MultiCheckboxColumn component
  * Displays multiple checkbox options that can be selected for each day of the week.
- * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
  */
 export function MultiCheckboxColumn({
     column,

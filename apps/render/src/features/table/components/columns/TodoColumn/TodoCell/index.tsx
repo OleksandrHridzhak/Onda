@@ -16,7 +16,7 @@ interface TodoCellProps {
 /**
  * TodoCell component
  * Manages the todo list UI with add, edit, delete, and filter functionality.
- * Uses the new Dexie Todo format with proper ID tracking.
+ * Tracks todo items with proper ID tracking.
  */
 export const TodoCell: React.FC<TodoCellProps> = ({
     value,

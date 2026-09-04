@@ -14,7 +14,6 @@ interface TagsColumnProps {
 /**
  * TagsColumn component
  * Displays tags that can be assigned to each day of the week.
- * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
  */
 export function TagsColumn({
     column,

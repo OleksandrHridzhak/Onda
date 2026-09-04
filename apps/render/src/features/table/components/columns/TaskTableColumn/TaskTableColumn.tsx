@@ -11,7 +11,6 @@ interface TaskTableColumnProps {
 /**
  * TaskTableColumn component
  * Displays a task table with available tags that can be marked as complete/incomplete.
- * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
  */
 export function TaskTableColumn({
     column,

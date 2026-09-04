@@ -87,7 +87,7 @@ export const useRowHeightSync = (dependencies: React.DependencyList = []) => {
 
         // Defer sync until after DOM has been painted
         // Use double requestAnimationFrame to ensure all async-loaded columns
-        // have rendered before measuring (after Dexie async data loading)
+        // have rendered before measuring (after async data loading)
         const outerRafId = requestAnimationFrame(() => {
             innerRafId = requestAnimationFrame(() => {
                 syncRowHeights();

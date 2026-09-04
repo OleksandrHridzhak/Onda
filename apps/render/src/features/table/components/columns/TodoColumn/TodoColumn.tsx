@@ -11,7 +11,6 @@ interface TodoColumnProps {
 /**
  * TodoColumn component
  * Displays a todo list that spans all days of the week.
- * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
  */
 export function TodoColumn({
     column,

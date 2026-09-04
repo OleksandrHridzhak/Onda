@@ -14,7 +14,7 @@ interface TaskTableCellProps {
 /**
  * TaskTableCell component
  * Displays available tasks with ability to toggle completion status.
- * Uses the new Dexie Tag format with ID tracking.
+ * Uses Tag format with ID tracking.
  */
 export const TaskTableCell: React.FC<TaskTableCellProps> = ({
     availableTags,
