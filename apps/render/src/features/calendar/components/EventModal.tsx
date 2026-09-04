@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "shared/ui/Button";
 import { ColorPicker } from "shared/ui/ColorPicker";
@@ -6,48 +6,142 @@ import { Field } from "shared/ui/Field";
 import { Input } from "shared/ui/Input";
 import { ModalShell } from "shared/ui/ModalShell";
 import { Select } from "shared/ui/Select";
-import type { NewEvent } from "../hooks/useCalendar";
+import { DEFAULT_COLOR_NAME, type ColorName } from "shared/lib/color";
+import { formatDateKey } from "shared/lib/date";
+import { useCalendarContext } from "../context/CalendarContext";
+import { validateTime, shiftTime } from "../utils/time";
 
-interface EventModalProps {
-  showEventModal: boolean;
-  setShowEventModal: (show: boolean) => void;
-  newEvent: NewEvent;
-  setNewEvent: (event: NewEvent) => void;
-  editingEventId: string | null;
-  handleSaveEvent: () => void;
-  handleDeleteEvent: (id: string) => void;
-  validateTime: (time: string) => boolean;
-  adjustEventTimes: (minutes: number) => void;
-}
+const REPEAT_DAYS = [
+  { label: "Mon", dayIndex: 1 },
+  { label: "Tue", dayIndex: 2 },
+  { label: "Wed", dayIndex: 3 },
+  { label: "Thu", dayIndex: 4 },
+  { label: "Fri", dayIndex: 5 },
+  { label: "Sat", dayIndex: 6 },
+  { label: "Sun", dayIndex: 0 },
+];
 
-export function EventModal({
-  showEventModal,
-  setShowEventModal,
-  newEvent,
-  setNewEvent,
-  editingEventId,
-  handleSaveEvent,
-  handleDeleteEvent,
-  validateTime,
-  adjustEventTimes,
-}: EventModalProps): React.ReactElement {
+export function EventModal(): React.ReactElement | null {
+  const {
+    isModalOpen,
+    closeModal,
+    modalEvent,
+    initialSlot,
+    saveEvent,
+    deleteEvent,
+  } = useCalendarContext();
+
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("10:00");
+  const [color, setColor] = useState<ColorName>(DEFAULT_COLOR_NAME);
+  const [isRepeating, setIsRepeating] = useState(false);
+  const [repeatDays, setRepeatDays] = useState<number[]>([]);
+  const [repeatFrequency, setRepeatFrequency] = useState<"weekly" | "biweekly">(
+    "weekly",
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    if (modalEvent) {
+      setTitle(modalEvent.title);
+      setDate(modalEvent.date);
+      setStartTime(modalEvent.startTime);
+      setEndTime(modalEvent.endTime);
+      setColor((modalEvent.color as ColorName) || DEFAULT_COLOR_NAME);
+      setIsRepeating(Boolean(modalEvent.isRepeating));
+      setRepeatDays(modalEvent.repeatDays ?? []);
+      setRepeatFrequency(
+        (modalEvent.repeatFrequency as "weekly" | "biweekly") || "weekly",
+      );
+    } else if (initialSlot) {
+      setTitle("");
+      setDate(initialSlot.date);
+      setStartTime(initialSlot.startTime);
+      setEndTime(initialSlot.endTime);
+      setColor(DEFAULT_COLOR_NAME);
+      setIsRepeating(false);
+      setRepeatDays([]);
+      setRepeatFrequency("weekly");
+    } else {
+      setTitle("");
+      setDate(formatDateKey(new Date()));
+      setStartTime("09:00");
+      setEndTime("10:00");
+      setColor(DEFAULT_COLOR_NAME);
+      setIsRepeating(false);
+      setRepeatDays([]);
+      setRepeatFrequency("weekly");
+    }
+  }, [isModalOpen, modalEvent, initialSlot]);
+
+  if (!isModalOpen) {
+    return null;
+  }
+
+  const isTimeValid = validateTime(startTime) && validateTime(endTime);
+  const isFormValid = title.trim().length > 0 && isTimeValid;
+
+  const handleAdjustTimes = (minutes: number) => {
+    setStartTime((prev) => shiftTime(prev, minutes));
+    setEndTime((prev) => shiftTime(prev, minutes));
+  };
+
+  const handleToggleDay = (dayIndex: number) => {
+    setRepeatDays((prev) =>
+      prev.includes(dayIndex)
+        ? prev.filter((d) => d !== dayIndex)
+        : [...prev, dayIndex].sort(),
+    );
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!isFormValid || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await saveEvent({
+        id: modalEvent?.id,
+        title: title.trim(),
+        date,
+        startTime,
+        endTime,
+        color,
+        isRepeating,
+        repeatDays,
+        repeatFrequency,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!modalEvent?.id || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await deleteEvent(modalEvent.id);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <ModalShell
-      isOpen={showEventModal}
-      onClose={() => setShowEventModal(false)}
-      title={editingEventId ? "Edit Event" : "New Event"}
+      isOpen={isModalOpen}
+      onClose={closeModal}
+      title={modalEvent ? "Edit Event" : "New Event"}
     >
       <div className="space-y-4">
         <Field label="Title" htmlFor="event-title">
           <Input
             id="event-title"
-            value={newEvent.title}
-            onChange={(e) =>
-              setNewEvent({
-                ...newEvent,
-                title: e.target.value,
-              })
-            }
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="Event title"
           />
         </Field>
@@ -56,13 +150,8 @@ export function EventModal({
           <Field label="Start" htmlFor="event-start">
             <Input
               id="event-start"
-              value={newEvent.startTime}
-              onChange={(e) =>
-                setNewEvent({
-                  ...newEvent,
-                  startTime: e.target.value,
-                })
-              }
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
               placeholder="HH:mm"
             />
           </Field>
@@ -70,95 +159,67 @@ export function EventModal({
           <Field label="End" htmlFor="event-end">
             <Input
               id="event-end"
-              value={newEvent.endTime}
-              onChange={(e) =>
-                setNewEvent({
-                  ...newEvent,
-                  endTime: e.target.value,
-                })
-              }
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
               placeholder="HH:mm"
             />
           </Field>
         </div>
 
         <div className="mb-4 flex justify-center gap-2">
-          <Button onClick={() => adjustEventTimes(-5)}>-5m</Button>
-          <Button onClick={() => adjustEventTimes(5)}>+5m</Button>
+          <Button onClick={() => handleAdjustTimes(-5)}>-5m</Button>
+          <Button onClick={() => handleAdjustTimes(5)}>+5m</Button>
         </div>
 
         <ColorPicker
           label="Color"
-          value={newEvent.color}
-          onChange={(color) =>
-            setNewEvent({
-              ...newEvent,
-              color,
-            })
-          }
+          value={color}
+          onChange={(newColor) => setColor(newColor as ColorName)}
         />
 
         <div>
           <label className="mb-1 flex items-center gap-2 text-sm text-textMuted">
             <input
               type="checkbox"
-              checked={newEvent.isRepeating}
-              onChange={(e) =>
-                setNewEvent({
-                  ...newEvent,
-                  isRepeating: e.target.checked,
-                  repeatDays: [],
-                })
-              }
+              checked={isRepeating}
+              onChange={(e) => {
+                setIsRepeating(e.target.checked);
+                if (!e.target.checked) {
+                  setRepeatDays([]);
+                }
+              }}
               className="custom-checkbox"
             />
             Repeat Event
           </label>
 
-          {newEvent.isRepeating && (
+          {isRepeating && (
             <div className="mt-2 space-y-2">
               <Field label="Repeat on">
                 <div className="flex flex-wrap gap-2">
-                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-                    (day, index) => (
-                      <label
-                        key={day}
-                        className="flex items-center gap-1 text-sm text-textMuted"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={newEvent.repeatDays.includes(
-                            (index + 1) % 7,
-                          )}
-                          onChange={(e) => {
-                            const dayIndex = (index + 1) % 7;
-                            setNewEvent({
-                              ...newEvent,
-                              repeatDays: e.target.checked
-                                ? [...newEvent.repeatDays, dayIndex].sort()
-                                : newEvent.repeatDays.filter(
-                                    (d) => d !== dayIndex,
-                                  ),
-                            });
-                          }}
-                          className="custom-checkbox"
-                        />
-                        {day}
-                      </label>
-                    ),
-                  )}
+                  {REPEAT_DAYS.map(({ label, dayIndex }) => (
+                    <label
+                      key={label}
+                      className="flex items-center gap-1 text-sm text-textMuted"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={repeatDays.includes(dayIndex)}
+                        onChange={() => handleToggleDay(dayIndex)}
+                        className="custom-checkbox"
+                      />
+                      {label}
+                    </label>
+                  ))}
                 </div>
               </Field>
 
               <Field label="Frequency" htmlFor="event-repeat-frequency">
                 <Select
                   id="event-repeat-frequency"
-                  value={newEvent.repeatFrequency}
+                  value={repeatFrequency}
                   onChange={(e) =>
-                    setNewEvent({
-                      ...newEvent,
-                      repeatFrequency: e.target.value,
-                    })
+                    setRepeatFrequency(e.target.value as "weekly" | "biweekly")
                   }
                   inputSize="sm"
                 >
@@ -172,27 +233,33 @@ export function EventModal({
       </div>
 
       <div className="mt-6 flex justify-end gap-3">
-        {editingEventId && (
+        {modalEvent && (
           <Button
-            onClick={() => handleDeleteEvent(editingEventId)}
+            type="button"
+            onClick={handleDelete}
             variant="danger"
+            disabled={isSubmitting}
           >
             <Trash2 size={16} />
             Delete
           </Button>
         )}
 
-        <Button variant="secondary" onClick={() => setShowEventModal(false)}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={closeModal}
+          disabled={isSubmitting}
+        >
           Cancel
         </Button>
 
         <Button
-          onClick={handleSaveEvent}
-          disabled={
-            !validateTime(newEvent.startTime) || !validateTime(newEvent.endTime)
-          }
+          type="button"
+          onClick={handleSubmit}
+          disabled={!isFormValid || isSubmitting}
         >
-          {editingEventId ? "Update" : "Create"}
+          {modalEvent ? "Update" : "Create"}
         </Button>
       </div>
     </ModalShell>

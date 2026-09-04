@@ -1,14 +1,13 @@
 import React from "react";
 import { Minus, Square, X } from "lucide-react";
-import { useSelector } from "react-redux";
-import { selectThemeMode } from "features/settings/stores/themeSelectors";
+import { useThemeStore } from "features/settings/stores/useThemeStore";
 
 interface MenuWinProps {
   currentPage?: string;
 }
 
 export const WindowTitleBar = ({ currentPage = "/" }: MenuWinProps) => {
-  const themeMode = useSelector(selectThemeMode);
+  const themeMode = useThemeStore((state) => state.themeMode);
 
   const getContainerClass = (): string => {
     if (currentPage === "/") {

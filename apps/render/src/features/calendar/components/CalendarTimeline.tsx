@@ -1,75 +1,49 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { CalendarEntry } from "features/calendar/types/types";
-import { selectThemeMode } from "features/settings/stores/themeSelectors";
+import React from "react";
 import { Text } from "shared/ui/Text";
-import { calculateEventDurationMinutes } from "../utils/time";
+import { useCalendarContext } from "../context/CalendarContext";
+import {
+  calculateEventDurationMinutes,
+  formatHour,
+  HOURS,
+  DAY_NAMES,
+} from "../utils/time";
+import { formatDateKey } from "shared/lib/date";
 
-interface CalendarTimelineProps {
-  viewMode: string;
-  selectedDate: Date;
-  weekDays: Date[];
-  currentTime: Date;
-  hours: number[];
-  slotHeight: number;
-  dayNames: string[];
-  gridRef: React.RefObject<HTMLDivElement>;
-  formatTime: (hour: number) => string;
-  getEventsForDay: (day: Date) => CalendarEntry[];
-  getEventStyle: (event: CalendarEntry) => React.CSSProperties;
-  getCurrentTimePosition: () => number;
-  handleTimeSlotClick: (dayIndex: number, hour: number) => void;
-  handleEditEvent: (event: CalendarEntry) => void;
-}
+export function CalendarTimeline(): React.ReactElement {
+  const {
+    displayDays,
+    slotHeight,
+    gridRef,
+    currentTime,
+    getEventsForDay,
+    getEventStyle,
+    getCurrentTimePosition,
+    openCreateModal,
+    openEditModal,
+  } = useCalendarContext();
 
-export default function CalendarTimeline({
-  viewMode,
-  selectedDate,
-  weekDays,
-  currentTime,
-  hours,
-  slotHeight,
-  dayNames,
-  gridRef,
-  formatTime,
-  getEventsForDay,
-  getEventStyle,
-  getCurrentTimePosition,
-  handleTimeSlotClick,
-  handleEditEvent,
-}: CalendarTimelineProps): React.ReactElement {
-  const themeMode = useSelector(selectThemeMode);
-  const darkMode = themeMode === "dark";
+  const todayKey = formatDateKey(currentTime);
 
-  const getDisplayDays = (): Date[] => {
-    return viewMode === "day" ? [selectedDate] : weekDays;
+  const handleTimeSlotClick = (day: Date, hour: number): void => {
+    const startTime = formatHour(hour);
+    const endTime = formatHour((hour + 1) % 24);
+    openCreateModal(day, startTime, endTime);
   };
-
-  useEffect(() => {
-    const minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    const scrollPosition =
-      (minutes / 60) * slotHeight -
-      (gridRef.current?.clientHeight || 0) / 2 +
-      slotHeight / 2;
-    gridRef.current?.scrollTo({ top: Math.max(0, scrollPosition) });
-  }, [currentTime, gridRef, slotHeight]);
 
   return (
     <div className="w-full mx-auto">
       <div
         style={{ height: "calc(100vh - 100px)" }}
-        className={`flex flex-col bg-background`}
+        className="flex flex-col bg-background"
       >
         <div
           className="flex-1 relative overflow-y-auto custom-scroll"
           ref={gridRef}
         >
           <div className="flex">
-            <div
-              className={`w-14 sm:w-20 flex-shrink-0 sticky left-0 bg-background z-10`}
-            >
+            <div className="w-14 sm:w-20 flex-shrink-0 sticky left-0 bg-background z-10">
               <div className="h-16" />
-              {hours.map((hour) => (
+              {HOURS.map((hour) => (
                 <Text
                   as="div"
                   variant="caption"
@@ -81,110 +55,112 @@ export default function CalendarTimeline({
                     lineHeight: `${slotHeight}px`,
                   }}
                 >
-                  {formatTime(hour)}
+                  {formatHour(hour)}
                 </Text>
               ))}
             </div>
 
             <div className="flex-1 flex min-w-[120px]">
-              {getDisplayDays().map((day, dayIndex) => (
-                <div
-                  key={day.toDateString()}
-                  className={`flex-1 border-l border-border relative`}
-                >
+              {displayDays.map((day) => {
+                const dayKey = formatDateKey(day);
+                const isToday = dayKey === todayKey;
+                const dayEvents = getEventsForDay(day);
+
+                return (
                   <div
-                    className={`sticky top-0 bg-background z-40 py-3 text-center border-b border-border`}
+                    key={dayKey}
+                    className="flex-1 border-l border-border relative"
                   >
-                    <Text variant="caption" tone="muted">
-                      {dayNames[day.getDay()]}
-                    </Text>
-                    <div
-                      className={`mt-1 text-sm font-medium ${
-                        day.toDateString() === new Date().toDateString()
-                          ? "bg-primaryColor text-white"
-                          : "text-text"
-                      } rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center mx-auto text-xs sm:text-sm`}
-                    >
-                      {day.getDate()}
-                    </div>
-                  </div>
-                  <div
-                    className="relative"
-                    style={{
-                      height: `${slotHeight * 24}px`,
-                    }}
-                  >
-                    {hours.map((hour) => (
+                    <div className="sticky top-0 bg-background z-40 py-3 text-center border-b border-border">
+                      <Text variant="caption" tone="muted">
+                        {DAY_NAMES[day.getDay()]}
+                      </Text>
                       <div
-                        key={hour}
-                        role="button"
-                        tabIndex={0}
-                        className={`absolute w-full border-t border-border hover:bg-primaryColor cursor-pointer z-10`}
-                        style={{
-                          top: `${hour * slotHeight}px`,
-                          height: `${slotHeight}px`,
-                        }}
-                        onClick={() => handleTimeSlotClick(dayIndex, hour)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            handleTimeSlotClick(dayIndex, hour);
-                          }
-                        }}
-                        aria-label={`Create event at ${hour}:00`}
-                      />
-                    ))}
-                    {getEventsForDay(day).map((event) => {
-                      const duration = calculateEventDurationMinutes(
-                        event.startTime,
-                        event.endTime,
-                      );
-                      const isShortEvent = duration <= 30;
-                      return (
+                        className={`mt-1 text-sm font-medium ${
+                          isToday ? "bg-primaryColor text-white" : "text-text"
+                        } rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center mx-auto text-xs sm:text-sm`}
+                      >
+                        {day.getDate()}
+                      </div>
+                    </div>
+                    <div
+                      className="relative"
+                      style={{
+                        height: `${slotHeight * 24}px`,
+                      }}
+                    >
+                      {HOURS.map((hour) => (
                         <div
-                          key={`${event.id}-${event.date}`}
+                          key={hour}
                           role="button"
                           tabIndex={0}
-                          className={`absolute z-30 left-2 right-2 rounded-xl p-2 text-white text-xs shadow-md cursor-pointer ${
-                            isShortEvent ? "short-event" : ""
-                          }`}
-                          style={getEventStyle(event)}
-                          onClick={() => handleEditEvent(event)}
+                          className="absolute w-full border-t border-border hover:bg-primaryColor cursor-pointer z-10"
+                          style={{
+                            top: `${hour * slotHeight}px`,
+                            height: `${slotHeight}px`,
+                          }}
+                          onClick={() => handleTimeSlotClick(day, hour)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
                               e.preventDefault();
-                              handleEditEvent(event);
+                              handleTimeSlotClick(day, hour);
                             }
                           }}
-                          title={`${event.title} (${event.startTime} - ${event.endTime})`}
-                          aria-label={`Edit event: ${event.title}`}
-                        >
-                          <div className="flex text-ellipsis overflow-hidden justify-between items-start">
-                            <div>
-                              <div className="event-title font-medium">
-                                {event.title}
-                              </div>
-                              <div className="event-time truncate">
-                                {event.startTime} - {event.endTime}
+                          aria-label={`Create event at ${formatHour(hour)}`}
+                        />
+                      ))}
+                      {dayEvents.map((event) => {
+                        const duration = calculateEventDurationMinutes(
+                          event.startTime,
+                          event.endTime,
+                        );
+                        const isShortEvent = duration <= 30;
+                        return (
+                          <div
+                            key={`${event.id}-${dayKey}`}
+                            role="button"
+                            tabIndex={0}
+                            className={`absolute z-30 left-2 right-2 rounded-xl p-2 text-white text-xs shadow-md cursor-pointer ${
+                              isShortEvent ? "short-event" : ""
+                            }`}
+                            style={getEventStyle(event)}
+                            onClick={() => openEditModal(event)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                openEditModal(event);
+                              }
+                            }}
+                            title={`${event.title} (${event.startTime} - ${event.endTime})`}
+                            aria-label={`Edit event: ${event.title}`}
+                          >
+                            <div className="flex text-ellipsis overflow-hidden justify-between items-start">
+                              <div>
+                                <div className="event-title font-medium">
+                                  {event.title}
+                                </div>
+                                <div className="event-time truncate">
+                                  {event.startTime} - {event.endTime}
+                                </div>
                               </div>
                             </div>
                           </div>
+                        );
+                      })}
+                      {isToday && (
+                        <div
+                          className="absolute left-0 right-0 h-[2px] bg-red-500 z-30"
+                          style={{
+                            top: `${getCurrentTimePosition()}px`,
+                          }}
+                        >
+                          <div className="w-3 h-3 bg-red-500 rounded-full -translate-y-1" />
                         </div>
-                      );
-                    })}
-                    {day.toDateString() === currentTime.toDateString() && (
-                      <div
-                        className="absolute left-0 right-0 h-[2px] bg-red-500 z-30"
-                        style={{
-                          top: `${getCurrentTimePosition()}px`,
-                        }}
-                      >
-                        <div className="w-3 h-3 bg-red-500 rounded-full -translate-y-1" />
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -192,3 +168,5 @@ export default function CalendarTimeline({
     </div>
   );
 }
+
+export default CalendarTimeline;

@@ -19,13 +19,11 @@ interface ColumnCreationOption {
 interface ColumnCreatingPageProps {
   onSelect: (typeId: string) => void;
   onCancel: () => void;
-  darkMode: boolean;
 }
 
 export const CreateColumn = ({
   onSelect,
   onCancel,
-  darkMode,
 }: ColumnCreatingPageProps) => {
   const columnTypes: ColumnCreationOption[] = Object.values(
     COLUMN_DEFINITIONS,

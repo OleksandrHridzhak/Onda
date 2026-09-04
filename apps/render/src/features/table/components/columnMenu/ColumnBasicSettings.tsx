@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { IconSelector } from "shared/ui/IconSelector";
-import { TitleVisibilityToggle } from "./TitleVisibilityToggle";
+import { VisibilityToggle } from "shared/ui/VisibilityToggle";
 import { Button } from "shared/ui/Button";
 import { Field } from "shared/ui/Field";
 import { Input } from "shared/ui/Input";
@@ -71,10 +71,13 @@ export const ColumnBasicSettings = ({
             placeholder="Column name"
             aria-label="Column name"
           />
-          <TitleVisibilityToggle
-            showTitle={showTitle}
-            setShowTitle={setShowTitle}
-          />
+          <div className="flex items-center h-12 w-12 justify-center absolute right-0 top-0">
+            <VisibilityToggle
+              isVisible={showTitle}
+              onToggle={setShowTitle}
+              ariaLabel={showTitle ? "Hide column title" : "Show column title"}
+            />
+          </div>
         </div>
       </div>
 

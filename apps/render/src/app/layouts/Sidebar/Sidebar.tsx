@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Sun, Moon, Plus } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { selectThemeMode } from "features/settings/stores/themeSelectors";
-import { toggleThemeMode } from "features/settings/stores/themeSlice";
+import { useThemeStore } from "features/settings/stores/useThemeStore";
 import { CreateColumn } from "features/table/components/columnMenu/CreateColumn";
 import { sideBarItems } from "./constants";
 import { createColumn } from "features/table/api/createColumn";
@@ -13,12 +11,12 @@ import { useTableWeek } from "features/table/hooks/useTableWeek";
 type ActivePage = "home" | "calendar" | "statistics" | "settings";
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const { currentWeekStart } = useTableWeek();
 
-  const themeMode = useSelector(selectThemeMode);
+  const themeMode = useThemeStore((state) => state.themeMode);
+  const toggleTheme = useThemeStore((state) => state.toggleThemeMode);
   const [showColumnSelector, setShowColumnSelector] = useState(false);
 
   const deriveActive = (path: string): ActivePage => {
@@ -29,10 +27,6 @@ const Sidebar = () => {
   };
 
   const active = deriveActive(location.pathname);
-
-  const toggleTheme = (): void => {
-    dispatch(toggleThemeMode());
-  };
 
   const isAddDisabled = active === "settings" || active === "statistics";
 
@@ -139,7 +133,6 @@ const Sidebar = () => {
                   setShowColumnSelector(false);
                 }}
                 onCancel={() => setShowColumnSelector(false)}
-                darkMode={themeMode === "dark"}
               />
             </div>
           )}

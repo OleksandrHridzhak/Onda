@@ -5,7 +5,6 @@ import type {
   Column,
   ColumnEntry,
   CalendarEntry,
-  Setting,
 } from "@onda/shared";
 
 export function useDbQuery<T>(
@@ -87,12 +86,4 @@ export function useCalendarEvents(): CalendarEntry[] {
     return res.success && res.data ? res.data : [];
   }, ["calendar"]);
   return data || [];
-}
-
-export function useSettings(): Setting | undefined {
-  const data = useDbQuery(async () => {
-    const res = await api.settings.get();
-    return res.success && res.data ? res.data : undefined;
-  }, ["settings"]);
-  return data;
 }

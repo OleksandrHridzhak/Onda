@@ -1,15 +1,13 @@
 import { create } from "zustand";
 
-interface TableState {
-  // стейт
+export interface TableUIState {
+  editingColumnId: string | null;
+  openColumnMenu: (columnId: string) => void;
+  closeColumnMenu: () => void;
 }
 
-interface TableActions {
-  // екшени
-}
-
-export type TableStore = TableState & TableActions;
-
-export const useTableStore = create<TableStore>((set) => ({
-  // початковий стан та реалізація екшенів
+export const useTableStore = create<TableUIState>((set) => ({
+  editingColumnId: null,
+  openColumnMenu: (columnId: string) => set({ editingColumnId: columnId }),
+  closeColumnMenu: () => set({ editingColumnId: null }),
 }));

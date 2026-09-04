@@ -15,7 +15,6 @@ interface TodoListProps {
   todos: Todo[];
   filteredTodos: Todo[];
   availableCategories: Tag[];
-  darkMode: boolean;
   isEditing: boolean;
   editingId: string | null;
   editText: string;
@@ -36,7 +35,6 @@ export const TodoList = ({
   todos,
   filteredTodos,
   availableCategories,
-  darkMode,
   isEditing,
   editingId,
   editText,

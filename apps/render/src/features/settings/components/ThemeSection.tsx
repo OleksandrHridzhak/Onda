@@ -1,16 +1,10 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Check } from "lucide-react";
 import SettingsSection from "shared/ui/SettingsSection";
 import { Card } from "shared/ui/Card";
 import { Heading } from "shared/ui/Heading";
 import { Text } from "shared/ui/Text";
-import {
-  selectColorScheme,
-  selectFontFamily,
-  selectThemeMode,
-} from "../stores/themeSelectors";
-import { setColorScheme, setFontFamily } from "../stores/themeSlice";
+import { useThemeStore } from "../stores/useThemeStore";
 
 const colorSchemes = [
   { value: "standard", label: "Standard" },
@@ -145,10 +139,11 @@ const fontFamilies = [
 ];
 
 export function ThemeSection(): React.ReactElement {
-  const dispatch = useDispatch();
-  const colorScheme = useSelector(selectColorScheme);
-  const fontFamily = useSelector(selectFontFamily);
-  const themeMode = useSelector(selectThemeMode);
+  const colorScheme = useThemeStore((state) => state.colorScheme);
+  const fontFamily = useThemeStore((state) => state.fontFamily);
+  const themeMode = useThemeStore((state) => state.themeMode);
+  const setColorScheme = useThemeStore((state) => state.setColorScheme);
+  const setFontFamily = useThemeStore((state) => state.setFontFamily);
 
   return (
     <SettingsSection title="Appearance">
@@ -170,7 +165,7 @@ export function ThemeSection(): React.ReactElement {
               <Card
                 key={scheme.value}
                 as="button"
-                onClick={() => dispatch(setColorScheme(scheme.value))}
+                onClick={() => setColorScheme(scheme.value)}
                 ariaLabel={`Use ${scheme.label} color palette`}
                 ariaPressed={isSelected}
                 className={`overflow-hidden p-0 text-left transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primaryColor ${
@@ -232,7 +227,7 @@ export function ThemeSection(): React.ReactElement {
               <Card
                 key={font.value}
                 as="button"
-                onClick={() => dispatch(setFontFamily(font.value))}
+                onClick={() => setFontFamily(font.value)}
                 ariaLabel={`Use ${font.label} font`}
                 ariaPressed={isSelected}
                 className={`relative min-h-28 p-4 text-left transition-all hover:-translate-y-0.5 hover:bg-surfaceMuted hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primaryColor ${

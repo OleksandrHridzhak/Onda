@@ -2,7 +2,7 @@ import { ensureDefaultSettings } from "features/settings/api/settings";
 import {
   getInitialFontFamily,
   normalizeColorScheme,
-} from "features/settings/stores/themeSlice";
+} from "features/settings/stores/useThemeStore";
 
 export async function initializeApp(): Promise<void> {
   await ensureDefaultSettings();

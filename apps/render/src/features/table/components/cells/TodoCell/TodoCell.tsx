@@ -1,5 +1,4 @@
 import React from "react";
-import { useDocumentThemeMode } from "shared/lib/theme";
 import { useTodoState } from "./hooks/useTodoState";
 import { filterTodos } from "./logic";
 import { TodoInput } from "./TodoInput";
@@ -23,9 +22,6 @@ export const TodoCell = ({
   onChange,
   availableCategories,
 }: TodoCellProps) => {
-  const themeMode = useDocumentThemeMode();
-  const darkMode = themeMode === "dark";
-
   const {
     todos,
     setTodos,
@@ -69,7 +65,6 @@ export const TodoCell = ({
         todos={todos}
         filteredTodos={filteredTodos}
         availableCategories={availableCategories}
-        darkMode={darkMode}
         isEditing={isEditing}
         editingId={editingId}
         editText={editText}

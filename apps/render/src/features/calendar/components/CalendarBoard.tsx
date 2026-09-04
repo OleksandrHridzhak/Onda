@@ -1,85 +1,17 @@
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import EventModal from "features/calendar/components/EventModal";
-import CalendarHeader from "./CalendarHeader";
-import CalendarTimeline from "./CalendarTimeline";
 import {
-  useCalendar,
-  type NewEvent,
-} from "features/calendar/hooks/useCalendar";
-import { useCalendarLayout } from "../hooks/useCalendarLayout";
-import { CalendarEntry } from "features/calendar/types/types";
+  CalendarProvider,
+  useCalendarContext,
+} from "../context/CalendarContext";
+import { CalendarHeader } from "./CalendarHeader";
+import { CalendarTimeline } from "./CalendarTimeline";
+import { EventModal } from "./EventModal";
+import { parseDateKey } from "shared/lib/date";
 
-export function CalendarBoard(): React.ReactElement {
-  // Calendar state & logic moved into hooks: `useCalendar` and `useCalendarLayout`.
-
-  const calendar = useCalendar();
+function CalendarBoardInner(): React.ReactElement {
   const [searchParams, setSearchParams] = useSearchParams();
-  const layout = useCalendarLayout(calendar.events);
-
-  const {
-    viewMode,
-    setViewMode,
-    selectedDate,
-    weekDays,
-    goToPrevious,
-    goToCurrent,
-    goToNext,
-    formatTime,
-    getEventsForDay,
-    getEventStyle,
-    getCurrentTimePosition,
-    hours,
-    slotHeight,
-    dayNames,
-    gridRef,
-    currentTime,
-  } = layout;
-
-  const {
-    showEventModal,
-    setShowEventModal,
-    newEvent,
-    setNewEvent,
-    editingEventId,
-    createOrUpdateEvent,
-    deleteEvent,
-    validateTime,
-    adjustEventTimes,
-    openNewEventAt,
-    startEditing,
-  } = calendar;
-
-  const setViewModeWrapper = (mode: string): void =>
-    setViewMode(mode as "week" | "day");
-
-  const handleTimeSlotClick = (dayIndex: number, hour: number): void => {
-    const startTime = formatTime(hour);
-    const endTime = formatTime((hour + 1) % 24);
-    const selectedDay = viewMode === "day" ? selectedDate : weekDays[dayIndex];
-    openNewEventAt(selectedDay, startTime, endTime);
-  };
-
-  const handleEditEvent = (event: CalendarEntry): void => {
-    startEditing(event);
-  };
-
-  const handleSaveEvent = async (): Promise<void> => {
-    if (
-      !newEvent.title?.trim() ||
-      !validateTime(newEvent.startTime) ||
-      !validateTime(newEvent.endTime)
-    )
-      return;
-    await createOrUpdateEvent({
-      ...(newEvent as NewEvent),
-      id: editingEventId || undefined,
-    });
-  };
-
-  const handleDeleteEvent = async (eventId: string): Promise<void> => {
-    await deleteEvent(eventId);
-  };
+  const { openCreateModal } = useCalendarContext();
 
   useEffect(() => {
     if (searchParams.get("createEvent") !== "1") {
@@ -87,18 +19,17 @@ export function CalendarBoard(): React.ReactElement {
     }
 
     const dateParam = searchParams.get("date");
-    openNewEventAt(dateParam ? new Date(dateParam) : new Date());
+    const targetDate = dateParam ? parseDateKey(dateParam) : new Date();
+    openCreateModal(targetDate);
 
-    const nextSearchParams = new URLSearchParams(searchParams);
-    nextSearchParams.delete("createEvent");
-    nextSearchParams.delete("date");
-    setSearchParams(nextSearchParams, { replace: true });
-  }, [openNewEventAt, searchParams, setSearchParams]);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete("createEvent");
+    nextParams.delete("date");
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams, openCreateModal]);
 
   return (
-    <div
-      className={`font-poppins min-h-screen bg-surfaceMuted overflow-y-hidden`}
-    >
+    <div className="font-poppins min-h-screen bg-surfaceMuted overflow-y-hidden">
       <style>{`
         .custom-checkbox {
           position: relative;
@@ -141,43 +72,18 @@ export function CalendarBoard(): React.ReactElement {
         }
       `}</style>
 
-      <CalendarHeader
-        viewMode={viewMode}
-        setViewMode={setViewModeWrapper}
-        goToPrevious={goToPrevious}
-        goToCurrent={goToCurrent}
-        goToNext={goToNext}
-      />
-
-      <CalendarTimeline
-        viewMode={viewMode}
-        selectedDate={selectedDate}
-        weekDays={weekDays}
-        currentTime={currentTime}
-        hours={hours}
-        slotHeight={slotHeight}
-        dayNames={dayNames}
-        gridRef={gridRef}
-        formatTime={formatTime}
-        getEventsForDay={getEventsForDay}
-        getEventStyle={getEventStyle}
-        getCurrentTimePosition={getCurrentTimePosition}
-        handleTimeSlotClick={handleTimeSlotClick}
-        handleEditEvent={handleEditEvent}
-      />
-
-      <EventModal
-        showEventModal={showEventModal}
-        setShowEventModal={setShowEventModal}
-        newEvent={newEvent}
-        setNewEvent={setNewEvent}
-        editingEventId={editingEventId}
-        handleSaveEvent={handleSaveEvent}
-        handleDeleteEvent={handleDeleteEvent}
-        validateTime={validateTime}
-        adjustEventTimes={adjustEventTimes}
-      />
+      <CalendarHeader />
+      <CalendarTimeline />
+      <EventModal />
     </div>
+  );
+}
+
+export function CalendarBoard(): React.ReactElement {
+  return (
+    <CalendarProvider>
+      <CalendarBoardInner />
+    </CalendarProvider>
   );
 }
 

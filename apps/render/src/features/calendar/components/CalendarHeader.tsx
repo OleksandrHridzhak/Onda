@@ -7,22 +7,12 @@ import {
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
+import { useCalendarContext } from "../context/CalendarContext";
 
-interface CalendarHeaderProps {
-  viewMode: string;
-  setViewMode: (mode: string) => void;
-  goToPrevious: () => void;
-  goToCurrent: () => void;
-  goToNext: () => void;
-}
+export function CalendarHeader(): React.ReactElement {
+  const { viewMode, setViewMode, goToPrevious, goToCurrent, goToNext } =
+    useCalendarContext();
 
-export default function CalendarHeader({
-  viewMode,
-  setViewMode,
-  goToPrevious,
-  goToCurrent,
-  goToNext,
-}: CalendarHeaderProps): React.ReactElement {
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const viewMenuRef = useRef<HTMLDivElement | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -87,12 +77,10 @@ export default function CalendarHeader({
 
   return (
     <PageHeader title="Calendar" icon={<CalendarIcon size={22} />}>
-      <div
-        className={`flex items-center gap-1 p-0.5 bg-surfaceMuted border border-transparent dark:border-border rounded-xl`}
-      >
+      <div className="flex items-center gap-1 p-0.5 bg-surfaceMuted border border-transparent dark:border-border rounded-xl">
         <button
           onClick={goToPrevious}
-          className={`p-1.5 sm:p-2 text-textMuted hover:text-text hover:bg-background rounded-lg transition-colors`}
+          className="p-1.5 sm:p-2 text-textMuted hover:text-text hover:bg-background rounded-lg transition-colors cursor-pointer"
           aria-label={viewMode === "day" ? "Previous day" : "Previous week"}
         >
           <ChevronLeft size={18} />
@@ -101,7 +89,7 @@ export default function CalendarHeader({
         {/* Today: text on md+, short date on xs/sm */}
         <button
           onClick={goToCurrent}
-          className={`px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm text-text bg-background shadow-sm hover:bg-surface rounded-lg transition-colors flex items-center gap-2`}
+          className="px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm text-text bg-background shadow-sm hover:bg-surface rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
           aria-label="Today"
         >
           <span className="hidden md:inline">Today</span>
@@ -112,7 +100,7 @@ export default function CalendarHeader({
 
         <button
           onClick={goToNext}
-          className={`p-1.5 sm:p-2 text-textMuted hover:text-text hover:bg-background rounded-lg transition-colors`}
+          className="p-1.5 sm:p-2 text-textMuted hover:text-text hover:bg-background rounded-lg transition-colors cursor-pointer"
           aria-label={viewMode === "day" ? "Next day" : "Next week"}
         >
           <ChevronRight size={18} />
@@ -122,14 +110,22 @@ export default function CalendarHeader({
       <div className="hidden md:flex items-center gap-1 bg-surfaceMuted border border-transparent dark:border-border p-1 rounded-xl">
         <button
           onClick={() => setViewMode("week")}
-          className={`px-3 py-1 rounded-lg text-sm transition-colors ${viewMode === "week" ? "bg-primaryColor text-white shadow-sm" : "text-textMuted hover:text-text hover:bg-[rgba(0,0,0,0.04)]"}`}
+          className={`px-3 py-1 rounded-lg text-sm transition-colors cursor-pointer ${
+            viewMode === "week"
+              ? "bg-primaryColor text-white shadow-sm"
+              : "text-textMuted hover:text-text hover:bg-[rgba(0,0,0,0.04)]"
+          }`}
           aria-pressed={viewMode === "week"}
         >
           Week
         </button>
         <button
           onClick={() => setViewMode("day")}
-          className={`px-3 py-1 rounded-lg text-sm transition-colors ${viewMode === "day" ? "bg-primaryColor text-white shadow-sm" : "text-textMuted hover:text-text hover:bg-[rgba(0,0,0,0.04)]"}`}
+          className={`px-3 py-1 rounded-lg text-sm transition-colors cursor-pointer ${
+            viewMode === "day"
+              ? "bg-primaryColor text-white shadow-sm"
+              : "text-textMuted hover:text-text hover:bg-[rgba(0,0,0,0.04)]"
+          }`}
           aria-pressed={viewMode === "day"}
         >
           Day
@@ -140,7 +136,7 @@ export default function CalendarHeader({
         <button
           ref={menuButtonRef}
           onClick={() => setViewMenuOpen((v) => !v)}
-          className={`flex items-center gap-1 p-1.5 sm:p-2 text-xs rounded-lg text-text bg-surfaceMuted border border-transparent dark:border-border hover:bg-surface focus:outline-none items-center justify-center`}
+          className="flex items-center gap-1 p-1.5 sm:p-2 text-xs rounded-lg text-text bg-surfaceMuted border border-transparent dark:border-border hover:bg-surface focus:outline-none items-center justify-center cursor-pointer"
           aria-haspopup="true"
           aria-expanded={viewMenuOpen}
         >
@@ -168,7 +164,11 @@ export default function CalendarHeader({
                   setViewMode("week");
                   setViewMenuOpen(false);
                 }}
-                className={`w-full text-left px-3 py-2 text-sm ${viewMode === "week" ? "bg-primaryColor text-white rounded-t-lg" : "text-textMuted hover:bg-[rgba(0,0,0,0.03)]"}`}
+                className={`w-full text-left px-3 py-2 text-sm cursor-pointer ${
+                  viewMode === "week"
+                    ? "bg-primaryColor text-white rounded-t-lg"
+                    : "text-textMuted hover:bg-[rgba(0,0,0,0.03)]"
+                }`}
               >
                 Week
               </button>
@@ -177,7 +177,11 @@ export default function CalendarHeader({
                   setViewMode("day");
                   setViewMenuOpen(false);
                 }}
-                className={`w-full text-left px-3 py-2 text-sm ${viewMode === "day" ? "bg-primaryColor text-white rounded-b-lg" : "text-textMuted hover:bg-[rgba(0,0,0,0.03)]"}`}
+                className={`w-full text-left px-3 py-2 text-sm cursor-pointer ${
+                  viewMode === "day"
+                    ? "bg-primaryColor text-white rounded-b-lg"
+                    : "text-textMuted hover:bg-[rgba(0,0,0,0.03)]"
+                }`}
               >
                 Day
               </button>
@@ -188,3 +192,5 @@ export default function CalendarHeader({
     </PageHeader>
   );
 }
+
+export default CalendarHeader;

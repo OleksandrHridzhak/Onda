@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { Settings, Download, X, Palette } from "lucide-react";
 import { FullCloseSection } from "./FullCloseSection";
 import { DataSection } from "./DataSection";
-import { selectThemeMode } from "features/settings/stores/themeSelectors";
 import { ThemeSection } from "./ThemeSection";
 import { PageHeader } from "shared/ui/PageHeader";
 
@@ -15,9 +13,6 @@ interface Section {
 }
 
 export function SettingsPanel(): React.ReactElement {
-  const themeMode = useSelector(selectThemeMode);
-  const darkMode = themeMode === "dark";
-
   const [activeSection, setActiveSection] = useState(() => {
     return localStorage.getItem("activeSection") || "data";
   });
