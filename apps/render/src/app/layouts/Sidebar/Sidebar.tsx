@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectThemeMode } from "features/settings/stores/themeSelectors";
 import { toggleThemeMode } from "features/settings/stores/themeSlice";
-import { CreateColumn } from "features/table/components/columnSettings/CreateColumn";
+import { CreateColumn } from "features/table/components/columnMenu/CreateColumn";
 import { sideBarItems } from "./constants";
 import { createColumn } from "features/table/api/createColumn";
 import type { ColumnType } from "features/table/types/columnTypes";

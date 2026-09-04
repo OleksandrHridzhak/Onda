@@ -4,7 +4,7 @@ import { api } from "shared/api/client";
 
 export async function createColumn(
   type: ColumnType,
-  createdAt: Date = new Date(),
+  createdAt?: Date,
 ): Promise<DbResult<Column>> {
   const definition = Object.values(COLUMN_DEFINITIONS).find(
     ({ template }) => template.type === type,
@@ -18,15 +18,13 @@ export async function createColumn(
   }
 
   const template = definition.template;
-  const id = crypto.randomUUID();
   const newColumn = {
     ...template,
-    id,
     lifecycle: {
-      createdAt: createdAt.toISOString(),
+      createdAt: createdAt ? createdAt.toISOString() : null,
       archivedAt: null,
     },
-  } as Column;
+  };
 
   return api.columns.create(newColumn);
 }

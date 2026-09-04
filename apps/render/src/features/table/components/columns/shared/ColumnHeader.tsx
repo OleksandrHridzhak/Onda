@@ -1,16 +1,14 @@
 import { useState } from "react";
 import type { Column } from "../../../types/columnTypes";
-import { ColumnMenu } from "../../columnSettings/ColumnMenu";
+import { ColumnMenu } from "../../columnMenu/ColumnMenu";
 import { getIconComponent } from "shared/lib/icons";
 
 interface ColumnHeaderProps {
   column: Column;
-  archivedAt: Date;
 }
 
 export function ColumnHeader({
   column,
-  archivedAt,
 }: ColumnHeaderProps): React.ReactElement {
   const [showMenu, setShowMenu] = useState(false);
   const isEmptyHeader =
@@ -50,11 +48,7 @@ export function ColumnHeader({
         </div>
       </div>
       {showMenu && (
-        <ColumnMenu
-          columnId={column.id}
-          archivedAt={archivedAt}
-          onClose={() => setShowMenu(false)}
-        />
+        <ColumnMenu columnId={column.id} onClose={() => setShowMenu(false)} />
       )}
     </>
   );

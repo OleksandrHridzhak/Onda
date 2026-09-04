@@ -1,4 +1,4 @@
-import type { IPlannerApi, DbChangeEvent } from "@onda/shared";
+import type { IPlannerApi, DbChangeEvent, Column } from "@onda/shared";
 
 // Fallback in-memory driver for browser dev/preview environment if Electron is not present
 function createMemoryFallbackApi(): IPlannerApi {
@@ -14,32 +14,22 @@ function createMemoryFallbackApi(): IPlannerApi {
         success: false,
         error: `Column ${id} not found`,
       }),
-      getByIds: async (ids) => ({
+      create: async (col) => ({
         success: true,
-        data: ids.map(() => undefined),
+        data: { id: col.id || "temp-col-id", ...col } as Column,
       }),
-      create: async (col) => ({ success: true, data: col }),
       updateFields: async () => ({
         success: true,
         data: { updatedCount: 1 },
-      }),
-      updateUniqueProps: async (_id) => ({
-        success: true,
-        data: { columnId: _id },
       }),
       archive: async (_id) => ({
         success: true,
         data: { columnId: _id },
       }),
       delete: async (_id) => ({ success: true, data: { columnId: _id } }),
-      reorder: async (order) => ({
-        success: true,
-        data: { columnsOrder: order },
-      }),
       move: async () => ({ success: true, data: { columnsOrder: [] } }),
     },
     entries: {
-      getDayEntry: async () => ({ success: true, data: null }),
       getEntriesForWeek: async () => ({ success: true, data: [] }),
       getEntriesForDateRange: async () => ({ success: true, data: [] }),
       upsertDayEntry: async (input) => ({
@@ -58,19 +48,9 @@ function createMemoryFallbackApi(): IPlannerApi {
           updatedAt: new Date().toISOString(),
         },
       }),
-      deleteEntriesForColumn: async () => ({
-        success: true,
-        data: { deletedCount: 0 },
-      }),
     },
     calendar: {
       getAll: async () => ({ success: true, data: [] }),
-      getByDate: async () => ({ success: true, data: [] }),
-      getById: async (id) => ({
-        success: false,
-        error: `Event ${id} not found`,
-      }),
-      getInRange: async () => ({ success: true, data: [] }),
       save: async (event) => ({
         success: true,
         data: { id: "temp-id", ...event },
@@ -83,11 +63,6 @@ function createMemoryFallbackApi(): IPlannerApi {
         data: { id: "global", layout: { columnsOrder: [] } },
       }),
       update: async () => ({ success: true, data: { updatedCount: 1 } }),
-      getColumnsOrder: async () => ({ success: true, data: [] }),
-      updateColumnsOrder: async (columnIds) => ({
-        success: true,
-        data: { columnsOrder: columnIds },
-      }),
     },
     system: {
       clearAllData: async () => ({ success: true, data: true }),

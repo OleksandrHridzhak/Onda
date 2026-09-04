@@ -3,16 +3,11 @@ import type { Column } from "@onda/shared";
 import {
   getAllColumns,
   getColumnById,
-  getColumnsByIds,
 } from "./services/get-columns";
 import { createColumn } from "./services/create-column";
-import {
-  updateColumnFields,
-  updateColumnUniqueProps,
-  archiveColumn,
-} from "./services/update-column";
+import { updateColumnFields, archiveColumn } from "./services/update-column";
 import { deleteColumn } from "./services/delete-column";
-import { reorderColumns, moveColumn } from "./services/reorder-columns";
+import { moveColumn } from "./services/reorder-columns";
 import { notifyDbChanged } from "../../core/lib/events";
 
 export const columnsController = {
@@ -22,10 +17,6 @@ export const columnsController = {
 
   async getColumnById(_e: IpcMainInvokeEvent, id: string) {
     return getColumnById(id);
-  },
-
-  async getColumnsByIds(_e: IpcMainInvokeEvent, ids: string[]) {
-    return getColumnsByIds(ids);
   },
 
   async createColumn(_e: IpcMainInvokeEvent, col: Column) {
@@ -47,18 +38,8 @@ export const columnsController = {
     return res;
   },
 
-  async updateColumnUniqueProps(
-    _e: IpcMainInvokeEvent,
-    id: string,
-    props: unknown,
-  ) {
-    const res = await updateColumnUniqueProps(id, props);
-    if (res.success) notifyDbChanged({ table: "columns", action: "update" });
-    return res;
-  },
-
-  async archiveColumn(_e: IpcMainInvokeEvent, id: string, archivedAt: string) {
-    const res = await archiveColumn(id, archivedAt);
+  async archiveColumn(_e: IpcMainInvokeEvent, id: string) {
+    const res = await archiveColumn(id);
     if (res.success) {
       notifyDbChanged({ table: "columns", action: "update" });
       notifyDbChanged({ table: "settings", action: "update" });
@@ -71,15 +52,6 @@ export const columnsController = {
     if (res.success) {
       notifyDbChanged({ table: "columns", action: "delete" });
       notifyDbChanged({ table: "settings", action: "update" });
-    }
-    return res;
-  },
-
-  async reorderColumns(_e: IpcMainInvokeEvent, order: string[]) {
-    const res = await reorderColumns(order);
-    if (res.success) {
-      notifyDbChanged({ table: "columns", action: "reorder" });
-      notifyDbChanged({ table: "settings", action: "reorder" });
     }
     return res;
   },

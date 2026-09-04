@@ -1,6 +1,6 @@
 import React from "react";
-import { DAYS } from "../../../../utils/tableLayout";
-import { ColumnWrapper } from "../../shared/ColumnWrapper";
+import { DAYS } from "../../../utils/tableLayout";
+import { ColumnWrapper } from "../shared/ColumnWrapper";
 
 /**
  * A column component that displays the empty space of the table.

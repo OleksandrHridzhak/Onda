@@ -1,34 +1,6 @@
 import { prisma } from "../../../core/lib/database";
 import type { DbResult } from "@onda/shared";
 
-export async function reorderColumns(
-  order: string[],
-): Promise<DbResult<{ columnsOrder: string[] }>> {
-  try {
-    const settings = await prisma.setting.findUnique({
-      where: { id: "global" },
-    });
-    let layout = { columnsOrder: order };
-    if (settings) {
-      try {
-        layout = { ...JSON.parse(settings.layout), columnsOrder: order };
-      } catch {
-        layout = { columnsOrder: order };
-      }
-      await prisma.setting.update({
-        where: { id: "global" },
-        data: { layout: JSON.stringify(layout) },
-      });
-    } else {
-      await prisma.setting.create({
-        data: { id: "global", layout: JSON.stringify(layout) },
-      });
-    }
-    return { success: true, data: { columnsOrder: order } };
-  } catch (error) {
-    return { success: false, error: (error as Error).message };
-  }
-}
 
 export async function moveColumn(
   columnId: string,

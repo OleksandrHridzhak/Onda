@@ -27,15 +27,3 @@ export async function updateSettings(
   }
 }
 
-export async function updateColumnsOrder(
-  columnIds: string[],
-): Promise<DbResult<{ columnsOrder: string[] }>> {
-  const res = await updateSettings({ layout: { columnsOrder: columnIds } });
-  if (res.success) {
-    return { success: true, data: { columnsOrder: columnIds } };
-  }
-  return {
-    success: false,
-    error: res.error || "Failed to update columns order",
-  };
-}

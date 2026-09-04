@@ -14,13 +14,3 @@ export async function updateSettings(
 ): Promise<DbResult<{ updatedCount: number }>> {
   return api.settings.update(updates);
 }
-
-export async function updateColumnsOrder(
-  columnIds: string[],
-): Promise<DbResult<{ columnsOrder: string[] }>> {
-  return api.settings.updateColumnsOrder(columnIds);
-}
-
-export async function getColumnsOrder(): Promise<DbResult<string[]>> {
-  return api.settings.getColumnsOrder();
-}

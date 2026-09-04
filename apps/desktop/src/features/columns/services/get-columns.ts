@@ -52,17 +52,3 @@ export async function getColumnById(id: string): Promise<DbResult<Column>> {
     return { success: false, error: (error as Error).message };
   }
 }
-
-export async function getColumnsByIds(
-  ids: string[],
-): Promise<DbResult<(Column | undefined)[]>> {
-  try {
-    const cols = await prisma.column.findMany({
-      where: { id: { in: ids } },
-    });
-    const colMap = new Map(cols.map((c) => [c.id, serializeColumn(c)]));
-    return { success: true, data: ids.map((id) => colMap.get(id)) };
-  } catch (error) {
-    return { success: false, error: (error as Error).message };
-  }
-}

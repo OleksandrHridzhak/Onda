@@ -1,10 +1,11 @@
 import React from "react";
 import "./WeeklyTable.css";
-import { DynamicColumns } from "./DynamicColumns";
-import { TableLoadingOverlay } from "./TableLoadingOverlay";
-import { TableEmptyState } from "./TableEmptyState";
-import { DaysColumn } from "./columns/service/DaysColumn/DaysColumn";
-import { FillerColumn } from "./columns/service/FillerColumn/FillerColumn";
+import { DynamicColumns } from "./columns/DynamicColumns";
+import { LoadingScreen } from "shared/ui/LoadingScreen";
+import { EmptyState } from "shared/ui/EmptyState";
+import { Columns3 } from "lucide-react";
+import { DaysColumn } from "./columns/service/DaysColumn";
+import { FillerColumn } from "./columns/service/FillerColumn";
 import { useWeeklyTable } from "../hooks/useWeeklyTable";
 
 export const WeeklyTable = () => {
@@ -39,10 +40,20 @@ export const WeeklyTable = () => {
           </table>
         </div>
         {/* Loading overlay */}
-        <TableLoadingOverlay isVisible={isLoading} />
-        <TableEmptyState
-          isVisible={!isLoading && visibleColumns.length === 0}
-        />
+        {isLoading && (
+          <div className="absolute inset-0 z-50">
+            <LoadingScreen message="Syncing data..." />
+          </div>
+        )}
+        {!isLoading && visibleColumns.length === 0 && (
+          <div className="absolute inset-x-0 bottom-0 top-[45px] z-40 rounded-b-lg bg-background/95">
+            <EmptyState
+              icon={<Columns3 size={28} strokeWidth={1.5} />}
+              title="No columns for this week"
+              description="Use the + button in the sidebar to add your first column."
+            />
+          </div>
+        )}
       </div>
     </div>
   );

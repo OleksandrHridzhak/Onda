@@ -7,7 +7,7 @@ import {
   handleEditTodo,
   handleSaveEdit,
 } from "./logic";
-import type { Todo, Tag } from "../../../../types/columnTypes";
+import type { Todo, Tag } from "../../../types/columnTypes";
 import { TodoEditModal } from "./TodoEditModal";
 import { Badge } from "shared/ui/Badge";
 

@@ -1,14 +1,19 @@
 import { prisma } from "../../../core/lib/database";
 import type { Column, DbResult } from "@onda/shared";
+import crypto from "node:crypto";
 import { serializeColumn } from "./get-columns";
 
-export async function createColumn(column: Column): Promise<DbResult<Column>> {
+export async function createColumn(
+  column: Omit<Column, "id"> & { id?: string },
+): Promise<DbResult<Column>> {
   try {
+    const id = column.id || crypto.randomUUID();
     const created = await prisma.column.create({
       data: {
-        id: column.id,
+        id,
         name: column.name,
-        isNameVisible: column.isNameVisible,
+        isNameVisible:
+          column.isNameVisible !== undefined ? column.isNameVisible : true,
         description: column.description || "",
         emojiIconName: column.emojiIconName || "Star",
         width: column.width || 200,
@@ -17,9 +22,7 @@ export async function createColumn(column: Column): Promise<DbResult<Column>> {
         createdAt: column.lifecycle?.createdAt
           ? new Date(column.lifecycle.createdAt)
           : new Date(),
-        archivedAt: column.lifecycle?.archivedAt
-          ? new Date(column.lifecycle.archivedAt)
-          : null,
+        archivedAt: null,
       },
     });
 
@@ -34,8 +37,8 @@ export async function createColumn(column: Column): Promise<DbResult<Column>> {
       } catch {
         layout = { columnsOrder: [] };
       }
-      if (!layout.columnsOrder.includes(column.id)) {
-        layout.columnsOrder.push(column.id);
+      if (!layout.columnsOrder.includes(id)) {
+        layout.columnsOrder.push(id);
         await prisma.setting.update({
           where: { id: "global" },
           data: { layout: JSON.stringify(layout) },

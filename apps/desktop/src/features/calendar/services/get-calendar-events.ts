@@ -20,36 +20,10 @@ function serializeCalendarEvent(ev: any): CalendarEntry {
 
 export { serializeCalendarEvent };
 
-export interface CalendarEventsFilter {
-  startDate?: string;
-  endDate?: string;
-}
-
-export async function getCalendarEvents(
-  filter?: CalendarEventsFilter,
-): Promise<DbResult<CalendarEntry[]>> {
+export async function getCalendarEvents(): Promise<DbResult<CalendarEntry[]>> {
   try {
-    const events = await prisma.calendarEvent.findMany({
-      where: {
-        date: {
-          gte: filter?.startDate,
-          lte: filter?.endDate,
-        },
-      },
-    });
+    const events = await prisma.calendarEvent.findMany();
     return { success: true, data: events.map(serializeCalendarEvent) };
-  } catch (error) {
-    return { success: false, error: (error as Error).message };
-  }
-}
-
-export async function getCalendarEventById(
-  id: string,
-): Promise<DbResult<CalendarEntry>> {
-  try {
-    const ev = await prisma.calendarEvent.findUnique({ where: { id } });
-    if (!ev) return { success: false, error: `Calendar event ${id} not found` };
-    return { success: true, data: serializeCalendarEvent(ev) };
   } catch (error) {
     return { success: false, error: (error as Error).message };
   }

@@ -12,14 +12,12 @@ import {
 interface UseColumnMenuHandlersProps {
   columnId: string;
   column: Column | null | undefined;
-  archivedAt: Date;
   onClose: () => void;
 }
 
 export const useColumnMenuHandlers = ({
   columnId,
   column,
-  archivedAt,
   onClose,
 }: UseColumnMenuHandlersProps) => {
   // All state management in one place
@@ -163,7 +161,7 @@ export const useColumnMenuHandlers = ({
   };
 
   const handleArchive = async () => {
-    await archiveColumn(columnId, archivedAt);
+    await archiveColumn(columnId);
     onClose();
   };
 

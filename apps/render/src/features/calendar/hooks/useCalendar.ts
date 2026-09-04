@@ -7,6 +7,7 @@ import {
 } from "features/calendar/api/calendar";
 import type { CalendarEntry } from "@onda/shared";
 import { DEFAULT_COLOR_NAME, type ColorName } from "shared/lib/color";
+import { formatDateKey } from "shared/lib/date";
 
 export interface NewEvent {
   title: string;
@@ -46,10 +47,10 @@ export function useCalendar() {
     payload: NewEvent & { id?: string | number },
   ): Promise<CalendarEntry | null> => {
     try {
-      const eventData: CalendarEntry = {
-        id: payload.id?.toString() || Date.now().toString(),
+      const eventData = {
+        ...(payload.id ? { id: payload.id.toString() } : {}),
         title: payload.title,
-        date: payload.date || new Date().toDateString(),
+        date: payload.date || formatDateKey(new Date()),
         startTime: payload.startTime,
         endTime: payload.endTime,
         color: payload.color,
@@ -61,12 +62,12 @@ export function useCalendar() {
       };
 
       const response = await saveCalendarEvent(eventData);
-      if (response.success) {
+      if (response.success && response.data) {
         // No need to manually update state - liveQuery will automatically update
         setShowEventModal(false);
         setNewEvent({ ...DEFAULT_NEW_EVENT });
         setEditingEventId(null);
-        return eventData;
+        return response.data;
       } else {
         setError(response.error || "Failed to save event");
         return null;

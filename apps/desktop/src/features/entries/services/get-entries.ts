@@ -37,25 +37,6 @@ function serializeEntry(entry: any): ColumnEntry {
 
 export { serializeEntry };
 
-export async function getDayEntry(
-  columnId: string,
-  dayDate: string,
-): Promise<DbResult<ColumnEntry | null>> {
-  try {
-    const entry = await prisma.columnEntry.findUnique({
-      where: {
-        columnId_dateKey: {
-          columnId,
-          dateKey: dayDate,
-        },
-      },
-    });
-    return { success: true, data: entry ? serializeEntry(entry) : null };
-  } catch (error) {
-    return { success: false, error: (error as Error).message };
-  }
-}
-
 export async function getEntriesForWeek(
   weekStart: string,
 ): Promise<DbResult<ColumnEntry[]>> {

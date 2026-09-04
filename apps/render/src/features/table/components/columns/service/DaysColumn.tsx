@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatDateKey } from "shared/lib/date";
 import { useTableWeek } from "features/table/hooks/useTableWeek";
 import { Button } from "shared/ui/Button";
-import { ColumnWrapper } from "../../shared/ColumnWrapper";
+import { ColumnWrapper } from "../shared/ColumnWrapper";
 
 const DAYS_COLUMN_WIDTH = 135;
 

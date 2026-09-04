@@ -30,10 +30,3 @@ export async function getSettings(): Promise<DbResult<Setting>> {
   }
 }
 
-export async function getColumnsOrder(): Promise<DbResult<string[]>> {
-  const res = await getSettings();
-  if (res.success && res.data) {
-    return { success: true, data: res.data.layout.columnsOrder || [] };
-  }
-  return { success: false, error: res.error || "Failed to get columns order" };
-}

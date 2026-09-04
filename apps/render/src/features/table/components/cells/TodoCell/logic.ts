@@ -1,4 +1,4 @@
-import type { Todo } from "../../../../types/columnTypes";
+import type { Todo } from "../../../types/columnTypes";
 
 /**
  * Sort todos by completion status (incomplete first, completed last)

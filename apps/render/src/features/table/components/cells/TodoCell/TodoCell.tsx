@@ -5,7 +5,7 @@ import { filterTodos } from "./logic";
 import { TodoInput } from "./TodoInput";
 import { TodoCategoryFilter } from "./TodoCategoryFilter";
 import { TodoList } from "./TodoList";
-import type { Todo, Tag } from "../../../../types/columnTypes";
+import type { Todo, Tag } from "../../../types/columnTypes";
 
 interface TodoCellProps {
   value: Todo[];

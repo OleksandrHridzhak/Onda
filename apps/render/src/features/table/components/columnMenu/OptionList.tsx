@@ -3,11 +3,11 @@ import { Plus } from "lucide-react";
 import { Field } from "shared/ui/Field";
 import { Input } from "shared/ui/Input";
 import { Button } from "shared/ui/Button";
-import { OptionItem } from "./OptionItem";
+import { Badge } from "shared/ui/Badge";
 import { TagEditModal } from "./TagEditModal";
 import type { Tag } from "../../types/columnTypes";
 import { COLUMN_TYPES } from "../../types/columnDefinitions";
-import type { ColorName } from "shared/lib/color";
+import { COLOR_STYLES, type ColorName } from "shared/lib/color";
 
 interface OptionsListProps {
   columnType: string;
@@ -93,7 +93,16 @@ export const OptionsList = ({
           </div>
           <div className="flex flex-wrap gap-2.5">
             {tags.map((tag) => (
-              <OptionItem key={tag.id} tag={tag} onClick={setActiveTag} />
+              <Badge
+                key={tag.id}
+                as="button"
+                size="md"
+                onClick={() => setActiveTag(tag)}
+                colorClasses={COLOR_STYLES[tag.color]}
+                aria-label={`Edit ${tag.name}`}
+              >
+                {tag.name}
+              </Badge>
             ))}
           </div>
         </div>

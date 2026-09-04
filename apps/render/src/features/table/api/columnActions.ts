@@ -3,9 +3,8 @@ import type { DbResult } from "@onda/shared";
 
 export async function archiveColumn(
   columnId: string,
-  archivedAt: Date,
 ): Promise<DbResult<{ columnId: string }>> {
-  return api.columns.archive(columnId, archivedAt.toISOString());
+  return api.columns.archive(columnId);
 }
 
 export async function permanentlyDeleteColumn(

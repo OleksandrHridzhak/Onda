@@ -4,11 +4,11 @@ import { ColumnHeader } from "./shared/ColumnHeader";
 import type { Column } from "../../types/columnTypes";
 import { COLUMN_TYPES } from "../../types/columnDefinitions";
 import type { ColumnEntryValueMap } from "../../types/entryTypes";
-import { CheckboxEntryEditor } from "./CheckboxColumn/CheckBoxCell";
-import { NumberEntryEditor } from "./NumberboxColumn/NumberboxCell";
-import { TextEntryEditor } from "./TextboxColumn/TextboxCell";
-import { TagsEntryEditor } from "./TagsColumn/TagsEntryEditor";
-import { MultiCheckboxEntryEditor } from "./MultiCheckboxColumn/MultiCheckboxEntryEditor";
+import { CheckboxEntryEditor } from "../cells/CheckboxCell/CheckBoxCell";
+import { NumberEntryEditor } from "../cells/NumberboxCell/NumberboxCell";
+import { TextEntryEditor } from "../cells/TextboxCell/TextboxCell";
+import { TagsEntryEditor } from "../cells/TagsCell/TagsEntryEditor";
+import { MultiCheckboxEntryEditor } from "../cells/MultiCheckboxCell/MultiCheckboxEntryEditor";
 
 const DAY_EDITORS: Record<string, React.ComponentType<any>> = {
   [COLUMN_TYPES.CHECKBOX]: CheckboxEntryEditor,
@@ -29,7 +29,6 @@ interface DayBasedColumnProps {
   column: Column;
   weekDates: Date[];
   weekEntriesByDate: ColumnEntryValueMap;
-  archivedAt: Date;
 }
 
 /**
@@ -40,7 +39,6 @@ export const DayBasedColumn = ({
   column,
   weekDates,
   weekEntriesByDate,
-  archivedAt,
 }: DayBasedColumnProps) => {
   const Editor = DAY_EDITORS[column.type];
   if (!Editor) return null;
@@ -51,7 +49,7 @@ export const DayBasedColumn = ({
     <div
       className={`checkbox-nested-table ${columnClass} font-poppins flex flex-col h-full w-full`}
     >
-      <ColumnHeader column={column} archivedAt={archivedAt} />
+      <ColumnHeader column={column} />
       <div className="table-rows-container bg-surface flex flex-col w-full">
         {weekDates.map((date) => {
           const dateKey = formatDateKey(date);
