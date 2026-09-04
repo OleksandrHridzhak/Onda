@@ -6,76 +6,41 @@ import { Button } from "shared/ui/Button";
 import { Field } from "shared/ui/Field";
 import { Input } from "shared/ui/Input";
 import { Textarea } from "shared/ui/Textarea";
-import type { Icon } from "shared/lib/icons";
+import { icons } from "shared/lib/icons";
+import { useColumnMenuContext } from "./ColumnMenuContext";
 
-interface ColumnBasicSettingsProps {
-  // Name input props
-  name: string;
-  setName: (value: string) => void;
-  selectedIcon: string;
-  setSelectedIcon: (value: string) => void;
-  showTitle: boolean;
-  setShowTitle: (value: boolean) => void;
-  isIconSectionExpanded: boolean;
-  setIsIconSectionExpanded: () => void;
-  icons: Icon[];
+export const ColumnBasicSettings = (): React.ReactElement => {
+  const { form, actions, ui, canMoveLeft, canMoveRight } =
+    useColumnMenuContext();
 
-  // Description props
-  description: string;
-  setDescription: (value: string) => void;
-
-  // Position controls props
-  width: number;
-  handleWidthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  canMoveLeft: boolean;
-  canMoveRight: boolean;
-  handleMoveLeft: () => void;
-  handleMoveRight: () => void;
-}
-
-export const ColumnBasicSettings = ({
-  name,
-  setName,
-  selectedIcon,
-  setSelectedIcon,
-  showTitle,
-  setShowTitle,
-  isIconSectionExpanded,
-  setIsIconSectionExpanded,
-  icons,
-  description,
-  setDescription,
-  width,
-  handleWidthChange,
-  canMoveLeft,
-  canMoveRight,
-  handleMoveLeft,
-  handleMoveRight,
-}: ColumnBasicSettingsProps) => {
   return (
     <>
       {/* Name Input Section */}
       <div className="flex gap-2 w-full">
         <IconSelector
-          selectedIcon={selectedIcon}
-          setSelectedIcon={setSelectedIcon}
-          isIconSectionExpanded={isIconSectionExpanded}
-          setIsIconSectionExpanded={setIsIconSectionExpanded}
+          selectedIcon={form.selectedIcon}
+          setSelectedIcon={actions.setSelectedIcon}
+          isIconSectionExpanded={ui.isIconSectionExpanded}
+          setIsIconSectionExpanded={() =>
+            ui.setIsIconSectionExpanded(!ui.isIconSectionExpanded)
+          }
           icons={icons}
         />
         <div className="w-full flex relative">
           <Input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={form.name}
+            onChange={(e) => actions.setName(e.target.value)}
             placeholder="Column name"
             aria-label="Column name"
           />
           <div className="flex items-center h-12 w-12 justify-center absolute right-0 top-0">
             <VisibilityToggle
-              isVisible={showTitle}
-              onToggle={setShowTitle}
-              ariaLabel={showTitle ? "Hide column title" : "Show column title"}
+              isVisible={form.showTitle}
+              onToggle={actions.setShowTitle}
+              ariaLabel={
+                form.showTitle ? "Hide column title" : "Show column title"
+              }
             />
           </div>
         </div>
@@ -83,9 +48,9 @@ export const ColumnBasicSettings = ({
 
       {/* Description Section */}
       <Textarea
-        value={description}
+        value={form.description}
         placeholder="Description"
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) => actions.setDescription(e.target.value)}
         rows={3}
         aria-label="Column description"
       />
@@ -96,8 +61,8 @@ export const ColumnBasicSettings = ({
           <div className="w-full">
             <Input
               type="number"
-              value={width}
-              onChange={handleWidthChange}
+              value={form.width}
+              onChange={actions.handleWidthChange}
               min="0"
               max="1000"
               placeholder="Enter width in pixels"
@@ -108,14 +73,14 @@ export const ColumnBasicSettings = ({
           </div>
           <Button
             variant="secondary"
-            onClick={handleMoveLeft}
+            onClick={actions.handleMoveLeft}
             disabled={!canMoveLeft}
           >
             <ArrowLeft size={18} /> LEFT
           </Button>
           <Button
             variant="secondary"
-            onClick={handleMoveRight}
+            onClick={actions.handleMoveRight}
             disabled={!canMoveRight}
           >
             RIGHT <ArrowRight size={18} />

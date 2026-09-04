@@ -7,29 +7,21 @@ import { Badge } from "shared/ui/Badge";
 import { TagEditModal } from "./TagEditModal";
 import type { Tag } from "../../types/columnTypes";
 import { COLUMN_TYPES } from "../../types/columnDefinitions";
-import { COLOR_STYLES, type ColorName } from "shared/lib/color";
+import { COLOR_STYLES } from "shared/lib/color";
 
-interface OptionsListProps {
-  columnType: string;
-  tags: Tag[];
-  newOption: string;
-  setNewOption: (value: string) => void;
-  handleAddOption: () => void;
-  handleRemoveOption: (tagId: string) => void;
-  handleEditOption: (tagId: string, newName: string) => void;
-  handleColorChange: (tagId: string, color: ColorName) => void;
-}
+import { useColumnMenuContext } from "./ColumnMenuContext";
 
-export const OptionsList = ({
-  columnType,
-  tags,
-  newOption,
-  setNewOption,
-  handleAddOption,
-  handleRemoveOption,
-  handleEditOption,
-  handleColorChange,
-}: OptionsListProps) => {
+export const OptionsList = (): React.ReactElement => {
+  const { column, form, actions } = useColumnMenuContext();
+  const columnType = column?.type ?? "";
+  const { tags, newOption } = form;
+  const {
+    setNewOption,
+    handleAddOption,
+    handleRemoveOption,
+    handleEditOption,
+    handleColorChange,
+  } = actions;
   const [activeTag, setActiveTag] = React.useState<Tag | null>(null);
 
   // Map column type to display label

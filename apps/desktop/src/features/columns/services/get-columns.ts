@@ -1,16 +1,12 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonParse } from "../../../core/utils";
 import type { Column, DbResult } from "@onda/shared";
 
 function serializeColumn(col: any): Column {
-  let uniqueProps = {};
-  try {
-    uniqueProps =
-      typeof col.uniqueProps === "string"
-        ? JSON.parse(col.uniqueProps)
-        : col.uniqueProps || {};
-  } catch {
-    uniqueProps = {};
-  }
+  const uniqueProps = safeJsonParse<Record<string, unknown>>(
+    col.uniqueProps,
+    {},
+  );
 
   return {
     id: col.id,

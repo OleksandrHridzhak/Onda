@@ -1,24 +1,10 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonParse } from "../../../core/utils";
 import type { ColumnEntry, DbResult } from "@onda/shared";
 
 function serializeEntry(entry: any): ColumnEntry {
-  let val: any = null;
-  try {
-    val =
-      typeof entry.value === "string" ? JSON.parse(entry.value) : entry.value;
-  } catch {
-    val = entry.value;
-  }
-
-  let meta: any = undefined;
-  if (entry.meta) {
-    try {
-      meta =
-        typeof entry.meta === "string" ? JSON.parse(entry.meta) : entry.meta;
-    } catch {
-      meta = undefined;
-    }
-  }
+  const val = safeJsonParse(entry.value, entry.value);
+  const meta = entry.meta ? safeJsonParse(entry.meta, undefined) : undefined;
 
   return {
     id: entry.id,

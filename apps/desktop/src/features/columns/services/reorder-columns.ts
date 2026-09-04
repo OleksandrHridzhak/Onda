@@ -1,6 +1,6 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonParse, safeJsonStringify } from "../../../core/utils";
 import type { DbResult } from "@onda/shared";
-
 
 export async function moveColumn(
   columnId: string,
@@ -12,12 +12,9 @@ export async function moveColumn(
     });
     if (!settings) return { success: false, error: "Settings not found" };
 
-    let layout = { columnsOrder: [] as string[] };
-    try {
-      layout = JSON.parse(settings.layout);
-    } catch {
-      layout = { columnsOrder: [] };
-    }
+    const layout = safeJsonParse<{ columnsOrder: string[] }>(settings.layout, {
+      columnsOrder: [],
+    });
 
     const currentOrder = layout.columnsOrder;
     const cols = await prisma.column.findMany({
@@ -54,9 +51,20 @@ export async function moveColumn(
       newOrder[currentOrderIndex],
     ];
 
-    await prisma.setting.update({
-      where: { id: "global" },
-      data: { layout: JSON.stringify({ ...layout, columnsOrder: newOrder }) },
+    await prisma.$transaction(async (tx) => {
+      await tx.setting.update({
+        where: { id: "global" },
+        data: {
+          layout: safeJsonStringify({ ...layout, columnsOrder: newOrder }),
+        },
+      });
+
+      for (let i = 0; i < newOrder.length; i++) {
+        await tx.column.updateMany({
+          where: { id: newOrder[i] },
+          data: { order: i },
+        });
+      }
     });
 
     return { success: true, data: { columnsOrder: newOrder } };

@@ -4,7 +4,7 @@ import SettingsSection from "shared/ui/SettingsSection";
 import { Card } from "shared/ui/Card";
 import { Heading } from "shared/ui/Heading";
 import { Text } from "shared/ui/Text";
-import { useThemeStore } from "../stores/useThemeStore";
+import { useThemeStore } from "../../stores/useThemeStore";
 
 const colorSchemes = [
   { value: "standard", label: "Standard" },

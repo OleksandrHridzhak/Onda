@@ -1,4 +1,5 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonStringify } from "../../../core/utils";
 import type { Setting, DbResult } from "@onda/shared";
 import { getSettings } from "./get-settings";
 
@@ -14,10 +15,10 @@ export async function updateSettings(
       where: { id: "global" },
       create: {
         id: "global",
-        layout: JSON.stringify(newLayout),
+        layout: safeJsonStringify(newLayout),
       },
       update: {
-        layout: JSON.stringify(newLayout),
+        layout: safeJsonStringify(newLayout),
       },
     });
 

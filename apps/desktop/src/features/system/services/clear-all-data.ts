@@ -1,4 +1,5 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonStringify } from "../../../core/utils";
 import type { DbResult } from "@onda/shared";
 
 export async function clearAllData(): Promise<DbResult<boolean>> {
@@ -14,7 +15,7 @@ export async function clearAllData(): Promise<DbResult<boolean>> {
     await prisma.setting.create({
       data: {
         id: "global",
-        layout: JSON.stringify({ columnsOrder: [] }),
+        layout: safeJsonStringify({ columnsOrder: [] }),
       },
     });
 

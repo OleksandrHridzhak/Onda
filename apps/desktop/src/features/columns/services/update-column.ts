@@ -1,4 +1,5 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonParse, safeJsonStringify } from "../../../core/utils";
 import type { Column, DbResult } from "@onda/shared";
 
 export async function updateColumnFields(
@@ -26,14 +27,10 @@ export async function updateColumnFields(
         select: { uniqueProps: true },
       });
 
-      let mergedUniqueProps: Record<string, unknown> = {};
-      if (existingColumn?.uniqueProps) {
-        try {
-          mergedUniqueProps = JSON.parse(existingColumn.uniqueProps);
-        } catch {
-          mergedUniqueProps = {};
-        }
-      }
+      let mergedUniqueProps = safeJsonParse<Record<string, unknown>>(
+        existingColumn?.uniqueProps,
+        {},
+      );
 
       if (
         typeof fields.uniqueProps === "object" &&
@@ -47,7 +44,7 @@ export async function updateColumnFields(
         mergedUniqueProps[subKey] = value;
       }
 
-      dataToUpdate.uniqueProps = JSON.stringify(mergedUniqueProps);
+      dataToUpdate.uniqueProps = safeJsonStringify(mergedUniqueProps);
     }
 
     if (fields.lifecycle?.archivedAt !== undefined) {

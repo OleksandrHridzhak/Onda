@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Sun, Moon, Plus } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useThemeStore } from "features/settings/stores/useThemeStore";
-import { CreateColumn } from "features/table/components/columnMenu/CreateColumn";
+import { CreateColumn } from "features/table/components/CreateColumn";
 import { sideBarItems } from "./constants";
 import { createColumn } from "features/table/api/createColumn";
 import type { ColumnType } from "features/table/types/columnTypes";

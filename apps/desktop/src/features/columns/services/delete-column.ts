@@ -1,29 +1,37 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonParse, safeJsonStringify } from "../../../core/utils";
 import type { DbResult } from "@onda/shared";
 
 export async function deleteColumn(
   id: string,
 ): Promise<DbResult<{ columnId: string }>> {
   try {
-    await prisma.columnEntry.deleteMany({ where: { columnId: id } });
-    await prisma.column.delete({ where: { id } });
+    await prisma.$transaction(async (tx) => {
+      await tx.columnEntry.deleteMany({ where: { columnId: id } });
+      await tx.column.delete({ where: { id } });
 
-    const settings = await prisma.setting.findUnique({
-      where: { id: "global" },
-    });
-    if (settings) {
-      let layout = { columnsOrder: [] as string[] };
-      try {
-        layout = JSON.parse(settings.layout);
-      } catch {
-        layout = { columnsOrder: [] };
-      }
-      layout.columnsOrder = layout.columnsOrder.filter((cid) => cid !== id);
-      await prisma.setting.update({
+      const settings = await tx.setting.findUnique({
         where: { id: "global" },
-        data: { layout: JSON.stringify(layout) },
       });
-    }
+      if (settings) {
+        const layout = safeJsonParse<{ columnsOrder: string[] }>(
+          settings.layout,
+          { columnsOrder: [] },
+        );
+        layout.columnsOrder = layout.columnsOrder.filter((cid) => cid !== id);
+        await tx.setting.update({
+          where: { id: "global" },
+          data: { layout: safeJsonStringify(layout) },
+        });
+
+        for (let i = 0; i < layout.columnsOrder.length; i++) {
+          await tx.column.updateMany({
+            where: { id: layout.columnsOrder[i] },
+            data: { order: i },
+          });
+        }
+      }
+    });
 
     return { success: true, data: { columnId: id } };
   } catch (error) {

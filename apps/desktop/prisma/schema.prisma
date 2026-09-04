@@ -42,7 +42,6 @@ model ColumnEntry {
   updatedAt DateTime @updatedAt
 
   @@unique([columnId, dateKey])
-  @@index([columnId, dateKey])
   @@index([weekStart])
 }
 
@@ -56,4 +55,6 @@ model CalendarEvent {
   isRepeating     Boolean? @default(false)
   repeatDays      String?
   repeatFrequency String?
+
+  @@index([date])
 }

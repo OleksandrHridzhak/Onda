@@ -24,3 +24,14 @@ export function safeJsonParse<T>(value: unknown, fallback: T): T {
     return fallback;
   }
 }
+
+export function safeJsonStringify(value: unknown, fallback = "{}"): string {
+  if (value === undefined) {
+    return fallback;
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return fallback;
+  }
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { X, Table } from "lucide-react";
 import { getIconComponent } from "shared/lib/icons";
-import { COLUMN_DEFINITIONS } from "../../types/columnDefinitions";
+import { COLUMN_DEFINITIONS } from "../types/columnDefinitions";
 import { COLOR_STYLES, type ColorName } from "shared/lib/color";
 import { PageHeader } from "shared/ui/PageHeader";
 import { Button } from "shared/ui/Button";

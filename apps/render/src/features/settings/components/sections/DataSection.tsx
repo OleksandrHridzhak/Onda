@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
 import SettingsSection from "shared/ui/SettingsSection";
 import { Button } from "shared/ui/Button";
-import { clearAllData } from "../api/clearAllData";
+import { clearAllData } from "../../api/clearAllData";
 import { ConfirmModal } from "shared/ui/ConfirmModal";
 import { Text } from "shared/ui/Text";
 

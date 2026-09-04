@@ -1,20 +1,12 @@
 import React, { useState } from "react";
 import { Button } from "shared/ui/Button";
 import { ConfirmModal } from "shared/ui/ConfirmModal";
+import { useColumnMenuContext } from "./ColumnMenuContext";
 
-interface ColumnActionsProps {
-  handleArchive: () => void;
-  handlePermanentDelete: () => void;
-  handleSave: () => void;
-  isSaving: boolean;
-}
-
-export const ColumnActions = ({
-  handleArchive,
-  handlePermanentDelete,
-  handleSave,
-  isSaving,
-}: ColumnActionsProps) => {
+export const ColumnActions = (): React.ReactElement => {
+  const { actions, ui } = useColumnMenuContext();
+  const { handleArchive, handlePermanentDelete, handleSave } = actions;
+  const { isSaving } = ui;
   const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 

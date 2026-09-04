@@ -1,6 +1,15 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonStringify } from "../../../core/utils";
 import type { ColumnEntry, DbResult, UpsertDayEntryInput } from "@onda/shared";
 import { serializeEntry } from "./get-entries";
+
+function getUtcMondayFromDateKey(dateKey: string): string {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const dateObj = new Date(Date.UTC(year, month - 1, day));
+  const dayOfWeek = (dateObj.getUTCDay() + 6) % 7; // Monday = 0
+  dateObj.setUTCDate(dateObj.getUTCDate() - dayOfWeek);
+  return dateObj.toISOString().split("T")[0];
+}
 
 export async function upsertDayEntry(
   input: UpsertDayEntryInput,
@@ -8,15 +17,12 @@ export async function upsertDayEntry(
   try {
     const { columnId, dayDate, valueType, value, meta } = input;
 
-    // Calculate weekStart from dayDate
-    const dateObj = new Date(dayDate);
-    const dayOfWeek = (dateObj.getDay() + 6) % 7; // Monday = 0
-    const monday = new Date(dateObj);
-    monday.setDate(dateObj.getDate() - dayOfWeek);
-    const weekStart = monday.toISOString().split("T")[0];
-
-    const serializedValue = JSON.stringify(value !== undefined ? value : null);
-    const serializedMeta = meta ? JSON.stringify(meta) : null;
+    const weekStart = getUtcMondayFromDateKey(dayDate);
+    const serializedValue = safeJsonStringify(
+      value !== undefined ? value : null,
+      "null",
+    );
+    const serializedMeta = meta ? safeJsonStringify(meta, "null") : null;
     const entryId = `${columnId}_${dayDate}`;
 
     const entry = await prisma.columnEntry.upsert({

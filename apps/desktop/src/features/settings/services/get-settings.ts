@@ -1,4 +1,5 @@
 import { prisma } from "../../../core/lib/database";
+import { safeJsonParse, safeJsonStringify } from "../../../core/utils";
 import type { Setting, DbResult } from "@onda/shared";
 
 export async function getSettings(): Promise<DbResult<Setting>> {
@@ -8,16 +9,13 @@ export async function getSettings(): Promise<DbResult<Setting>> {
       setting = await prisma.setting.create({
         data: {
           id: "global",
-          layout: JSON.stringify({ columnsOrder: [] }),
+          layout: safeJsonStringify({ columnsOrder: [] }),
         },
       });
     }
-    let layout = { columnsOrder: [] as string[] };
-    try {
-      layout = JSON.parse(setting.layout);
-    } catch {
-      layout = { columnsOrder: [] };
-    }
+    const layout = safeJsonParse<{ columnsOrder: string[] }>(setting.layout, {
+      columnsOrder: [],
+    });
     return {
       success: true,
       data: {

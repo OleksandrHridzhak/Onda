@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Settings, Download, X, Palette } from "lucide-react";
-import { FullCloseSection } from "./FullCloseSection";
-import { DataSection } from "./DataSection";
-import { ThemeSection } from "./ThemeSection";
+import { FullCloseSection } from "./sections/FullCloseSection";
+import { DataSection } from "./sections/DataSection";
+import { ThemeSection } from "./sections/ThemeSection";
 import { PageHeader } from "shared/ui/PageHeader";
 
 interface Section {
@@ -48,32 +48,6 @@ export function SettingsPanel(): React.ReactElement {
   return (
     <div className="font-poppins flex flex-col h-full custom-scroll bg-background">
       <PageHeader title="Settings" icon={<Settings size={22} />} />
-
-      {/* Mobile sections nav (tabs) - visible only on small screens */}
-      <div className="md:hidden bg-surface border-b border-border">
-        <nav
-          role="tablist"
-          aria-label="Settings sections"
-          className="flex gap-2 overflow-x-auto px-4 py-2"
-        >
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              role="tab"
-              aria-selected={activeSection === section.id}
-              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap ${
-                activeSection === section.id
-                  ? "bg-backgrundHover text-white"
-                  : "text-textMuted"
-              }`}
-            >
-              {section.icon}
-              <span className="ml-2 text-sm">{section.name}</span>
-            </button>
-          ))}
-        </nav>
-      </div>
 
       <div className="flex flex-1 overflow-hidden">
         <div className="hidden md:block w-64 border-r border-border p-4">
