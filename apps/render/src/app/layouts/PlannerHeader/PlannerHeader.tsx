@@ -1,5 +1,4 @@
 import React from 'react';
-import { PomodoroWidget } from 'features/pomodoro/components/PomodoroWidget';
 import TimelineWidget from './TimelineWidget';
 import { SymbolBlock } from './SymbolBlock';
 import { TimeWidget } from './TimeWidget';
@@ -18,7 +17,6 @@ const PlannerHeader: React.FC<PlannerHeaderProps> = ({
         string,
         React.ComponentType<{ darkTheme?: boolean }>
     > = {
-        PomodoroWidget,
         TimelineWidget,
         SymbolBlock,
     };
