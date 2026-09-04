@@ -18,14 +18,14 @@ interface TodoInputProps {
  * TodoInput component
  * Provides input field and button for adding new todos
  */
-export const TodoInput: React.FC<TodoInputProps> = ({
+export const TodoInput = ({
     newTodo,
     setNewTodo,
     newCategoryId,
     todos,
     setTodos,
     onChange,
-}) => {
+}: TodoInputProps) => {
     const onAddTodo = () =>
         handleAddTodo(
             newTodo,

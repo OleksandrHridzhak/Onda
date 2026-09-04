@@ -9,12 +9,12 @@ interface ColumnActionsProps {
     isSaving: boolean;
 }
 
-export const ColumnActions: React.FC<ColumnActionsProps> = ({
+export const ColumnActions = ({
     handleArchive,
     handlePermanentDelete,
     handleSave,
     isSaving,
-}) => {
+}: ColumnActionsProps) => {
     const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 

@@ -10,11 +10,11 @@ interface StatisticPreviewCardProps {
     children: React.ReactNode;
 }
 
-export const StatisticPreviewCard: React.FC<StatisticPreviewCardProps> = ({
+export const StatisticPreviewCard = ({
     column,
     onClick,
     children,
-}) => (
+}: StatisticPreviewCardProps) => (
     <Card
         as="button"
         onClick={onClick}

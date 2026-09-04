@@ -7,7 +7,7 @@ import { DaysColumn } from './columns/service/DaysColumn/DaysColumn';
 import { FillerColumn } from './columns/service/FillerColumn/FillerColumn';
 import { useWeeklyTable } from '../hooks/useWeeklyTable';
 
-export const WeeklyTable: React.FC = () => {
+export const WeeklyTable = () => {
     const {
         currentWeekStart,
         weekDates,

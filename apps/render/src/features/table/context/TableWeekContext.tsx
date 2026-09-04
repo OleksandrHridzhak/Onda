@@ -23,9 +23,9 @@ const TableWeekContext = React.createContext<TableWeekContextValue | null>(
     null,
 );
 
-export const TableWeekProvider: React.FC<{ children: React.ReactNode }> = ({
+export const TableWeekProvider = ({
     children,
-}) => {
+}: { children: React.ReactNode }) => {
     const todayWeekStart = React.useMemo(() => getMonday(new Date()), []);
     const [currentWeekStart, setCurrentWeekStart] =
         React.useState<Date>(todayWeekStart);

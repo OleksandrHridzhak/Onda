@@ -17,7 +17,7 @@ interface TodoEditModalProps {
     onSave: () => void;
 }
 
-export const TodoEditModal: React.FC<TodoEditModalProps> = ({
+export const TodoEditModal = ({
     isOpen,
     editText,
     editCategoryId,
@@ -26,7 +26,7 @@ export const TodoEditModal: React.FC<TodoEditModalProps> = ({
     setEditCategoryId,
     onClose,
     onSave,
-}) => {
+}: TodoEditModalProps) => {
     return (
         <ModalShell isOpen={isOpen} onClose={onClose} title="Edit Todo">
             <div className="space-y-4">

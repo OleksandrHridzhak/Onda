@@ -17,12 +17,12 @@ interface TagsCellProps {
  * Displays selected tags with a dropdown to add/remove tags.
  * Works directly with Tag objects and IDs (no name-based operations).
  */
-export const TagsCell: React.FC<TagsCellProps> = ({
+export const TagsCell = ({
     selectedTagIds,
     onChange,
     availableTags,
     selectedSnapshots = [],
-}) => {
+}: TagsCellProps) => {
     const getSnapshotById = (tagId: string) => {
         return selectedSnapshots.find((tag) => tag.id === tagId);
     };

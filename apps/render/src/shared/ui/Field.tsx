@@ -11,7 +11,7 @@ interface FieldProps {
     children: React.ReactNode;
 }
 
-export const Field: React.FC<FieldProps> = ({
+export const Field = ({
     label,
     hint,
     error,
@@ -19,7 +19,7 @@ export const Field: React.FC<FieldProps> = ({
     htmlFor,
     className = '',
     children,
-}) => {
+}: FieldProps) => {
     return (
         <div className={`space-y-1 ${className}`.trim()}>
             {label ? (

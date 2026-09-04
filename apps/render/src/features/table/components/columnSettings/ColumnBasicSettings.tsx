@@ -33,7 +33,7 @@ interface ColumnBasicSettingsProps {
     handleMoveRight: () => void;
 }
 
-export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
+export const ColumnBasicSettings = ({
     name,
     setName,
     selectedIcon,
@@ -51,7 +51,7 @@ export const ColumnBasicSettings: React.FC<ColumnBasicSettingsProps> = ({
     canMoveRight,
     handleMoveLeft,
     handleMoveRight,
-}) => {
+}: ColumnBasicSettingsProps) => {
     return (
         <>
             {/* Name Input Section */}

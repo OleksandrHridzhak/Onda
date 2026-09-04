@@ -15,7 +15,7 @@ interface DaysColumnProps {
  * A column component that displays the days of the week.
  * ! Always exist at the left side of the table.
  */
-export const DaysColumn: React.FC<DaysColumnProps> = ({
+export const DaysColumn = ({
     weekDates: propWeekDates,
 }) => {
     const todayKey = formatDateKey(new Date());

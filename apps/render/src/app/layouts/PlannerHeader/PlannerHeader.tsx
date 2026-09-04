@@ -9,10 +9,10 @@ interface PlannerHeaderProps {
 }
 // PlannerHeader componentfр
 
-const PlannerHeader: React.FC<PlannerHeaderProps> = ({
+const PlannerHeader = ({
     darkTheme = false,
     layout = ['TimelineWidget', 'SymbolBlock'],
-}) => {
+}: PlannerHeaderProps) => {
     const widgetComponents: Record<
         string,
         React.ComponentType<{ darkTheme?: boolean }>

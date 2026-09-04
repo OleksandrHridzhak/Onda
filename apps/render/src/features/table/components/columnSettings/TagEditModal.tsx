@@ -15,13 +15,13 @@ interface TagEditModalProps {
     onDelete: (tagId: string) => void;
 }
 
-export const TagEditModal: React.FC<TagEditModalProps> = ({
+export const TagEditModal = ({
     tag,
     isOpen,
     onClose,
     onSave,
     onDelete,
-}) => {
+}: TagEditModalProps) => {
     const [name, setName] = useState('');
     const [color, setColor] = useState<ColorName>('accent2');
 

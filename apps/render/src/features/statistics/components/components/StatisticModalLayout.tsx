@@ -19,13 +19,13 @@ interface StatisticModalLayoutProps {
     children: React.ReactNode;
 }
 
-export const StatisticModalLayout: React.FC<StatisticModalLayoutProps> = ({
+export const StatisticModalLayout = ({
     isOpen,
     onClose,
     column,
     metrics,
     children,
-}) => (
+}: StatisticModalLayoutProps) => (
     <ModalShell isOpen={isOpen} onClose={onClose} title="Statistics" size="fit">
         <div className="mx-auto flex w-max min-w-[56rem] max-w-[calc(100vw-4rem)] flex-col gap-4 p-4">
             <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
@@ -63,9 +63,9 @@ export const StatisticModalLayout: React.FC<StatisticModalLayoutProps> = ({
     </ModalShell>
 );
 
-const StatisticMetricCard: React.FC<{ metric: StatisticMetric }> = ({
+const StatisticMetricCard = ({
     metric,
-}) => (
+}: { metric: StatisticMetric }) => (
     <Card className="flex items-center justify-between px-5 py-4">
         <Text tone="muted">{metric.label}</Text>
         <p className="text-2xl font-semibold text-text">{metric.value}</p>

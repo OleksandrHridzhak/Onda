@@ -18,11 +18,11 @@ interface ColumnMenuProps {
     onClose: () => void;
 }
 
-export const ColumnMenu: React.FC<ColumnMenuProps> = ({
+export const ColumnMenu = ({
     columnId,
     archivedAt,
     onClose,
-}) => {
+}: ColumnMenuProps) => {
     const column = useDbQuery(
         async () => {
             const result = await getColumnById(columnId);

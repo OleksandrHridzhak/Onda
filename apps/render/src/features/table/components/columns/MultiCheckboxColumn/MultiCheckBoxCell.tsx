@@ -17,12 +17,12 @@ interface MultiCheckboxCellProps {
  * Displays a circular indicator with multiple color segments.
  * Works directly with Tag objects and IDs (no name-based operations).
  */
-export const MultiCheckboxCell: React.FC<MultiCheckboxCellProps> = ({
+export const MultiCheckboxCell = ({
     selectedOptionIds,
     onChange,
     availableOptions,
     selectedSnapshots = [],
-}) => {
+}: MultiCheckboxCellProps) => {
     const getSnapshotById = (optionId: string) => {
         return selectedSnapshots.find((option) => option.id === optionId);
     };

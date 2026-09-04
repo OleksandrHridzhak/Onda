@@ -3,19 +3,19 @@ import { Card } from 'shared/ui/Card';
 import { Heading } from 'shared/ui/Heading';
 import { Text } from 'shared/ui/Text';
 
-export const StatisticWidgetGrid: React.FC<{
+export const StatisticWidgetGrid = ({ children }: {
     children: React.ReactNode;
-}> = ({ children }) => (
+}) => (
     <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3">
         {children}
     </div>
 );
 
-export const StatisticValueWidget: React.FC<{
+export const StatisticValueWidget = ({ label, value, detail }: {
     label: string;
     value: React.ReactNode;
     detail: React.ReactNode;
-}> = ({ label, value, detail }) => (
+}) => (
     <Card className="flex flex-col items-center justify-center gap-2 p-5 text-center">
         <p className="text-3xl font-semibold text-primaryColor">{value}</p>
         <Heading as="h3" variant="s">
@@ -27,11 +27,11 @@ export const StatisticValueWidget: React.FC<{
     </Card>
 );
 
-export const StatisticProgressWidget: React.FC<{
+export const StatisticProgressWidget = ({ label, percentage, detail }: {
     label: string;
     percentage: number;
     detail: React.ReactNode;
-}> = ({ label, percentage, detail }) => {
+}) => {
     const radius = 34;
     const circumference = 2 * Math.PI * radius;
     const progress = circumference * (1 - percentage / 100);
@@ -80,6 +80,6 @@ export const StatisticProgressWidget: React.FC<{
     );
 };
 
-export const StatisticVisualizationCard: React.FC<{
+export const StatisticVisualizationCard = ({ children }: {
     children: React.ReactNode;
-}> = ({ children }) => <Card className="w-full p-5">{children}</Card>;
+}) => <Card className="w-full p-5">{children}</Card>;

@@ -11,7 +11,7 @@ interface ColorPickerProps {
     onSelect?: () => void;
 }
 
-export const ColorPicker: React.FC<ColorPickerProps> = ({
+export const ColorPicker = ({
     value,
     onChange,
     label,
@@ -19,7 +19,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     shape = 'square',
     className = '',
     onSelect,
-}) => {
+}: ColorPickerProps) => {
     const layoutClass =
         layout === 'grid'
             ? 'grid w-full grid-cols-[repeat(auto-fit,minmax(1.5rem,1fr))] gap-2 max-h-32'

@@ -10,9 +10,9 @@ interface FillerColumnProps {
     hideRowBorders?: boolean;
 }
 
-export const FillerColumn: React.FC<FillerColumnProps> = ({
+export const FillerColumn = ({
     hideRowBorders = false,
-}) => {
+}: FillerColumnProps) => {
     return (
         <ColumnWrapper>
             <table className="checkbox-nested-table font-poppins">

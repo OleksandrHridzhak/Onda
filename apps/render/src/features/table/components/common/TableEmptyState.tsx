@@ -7,9 +7,9 @@ interface TableEmptyStateProps {
     isVisible: boolean;
 }
 
-export const TableEmptyState: React.FC<TableEmptyStateProps> = ({
+export const TableEmptyState = ({
     isVisible,
-}) => {
+}: TableEmptyStateProps) => {
     if (!isVisible) return null;
 
     return (

@@ -12,10 +12,10 @@ interface DayColumnLayoutProps {
  * @why Provides a reusable layout for day-based columns in tables.
  *
  *  */
-export const DayColumnLayout: React.FC<DayColumnLayoutProps> = ({
+export const DayColumnLayout = ({
     weekDates,
     children,
-}) => {
+}: DayColumnLayoutProps) => {
     return (
         <tbody className="bg-surface">
             {weekDates.map((date) => {

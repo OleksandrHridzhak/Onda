@@ -10,13 +10,13 @@ export interface IconSelectorProps {
     icons?: Icon[];
 }
 
-export const IconSelector: React.FC<IconSelectorProps> = ({
+export const IconSelector = ({
     selectedIcon,
     setSelectedIcon,
     isIconSectionExpanded,
     setIsIconSectionExpanded,
     icons = allIcons,
-}) => {
+}: IconSelectorProps) => {
     const ref = useClickOutside<HTMLDivElement>(
         () => setIsIconSectionExpanded(false),
         isIconSectionExpanded,

@@ -3,7 +3,7 @@ import { Calendar, Clock } from 'lucide-react';
 import { useCalendarEvents } from 'shared/api/db';
 import type { CalendarEntry } from '@onda/shared';
 
-const TimelineWidget: React.FC = () => {
+const TimelineWidget = () => {
     const getCurrentTimeString = (): string => {
         const now = new Date();
         const hours = now.getHours().toString().padStart(2, '0');

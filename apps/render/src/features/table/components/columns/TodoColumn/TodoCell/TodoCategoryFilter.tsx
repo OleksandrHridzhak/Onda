@@ -13,12 +13,12 @@ interface TodoCategoryFilterProps {
  * TodoCategoryFilter component
  * Displays category filter buttons for filtering and selecting categories for new todos
  */
-export const TodoCategoryFilter: React.FC<TodoCategoryFilterProps> = ({
+export const TodoCategoryFilter = ({
     availableCategories,
     selectedFilterCategoryId,
     setSelectedFilterCategoryId,
     setNewCategoryId,
-}) => {
+}: TodoCategoryFilterProps) => {
     if (!availableCategories?.length) return null;
 
     return (

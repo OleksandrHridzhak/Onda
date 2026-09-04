@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-export const TimeWidget: React.FC = () => {
+export const TimeWidget = () => {
     const [time, setTime] = useState('');
 
     useEffect(() => {

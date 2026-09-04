@@ -7,9 +7,9 @@ interface MenuWinProps {
     currentPage?: string;
 }
 
-export const WindowTitleBar: React.FC<MenuWinProps> = ({
+export const WindowTitleBar = ({
     currentPage = '/',
-}) => {
+}: MenuWinProps) => {
     const themeMode = useSelector(selectThemeMode);
 
     const getContainerClass = (): string => {

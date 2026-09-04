@@ -22,11 +22,11 @@ interface ColumnCreatingPageProps {
     darkMode: boolean;
 }
 
-export const CreateColumn: React.FC<ColumnCreatingPageProps> = ({
+export const CreateColumn = ({
     onSelect,
     onCancel,
     darkMode,
-}) => {
+}: ColumnCreatingPageProps) => {
     const columnTypes: ColumnCreationOption[] = Object.values(
         COLUMN_DEFINITIONS,
     ).map((def) => ({

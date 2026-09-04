@@ -20,7 +20,7 @@ interface OptionsListProps {
     handleColorChange: (tagId: string, color: ColorName) => void;
 }
 
-export const OptionsList: React.FC<OptionsListProps> = ({
+export const OptionsList = ({
     columnType,
     tags,
     newOption,
@@ -29,7 +29,7 @@ export const OptionsList: React.FC<OptionsListProps> = ({
     handleRemoveOption,
     handleEditOption,
     handleColorChange,
-}) => {
+}: OptionsListProps) => {
     const [activeTag, setActiveTag] = React.useState<Tag | null>(null);
 
     // Map column type to display label

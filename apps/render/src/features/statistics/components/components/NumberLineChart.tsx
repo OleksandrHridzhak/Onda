@@ -34,11 +34,11 @@ const formatChartDate = (dateKey: unknown): string => {
     });
 };
 
-export const NumberLineChart: React.FC<NumberLineChartProps> = ({
+export const NumberLineChart = ({
     points,
     height,
     compact = false,
-}) => {
+}: NumberLineChartProps) => {
     if (points.length === 0) {
         return (
             <Text

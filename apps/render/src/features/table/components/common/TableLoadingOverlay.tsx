@@ -5,9 +5,9 @@ interface TableLoadingOverlayProps {
     isVisible: boolean;
 }
 
-export const TableLoadingOverlay: React.FC<TableLoadingOverlayProps> = ({
+export const TableLoadingOverlay = ({
     isVisible,
-}) => {
+}: TableLoadingOverlayProps) => {
     if (!isVisible) return null;
 
     return (

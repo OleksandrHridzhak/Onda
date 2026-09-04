@@ -8,7 +8,7 @@ interface OptionItemProps {
     onClick: (tag: Tag) => void;
 }
 
-export const OptionItem: React.FC<OptionItemProps> = ({ tag, onClick }) => {
+export const OptionItem = ({ tag, onClick }: OptionItemProps) => {
     const selectedColorName = tag.color;
     const colorOption = COLOR_STYLES[selectedColorName];
 

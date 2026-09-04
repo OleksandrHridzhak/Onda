@@ -12,7 +12,7 @@ import { useTableWeek } from 'features/table/hooks/useTableWeek';
 
 type ActivePage = 'home' | 'calendar' | 'statistics' | 'settings';
 
-const Sidebar: React.FC = () => {
+const Sidebar = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();

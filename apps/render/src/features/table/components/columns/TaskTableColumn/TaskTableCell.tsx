@@ -16,11 +16,11 @@ interface TaskTableCellProps {
  * Displays available tasks with ability to toggle completion status.
  * Uses Tag format with ID tracking.
  */
-export const TaskTableCell: React.FC<TaskTableCellProps> = ({
+export const TaskTableCell = ({
     availableTags,
     doneTasks,
     onChange,
-}) => {
+}: TaskTableCellProps) => {
     const themeMode = useDocumentThemeMode();
     const darkMode = themeMode === 'dark' ? true : false;
 

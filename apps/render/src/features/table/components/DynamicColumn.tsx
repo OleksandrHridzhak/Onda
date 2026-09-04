@@ -20,12 +20,12 @@ import { TodoColumn } from './columns/TodoColumn/TodoColumn';
  *
  * @param columnId - Unique identifier of the column to render
  */
-const DynamicColumn: React.FC<{
+const DynamicColumn = ({ column, weekDates, weekEntriesByDate, archivedAt }: {
     column: Column;
     weekDates: Date[];
     weekEntriesByDate: ColumnEntryValueMap;
     archivedAt: Date;
-}> = ({ column, weekDates, weekEntriesByDate, archivedAt }) => {
+}) => {
     const commonProps = { weekDates, weekEntriesByDate, archivedAt };
     let content: React.ReactNode;
 

@@ -8,12 +8,12 @@ interface ColumnWrapperProps {
     children?: React.ReactNode;
 }
 
-export const ColumnWrapper: React.FC<ColumnWrapperProps> = ({
+export const ColumnWrapper = ({
     column,
     width,
     className,
     children,
-}) => {
+}: ColumnWrapperProps) => {
     const widthStyle =
         width !== undefined
             ? { width: `${width}px`, minWidth: `${width}px` }

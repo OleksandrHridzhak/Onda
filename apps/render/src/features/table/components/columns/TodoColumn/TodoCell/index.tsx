@@ -18,11 +18,11 @@ interface TodoCellProps {
  * Manages the todo list UI with add, edit, delete, and filter functionality.
  * Tracks todo items with proper ID tracking.
  */
-export const TodoCell: React.FC<TodoCellProps> = ({
+export const TodoCell = ({
     value,
     onChange,
     availableCategories,
-}) => {
+}: TodoCellProps) => {
     const themeMode = useDocumentThemeMode();
     const darkMode = themeMode === 'dark';
 

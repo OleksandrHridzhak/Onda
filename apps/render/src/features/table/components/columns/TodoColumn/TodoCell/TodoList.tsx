@@ -32,7 +32,7 @@ interface TodoListProps {
  * TodoList component
  * Displays the list of todos with edit, delete, and toggle functionality
  */
-export const TodoList: React.FC<TodoListProps> = ({
+export const TodoList = ({
     todos,
     filteredTodos,
     availableCategories,
@@ -47,7 +47,7 @@ export const TodoList: React.FC<TodoListProps> = ({
     setEditText,
     setEditCategoryId,
     onChange,
-}) => {
+}: TodoListProps) => {
     // Helper function to get category name by ID
     const getCategoryById = (categoryId?: string) => {
         if (!categoryId) return null;
