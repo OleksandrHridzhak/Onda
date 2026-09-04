@@ -1,6 +1,5 @@
 import React from 'react';
 import { ColumnHeader } from './shared/ColumnHeader';
-import { DAYS } from '../../utils/tableLayout';
 import type { Column } from '../../types/columnTypes';
 import { COLUMN_TYPES } from '../../types/columnDefinitions';
 import { TodoListEditor } from './TodoColumn/TodoListEditor';
@@ -18,26 +17,18 @@ interface FullWeekColumnProps {
 
 /**
  * Shared wrapper for all full-week columns (TodoList, TaskTable).
- * Renders the exact same table, ColumnHeader, and tbody rowSpan={7} as before.
+ * Uses CSS Grid layout (header 45px, content 1fr) with simple div ColumnHeader.
  */
 export const FullWeekColumn = ({ column, archivedAt }: FullWeekColumnProps) => {
     const Editor = FULL_WEEK_EDITORS[column.type];
     if (!Editor) return null;
 
     return (
-        <table className="checkbox-nested-table font-poppins">
+        <div className="checkbox-nested-table grid grid-rows-[45px_1fr] h-full font-poppins">
             <ColumnHeader column={column} archivedAt={archivedAt} />
-            <tbody className="bg-surface">
-                <tr>
-                    <td
-                        className="px-2 py-3 text-sm text-text todo-cell"
-                        style={{ verticalAlign: 'top' }}
-                        rowSpan={DAYS.length}
-                    >
-                        <Editor column={column} />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <div className="bg-surface px-2 py-3 text-sm text-text todo-cell min-h-0 overflow-y-auto">
+                <Editor column={column} />
+            </div>
+        </div>
     );
 };

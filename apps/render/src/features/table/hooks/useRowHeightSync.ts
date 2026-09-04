@@ -16,32 +16,34 @@ export const useRowHeightSync = (dependencies: React.DependencyList = []) => {
         let mutationTimeoutId: number;
 
         const syncRowHeights = () => {
-            const allTables = document.querySelectorAll(
-                '.checkbox-nested-table tbody',
+            const allContainers = document.querySelectorAll(
+                '.table-rows-container',
             );
-            if (allTables.length === 0) return;
+            if (allContainers.length === 0) return;
 
-            // Filter only tables with multiple rows (excludes todo, tasktable)
-            const tables = Array.from(allTables).filter(
-                (tbody) => tbody.querySelectorAll('tr').length > 1,
+            // Filter containers with multiple rows (7-day columns: DaysColumn, DayBasedColumn, FillerColumn)
+            const containers = Array.from(allContainers).filter(
+                (c) => c.querySelectorAll('.table-day-row').length > 1,
             );
 
-            if (tables.length === 0) return;
+            if (containers.length === 0) return;
 
-            // Find maximum number of rows across all tables
+            // Find maximum number of rows across all containers
             const maxRows = Math.max(
-                ...tables.map((tbody) => tbody.querySelectorAll('tr').length),
+                ...containers.map(
+                    (c) => c.querySelectorAll('.table-day-row').length,
+                ),
             );
 
-            // Collect max heights per row so we can compute total height for single-row tables
+            // Collect max heights per row
             const maxHeights: number[] = [];
 
             // For each row index, find and apply maximum height
             for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
                 const rows: HTMLElement[] = [];
 
-                tables.forEach((tbody) => {
-                    const row = tbody.querySelectorAll('tr')[
+                containers.forEach((c) => {
+                    const row = c.querySelectorAll('.table-day-row')[
                         rowIndex
                     ] as HTMLElement;
                     if (row) {
@@ -66,20 +68,19 @@ export const useRowHeightSync = (dependencies: React.DependencyList = []) => {
                 }
             }
 
-            // Sum max heights to get combined height for single-row tables (todo/tasktable)
+            // Sum max heights to get combined height for single-row columns (todo/tasktable)
             const totalHeight = maxHeights.reduce((a, b) => a + b, 0);
 
-            // Apply total height to any single-row table so its single row matches the combined height
-            Array.from(allTables).forEach((tbody) => {
-                const rows = tbody.querySelectorAll('tr');
-                if (rows.length === 1) {
-                    const row = rows[0] as HTMLElement;
-                    row.style.height = `${totalHeight}px`;
-                }
-            });
+            // Apply total height to .todo-cell so its height matches the combined rows
+            if (totalHeight > 0) {
+                const todoCells =
+                    document.querySelectorAll<HTMLElement>('.todo-cell');
+                todoCells.forEach((cell) => {
+                    cell.style.minHeight = `${totalHeight}px`;
+                });
+            }
 
             // Delay marking loading as complete to allow browser paint
-            // This ensures the UI has time to render the size changes
             setTimeout(() => {
                 setIsLoading(false);
             }, 300);

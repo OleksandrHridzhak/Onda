@@ -28,6 +28,7 @@ export const ColumnWrapper = ({
                 ...widthStyle,
                 padding: 0,
                 verticalAlign: 'top',
+                height: '100%',
             }}
             className={className}
         >

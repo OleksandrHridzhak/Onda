@@ -11,7 +11,9 @@ table {
     table-layout: fixed;
 }
 
-/* Keep nested tables aligned with the active theme font */
+/* Keep entire table, columns, and nested elements aligned with the active theme font */
+.weekly-table-root,
+.weekly-table-root *,
 .checkbox-nested-table,
 .checkbox-nested-table * {
     font-family: var(--font-family-base, 'Rubik'), sans-serif !important;

@@ -19,56 +19,43 @@ export function ColumnHeader({
 
     return (
         <>
-            <thead className="bg-surfaceMuted">
-                <tr>
-                    <th className="border-b border-border">
-                        <div
-                            role="button"
-                            tabIndex={0}
-                            className={`font-poppins flex items-center justify-between group cursor-pointer px-3 py-3 text-left text-sm font-medium ${column.isNameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
-                            onClick={() => setShowMenu(true)}
-                            onKeyDown={(event) => {
-                                if (
-                                    event.key === 'Enter' ||
-                                    event.key === ' '
-                                ) {
-                                    event.preventDefault();
-                                    setShowMenu(true);
+            <div className="checkbox-nested-table font-poppins h-[45px] box-border border-b border-border bg-surfaceMuted flex items-center">
+                <div
+                    role="button"
+                    tabIndex={0}
+                    className={`font-poppins flex items-center justify-between group cursor-pointer px-3 py-3 text-left text-sm font-medium w-full h-full ${column.isNameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
+                    onClick={() => setShowMenu(true)}
+                    onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            setShowMenu(true);
+                        }
+                    }}
+                    aria-label={column.name || 'Column settings'}
+                >
+                    <div
+                        className={`flex items-center ${column.isNameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
+                    >
+                        {column.emojiIconName && (
+                            <span
+                                className={
+                                    column.isNameVisible !== false ? 'mr-1' : ''
                                 }
-                            }}
-                            aria-label={column.name || 'Column settings'}
-                        >
-                            <div
-                                className={`flex items-center ${column.isNameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
                             >
-                                {column.emojiIconName && (
-                                    <span
-                                        className={
-                                            column.isNameVisible !== false
-                                                ? 'mr-1'
-                                                : ''
-                                        }
-                                    >
-                                        {getIconComponent(
-                                            column.emojiIconName,
-                                            16,
-                                        )}
-                                    </span>
-                                )}
-                                {column.isNameVisible !== false &&
-                                    column.name && (
-                                        <span className="truncate block text-textMuted max-w-full">
-                                            {column.name}
-                                        </span>
-                                    )}
-                                {isEmptyHeader && (
-                                    <span className="opacity-0">...</span>
-                                )}
-                            </div>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
+                                {getIconComponent(column.emojiIconName, 16)}
+                            </span>
+                        )}
+                        {column.isNameVisible !== false && column.name && (
+                            <span className="truncate block text-textMuted max-w-full">
+                                {column.name}
+                            </span>
+                        )}
+                        {isEmptyHeader && (
+                            <span className="opacity-0">...</span>
+                        )}
+                    </div>
+                </div>
+            </div>
             {showMenu && (
                 <ColumnMenu
                     columnId={column.id}

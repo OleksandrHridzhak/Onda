@@ -13,11 +13,9 @@ interface DaysColumnProps {
 
 /**
  * A column component that displays the days of the week.
- * ! Always exist at the left side of the table.
+ * ! Always exists at the left side of the table.
  */
-export const DaysColumn = ({
-    weekDates: propWeekDates,
-}: DaysColumnProps) => {
+export const DaysColumn = ({ weekDates: propWeekDates }: DaysColumnProps) => {
     const todayKey = formatDateKey(new Date());
     const {
         weekDates: contextWeekDates,
@@ -35,44 +33,40 @@ export const DaysColumn = ({
             width={DAYS_COLUMN_WIDTH}
             className="border-r border-border"
         >
-            <table className="checkbox-nested-table column-days font-poppins">
-                <thead className="bg-surfaceMuted">
-                    <tr>
-                        <th className="border-b border-border">
-                            <div className="justify-center gap-1 px-1 text-sm font-medium">
-                                <Button
-                                    onClick={goToPreviousWeek}
-                                    variant="ghost"
-                                    size="icon"
-                                    aria-label="Previous week"
-                                >
-                                    <ChevronLeft size={14} />
-                                </Button>
-                                <button
-                                    type="button"
-                                    onClick={goToCurrentWeek}
-                                    className={`rounded-lg px-2 py-1 text-xs font-medium ${
-                                        isCurrentWeek
-                                            ? 'border border-border bg-primaryColor/10 text-text'
-                                            : 'text-text hover:bg-backgrundHover'
-                                    }`}
-                                >
-                                    Week {weekNumber}
-                                </button>
-                                <Button
-                                    onClick={goToNextWeek}
-                                    disabled={!canGoToNextWeek}
-                                    variant="ghost"
-                                    size="icon"
-                                    aria-label="Next week"
-                                >
-                                    <ChevronRight size={14} />
-                                </Button>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody className="bg-surface">
+            <div className="checkbox-nested-table column-days font-poppins flex flex-col h-full w-full">
+                <div className="h-[45px] box-border border-b border-border bg-surfaceMuted flex items-center justify-center">
+                    <div className="flex items-center justify-center gap-1 px-1 text-sm font-medium w-full">
+                        <Button
+                            onClick={goToPreviousWeek}
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Previous week"
+                        >
+                            <ChevronLeft size={14} />
+                        </Button>
+                        <button
+                            type="button"
+                            onClick={goToCurrentWeek}
+                            className={`rounded-lg px-2 py-1 text-xs font-medium ${
+                                isCurrentWeek
+                                    ? 'border border-border bg-primaryColor/10 text-text'
+                                    : 'text-text hover:bg-backgrundHover'
+                            }`}
+                        >
+                            Week {weekNumber}
+                        </button>
+                        <Button
+                            onClick={goToNextWeek}
+                            disabled={!canGoToNextWeek}
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Next week"
+                        >
+                            <ChevronRight size={14} />
+                        </Button>
+                    </div>
+                </div>
+                <div className="table-rows-container bg-surface flex flex-col w-full">
                     {weekDates.map((date, idx) => {
                         const day = date.toLocaleDateString('en-US', {
                             weekday: 'long',
@@ -80,27 +74,25 @@ export const DaysColumn = ({
                         const isToday = formatDateKey(date) === todayKey;
 
                         return (
-                            <tr
+                            <div
                                 key={date.toISOString()}
-                                className={
+                                className={`table-day-row px-4 py-3 text-left text-sm font-medium text-textMuted flex items-center box-border ${
                                     idx !== weekDates.length - 1
                                         ? 'border-b border-border'
                                         : ''
-                                }
+                                }`}
                             >
-                                <td className="px-4 py-3 text-left text-sm font-medium text-textMuted">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <span>{day}</span>
-                                        {isToday && (
-                                            <span className="inline-block h-2 w-2 rounded-full bg-primaryColor" />
-                                        )}
-                                    </div>
-                                </td>
-                            </tr>
+                                <div className="flex items-center justify-between gap-2 w-full">
+                                    <span>{day}</span>
+                                    {isToday && (
+                                        <span className="inline-block h-2 w-2 rounded-full bg-primaryColor" />
+                                    )}
+                                </div>
+                            </div>
                         );
                     })}
-                </tbody>
-            </table>
+                </div>
+            </div>
         </ColumnWrapper>
     );
 };

@@ -34,7 +34,7 @@ interface DayBasedColumnProps {
 
 /**
  * Shared wrapper for all 7-day columns (Checkbox, Numberbox, Textbox, Tags, MultiCheckbox).
- * Renders the exact same table classes, ColumnHeader, and DayColumnLayout as before.
+ * Uses pure divs with Flexbox layout, no nested table elements.
  */
 export const DayBasedColumn = ({
     column,
@@ -46,12 +46,11 @@ export const DayBasedColumn = ({
     if (!Editor) return null;
 
     const columnClass = DAY_COLUMN_CLASSES[column.type] || '';
-    const tableClassName = `checkbox-nested-table ${columnClass} font-poppins`
-        .replace(/\s+/g, ' ')
-        .trim();
 
     return (
-        <table className={tableClassName}>
+        <div
+            className={`checkbox-nested-table ${columnClass} font-poppins flex flex-col h-full w-full`}
+        >
             <ColumnHeader column={column} archivedAt={archivedAt} />
             <DayColumnLayout weekDates={weekDates}>
                 {(_day, dateKey) => (
@@ -62,6 +61,6 @@ export const DayBasedColumn = ({
                     />
                 )}
             </DayColumnLayout>
-        </table>
+        </div>
     );
 };

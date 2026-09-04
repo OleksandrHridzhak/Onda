@@ -4,30 +4,22 @@ import { ColumnWrapper } from '../../shared/ColumnWrapper';
 
 /**
  * A column component that displays the empty space of the table.
- * ! Always exist at the right side of the table if there are no any other columns.
+ * ! Always exists at the right side of the table if there are no any other columns.
  */
 interface FillerColumnProps {
     hideRowBorders?: boolean;
 }
 
-export const FillerColumn = ({
-    hideRowBorders = false,
-}: FillerColumnProps) => {
+export const FillerColumn = ({ hideRowBorders = false }: FillerColumnProps) => {
     return (
         <ColumnWrapper>
-            <table className="checkbox-nested-table font-poppins">
-                <thead className="bg-surfaceMuted">
-                    <tr>
-                        <th className="border-b border-border">
-                            <div />
-                        </th>
-                    </tr>
-                </thead>
-                <tbody className="bg-surface">
+            <div className="checkbox-nested-table font-poppins flex flex-col h-full w-full">
+                <div className="h-[45px] box-border border-b border-border bg-surfaceMuted" />
+                <div className="table-rows-container bg-surface flex flex-col w-full">
                     {DAYS.map((day, idx) => (
-                        <tr
+                        <div
                             key={day}
-                            className={
+                            className={`table-day-row box-border ${
                                 idx !== DAYS.length - 1
                                     ? `border-b ${
                                           hideRowBorders
@@ -35,13 +27,12 @@ export const FillerColumn = ({
                                               : 'border-border'
                                       }`
                                     : ''
-                            }
-                        >
-                            <td style={{ height: '60px' }} />
-                        </tr>
+                            }`}
+                            style={{ height: '60px' }}
+                        />
                     ))}
-                </tbody>
-            </table>
+                </div>
+            </div>
         </ColumnWrapper>
     );
 };

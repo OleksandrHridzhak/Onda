@@ -5,19 +5,16 @@ interface DayColumnLayoutProps {
     weekDates: Date[];
     children: (day: string, dateKey: string) => React.ReactNode;
 }
+
 /**
- * Layout component for rendering rows for each day of the week.
- * Accepts a render prop to customize the content of each day's cell.
- *
- * @why Provides a reusable layout for day-based columns in tables.
- *
- *  */
+ * Layout component for rendering rows for each day of the week as pure divs.
+ */
 export const DayColumnLayout = ({
     weekDates,
     children,
 }: DayColumnLayoutProps) => {
     return (
-        <tbody className="bg-surface">
+        <div className="table-rows-container bg-surface flex flex-col w-full">
             {weekDates.map((date) => {
                 const day = date.toLocaleDateString('en-US', {
                     weekday: 'long',
@@ -25,16 +22,14 @@ export const DayColumnLayout = ({
                 const dateKey = formatDateKey(date);
 
                 return (
-                    <tr
+                    <div
                         key={dateKey}
-                        className="border-b border-border last:border-0"
+                        className="table-day-row border-b border-border last:border-0 px-2 py-3 text-sm text-text flex items-center justify-center box-border w-full"
                     >
-                        <td className="px-2 py-3 text-sm text-text">
-                            {children(day, dateKey)}
-                        </td>
-                    </tr>
+                        {children(day, dateKey)}
+                    </div>
                 );
             })}
-        </tbody>
+        </div>
     );
 };
