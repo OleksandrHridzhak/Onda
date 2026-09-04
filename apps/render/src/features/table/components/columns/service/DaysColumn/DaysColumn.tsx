@@ -17,7 +17,7 @@ interface DaysColumnProps {
  */
 export const DaysColumn = ({
     weekDates: propWeekDates,
-}) => {
+}: DaysColumnProps) => {
     const todayKey = formatDateKey(new Date());
     const {
         weekDates: contextWeekDates,
