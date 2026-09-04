@@ -1,124 +1,124 @@
-import React from 'react';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
-import { IconSelector } from 'shared/ui/IconSelector';
-import { TitleVisibilityToggle } from './TitleVisibilityToggle';
-import { Button } from 'shared/ui/Button';
-import { Field } from 'shared/ui/Field';
-import { Input } from 'shared/ui/Input';
-import { Textarea } from 'shared/ui/Textarea';
-import type { Icon } from 'shared/lib/icons';
+import React from "react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
+import { IconSelector } from "shared/ui/IconSelector";
+import { TitleVisibilityToggle } from "./TitleVisibilityToggle";
+import { Button } from "shared/ui/Button";
+import { Field } from "shared/ui/Field";
+import { Input } from "shared/ui/Input";
+import { Textarea } from "shared/ui/Textarea";
+import type { Icon } from "shared/lib/icons";
 
 interface ColumnBasicSettingsProps {
-    // Name input props
-    name: string;
-    setName: (value: string) => void;
-    selectedIcon: string;
-    setSelectedIcon: (value: string) => void;
-    showTitle: boolean;
-    setShowTitle: (value: boolean) => void;
-    isIconSectionExpanded: boolean;
-    setIsIconSectionExpanded: () => void;
-    icons: Icon[];
+  // Name input props
+  name: string;
+  setName: (value: string) => void;
+  selectedIcon: string;
+  setSelectedIcon: (value: string) => void;
+  showTitle: boolean;
+  setShowTitle: (value: boolean) => void;
+  isIconSectionExpanded: boolean;
+  setIsIconSectionExpanded: () => void;
+  icons: Icon[];
 
-    // Description props
-    description: string;
-    setDescription: (value: string) => void;
+  // Description props
+  description: string;
+  setDescription: (value: string) => void;
 
-    // Position controls props
-    width: number;
-    handleWidthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    canMoveLeft: boolean;
-    canMoveRight: boolean;
-    handleMoveLeft: () => void;
-    handleMoveRight: () => void;
+  // Position controls props
+  width: number;
+  handleWidthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  canMoveLeft: boolean;
+  canMoveRight: boolean;
+  handleMoveLeft: () => void;
+  handleMoveRight: () => void;
 }
 
 export const ColumnBasicSettings = ({
-    name,
-    setName,
-    selectedIcon,
-    setSelectedIcon,
-    showTitle,
-    setShowTitle,
-    isIconSectionExpanded,
-    setIsIconSectionExpanded,
-    icons,
-    description,
-    setDescription,
-    width,
-    handleWidthChange,
-    canMoveLeft,
-    canMoveRight,
-    handleMoveLeft,
-    handleMoveRight,
+  name,
+  setName,
+  selectedIcon,
+  setSelectedIcon,
+  showTitle,
+  setShowTitle,
+  isIconSectionExpanded,
+  setIsIconSectionExpanded,
+  icons,
+  description,
+  setDescription,
+  width,
+  handleWidthChange,
+  canMoveLeft,
+  canMoveRight,
+  handleMoveLeft,
+  handleMoveRight,
 }: ColumnBasicSettingsProps) => {
-    return (
-        <>
-            {/* Name Input Section */}
-            <div className="flex gap-2 w-full">
-                <IconSelector
-                    selectedIcon={selectedIcon}
-                    setSelectedIcon={setSelectedIcon}
-                    isIconSectionExpanded={isIconSectionExpanded}
-                    setIsIconSectionExpanded={setIsIconSectionExpanded}
-                    icons={icons}
-                />
-                <div className="w-full flex relative">
-                    <Input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Column name"
-                        aria-label="Column name"
-                    />
-                    <TitleVisibilityToggle
-                        showTitle={showTitle}
-                        setShowTitle={setShowTitle}
-                    />
-                </div>
-            </div>
+  return (
+    <>
+      {/* Name Input Section */}
+      <div className="flex gap-2 w-full">
+        <IconSelector
+          selectedIcon={selectedIcon}
+          setSelectedIcon={setSelectedIcon}
+          isIconSectionExpanded={isIconSectionExpanded}
+          setIsIconSectionExpanded={setIsIconSectionExpanded}
+          icons={icons}
+        />
+        <div className="w-full flex relative">
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Column name"
+            aria-label="Column name"
+          />
+          <TitleVisibilityToggle
+            showTitle={showTitle}
+            setShowTitle={setShowTitle}
+          />
+        </div>
+      </div>
 
-            {/* Description Section */}
-            <Textarea
-                value={description}
-                placeholder="Description"
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                aria-label="Column description"
+      {/* Description Section */}
+      <Textarea
+        value={description}
+        placeholder="Description"
+        onChange={(e) => setDescription(e.target.value)}
+        rows={3}
+        aria-label="Column description"
+      />
+
+      {/* Position Controls Section */}
+      <Field label="Column Position and Width" className="mb-4">
+        <div className="flex space-x-2">
+          <div className="w-full">
+            <Input
+              type="number"
+              value={width}
+              onChange={handleWidthChange}
+              min="0"
+              max="1000"
+              placeholder="Enter width in pixels"
+              aria-label="Column width"
+              inputSize="sm"
+              className="bg-transparent"
             />
-
-            {/* Position Controls Section */}
-            <Field label="Column Position and Width" className="mb-4">
-                <div className="flex space-x-2">
-                    <div className="w-full">
-                        <Input
-                            type="number"
-                            value={width}
-                            onChange={handleWidthChange}
-                            min="0"
-                            max="1000"
-                            placeholder="Enter width in pixels"
-                            aria-label="Column width"
-                            inputSize="sm"
-                            className="bg-transparent"
-                        />
-                    </div>
-                    <Button
-                        variant="secondary"
-                        onClick={handleMoveLeft}
-                        disabled={!canMoveLeft}
-                    >
-                        <ArrowLeft size={18} /> LEFT
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        onClick={handleMoveRight}
-                        disabled={!canMoveRight}
-                    >
-                        RIGHT <ArrowRight size={18} />
-                    </Button>
-                </div>
-            </Field>
-        </>
-    );
+          </div>
+          <Button
+            variant="secondary"
+            onClick={handleMoveLeft}
+            disabled={!canMoveLeft}
+          >
+            <ArrowLeft size={18} /> LEFT
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={handleMoveRight}
+            disabled={!canMoveRight}
+          >
+            RIGHT <ArrowRight size={18} />
+          </Button>
+        </div>
+      </Field>
+    </>
+  );
 };

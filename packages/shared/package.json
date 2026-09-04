@@ -1,13 +1,13 @@
 {
-    "name": "@onda/shared",
-    "version": "1.0.0",
-    "private": true,
-    "license": "MIT",
-    "main": "./index.ts",
-    "types": "./index.ts",
-    "exports": {
-        ".": "./index.ts",
-        "./types/*": "./types/*",
-        "./assets/*": "./assets/*"
-    }
+  "name": "@onda/shared",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./types/*": "./types/*",
+    "./assets/*": "./assets/*"
+  }
 }

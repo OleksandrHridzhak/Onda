@@ -1,20 +1,20 @@
-import type React from 'react';
+import type React from "react";
 
 export const DAYS = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
 ];
 
 export const getWidthStyle = (column: {
-    width?: number;
+  width?: number;
 }): React.CSSProperties => {
-    if (column.width === undefined) {
-        return {};
-    }
-    return { width: `${column.width}px`, minWidth: `${column.width}px` };
+  if (column.width === undefined) {
+    return {};
+  }
+  return { width: `${column.width}px`, minWidth: `${column.width}px` };
 };

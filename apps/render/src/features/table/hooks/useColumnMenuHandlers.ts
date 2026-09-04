@@ -1,227 +1,225 @@
-import { useState, useEffect } from 'react';
-import type { Tag, Column } from '../types/columnTypes';
-import { COLUMN_TYPES } from '../types/columnDefinitions';
-import type { ColorName } from 'shared/lib/color';
-import { updateColumnFields } from '../api/updateColumnFields';
+import { useState, useEffect } from "react";
+import type { Tag, Column } from "../types/columnTypes";
+import { COLUMN_TYPES } from "../types/columnDefinitions";
+import type { ColorName } from "shared/lib/color";
+import { updateColumnFields } from "../api/updateColumnFields";
 import {
-    archiveColumn,
-    moveColumn,
-    permanentlyDeleteColumn,
-} from '../api/columnActions';
+  archiveColumn,
+  moveColumn,
+  permanentlyDeleteColumn,
+} from "../api/columnActions";
 
 interface UseColumnMenuHandlersProps {
-    columnId: string;
-    column: Column | null | undefined;
-    archivedAt: Date;
-    onClose: () => void;
+  columnId: string;
+  column: Column | null | undefined;
+  archivedAt: Date;
+  onClose: () => void;
 }
 
 export const useColumnMenuHandlers = ({
-    columnId,
-    column,
-    archivedAt,
-    onClose,
+  columnId,
+  column,
+  archivedAt,
+  onClose,
 }: UseColumnMenuHandlersProps) => {
-    // All state management in one place
-    const [name, setName] = useState('');
-    const [selectedIcon, setSelectedIcon] = useState('');
-    const [description, setDescription] = useState('');
-    const [showTitle, setShowTitle] = useState(true);
-    const [width, setWidth] = useState(0);
-    const [checkboxColor, setCheckboxColor] = useState<ColorName>('accent1');
-    const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [newOption, setNewOption] = useState('');
+  // All state management in one place
+  const [name, setName] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState("");
+  const [description, setDescription] = useState("");
+  const [showTitle, setShowTitle] = useState(true);
+  const [width, setWidth] = useState(0);
+  const [checkboxColor, setCheckboxColor] = useState<ColorName>("accent1");
+  const [isIconSectionExpanded, setIsIconSectionExpanded] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [newOption, setNewOption] = useState("");
 
-    // Initialize state when column data loads
-    useEffect(() => {
-        if (!column) return;
+  // Initialize state when column data loads
+  useEffect(() => {
+    if (!column) return;
 
-        setName(column.name);
-        setSelectedIcon(column.emojiIconName || '');
-        setDescription(column.description || '');
-        setShowTitle(column.isNameVisible !== false);
-        setWidth(column.width || 0);
+    setName(column.name);
+    setSelectedIcon(column.emojiIconName || "");
+    setDescription(column.description || "");
+    setShowTitle(column.isNameVisible !== false);
+    setWidth(column.width || 0);
 
-        // Extract tags based on column type
-        if (column.type === COLUMN_TYPES.TAGS) {
-            setTags(column.uniqueProps.availableTags || []);
-        } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
-            setTags(column.uniqueProps.availableOptions || []);
-        } else if (column.type === COLUMN_TYPES.TODO) {
-            setTags(column.uniqueProps.availableCategories || []);
-        } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
-            setTags(column.uniqueProps.availableTags || []);
-        } else if (column.type === COLUMN_TYPES.CHECKBOX) {
-            setCheckboxColor(
-                (column.uniqueProps.checkboxColor as ColorName) || 'accent1',
-            );
-        }
-    }, [column]);
+    // Extract tags based on column type
+    if (column.type === COLUMN_TYPES.TAGS) {
+      setTags(column.uniqueProps.availableTags || []);
+    } else if (column.type === COLUMN_TYPES.MULTI_CHECKBOX) {
+      setTags(column.uniqueProps.availableOptions || []);
+    } else if (column.type === COLUMN_TYPES.TODO) {
+      setTags(column.uniqueProps.availableCategories || []);
+    } else if (column.type === COLUMN_TYPES.TASK_TABLE) {
+      setTags(column.uniqueProps.availableTags || []);
+    } else if (column.type === COLUMN_TYPES.CHECKBOX) {
+      setCheckboxColor(
+        (column.uniqueProps.checkboxColor as ColorName) || "accent1",
+      );
+    }
+  }, [column]);
 
-    const saveOptions = async (updatedTags: Tag[]) => {
-        const updates: Record<string, Tag[]> = {};
-        if (column?.type === COLUMN_TYPES.TAGS) {
-            updates['uniqueProps.availableTags'] = updatedTags;
-        } else if (column?.type === COLUMN_TYPES.MULTI_CHECKBOX) {
-            updates['uniqueProps.availableOptions'] = updatedTags;
-        } else if (column?.type === COLUMN_TYPES.TODO) {
-            updates['uniqueProps.availableCategories'] = updatedTags;
-        } else if (column?.type === COLUMN_TYPES.TASK_TABLE) {
-            updates['uniqueProps.availableTags'] = updatedTags;
-        }
+  const saveOptions = async (updatedTags: Tag[]) => {
+    const updates: Record<string, Tag[]> = {};
+    if (column?.type === COLUMN_TYPES.TAGS) {
+      updates["uniqueProps.availableTags"] = updatedTags;
+    } else if (column?.type === COLUMN_TYPES.MULTI_CHECKBOX) {
+      updates["uniqueProps.availableOptions"] = updatedTags;
+    } else if (column?.type === COLUMN_TYPES.TODO) {
+      updates["uniqueProps.availableCategories"] = updatedTags;
+    } else if (column?.type === COLUMN_TYPES.TASK_TABLE) {
+      updates["uniqueProps.availableTags"] = updatedTags;
+    }
 
+    await updateColumnFields(columnId, updates);
+  };
+
+  const handleAddOption = async () => {
+    if (!newOption.trim()) {
+      return;
+    }
+
+    const newTag: Tag = {
+      id:
+        globalThis.crypto?.randomUUID?.() ||
+        `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
+      name: newOption.trim(),
+      color: "accent2",
+    };
+
+    const updatedTags = [...tags, newTag];
+    setTags(updatedTags);
+    setNewOption("");
+
+    await saveOptions(updatedTags);
+  };
+
+  const handleRemoveOption = async (tagId: string) => {
+    const updatedTags = tags.filter((tag) => tag.id !== tagId);
+    setTags(updatedTags);
+    await saveOptions(updatedTags);
+  };
+
+  const handleEditOption = async (tagId: string, newName: string) => {
+    const updatedTags = tags.map((tag) =>
+      tag.id === tagId ? { ...tag, name: newName } : tag,
+    );
+    setTags(updatedTags);
+    await saveOptions(updatedTags);
+  };
+
+  const handleColorChange = async (tagId: string, color: ColorName) => {
+    const updatedTags = tags.map((tag) =>
+      tag.id === tagId ? { ...tag, color } : tag,
+    );
+    setTags(updatedTags);
+    await saveOptions(updatedTags);
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const updates: Record<string, string | number | boolean> = {};
+
+      if (column && name !== column.name) {
+        updates.name = name;
+      }
+
+      if (column && selectedIcon !== column.emojiIconName) {
+        updates.emojiIconName = selectedIcon;
+      }
+
+      if (column && description !== column.description) {
+        updates.description = description;
+      }
+
+      if (column && showTitle !== column.isNameVisible) {
+        updates.isNameVisible = showTitle;
+      }
+
+      if (column && width !== column.width) {
+        updates.width = width;
+      }
+
+      if (
+        column &&
+        column.type === COLUMN_TYPES.CHECKBOX &&
+        checkboxColor !== column.uniqueProps.checkboxColor
+      ) {
+        updates["uniqueProps.checkboxColor"] = checkboxColor;
+      }
+
+      if (Object.keys(updates).length > 0) {
         await updateColumnFields(columnId, updates);
-    };
+      }
 
-    const handleAddOption = async () => {
-        if (!newOption.trim()) {
-            return;
-        }
+      onClose();
+    } catch (error) {
+      console.error("Error saving column changes:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-        const newTag: Tag = {
-            id:
-                globalThis.crypto?.randomUUID?.() ||
-                `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
-            name: newOption.trim(),
-            color: 'accent2',
-        };
+  const handleArchive = async () => {
+    await archiveColumn(columnId, archivedAt);
+    onClose();
+  };
 
-        const updatedTags = [...tags, newTag];
-        setTags(updatedTags);
-        setNewOption('');
+  const handlePermanentDelete = async () => {
+    await permanentlyDeleteColumn(columnId);
+    onClose();
+  };
 
-        await saveOptions(updatedTags);
-    };
+  const handleMoveLeft = async () => {
+    await moveColumn(columnId, "left");
+  };
 
-    const handleRemoveOption = async (tagId: string) => {
-        const updatedTags = tags.filter((tag) => tag.id !== tagId);
-        setTags(updatedTags);
-        await saveOptions(updatedTags);
-    };
+  const handleMoveRight = async () => {
+    await moveColumn(columnId, "right");
+  };
 
-    const handleEditOption = async (tagId: string, newName: string) => {
-        const updatedTags = tags.map((tag) =>
-            tag.id === tagId ? { ...tag, name: newName } : tag,
-        );
-        setTags(updatedTags);
-        await saveOptions(updatedTags);
-    };
+  const handleWidthChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newWidth = parseInt(e.target.value, 10) || 100;
+    setWidth(newWidth);
+    await updateColumnFields(columnId, { width: newWidth });
+  };
 
-    const handleColorChange = async (tagId: string, color: ColorName) => {
-        const updatedTags = tags.map((tag) =>
-            tag.id === tagId ? { ...tag, color } : tag,
-        );
-        setTags(updatedTags);
-        await saveOptions(updatedTags);
-    };
-
-    const handleSave = async () => {
-        setIsSaving(true);
-        try {
-            const updates: Record<string, string | number | boolean> = {};
-
-            if (column && name !== column.name) {
-                updates.name = name;
-            }
-
-            if (column && selectedIcon !== column.emojiIconName) {
-                updates.emojiIconName = selectedIcon;
-            }
-
-            if (column && description !== column.description) {
-                updates.description = description;
-            }
-
-            if (column && showTitle !== column.isNameVisible) {
-                updates.isNameVisible = showTitle;
-            }
-
-            if (column && width !== column.width) {
-                updates.width = width;
-            }
-
-            if (
-                column &&
-                column.type === COLUMN_TYPES.CHECKBOX &&
-                checkboxColor !== column.uniqueProps.checkboxColor
-            ) {
-                updates['uniqueProps.checkboxColor'] = checkboxColor;
-            }
-
-            if (Object.keys(updates).length > 0) {
-                await updateColumnFields(columnId, updates);
-            }
-
-            onClose();
-        } catch (error) {
-            console.error('Error saving column changes:', error);
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleArchive = async () => {
-        await archiveColumn(columnId, archivedAt);
-        onClose();
-    };
-
-    const handlePermanentDelete = async () => {
-        await permanentlyDeleteColumn(columnId);
-        onClose();
-    };
-
-    const handleMoveLeft = async () => {
-        await moveColumn(columnId, 'left');
-    };
-
-    const handleMoveRight = async () => {
-        await moveColumn(columnId, 'right');
-    };
-
-    const handleWidthChange = async (
-        e: React.ChangeEvent<HTMLInputElement>,
-    ) => {
-        const newWidth = parseInt(e.target.value, 10) || 100;
-        setWidth(newWidth);
-        await updateColumnFields(columnId, { width: newWidth });
-    };
-
-    return {
-        form: {
-            name,
-            selectedIcon,
-            description,
-            showTitle,
-            width,
-            checkboxColor,
-            tags,
-            newOption,
-        },
-        actions: {
-            setName,
-            setSelectedIcon,
-            setDescription,
-            setShowTitle,
-            setCheckboxColor,
-            setTags,
-            setNewOption,
-            handleSave,
-            handleArchive,
-            handlePermanentDelete,
-            handleMoveLeft,
-            handleMoveRight,
-            handleWidthChange,
-            handleAddOption,
-            handleRemoveOption,
-            handleEditOption,
-            handleColorChange,
-        },
-        ui: {
-            isIconSectionExpanded,
-            setIsIconSectionExpanded,
-            isSaving,
-        },
-    };
+  return {
+    form: {
+      name,
+      selectedIcon,
+      description,
+      showTitle,
+      width,
+      checkboxColor,
+      tags,
+      newOption,
+    },
+    actions: {
+      setName,
+      setSelectedIcon,
+      setDescription,
+      setShowTitle,
+      setCheckboxColor,
+      setTags,
+      setNewOption,
+      handleSave,
+      handleArchive,
+      handlePermanentDelete,
+      handleMoveLeft,
+      handleMoveRight,
+      handleWidthChange,
+      handleAddOption,
+      handleRemoveOption,
+      handleEditOption,
+      handleColorChange,
+    },
+    ui: {
+      isIconSectionExpanded,
+      setIsIconSectionExpanded,
+      isSaving,
+    },
+  };
 };

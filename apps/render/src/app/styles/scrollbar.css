@@ -1,0 +1,82 @@
+/* ==========================================================================
+   Centralized Theme-Aware Scrollbar Styles
+   Matches the exact compact table scrollbar form (width: 5px, height: 4px).
+   Uses CSS variables (--scrollbar-track, --scrollbar-thumb, --scrollbar-thumb-hover)
+   from themes.css while preserving the exact original geometry and feel.
+   ========================================================================== */
+
+/* Compact table & container scrollbar (exact original table dimensions) */
+.custom-scroll::-webkit-scrollbar,
+.custom-scroll-dark::-webkit-scrollbar,
+.custom-scroll-y-light::-webkit-scrollbar,
+.custom-scroll-y-dark::-webkit-scrollbar {
+  width: 5px;
+  height: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-track,
+.custom-scroll-dark::-webkit-scrollbar-track,
+.custom-scroll-y-light::-webkit-scrollbar-track,
+.custom-scroll-y-dark::-webkit-scrollbar-track {
+  background: var(--scrollbar-track, rgba(241, 241, 241, 0.2));
+  border-radius: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb,
+.custom-scroll-dark::-webkit-scrollbar-thumb,
+.custom-scroll-y-light::-webkit-scrollbar-thumb,
+.custom-scroll-y-dark::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, rgba(156, 163, 175, 0.5));
+  border-radius: 4px;
+  height: 1px;
+  width: 1px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover,
+.custom-scroll-dark::-webkit-scrollbar-thumb:hover,
+.custom-scroll-y-light::-webkit-scrollbar-thumb:hover,
+.custom-scroll-y-dark::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, rgba(107, 114, 128, 0.7));
+}
+
+/* Thin scrollbar for cells (2px) */
+.custom-scroll-thin::-webkit-scrollbar,
+.custom-scroll-thin-light::-webkit-scrollbar,
+.custom-scroll-thin-dark::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+.custom-scroll-thin::-webkit-scrollbar-track,
+.custom-scroll-thin-light::-webkit-scrollbar-track,
+.custom-scroll-thin-dark::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll-thin::-webkit-scrollbar-thumb,
+.custom-scroll-thin-light::-webkit-scrollbar-thumb,
+.custom-scroll-thin-dark::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, rgba(156, 163, 175, 0.4));
+  border-radius: 9999px;
+  transition: background-color 200ms;
+}
+
+.custom-scroll-thin::-webkit-scrollbar-thumb:hover,
+.custom-scroll-thin-light::-webkit-scrollbar-thumb:hover,
+.custom-scroll-thin-dark::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, rgba(107, 114, 128, 0.9));
+}
+
+/* Scrollbar Hiding Utilities */
+.scrollbar-hide,
+.hide-scrollbar,
+.hide-scrollbar-y {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar,
+.hide-scrollbar-y::-webkit-scrollbar {
+  display: none;
+}

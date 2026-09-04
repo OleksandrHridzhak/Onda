@@ -1,79 +1,79 @@
-import React from 'react';
-import { useClickOutside } from 'shared/hooks/useClickOutside';
-import { icons as allIcons, getIconComponent, Icon } from 'shared/lib/icons';
+import React from "react";
+import { useClickOutside } from "shared/hooks/useClickOutside";
+import { icons as allIcons, getIconComponent, Icon } from "shared/lib/icons";
 
 export interface IconSelectorProps {
-    selectedIcon: string;
-    setSelectedIcon: (icon: string) => void;
-    isIconSectionExpanded: boolean;
-    setIsIconSectionExpanded: (expanded: boolean) => void;
-    icons?: Icon[];
+  selectedIcon: string;
+  setSelectedIcon: (icon: string) => void;
+  isIconSectionExpanded: boolean;
+  setIsIconSectionExpanded: (expanded: boolean) => void;
+  icons?: Icon[];
 }
 
 export const IconSelector = ({
-    selectedIcon,
-    setSelectedIcon,
-    isIconSectionExpanded,
-    setIsIconSectionExpanded,
-    icons = allIcons,
+  selectedIcon,
+  setSelectedIcon,
+  isIconSectionExpanded,
+  setIsIconSectionExpanded,
+  icons = allIcons,
 }: IconSelectorProps) => {
-    const ref = useClickOutside<HTMLDivElement>(
-        () => setIsIconSectionExpanded(false),
-        isIconSectionExpanded,
-    );
+  const ref = useClickOutside<HTMLDivElement>(
+    () => setIsIconSectionExpanded(false),
+    isIconSectionExpanded,
+  );
 
-    const iconSizePx = 50;
-    const gapPx = 4;
-    const maxIconsInRow = 7;
-    const containerMaxWidth = maxIconsInRow * (iconSizePx + gapPx);
+  const iconSizePx = 50;
+  const gapPx = 4;
+  const maxIconsInRow = 7;
+  const containerMaxWidth = maxIconsInRow * (iconSizePx + gapPx);
 
-    return (
-        <div className="relative mb-4" ref={ref}>
+  return (
+    <div className="relative mb-4" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setIsIconSectionExpanded(!isIconSectionExpanded)}
+        className="w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background text-text hover:bg-backgrundHover focus:outline-none focus:ring-2 focus:ring-primaryColor transition-all duration-200"
+        aria-expanded={isIconSectionExpanded}
+        aria-label="Select icon"
+      >
+        {selectedIcon ? (
+          getIconComponent(selectedIcon, 24)
+        ) : (
+          <span className="text-sm">Select</span>
+        )}
+      </button>
+
+      {isIconSectionExpanded && (
+        <div
+          className="absolute top-full w-96 left-0 mt-1 z-50 overflow-y-auto border rounded-lg shadow-lg bg-background border-border flex flex-wrap gap-1"
+          style={{ maxWidth: containerMaxWidth }}
+        >
+          {icons.map((icon) => (
             <button
-                type="button"
-                onClick={() => setIsIconSectionExpanded(!isIconSectionExpanded)}
-                className="w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background text-text hover:bg-backgrundHover focus:outline-none focus:ring-2 focus:ring-primaryColor transition-all duration-200"
-                aria-expanded={isIconSectionExpanded}
-                aria-label="Select icon"
+              key={icon.name}
+              onClick={() => {
+                setSelectedIcon(icon.name);
+                setIsIconSectionExpanded(false);
+              }}
+              className={`flex items-center justify-center rounded-lg ${
+                selectedIcon === icon.name
+                  ? "bg-primaryColor text-text"
+                  : "text-text hover:bg-backgrundHover"
+              } transition-colors duration-200`}
+              aria-label={`Select ${icon.name} icon`}
+              type="button"
+              style={{
+                width: `${iconSizePx}px`,
+                height: `${iconSizePx}px`,
+              }}
             >
-                {selectedIcon ? (
-                    getIconComponent(selectedIcon, 24)
-                ) : (
-                    <span className="text-sm">Select</span>
-                )}
+              {getIconComponent(icon.name, 24)}
             </button>
-
-            {isIconSectionExpanded && (
-                <div
-                    className="absolute top-full w-96 left-0 mt-1 z-50 overflow-y-auto border rounded-lg shadow-lg bg-background border-border flex flex-wrap gap-1"
-                    style={{ maxWidth: containerMaxWidth }}
-                >
-                    {icons.map((icon) => (
-                        <button
-                            key={icon.name}
-                            onClick={() => {
-                                setSelectedIcon(icon.name);
-                                setIsIconSectionExpanded(false);
-                            }}
-                            className={`flex items-center justify-center rounded-lg ${
-                                selectedIcon === icon.name
-                                    ? 'bg-primaryColor text-text'
-                                    : 'text-text hover:bg-backgrundHover'
-                            } transition-colors duration-200`}
-                            aria-label={`Select ${icon.name} icon`}
-                            type="button"
-                            style={{
-                                width: `${iconSizePx}px`,
-                                height: `${iconSizePx}px`,
-                            }}
-                        >
-                            {getIconComponent(icon.name, 24)}
-                        </button>
-                    ))}
-                </div>
-            )}
+          ))}
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default IconSelector;

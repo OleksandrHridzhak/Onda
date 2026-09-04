@@ -1,20 +1,20 @@
-import type { ThemeState } from './themeSlice';
+import type { ThemeState } from "./themeSlice";
 
 interface ThemeRootState {
-    newTheme: ThemeState;
+  newTheme: ThemeState;
 }
 
 export const selectTheme = (state: ThemeRootState): ThemeState =>
-    state.newTheme;
+  state.newTheme;
 
 export const selectThemeMode = (
-    state: ThemeRootState,
-): ThemeState['themeMode'] => state.newTheme.themeMode;
+  state: ThemeRootState,
+): ThemeState["themeMode"] => state.newTheme.themeMode;
 
 export const selectColorScheme = (
-    state: ThemeRootState,
-): ThemeState['colorScheme'] => state.newTheme.colorScheme;
+  state: ThemeRootState,
+): ThemeState["colorScheme"] => state.newTheme.colorScheme;
 
 export const selectFontFamily = (
-    state: ThemeRootState,
-): ThemeState['fontFamily'] => state.newTheme.fontFamily;
+  state: ThemeRootState,
+): ThemeState["fontFamily"] => state.newTheme.fontFamily;

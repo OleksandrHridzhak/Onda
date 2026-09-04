@@ -1,6 +1,6 @@
-import { SettingsPanel } from 'features/settings/components/SettingsPanel';
+import { SettingsPanel } from "features/settings/components/SettingsPanel";
 
 export function SettingsPage(): React.ReactElement {
-    return <SettingsPanel />;
+  return <SettingsPanel />;
 }
 export default SettingsPage;

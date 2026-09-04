@@ -1,20 +1,20 @@
-import React from 'react';
-import SettingsSection from 'shared/ui/SettingsSection';
-import { Button } from 'shared/ui/Button';
+import React from "react";
+import SettingsSection from "shared/ui/SettingsSection";
+import { Button } from "shared/ui/Button";
 
 const onFullClose = async (): Promise<void> => {
-    await globalThis.electronAPI?.closeApp();
+  await globalThis.electronAPI?.closeApp();
 };
 export function FullCloseSection(): React.ReactElement {
-    return (
-        <SettingsSection title="System settings">
-            <div className="mt-4">
-                <Button variant="danger" onClick={onFullClose}>
-                    Close Application
-                </Button>
-            </div>
-        </SettingsSection>
-    );
+  return (
+    <SettingsSection title="System settings">
+      <div className="mt-4">
+        <Button variant="danger" onClick={onFullClose}>
+          Close Application
+        </Button>
+      </div>
+    </SettingsSection>
+  );
 }
 
 export default FullCloseSection;

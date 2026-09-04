@@ -1,68 +1,61 @@
-import { useState } from 'react';
-import type { Column } from '../../../types/columnTypes';
-import { ColumnMenu } from '../../columnSettings/ColumnMenu';
-import { getIconComponent } from 'shared/lib/icons';
+import { useState } from "react";
+import type { Column } from "../../../types/columnTypes";
+import { ColumnMenu } from "../../columnSettings/ColumnMenu";
+import { getIconComponent } from "shared/lib/icons";
 
 interface ColumnHeaderProps {
-    column: Column;
-    archivedAt: Date;
+  column: Column;
+  archivedAt: Date;
 }
 
 export function ColumnHeader({
-    column,
-    archivedAt,
+  column,
+  archivedAt,
 }: ColumnHeaderProps): React.ReactElement {
-    const [showMenu, setShowMenu] = useState(false);
-    const isEmptyHeader =
-        !column.emojiIconName &&
-        (column.isNameVisible === false || !column.name);
+  const [showMenu, setShowMenu] = useState(false);
+  const isEmptyHeader =
+    !column.emojiIconName && (column.isNameVisible === false || !column.name);
 
-    return (
-        <>
-            <div className="checkbox-nested-table font-poppins h-[45px] box-border border-b border-border bg-surfaceMuted flex items-center">
-                <div
-                    role="button"
-                    tabIndex={0}
-                    className={`font-poppins flex items-center justify-between group cursor-pointer px-3 py-3 text-left text-sm font-medium w-full h-full ${column.isNameVisible === false || isEmptyHeader ? 'justify-center' : ''}`}
-                    onClick={() => setShowMenu(true)}
-                    onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            setShowMenu(true);
-                        }
-                    }}
-                    aria-label={column.name || 'Column settings'}
-                >
-                    <div
-                        className={`flex items-center ${column.isNameVisible === false || isEmptyHeader ? 'justify-center w-full' : ''}`}
-                    >
-                        {column.emojiIconName && (
-                            <span
-                                className={
-                                    column.isNameVisible !== false ? 'mr-1' : ''
-                                }
-                            >
-                                {getIconComponent(column.emojiIconName, 16)}
-                            </span>
-                        )}
-                        {column.isNameVisible !== false && column.name && (
-                            <span className="truncate block text-textMuted max-w-full">
-                                {column.name}
-                            </span>
-                        )}
-                        {isEmptyHeader && (
-                            <span className="opacity-0">...</span>
-                        )}
-                    </div>
-                </div>
-            </div>
-            {showMenu && (
-                <ColumnMenu
-                    columnId={column.id}
-                    archivedAt={archivedAt}
-                    onClose={() => setShowMenu(false)}
-                />
+  return (
+    <>
+      <div className="checkbox-nested-table font-poppins h-[45px] box-border border-b border-border bg-surfaceMuted flex items-center">
+        <div
+          role="button"
+          tabIndex={0}
+          className={`font-poppins flex items-center justify-between group cursor-pointer px-3 py-3 text-left text-sm font-medium w-full h-full ${column.isNameVisible === false || isEmptyHeader ? "justify-center" : ""}`}
+          onClick={() => setShowMenu(true)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setShowMenu(true);
+            }
+          }}
+          aria-label={column.name || "Column settings"}
+        >
+          <div
+            className={`flex items-center ${column.isNameVisible === false || isEmptyHeader ? "justify-center w-full" : ""}`}
+          >
+            {column.emojiIconName && (
+              <span className={column.isNameVisible !== false ? "mr-1" : ""}>
+                {getIconComponent(column.emojiIconName, 16)}
+              </span>
             )}
-        </>
-    );
+            {column.isNameVisible !== false && column.name && (
+              <span className="truncate block text-textMuted max-w-full">
+                {column.name}
+              </span>
+            )}
+            {isEmptyHeader && <span className="opacity-0">...</span>}
+          </div>
+        </div>
+      </div>
+      {showMenu && (
+        <ColumnMenu
+          columnId={column.id}
+          archivedAt={archivedAt}
+          onClose={() => setShowMenu(false)}
+        />
+      )}
+    </>
+  );
 }

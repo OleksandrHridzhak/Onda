@@ -1,14 +1,14 @@
-import { api } from 'shared/api/client';
-import type { CalendarEntry, DbResult } from '@onda/shared';
+import { api } from "shared/api/client";
+import type { CalendarEntry, DbResult } from "@onda/shared";
 
 export async function saveCalendarEvent(
-    eventData: CalendarEntry | Omit<CalendarEntry, 'id'>,
+  eventData: CalendarEntry | Omit<CalendarEntry, "id">,
 ): Promise<DbResult<CalendarEntry>> {
-    return api.calendar.save(eventData);
+  return api.calendar.save(eventData);
 }
 
 export async function deleteCalendarEvent(
-    eventId: string,
+  eventId: string,
 ): Promise<DbResult<{ eventId: string }>> {
-    return api.calendar.delete(eventId);
+  return api.calendar.delete(eventId);
 }

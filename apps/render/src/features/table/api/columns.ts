@@ -1,19 +1,19 @@
-import { api } from 'shared/api/client';
-import type { Column, DbResult } from '@onda/shared';
+import { api } from "shared/api/client";
+import type { Column, DbResult } from "@onda/shared";
 
 export async function getAllColumns(): Promise<DbResult<Column[]>> {
-    return api.columns.getAll();
+  return api.columns.getAll();
 }
 
 export async function getColumnById(
-    columnId: string,
+  columnId: string,
 ): Promise<DbResult<Column>> {
-    return api.columns.getById(columnId);
+  return api.columns.getById(columnId);
 }
 
 export async function getColumnsByIds(
-    columnIds: string[],
+  columnIds: string[],
 ): Promise<(Column | undefined)[]> {
-    const res = await api.columns.getByIds(columnIds);
-    return res.success && res.data ? res.data : columnIds.map(() => undefined);
+  const res = await api.columns.getByIds(columnIds);
+  return res.success && res.data ? res.data : columnIds.map(() => undefined);
 }

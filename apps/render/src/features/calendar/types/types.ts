@@ -1,1 +1,1 @@
-export type { CalendarEntry } from '@onda/shared';
+export type { CalendarEntry } from "@onda/shared";

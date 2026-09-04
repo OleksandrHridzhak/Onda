@@ -1,6 +1,6 @@
-import { CalendarBoard } from 'features/calendar/components/CalendarBoard';
+import { CalendarBoard } from "features/calendar/components/CalendarBoard";
 
 export function CalendarPage(): React.ReactElement {
-    return <CalendarBoard />;
+  return <CalendarBoard />;
 }
 export default CalendarPage;

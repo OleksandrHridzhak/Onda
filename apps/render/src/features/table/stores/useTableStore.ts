@@ -1,15 +1,15 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface TableState {
-    // стейт
+  // стейт
 }
 
 interface TableActions {
-    // екшени
+  // екшени
 }
 
 export type TableStore = TableState & TableActions;
 
 export const useTableStore = create<TableStore>((set) => ({
-    // початковий стан та реалізація екшенів
+  // початковий стан та реалізація екшенів
 }));

@@ -1,14 +1,14 @@
-import React from 'react';
-import { useDocumentThemeMode } from 'shared/lib/theme';
-import { COLOR_STYLES } from 'shared/lib/color';
-import { useTaskState } from './hooks/useTaskState';
-import { handleToggleTask } from './logic';
-import type { Tag } from '../../../types/columnTypes';
+import React from "react";
+import { useDocumentThemeMode } from "shared/lib/theme";
+import { COLOR_STYLES } from "shared/lib/color";
+import { useTaskState } from "./hooks/useTaskState";
+import { handleToggleTask } from "./logic";
+import type { Tag } from "../../../types/columnTypes";
 
 interface TaskTableCellProps {
-    availableTags: Tag[];
-    doneTasks: string[];
-    onChange: (availableTags: Tag[], doneTasks: string[]) => void;
+  availableTags: Tag[];
+  doneTasks: string[];
+  onChange: (availableTags: Tag[], doneTasks: string[]) => void;
 }
 
 /**
@@ -17,151 +17,139 @@ interface TaskTableCellProps {
  * Uses Tag format with ID tracking.
  */
 export const TaskTableCell = ({
-    availableTags,
-    doneTasks,
-    onChange,
+  availableTags,
+  doneTasks,
+  onChange,
 }: TaskTableCellProps) => {
-    const themeMode = useDocumentThemeMode();
-    const darkMode = themeMode === 'dark' ? true : false;
+  const themeMode = useDocumentThemeMode();
+  const darkMode = themeMode === "dark" ? true : false;
 
-    const {
-        incompleteTasks,
-        setIncompleteTasks,
-        completedTasks,
-        setCompletedTasks,
-    } = useTaskState(availableTags, doneTasks);
+  const {
+    incompleteTasks,
+    setIncompleteTasks,
+    completedTasks,
+    setCompletedTasks,
+  } = useTaskState(availableTags, doneTasks);
 
-    // Get Tag object by ID
-    const getTagById = (tagId: string) => {
-        return availableTags.find((tag) => tag.id === tagId);
-    };
+  // Get Tag object by ID
+  const getTagById = (tagId: string) => {
+    return availableTags.find((tag) => tag.id === tagId);
+  };
 
-    return (
-        <div className="h-full flex flex-col">
-            <div
-                className={`flex-1 overflow-y-auto overflow-x-hidden max-h-[380px] ${
-                    darkMode
-                        ? 'custom-scroll-thin-dark'
-                        : 'custom-scroll-thin-light'
-                }`}
-            >
-                <div className="mb-4">
-                    <h3
-                        className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
-                    >
-                        To Do
-                    </h3>
-                    <div className="flex flex-wrap gap-1">
-                        {incompleteTasks.map((taskId) => {
-                            const tag = getTagById(taskId);
-                            if (!tag) return null;
+  return (
+    <div className="h-full flex flex-col">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden max-h-[380px] custom-scroll-thin">
+        <div className="mb-4">
+          <h3
+            className={`text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-600"}`}
+          >
+            To Do
+          </h3>
+          <div className="flex flex-wrap gap-1">
+            {incompleteTasks.map((taskId) => {
+              const tag = getTagById(taskId);
+              if (!tag) return null;
 
-                            return (
-                                <div
-                                    key={taskId}
-                                    role="button"
-                                    tabIndex={0}
-                                    onClick={() =>
-                                        handleToggleTask(
-                                            taskId,
-                                            false,
-                                            incompleteTasks,
-                                            completedTasks,
-                                            setIncompleteTasks,
-                                            setCompletedTasks,
-                                            onChange,
-                                            availableTags,
-                                        )
-                                    }
-                                    onKeyDown={(e) => {
-                                        if (
-                                            e.key === 'Enter' ||
-                                            e.key === ' '
-                                        ) {
-                                            e.preventDefault();
-                                            handleToggleTask(
-                                                taskId,
-                                                false,
-                                                incompleteTasks,
-                                                completedTasks,
-                                                setIncompleteTasks,
-                                                setCompletedTasks,
-                                                onChange,
-                                                availableTags,
-                                            );
-                                        }
-                                    }}
-                                    className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer
-                  ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}
+              return (
+                <div
+                  key={taskId}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    handleToggleTask(
+                      taskId,
+                      false,
+                      incompleteTasks,
+                      completedTasks,
+                      setIncompleteTasks,
+                      setCompletedTasks,
+                      onChange,
+                      availableTags,
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleToggleTask(
+                        taskId,
+                        false,
+                        incompleteTasks,
+                        completedTasks,
+                        setIncompleteTasks,
+                        setCompletedTasks,
+                        onChange,
+                        availableTags,
+                      );
+                    }
+                  }}
+                  className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer
+                  ${darkMode ? "bg-gray-600 text-gray-200" : "bg-gray-200 text-gray-700"}
                   hover:opacity-80 transition-opacity flex items-center gap-1`}
-                                    aria-label={`Mark task "${tag.name}" as complete`}
-                                >
-                                    {tag.name}
-                                </div>
-                            );
-                        })}
-                    </div>
+                  aria-label={`Mark task "${tag.name}" as complete`}
+                >
+                  {tag.name}
                 </div>
-                <div>
-                    <h3
-                        className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
-                    >
-                        Completed
-                    </h3>
-                    <div className="flex flex-wrap gap-1">
-                        {completedTasks.map((taskId) => {
-                            const tag = getTagById(taskId);
-                            if (!tag) return null;
+              );
+            })}
+          </div>
+        </div>
+        <div>
+          <h3
+            className={`text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-600"}`}
+          >
+            Completed
+          </h3>
+          <div className="flex flex-wrap gap-1">
+            {completedTasks.map((taskId) => {
+              const tag = getTagById(taskId);
+              if (!tag) return null;
 
-                            const colorOption = COLOR_STYLES[tag.color];
+              const colorOption = COLOR_STYLES[tag.color];
 
-                            return (
-                                <div
-                                    key={taskId}
-                                    role="button"
-                                    tabIndex={0}
-                                    onClick={() =>
-                                        handleToggleTask(
-                                            taskId,
-                                            true,
-                                            incompleteTasks,
-                                            completedTasks,
-                                            setIncompleteTasks,
-                                            setCompletedTasks,
-                                            onChange,
-                                            availableTags,
-                                        )
-                                    }
-                                    onKeyDown={(e) => {
-                                        if (
-                                            e.key === 'Enter' ||
-                                            e.key === ' '
-                                        ) {
-                                            e.preventDefault();
-                                            handleToggleTask(
-                                                taskId,
-                                                true,
-                                                incompleteTasks,
-                                                completedTasks,
-                                                setIncompleteTasks,
-                                                setCompletedTasks,
-                                                onChange,
-                                                availableTags,
-                                            );
-                                        }
-                                    }}
-                                    aria-label={`Mark task "${tag.name}" as incomplete`}
-                                    className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer line-through 
+              return (
+                <div
+                  key={taskId}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    handleToggleTask(
+                      taskId,
+                      true,
+                      incompleteTasks,
+                      completedTasks,
+                      setIncompleteTasks,
+                      setCompletedTasks,
+                      onChange,
+                      availableTags,
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleToggleTask(
+                        taskId,
+                        true,
+                        incompleteTasks,
+                        completedTasks,
+                        setIncompleteTasks,
+                        setCompletedTasks,
+                        onChange,
+                        availableTags,
+                      );
+                    }
+                  }}
+                  aria-label={`Mark task "${tag.name}" as incomplete`}
+                  className={`px-4 py-2 rounded-full text-xs font-medium cursor-pointer line-through 
                     ${colorOption.bg} ${colorOption.text}
                     hover:opacity-100 transition-opacity flex items-center gap-1`}
-                                >
-                                    {tag.name}
-                                </div>
-                            );
-                        })}
-                    </div>
+                >
+                  {tag.name}
                 </div>
-            </div>
+              );
+            })}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };

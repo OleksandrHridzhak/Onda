@@ -1,58 +1,58 @@
 {
-    "name": "@onda/desktop",
-    "version": "2.2.0",
-    "main": "build/main.bundle.js",
-    "private": true,
-    "license": "MIT",
-    "scripts": {
-        "build": "webpack --config webpack.config.ts",
-        "watch": "webpack --config webpack.config.ts --mode=development --watch",
-        "typecheck": "tsc --noEmit",
-        "dist": "electron-builder"
+  "name": "@onda/desktop",
+  "version": "2.2.0",
+  "main": "build/main.bundle.js",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --config webpack.config.ts",
+    "watch": "webpack --config webpack.config.ts --mode=development --watch",
+    "typecheck": "tsc --noEmit",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "@onda/shared": "*",
+    "@prisma/client": "^6.19.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.1",
+    "dotenv": "^17.2.3",
+    "electron": "^35.1.4",
+    "electron-builder": "^26.0.12",
+    "prisma": "^6.19.3",
+    "ts-loader": "^9.6.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1"
+  },
+  "build": {
+    "asar": false,
+    "appId": "com.onda.onda.dev",
+    "productName": "Onda 2.2 Dev",
+    "electronLanguages": [
+      "en-US",
+      "uk"
+    ],
+    "publish": null,
+    "directories": {
+      "buildResources": "../../packages/shared/assets",
+      "output": "../../dist"
     },
-    "dependencies": {
-        "@onda/shared": "*",
-        "@prisma/client": "^6.19.3"
+    "win": {
+      "target": "nsis",
+      "icon": "../../packages/shared/assets/logo256.ico",
+      "compression": "maximum"
     },
-    "devDependencies": {
-        "@types/node": "^24.13.1",
-        "dotenv": "^17.2.3",
-        "electron": "^35.1.4",
-        "electron-builder": "^26.0.12",
-        "prisma": "^6.19.3",
-        "ts-loader": "^9.6.0",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.9.3",
-        "webpack": "^5.102.1",
-        "webpack-cli": "^6.0.1"
-    },
-    "build": {
-        "asar": false,
-        "appId": "com.onda.onda.dev",
-        "productName": "Onda 2.2 Dev",
-        "electronLanguages": [
-            "en-US",
-            "uk"
-        ],
-        "publish": null,
-        "directories": {
-            "buildResources": "../../packages/shared/assets",
-            "output": "../../dist"
-        },
-        "win": {
-            "target": "nsis",
-            "icon": "../../packages/shared/assets/logo256.ico",
-            "compression": "maximum"
-        },
-        "files": [
-            "../render/build/**",
-            "build/**",
-            "../../packages/shared/assets/**",
-            "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
-            "!**/*.{md,txt,log}",
-            "!**/node_modules/electron-devtools-installer/**",
-            "!**/node_modules/electron-debug/**",
-            "!.env"
-        ]
-    }
+    "files": [
+      "../render/build/**",
+      "build/**",
+      "../../packages/shared/assets/**",
+      "!**/*.{pdb,zip,tgz,gz,tar,asar.unpacked,node,test,spec,d.ts,map,js.map}",
+      "!**/*.{md,txt,log}",
+      "!**/node_modules/electron-devtools-installer/**",
+      "!**/node_modules/electron-debug/**",
+      "!.env"
+    ]
+  }
 }

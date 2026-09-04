@@ -1,9 +1,9 @@
-import type { ElectronAPI } from '@onda/shared';
+import type { ElectronAPI } from "@onda/shared";
 
 declare global {
-    interface Window {
-        electronAPI?: ElectronAPI;
-    }
+  interface Window {
+    electronAPI?: ElectronAPI;
+  }
 }
 
 export {};

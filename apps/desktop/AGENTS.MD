@@ -12,6 +12,7 @@
 ## Feature Slice Structure
 
 Each feature slice under `src/features/` should be structured as follows:
+
 - `services/`: Fine-grained, single-responsibility services performing database operations with Prisma.
 - `<feature>.controller.ts`: Handles requests and formats responses/errors.
 - `<feature>.router.ts`: Registers `ipcMain.handle` endpoints for this specific slice.

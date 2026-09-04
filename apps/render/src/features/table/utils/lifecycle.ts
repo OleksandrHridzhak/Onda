@@ -1,22 +1,22 @@
-import type { Column } from '../types/columnTypes';
-import { getWeekStartKey } from 'shared/lib/date';
+import type { Column } from "../types/columnTypes";
+import { getWeekStartKey } from "shared/lib/date";
 
 export const isColumnArchived = (column: Column): boolean =>
-    Boolean(column.lifecycle?.archivedAt);
+  Boolean(column.lifecycle?.archivedAt);
 
 export const isColumnVisibleForWeek = (
-    column: Column,
-    weekStartKey: string,
+  column: Column,
+  weekStartKey: string,
 ): boolean => {
-    const createdWeek = column.lifecycle?.createdAt
-        ? getWeekStartKey(new Date(column.lifecycle.createdAt))
-        : null;
-    const archivedWeek = column.lifecycle?.archivedAt
-        ? getWeekStartKey(new Date(column.lifecycle.archivedAt))
-        : null;
+  const createdWeek = column.lifecycle?.createdAt
+    ? getWeekStartKey(new Date(column.lifecycle.createdAt))
+    : null;
+  const archivedWeek = column.lifecycle?.archivedAt
+    ? getWeekStartKey(new Date(column.lifecycle.archivedAt))
+    : null;
 
-    return (
-        (!createdWeek || createdWeek <= weekStartKey) &&
-        (!archivedWeek || weekStartKey <= archivedWeek)
-    );
+  return (
+    (!createdWeek || createdWeek <= weekStartKey) &&
+    (!archivedWeek || weekStartKey <= archivedWeek)
+  );
 };

@@ -1,14 +1,14 @@
 /* Styles extracted from Table.tsx */
 .todo-cell {
-    position: relative;
-    z-index: 1;
-    height: 100%;
+  position: relative;
+  z-index: 1;
+  height: 100%;
 }
 .todo-cell > div {
-    height: 100%;
+  height: 100%;
 }
 table {
-    table-layout: fixed;
+  table-layout: fixed;
 }
 
 /* Keep entire table, columns, and nested elements aligned with the active theme font */
@@ -16,27 +16,27 @@ table {
 .weekly-table-root *,
 .checkbox-nested-table,
 .checkbox-nested-table * {
-    font-family: var(--font-family-base, 'Rubik'), sans-serif !important;
-    font-weight: 450 !important;
+  font-family: var(--font-family-base, "Rubik"), sans-serif !important;
+  font-weight: 450 !important;
 }
 
 /* Styling for nested column tables */
 .checkbox-nested-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 .checkbox-nested-table thead th {
-    height: 45px;
-    padding: 0;
-    border: none;
-    box-sizing: border-box;
-    border-bottom: 1px solid var(--border);
+  height: 45px;
+  padding: 0;
+  border: none;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--border);
 }
 .checkbox-nested-table tbody td {
-    border: none;
-    box-sizing: border-box;
-    vertical-align: top;
+  border: none;
+  box-sizing: border-box;
+  vertical-align: top;
 }
 
 /* Vertical centering for specific column types: checkbox, number, text, multi-checkbox, and days */
@@ -45,16 +45,16 @@ table {
 .checkbox-nested-table.column-text tbody td,
 .checkbox-nested-table.column-multicheckbox tbody td,
 .checkbox-nested-table.column-days tbody td {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .checkbox-nested-table thead th > div {
-    height: 100%;
-    display: flex;
-    align-items: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 /* Remove bottom border from ColumnHeader to prevent double borders */
 .checkbox-nested-table thead th .border-b {
-    border-bottom: none !important;
+  border-bottom: none !important;
 }

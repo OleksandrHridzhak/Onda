@@ -1,70 +1,71 @@
 {
-    "name": "onda",
-    "version": "2.2.0",
-    "private": true,
-    "workspaces": [
-        "apps/*",
-        "packages/*"
+  "name": "onda",
+  "version": "2.2.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run watch --workspace=@onda/desktop\" \"npm run dev --workspace=@onda/render\" \"npm run start:electron\"",
+    "start:render": "npm run dev --workspace=@onda/render",
+    "start:electron": "wait-on http://localhost:3000 && nodemon",
+    "build": "npm run build --workspace=@onda/render && npm run build --workspace=@onda/desktop",
+    "build:render": "npm run build --workspace=@onda/render",
+    "build:electron": "npm run build --workspace=@onda/desktop",
+    "typecheck:electron": "npm run typecheck --workspace=@onda/desktop",
+    "watch:electron": "npm run watch --workspace=@onda/desktop",
+    "dist": "npm run build && npm run dist --workspace=@onda/desktop",
+    "db:push": "prisma db push --schema=apps/desktop/prisma/schema.prisma",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "planner",
+    "task manager",
+    "sprint",
+    "weekly planning",
+    "productivity",
+    "tasks",
+    "organization"
+  ],
+  "author": "Oleksandr Hridzhak <3",
+  "license": "MIT",
+  "description": "Task management tool with sprint-based weekly planning.",
+  "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@eslint/js": "^9.39.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.2.3",
+    "electron": "^35.1.4",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
+    "nodemon": "^3.1.9",
+    "playwright": "^1.55.1",
+    "prettier": "^3.6.2",
+    "prisma": "^6.19.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "wait-on": "^8.0.3"
+  },
+  "lint-staged": {
+    "apps/render/src/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write"
     ],
-    "scripts": {
-        "start": "concurrently \"npm run watch --workspace=@onda/desktop\" \"npm run dev --workspace=@onda/render\" \"npm run start:electron\"",
-        "start:render": "npm run dev --workspace=@onda/render",
-        "start:electron": "wait-on http://localhost:3000 && nodemon",
-        "build": "npm run build --workspace=@onda/render && npm run build --workspace=@onda/desktop",
-        "build:render": "npm run build --workspace=@onda/render",
-        "build:electron": "npm run build --workspace=@onda/desktop",
-        "typecheck:electron": "npm run typecheck --workspace=@onda/desktop",
-        "watch:electron": "npm run watch --workspace=@onda/desktop",
-        "dist": "npm run build && npm run dist --workspace=@onda/desktop",
-        "db:push": "prisma db push --schema=apps/desktop/prisma/schema.prisma",
-        "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-        "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-        "prepare": "husky"
-    },
-    "keywords": [
-        "planner",
-        "task manager",
-        "sprint",
-        "weekly planning",
-        "productivity",
-        "tasks",
-        "organization"
-    ],
-    "author": "Oleksandr Hridzhak <3",
-    "license": "MIT",
-    "description": "Task management tool with sprint-based weekly planning.",
-    "devDependencies": {
-        "@commitlint/cli": "^20.1.0",
-        "@commitlint/config-conventional": "^20.0.0",
-        "@eslint/js": "^9.39.1",
-        "@typescript-eslint/eslint-plugin": "^8.46.4",
-        "@typescript-eslint/parser": "^8.46.4",
-        "concurrently": "^9.2.1",
-        "dotenv": "^17.2.3",
-        "electron": "^35.1.4",
-        "eslint": "^9.39.1",
-        "eslint-plugin-react": "^7.37.5",
-        "eslint-plugin-react-hooks": "^7.0.1",
-        "globals": "^16.5.0",
-        "husky": "^9.1.7",
-        "lint-staged": "^16.2.6",
-        "nodemon": "^3.1.9",
-        "playwright": "^1.55.1",
-        "prettier": "^3.6.2",
-        "prisma": "^6.19.3",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.46.4",
-        "wait-on": "^8.0.3"
-    },
-    "lint-staged": {
-        "apps/render/src/**/*.{js,jsx,ts,tsx}": [
-            "prettier --write"
-        ],
-        "**/*.{json,css,md}": [
-            "prettier --write"
-        ]
-    },
-    "dependencies": {
-        "@prisma/client": "^6.19.3"
-    }
+    "**/*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  }
 }
