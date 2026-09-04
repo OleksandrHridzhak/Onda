@@ -1,8 +1,18 @@
 import React from 'react';
-import { getMonday } from 'shared/lib/date';
+import {
+    formatDateKey,
+    getMonday,
+    getWeekDates,
+    getWeekNumber,
+    getWeekStartKey,
+} from 'shared/lib/date';
 
-interface TableWeekContextValue {
+export interface TableWeekContextValue {
     currentWeekStart: Date;
+    currentWeekStartKey: string;
+    weekDates: Date[];
+    weekNumber: number;
+    isCurrentWeek: boolean;
     canGoToNextWeek: boolean;
     goToPreviousWeek: () => void;
     goToNextWeek: () => void;
@@ -17,9 +27,8 @@ export const TableWeekProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const todayWeekStart = React.useMemo(() => getMonday(new Date()), []);
-    const [currentWeekStart, setCurrentWeekStart] = React.useState(() =>
-        getMonday(new Date()),
-    );
+    const [currentWeekStart, setCurrentWeekStart] =
+        React.useState<Date>(todayWeekStart);
 
     const goToPreviousWeek = React.useCallback(() => {
         setCurrentWeekStart((prev) => {
@@ -40,14 +49,32 @@ export const TableWeekProvider: React.FC<{ children: React.ReactNode }> = ({
     }, [todayWeekStart]);
 
     const goToCurrentWeek = React.useCallback(() => {
-        setCurrentWeekStart(getMonday(new Date()));
-    }, []);
+        setCurrentWeekStart(todayWeekStart);
+    }, [todayWeekStart]);
 
     const canGoToNextWeek = currentWeekStart < todayWeekStart;
+    const currentWeekStartKey = React.useMemo(
+        () => getWeekStartKey(currentWeekStart),
+        [currentWeekStart],
+    );
+    const weekDates = React.useMemo(
+        () => getWeekDates(currentWeekStart),
+        [currentWeekStart],
+    );
+    const weekNumber = React.useMemo(
+        () => getWeekNumber(currentWeekStart),
+        [currentWeekStart],
+    );
+    const isCurrentWeek =
+        formatDateKey(currentWeekStart) === formatDateKey(todayWeekStart);
 
-    const value = React.useMemo(
+    const value = React.useMemo<TableWeekContextValue>(
         () => ({
             currentWeekStart,
+            currentWeekStartKey,
+            weekDates,
+            weekNumber,
+            isCurrentWeek,
             canGoToNextWeek,
             goToPreviousWeek,
             goToNextWeek,
@@ -55,6 +82,10 @@ export const TableWeekProvider: React.FC<{ children: React.ReactNode }> = ({
         }),
         [
             currentWeekStart,
+            currentWeekStartKey,
+            weekDates,
+            weekNumber,
+            isCurrentWeek,
             canGoToNextWeek,
             goToPreviousWeek,
             goToNextWeek,

@@ -1,33 +1,34 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { formatDateKey, getMonday, getWeekNumber } from 'shared/lib/date';
-import { useTableWeek } from 'features/table/context/TableWeekContext';
+import { formatDateKey } from 'shared/lib/date';
+import { useTableWeek } from 'features/table/hooks/useTableWeek';
 import { Button } from 'shared/ui/Button';
 import { ColumnWrapper } from '../../shared/ColumnWrapper';
 
 const DAYS_COLUMN_WIDTH = 135;
 
 interface DaysColumnProps {
-    weekDates: Date[];
+    weekDates?: Date[];
 }
 
 /**
  * A column component that displays the days of the week.
  * ! Always exist at the left side of the table.
  */
-export const DaysColumn: React.FC<DaysColumnProps> = ({ weekDates }) => {
+export const DaysColumn: React.FC<DaysColumnProps> = ({
+    weekDates: propWeekDates,
+}) => {
     const todayKey = formatDateKey(new Date());
     const {
-        currentWeekStart,
+        weekDates: contextWeekDates,
+        weekNumber,
+        isCurrentWeek,
         canGoToNextWeek,
         goToPreviousWeek,
         goToNextWeek,
         goToCurrentWeek,
     } = useTableWeek();
-    const weekNumber = getWeekNumber(currentWeekStart);
-    const isCurrentWeek =
-        formatDateKey(currentWeekStart) ===
-        formatDateKey(getMonday(new Date()));
+    const weekDates = propWeekDates ?? contextWeekDates;
 
     return (
         <ColumnWrapper

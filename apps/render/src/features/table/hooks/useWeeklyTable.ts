@@ -3,23 +3,12 @@ import { useDbQuery, useColumns, useWeekEntries } from 'shared/api/db';
 import { getSettings } from 'features/settings/api/settings';
 import type { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import type { Column } from '../types/columnTypes';
-import { getWeekDates, getWeekStartKey } from 'shared/lib/date';
 import { useRowHeightSync } from './useRowHeightSync';
-import { useTableWeek } from 'features/table/context/TableWeekContext';
+import { useTableWeek } from './useTableWeek';
 import { isColumnVisibleForWeek } from '../utils/lifecycle';
 
 export function useWeeklyTable() {
-    const { currentWeekStart } = useTableWeek();
-
-    const currentWeekStartKey = React.useMemo(
-        () => getWeekStartKey(currentWeekStart),
-        [currentWeekStart],
-    );
-
-    const weekDates = React.useMemo(
-        () => getWeekDates(currentWeekStart),
-        [currentWeekStart],
-    );
+    const { currentWeekStart, currentWeekStartKey, weekDates } = useTableWeek();
 
     const columnOrder = useDbQuery(async () => {
         const res = await getSettings();

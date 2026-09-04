@@ -29,7 +29,7 @@ export const WeeklyTable: React.FC = () => {
                     <thead>
                         <tr className="border-border bg-surfaceMuted text-textMuted border-b">
                             {/* Static: Days of the week column */}
-                            <DaysColumn weekDates={weekDates} />
+                            <DaysColumn />
 
                             {/* Dynamic: User-defined optional columns */}
                             {visibleColumns.map((column) => (

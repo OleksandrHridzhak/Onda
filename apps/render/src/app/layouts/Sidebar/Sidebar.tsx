@@ -8,7 +8,7 @@ import { CreateColumn } from 'features/table/components/columnSettings/CreateCol
 import { sideBarItems } from './constants';
 import { createColumn } from 'features/table/api/createColumn';
 import type { ColumnType } from 'features/table/types/columnTypes';
-import { useTableWeek } from 'features/table/context/TableWeekContext';
+import { useTableWeek } from 'features/table/hooks/useTableWeek';
 
 type ActivePage = 'home' | 'calendar' | 'statistics' | 'settings';
 
