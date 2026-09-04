@@ -1,7 +1,5 @@
 import React from 'react';
-import { daysColumn, fillerColumn } from '../constants';
 import { useDbQuery, useColumns, useWeekEntries } from 'shared/api/db';
-import TableItemWrapper from './TableItemWrapper';
 import { getSettings } from 'features/settings/api/settings';
 import type { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import { getWeekDates, getWeekStartKey } from 'shared/lib/date';
@@ -12,8 +10,8 @@ import { TableLoadingOverlay } from './common/TableLoadingOverlay';
 import { TableEmptyState } from './common/TableEmptyState';
 import { useTableWeek } from 'features/table/context/TableWeekContext';
 import { isColumnVisibleForWeek } from 'features/columns/utils/lifecycle';
-import { DaysColumn } from './columns/DaysColumn';
-import FillerColumn from './FillerColumn';
+import { DaysColumn } from './columns/service/DaysColumn/DaysColumn';
+import { FillerColumn } from './columns/service/FillerColumn/FillerColumn';
 
 export const WeeklyTable: React.FC = () => {
     const { currentWeekStart } = useTableWeek();
@@ -75,53 +73,37 @@ export const WeeklyTable: React.FC = () => {
     return (
         <div className="font-poppins m-2">
             <div className="overflow-x-auto custom-scroll relative rounded-xl border border-border">
-                <div className="overflow-x-auto custom-scroll">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="border-border bg-surfaceMuted text-textMuted border-b">
-                                {/* Static: Days of the week column */}
-                                <TableItemWrapper
-                                    key="days-column"
-                                    column={daysColumn}
-                                    className="border-r border-border"
-                                >
-                                    <DaysColumn weekDates={weekDates} />
-                                </TableItemWrapper>
+                <table className="w-full">
+                    <thead>
+                        <tr className="border-border bg-surfaceMuted text-textMuted border-b">
+                            {/* Static: Days of the week column */}
+                            <DaysColumn weekDates={weekDates} />
 
-                                {/* Dynamic: User-defined optional columns */}
-                                {visibleColumnOrder.map((id) => {
-                                    const column = columnsData.find(
-                                        (item) => item.id === id,
-                                    );
-                                    return column ? (
-                                        <DynamicColumn
-                                            key={id}
-                                            column={column}
-                                            weekDates={weekDates}
-                                            weekEntriesByDate={
-                                                weekEntriesByBlock[id] || {}
-                                            }
-                                            archivedAt={currentWeekStart}
-                                        />
-                                    ) : null;
-                                })}
-
-                                {/* Utility: Filler column to occupy remaining space */}
-                                <TableItemWrapper
-                                    key="filler"
-                                    column={fillerColumn}
-                                >
-                                    <FillerColumn
-                                        hideRowBorders={
-                                            visibleColumnOrder.length === 0
+                            {/* Dynamic: User-defined optional columns */}
+                            {visibleColumnOrder.map((id) => {
+                                const column = columnsData.find(
+                                    (item) => item.id === id,
+                                );
+                                return column ? (
+                                    <DynamicColumn
+                                        key={id}
+                                        column={column}
+                                        weekDates={weekDates}
+                                        weekEntriesByDate={
+                                            weekEntriesByBlock[id] || {}
                                         }
+                                        archivedAt={currentWeekStart}
                                     />
-                                </TableItemWrapper>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                                ) : null;
+                            })}
 
+                            {/* Utility: Filler column to occupy remaining space */}
+                            <FillerColumn
+                                hideRowBorders={visibleColumnOrder.length === 0}
+                            />
+                        </tr>
+                    </thead>
+                </table>
                 {/* Loading overlay */}
                 <TableLoadingOverlay isVisible={isLoading} />
                 <TableEmptyState

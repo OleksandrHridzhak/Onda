@@ -1,15 +1,15 @@
 import React from 'react';
-import TableItemWrapper from './TableItemWrapper';
+import { ColumnWrapper } from './columns/shared/ColumnWrapper';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
 import type { Column } from 'features/columns/types/types';
 import { COLUMN_TYPES } from 'features/columns/types/definitions';
-import { CheckboxColumn } from './columns/CheckboxColumn';
-import { MultiCheckboxColumn } from './columns/MultiCheckboxColumn';
-import { NumberboxColumn } from './columns/NumberboxColumn';
-import { TagsColumn } from './columns/TagsColumn';
-import { TaskTableColumn } from './columns/TaskTableColumn';
-import { TextboxColumn } from './columns/TextboxColumn';
-import { TodoColumn } from './columns/TodoColumn';
+import { CheckboxColumn } from './columns/CheckboxColumn/CheckboxColumn';
+import { MultiCheckboxColumn } from './columns/MultiCheckboxColumn/MultiCheckboxColumn';
+import { NumberboxColumn } from './columns/NumberboxColumn/NumberboxColumn';
+import { TagsColumn } from './columns/TagsColumn/TagsColumn';
+import { TaskTableColumn } from './columns/TaskTableColumn/TaskTableColumn';
+import { TextboxColumn } from './columns/TextboxColumn/TextboxColumn';
+import { TodoColumn } from './columns/TodoColumn/TodoColumn';
 
 /**
  * DynamicColumn component that subscribes only to its own column data.
@@ -56,9 +56,9 @@ const DynamicColumn: React.FC<{
     }
 
     return (
-        <TableItemWrapper column={column} className="border-r border-border">
+        <ColumnWrapper column={column} className="border-r border-border">
             {content}
-        </TableItemWrapper>
+        </ColumnWrapper>
     );
 };
 

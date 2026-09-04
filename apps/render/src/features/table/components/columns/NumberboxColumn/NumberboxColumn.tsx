@@ -1,29 +1,28 @@
-import type { TextboxColumn as TextboxColumnType } from 'features/columns/types/types';
+import type { NumberBoxColumn } from 'features/columns/types/types';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
-import { TextEntryEditor } from '../cells/TextboxColumn/TextboxCell';
-import { ColumnHeader } from '../ColumnHeader';
-import { DayColumnLayout } from './DayColumnLayout';
+import { NumberEntryEditor } from './NumberboxCell';
+import { ColumnHeader } from '../shared/ColumnHeader';
+import { DayColumnLayout } from '../shared/DayColumnLayout';
 
-// TODO : Don't repeat in each column, create a HOC for this pattern
-interface TextboxColumnProps {
-    column: TextboxColumnType;
+interface NumberboxColumnProps {
+    column: NumberBoxColumn;
     weekDates: Date[];
     weekEntriesByDate: ColumnEntryValueMap;
     archivedAt: Date;
 }
 
-export function TextboxColumn({
+export function NumberboxColumn({
     column,
     weekDates,
     weekEntriesByDate,
     archivedAt,
-}: TextboxColumnProps): React.ReactElement {
+}: NumberboxColumnProps): React.ReactElement {
     return (
-        <table className="checkbox-nested-table column-text font-poppins">
+        <table className="checkbox-nested-table column-numberbox font-poppins">
             <ColumnHeader column={column} archivedAt={archivedAt} />
             <DayColumnLayout weekDates={weekDates}>
                 {(_day, dateKey) => (
-                    <TextEntryEditor
+                    <NumberEntryEditor
                         column={column}
                         dateKey={dateKey}
                         entry={weekEntriesByDate[dateKey]}

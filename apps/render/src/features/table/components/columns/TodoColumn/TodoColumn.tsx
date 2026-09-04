@@ -1,23 +1,23 @@
 import { DAYS } from 'features/columns/utils/tableLayout';
-import type { TaskTableColumn as TaskTableColumnType } from 'features/columns/types/types';
-import { TaskTableEditor } from '../cells/TaskTableColumn/TaskTableEditor';
-import { ColumnHeader } from '../ColumnHeader';
+import type { TodoListColumn as TodoListColumnType } from 'features/columns/types/types';
+import { TodoListEditor } from './TodoListEditor';
+import { ColumnHeader } from '../shared/ColumnHeader';
 
-interface TaskTableColumnProps {
-    column: TaskTableColumnType;
+interface TodoColumnProps {
+    column: TodoListColumnType;
     archivedAt: Date;
 }
 
 /**
- * TaskTableColumn component
- * Displays a task table with available tags that can be marked as complete/incomplete.
+ * TodoColumn component
+ * Displays a todo list that spans all days of the week.
  * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
  */
-export function TaskTableColumn({
+export function TodoColumn({
     column,
     archivedAt,
-}: TaskTableColumnProps): React.ReactElement {
-    // Note: TaskTableColumn doesn't use DayColumnLayout because the task list
+}: TodoColumnProps): React.ReactElement {
+    // Note: TodoColumn doesn't use DayColumnLayout because the todo list
     // spans all days (rowSpan={DAYS.length}), unlike day-based columns
     return (
         <table className="checkbox-nested-table font-poppins">
@@ -29,7 +29,7 @@ export function TaskTableColumn({
                         style={{ verticalAlign: 'top' }}
                         rowSpan={DAYS.length}
                     >
-                        <TaskTableEditor column={column} />
+                        <TodoListEditor column={column} />
                     </td>
                 </tr>
             </tbody>

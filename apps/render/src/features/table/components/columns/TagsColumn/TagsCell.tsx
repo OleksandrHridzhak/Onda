@@ -1,6 +1,6 @@
 import React from 'react';
 import { getColorStyle } from 'shared/lib/color';
-import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
+import { useDropdownMultiSelect } from '../shared/hooks/useDropdownMultiSelect';
 import { Tag } from 'features/columns/types/types';
 import { ColumnEntrySnapshot } from 'features/table/types/entryTypes';
 

@@ -1,34 +1,34 @@
-import type { MultiCheckboxColumn as MultiCheckboxColumnType } from 'features/columns/types/types';
+import type { TagsColumn as TagsColumnType } from 'features/columns/types/types';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
-import { MultiCheckboxEntryEditor } from '../cells/MultiCheckboxColumn/MultiCheckboxEntryEditor';
-import { ColumnHeader } from '../ColumnHeader';
-import { DayColumnLayout } from './DayColumnLayout';
+import { TagsEntryEditor } from './TagsEntryEditor';
+import { ColumnHeader } from '../shared/ColumnHeader';
+import { DayColumnLayout } from '../shared/DayColumnLayout';
 
-interface MultiCheckboxColumnProps {
-    column: MultiCheckboxColumnType;
+interface TagsColumnProps {
+    column: TagsColumnType;
     weekDates: Date[];
     weekEntriesByDate: ColumnEntryValueMap;
     archivedAt: Date;
 }
 
 /**
- * MultiCheckboxColumn component
- * Displays multiple checkbox options that can be selected for each day of the week.
+ * TagsColumn component
+ * Displays tags that can be assigned to each day of the week.
  * Uses Dexie live queries for reactive updates following the same pattern as CheckboxColumn.
  */
-export function MultiCheckboxColumn({
+export function TagsColumn({
     column,
     weekDates,
     weekEntriesByDate,
     archivedAt,
-}: MultiCheckboxColumnProps): React.ReactElement {
+}: TagsColumnProps): React.ReactElement {
     return (
-        <table className="checkbox-nested-table column-multicheckbox font-poppins">
+        <table className="checkbox-nested-table font-poppins">
             <ColumnHeader column={column} archivedAt={archivedAt} />
             <DayColumnLayout weekDates={weekDates}>
                 {(_day, dateKey) => {
                     return (
-                        <MultiCheckboxEntryEditor
+                        <TagsEntryEditor
                             column={column}
                             dateKey={dateKey}
                             entry={weekEntriesByDate[dateKey]}

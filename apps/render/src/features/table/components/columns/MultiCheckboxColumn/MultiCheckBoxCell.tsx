@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDropdownMultiSelect } from '../hooks/useDropdownMultiSelect';
+import { useDropdownMultiSelect } from '../shared/hooks/useDropdownMultiSelect';
 import { useCircleCanvas } from './useCircleCanvas';
 import { getColorForTag, handleOptionToggle } from './logic';
 import { Tag } from 'features/columns/types/types';

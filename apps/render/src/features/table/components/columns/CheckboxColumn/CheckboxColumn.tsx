@@ -1,28 +1,27 @@
-import type { NumberBoxColumn } from 'features/columns/types/types';
+import type { CheckboxColumn as CheckboxColumnType } from 'features/columns/types/types';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
-import { NumberEntryEditor } from '../cells/NumberboxColumn/NumberboxCell';
-import { ColumnHeader } from '../ColumnHeader';
-import { DayColumnLayout } from './DayColumnLayout';
+import { CheckboxEntryEditor } from './CheckBoxCell';
+import { ColumnHeader } from '../shared/ColumnHeader';
+import { DayColumnLayout } from '../shared/DayColumnLayout';
 
-interface NumberboxColumnProps {
-    column: NumberBoxColumn;
+interface CheckboxColumnProps {
+    column: CheckboxColumnType;
     weekDates: Date[];
     weekEntriesByDate: ColumnEntryValueMap;
     archivedAt: Date;
 }
-
-export function NumberboxColumn({
+export function CheckboxColumn({
     column,
     weekDates,
     weekEntriesByDate,
     archivedAt,
-}: NumberboxColumnProps): React.ReactElement {
+}: CheckboxColumnProps): React.ReactElement {
     return (
-        <table className="checkbox-nested-table column-numberbox font-poppins">
+        <table className="checkbox-nested-table column-checkbox font-poppins">
             <ColumnHeader column={column} archivedAt={archivedAt} />
             <DayColumnLayout weekDates={weekDates}>
                 {(_day, dateKey) => (
-                    <NumberEntryEditor
+                    <CheckboxEntryEditor
                         column={column}
                         dateKey={dateKey}
                         entry={weekEntriesByDate[dateKey]}

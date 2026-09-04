@@ -1,27 +1,29 @@
-import type { CheckboxColumn as CheckboxColumnType } from 'features/columns/types/types';
+import type { TextboxColumn as TextboxColumnType } from 'features/columns/types/types';
 import { ColumnEntryValueMap } from 'features/table/types/entryTypes';
-import { CheckboxEntryEditor } from '../cells/CheckboxColumn/CheckBoxCell';
-import { ColumnHeader } from '../ColumnHeader';
-import { DayColumnLayout } from './DayColumnLayout';
+import { TextEntryEditor } from './TextboxCell';
+import { ColumnHeader } from '../shared/ColumnHeader';
+import { DayColumnLayout } from '../shared/DayColumnLayout';
 
-interface CheckboxColumnProps {
-    column: CheckboxColumnType;
+// TODO : Don't repeat in each column, create a HOC for this pattern
+interface TextboxColumnProps {
+    column: TextboxColumnType;
     weekDates: Date[];
     weekEntriesByDate: ColumnEntryValueMap;
     archivedAt: Date;
 }
-export function CheckboxColumn({
+
+export function TextboxColumn({
     column,
     weekDates,
     weekEntriesByDate,
     archivedAt,
-}: CheckboxColumnProps): React.ReactElement {
+}: TextboxColumnProps): React.ReactElement {
     return (
-        <table className="checkbox-nested-table column-checkbox font-poppins">
+        <table className="checkbox-nested-table column-text font-poppins">
             <ColumnHeader column={column} archivedAt={archivedAt} />
             <DayColumnLayout weekDates={weekDates}>
                 {(_day, dateKey) => (
-                    <CheckboxEntryEditor
+                    <TextEntryEditor
                         column={column}
                         dateKey={dateKey}
                         entry={weekEntriesByDate[dateKey]}
